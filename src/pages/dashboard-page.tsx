@@ -6,7 +6,8 @@ import { useMemo } from "react";
 
 import KpiCard from "@/components/dashboard/kpi-card";
 import StatusDonut from "@/components/dashboard/status-donut";
-import UrgentList, { pickUrgent } from "@/components/dashboard/urgent-list";
+import UrgentList from "@/components/dashboard/urgent-list";
+import { pickUrgent } from "@/components/dashboard/urgent";
 import Loader from "@/components/loader";
 import Fallback from "@/components/fallback";
 import { useCustomersData } from "@/hooks/queries/use-customers-data";

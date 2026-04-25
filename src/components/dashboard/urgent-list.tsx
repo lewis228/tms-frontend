@@ -1,46 +1,11 @@
 // 임박 D/O 표:
-// - demurrage_lfd 또는 detention_lfd 가 오늘로부터 3일 이내
-// - status != COMPLETED
 // 행 클릭 → /app/delivery-orders?do=:id navigate.
+// pickUrgent / UrgentRow 는 ./urgent 로 분리.
 import { Link } from "react-router-dom";
 
 import StatusBadge from "@/components/delivery-order/status-badge";
-import type { CustomerEntity, DeliveryOrderEntity } from "@/types";
-
-const URGENT_DAYS = 3;
-
-export type UrgentRow = {
-  do: DeliveryOrderEntity;
-  type: "demurrage" | "detention";
-  daysLeft: number;
-  date: string;
-};
-
-export function pickUrgent(
-  orders: DeliveryOrderEntity[],
-): UrgentRow[] {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const todayMs = today.getTime();
-  const out: UrgentRow[] = [];
-  for (const d of orders) {
-    if (d.status === "COMPLETED") continue;
-    for (const [field, type] of [
-      ["demurrageLfd", "demurrage" as const],
-      ["detentionLfd", "detention" as const],
-    ] as const) {
-      const iso = d[field];
-      if (!iso) continue;
-      const lfd = new Date(iso).getTime();
-      const days = Math.floor((lfd - todayMs) / 86400000);
-      if (days <= URGENT_DAYS) {
-        out.push({ do: d, type, daysLeft: days, date: iso });
-      }
-    }
-  }
-  out.sort((a, b) => a.daysLeft - b.daysLeft);
-  return out;
-}
+import type { UrgentRow } from "@/components/dashboard/urgent";
+import type { CustomerEntity } from "@/types";
 
 export default function UrgentList({
   rows,
