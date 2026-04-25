@@ -1,0 +1,1233 @@
+{
+  "common": {
+    "save": "Save",
+    "saveChanges": "Save Changes",
+    "cancel": "Cancel",
+    "confirm": "OK",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "add": "Add",
+    "remove": "Remove",
+    "search": "Search",
+    "signOut": "Sign Out",
+    "soon": "Soon",
+    "close": "Close",
+    "loading": "Loading…",
+    "saving": "Saving…",
+    "retry": "Retry",
+    "required": "*",
+    "optional": "(optional)",
+    "yes": "Yes",
+    "no": "No",
+    "copy": "Copy",
+    "copied": "Copied",
+    "select": "Select",
+    "back": "Back",
+    "next": "Next",
+    "continue": "Continue",
+    "noChanges": "No changes to save.",
+    "none": "—",
+    "grid": {
+      "columnSettings": "Columns",
+      "toggleColumn": "Show/hide {{label}} column",
+      "dragHandle": "Drag to reorder"
+    }
+  },
+  "nav": {
+    "overview": "Overview",
+    "dashboard": "Dashboard",
+    "track": "Track",
+    "projects": "Projects",
+    "reports": "Reports",
+    "ocean": "Ocean",
+    "terminal": "Terminal",
+    "air": "Air",
+    "rail": "Rail",
+    "shipments": "Shipments",
+    "containers": "Containers",
+    "vessels": "Vessels",
+    "schedules": "Schedules",
+    "appointments": "Appointments",
+    "developer": "Developer",
+    "apiKeys": "API Keys",
+    "usage": "Usage",
+    "documentation": "Documentation",
+    "webhooks": "Webhooks",
+    "settings": "Settings",
+    "team": "Team",
+    "members": "Members",
+    "theme": "Theme",
+    "notifications": "Notifications",
+    "privacy": "Privacy",
+    "tags": "Tags",
+    "payment": "Payment",
+    "plugins": "Plugins",
+    "favorites": "Favorites",
+    "removeFavorite": "Remove {{title}} from favourites"
+  },
+  "sidebar": {
+    "demoMode": "DEMO MODE",
+    "demoShort": "DEMO",
+    "authDisabled": "Auth disabled"
+  },
+  "header": {
+    "toggleSidebar": "Toggle sidebar",
+    "favoriteThisPage": "Favorite this page",
+    "unfavoriteThisPage": "Unfavorite this page",
+    "searchPlaceholder": "Search",
+    "theme": "Theme",
+    "rightPanel": "Right panel"
+  },
+  "announcements": {
+    "title": "Notifications",
+    "empty": "No new announcements",
+    "viewAll": "View all",
+    "items": {
+      "mobileTab": "Mobile product tab redesigned",
+      "fileAttachment": "Product file & photo attachment added",
+      "customDocs": "Custom PO and invoice templates",
+      "labelPrint": "Desktop label printing updated",
+      "labelDesign": "Custom label design added",
+      "customReport": "Custom report (Beta)",
+      "priceTemplate": "Price template added"
+    }
+  },
+  "rightPanel": {
+    "notifications": "Notifications",
+    "activities": "Activities",
+    "contacts": "Contacts"
+  },
+  "chat": {
+    "searchPlaceholder": "Search",
+    "newChat": "New chat",
+    "settings": "Settings",
+    "typeMessage": "Type message",
+    "send": "Send",
+    "call": "Call",
+    "videoCall": "Video call",
+    "more": "More",
+    "reply": "Reply",
+    "reaction": "React",
+    "emptyState": "Select a conversation",
+    "unreadBadge": "{{count}} unread"
+  },
+  "profile": {
+    "title": "Profile",
+    "signOut": "Sign out",
+    "accountSecurity": "Account security",
+    "support": "Support",
+    "name": "Name",
+    "nameDescription": "The name shown on your profile and in team lists.",
+    "email": "Email",
+    "password": "Password",
+    "passwordDescription": "Set a permanent password to login to your account.",
+    "twoStep": "2-step verification",
+    "twoStepDescription": "Add an additional layer of security to your account during sign in.",
+    "twoStepOff": "Off",
+    "eventNotifications": "Event notifications",
+    "eventNotificationsDescription": "Receive email and push alerts when shipment events occur. You can turn these off anytime.",
+    "logoutAllDevices": "Log out of all devices",
+    "logoutAllDevicesDescription": "Log out of all other active sessions on other devices besides this one.",
+    "deleteAccount": "Delete my account",
+    "deleteAccountDescription": "Permanently delete the account and remove access from all devices.",
+    "language": "Language",
+    "languageDescription": "Pick the UI language. Defaults to your browser setting.",
+    "lang": {
+      "system": "Browser default",
+      "ko": "한국어",
+      "en": "English"
+    },
+    "signOutConfirmTitle": "Sign out?",
+    "signOutConfirmDescription": "You'll need your email and password to sign back in.",
+    "changeName": {
+      "title": "Change name",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "toastStub": "Name update is coming soon."
+    },
+    "changePassword": {
+      "title": "Change password",
+      "current": "Current password",
+      "new": "New password",
+      "repeat": "Repeat password",
+      "mismatch": "Passwords do not match.",
+      "toastStub": "Password change is coming soon."
+    },
+    "logoutAll": {
+      "title": "Log out of all devices",
+      "body": "This signs you out of every session except this device.",
+      "success": "All other devices have been signed out."
+    },
+    "delete": {
+      "title": "Delete my account",
+      "warning": "This operation will permanently delete the account",
+      "warningDetail": "This is irreversible — proceed with care.",
+      "emailPrompt": "Type your current email to confirm.",
+      "action": "Delete",
+      "confirmTitle": "Really delete this account?",
+      "confirmDescription": "Your account and all related data will be permanently deleted. This cannot be undone.",
+      "received": "Your account deletion request has been received."
+    }
+  },
+  "modal": {
+    "memberInvite": {
+      "title": "Add team member",
+      "note": "Enter the email of an existing OMNIQ account to add. Email invitation links are coming soon.",
+      "emailLabel": "Email",
+      "submit": "Add member",
+      "submitting": "Adding…",
+      "successToast": "Member has been added."
+    },
+    "apiKeyCreate": {
+      "title": "Create new API key",
+      "nameLabel": "Name",
+      "namePlaceholder": "e.g. Production, CI/CD, Mobile App",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Note why this key exists so it's easy to manage later.",
+      "expiry": "Validity",
+      "days7": "7 days",
+      "days30": "30 days",
+      "days90": "90 days",
+      "year1": "1 year",
+      "never": "No expiry",
+      "expiryHint": "Expired keys are disabled automatically. 'No expiry' stays active until you revoke it.",
+      "submit": "Create API key",
+      "submitting": "Creating…",
+      "draftTitle": "You have unsaved changes",
+      "draftDescription": "Leaving now will discard the draft."
+    },
+    "apiKeyCreated": {
+      "title": "API key created",
+      "copyNow": "Copy it now",
+      "copyNowDetail": "This is the only time the full key is shown. Save it in a password manager before closing this window.",
+      "copyButton": "Copy",
+      "copiedButton": "Copied",
+      "saved": "I've saved it",
+      "clipboardSuccess": "Copied to clipboard.",
+      "clipboardDenied": "Could not access the clipboard. Please copy it manually."
+    },
+    "oceanShipmentOrganize": {
+      "title": "Edit shipment"
+    }
+  },
+  "settings": {
+    "tags": {
+      "title": "Tags",
+      "description": "Create tags and attach them to shipments to power filtering and reporting.",
+      "createButton": "Create tag",
+      "searchPlaceholder": "Search tag name",
+      "sort": {
+        "nameAsc": "Tag (A–Z)",
+        "nameDesc": "Tag (Z–A)",
+        "usedDesc": "Most used",
+        "recentDesc": "Recently used"
+      },
+      "tagsCount": "{{count}} tags",
+      "tagsCountFiltered": "{{filtered}} / {{total}}",
+      "newTagPlaceholder": "New tag name (e.g. priority, perishable)",
+      "duplicate": "Tag already exists",
+      "addTag": "Add",
+      "cancel": "Cancel",
+      "columnName": "Name",
+      "columnUsedIn": "Used in",
+      "columnFirstAdded": "First added",
+      "columnLastUsed": "Last used",
+      "columnActions": "Actions",
+      "usedInShipments": "{{count}} shipments",
+      "editAria": "Edit {{name}}",
+      "deleteAria": "Delete {{name}}",
+      "emptyTitle": "No tags yet.",
+      "emptyTitleFiltered": "No matching results.",
+      "emptyHint": "Use the '+ Create tag' row below to add your first one.",
+      "emptyHintFiltered": "Try a different search term.",
+      "heroEmptyTitle": "No tags yet",
+      "heroEmptyDescription": "Create tags and attach them to shipments so you can filter and report on them later.",
+      "footerNote": "Tags can be attached from the shipment detail view. Backend integration ships in the next step."
+    },
+    "privacy": {
+      "title": "Privacy",
+      "description": "Manage cookies and data retention policies.",
+      "cookie": {
+        "title": "Cookie settings",
+        "description": "Manage consent by category — necessary, functional, analytics, marketing.",
+        "customize": "Customize",
+        "strictTitle": "Strictly necessary",
+        "strictDescription": "Essential for the site to function. Always on.",
+        "functionalTitle": "Functional",
+        "functionalDescription": "Used to remember preference selections and provide enhanced features.",
+        "analyticsTitle": "Analytics",
+        "analyticsDescription": "Used to measure usage and improve your experience.",
+        "marketingTitle": "Marketing",
+        "marketingDescription": "Used for targeted advertising."
+      },
+      "history": {
+        "title": "History retention",
+        "description": "How long activity history is kept. Default 30 days, max 365 days.",
+        "value": "30 days"
+      },
+      "export": {
+        "title": "Data export",
+        "description": "Export your team's shipment data and logs as CSV/JSON.",
+        "value": "Request"
+      },
+      "deleteWorkspace": {
+        "title": "Delete workspace data",
+        "description": "Permanently delete all shipments, events, and scrape logs. Cannot be undone.",
+        "value": "Request"
+      },
+      "footerNote": "Detailed settings for each item will roll out in upcoming updates."
+    },
+    "payment": {
+      "title": "Payment",
+      "description": "Manage payment methods and payout invoice details.",
+      "addMethod": "Payment method",
+      "defaultBadge": "Default",
+      "payoutTitle": "Payout invoice info",
+      "payoutHint": "Optional. Information added here, such as your business name, address, VAT number, etc. will be included when generating a payout invoice.",
+      "payoutPlaceholder": "Enter your business name, address, VAT number, etc.",
+      "footerNote": "Add / remove payment methods and payout processing are coming soon."
+    },
+    "notifications": {
+      "title": "Notifications",
+      "description": "Manage how and where you receive event alerts.",
+      "sectionEmail": "Email",
+      "sectionInApp": "In-app",
+      "sectionExternal": "External channels",
+      "eventEmailLabel": "Event email alerts",
+      "eventEmailDescription": "Immediate email when ETA changes, arrivals, customs holds, and more happen.",
+      "digestLabel": "Daily Digest",
+      "digestDescription": "A morning email summarising all shipment changes from the previous day.",
+      "pushLabel": "Browser push",
+      "pushDescription": "Get desktop notifications for important events even when the tab isn't open.",
+      "slackLabel": "Slack",
+      "slackDescription": "Stream shipment events to your team channel in real time.",
+      "slackValue": "Not connected",
+      "webhookLabel": "Webhook",
+      "webhookDescription": "POST events to your own server. Retries and signatures included.",
+      "webhookValue": "Not configured"
+    },
+    "members": {
+      "title": "Members",
+      "description": "Invite team members and manage their roles.",
+      "addButton": "Add member",
+      "selfBadge": "You",
+      "removeButton": "Remove",
+      "selfCannotRemove": "Self — cannot remove",
+      "removeSuccess": "Member has been removed from the team.",
+      "emptyTitle": "No members in this team yet",
+      "emptyDescription": "Invite teammates by email to start collaborating.",
+      "emptyCta": "Add your first member",
+      "removeConfirmTitle": "Remove {{who}} from the team?",
+      "removeConfirmDescription": "They will lose access to this team's data immediately. You can add them back anytime.",
+      "roles": {
+        "owner": "OWNER",
+        "admin": "ADMIN",
+        "user": "USER"
+      }
+    },
+    "theme": {
+      "title": "Theme",
+      "description": "Customise the theme, body text size, and accent color.",
+      "modeLabel": "Theme",
+      "fontSizeLabel": "Font size",
+      "accentLabel": "Accent color",
+      "fontSizeAria": "Font size {{index}}",
+      "accentAria": "Accent {{color}}",
+      "mode": {
+        "system": "system",
+        "light": "light",
+        "dark": "dark"
+      },
+      "footerNote": "Selections apply to this browser session only. Per-account persistence and real dark-mode switching ship in the next update."
+    },
+    "plugins": {
+      "title": "Plugins",
+      "active": "{{active}}/{{total}} active",
+      "description": "Manage integrations with external services. Only enabled plugins receive shipment events.",
+      "moreOptions": "More options",
+      "footerNote": "This list reflects planned integrations. Auth / callback flows will open progressively.",
+      "items": {
+        "slack": {
+          "name": "Slack",
+          "description": "Stream shipment events to your team channel in real time — ETA changes, arrivals, customs holds."
+        },
+        "googleSheets": {
+          "name": "Google Sheets",
+          "description": "Continuously sync shipment data to Google Sheets."
+        },
+        "figma": {
+          "name": "Figma",
+          "description": "Embed live shipment dashboards in Figma design files to share."
+        },
+        "zapier": {
+          "name": "Zapier",
+          "description": "Connect to 6000+ apps and automate workflows from shipment events."
+        },
+        "webhooks": {
+          "name": "Webhooks",
+          "description": "POST events directly to your own server — custom integration."
+        }
+      }
+    },
+    "team": {
+      "title": "Team",
+      "description": "Manage team basics, company info, and display settings.",
+      "usage": {
+        "title": "Usage",
+        "description": "Usage this month for the current {{plan}} plan.",
+        "containerQueries": "Container queries",
+        "members": "Members",
+        "apiKeys": "API Keys",
+        "suffix": {
+          "times": "times",
+          "people": "people",
+          "items": "items"
+        }
+      },
+      "info": {
+        "title": "Team info",
+        "description": "Manage team name, memo, and timezone. All dates/times are stored in UTC and displayed in the zone chosen here.",
+        "nameLabel": "Team name",
+        "namePlaceholder": "Team name",
+        "nameRequired": "Team name cannot be empty.",
+        "timezoneLabel": "Timezone",
+        "memoLabel": "Team memo",
+        "memoPlaceholder": "Internal team memo (optional)",
+        "saveSuccess": "Team info saved."
+      },
+      "timezone": {
+        "searchPlaceholder": "Search timezone",
+        "noResults": "No timezones match."
+      },
+      "company": {
+        "title": "Company info",
+        "description": "Legal company information that appears on invoices and customs documents.",
+        "businessName": "Business name",
+        "registrationNumber": "Business registration number",
+        "representative": "Representative",
+        "phone": "Contact phone",
+        "email": "Contact email",
+        "emailHint": "Used as the team's primary email for invoices, usage alerts, and more.",
+        "address": "Address",
+        "addressPlaceholder": "Street address",
+        "saveSuccess": "Company info saved."
+      },
+      "display": {
+        "title": "Display settings",
+        "description": "Decide how amounts, dates, and units render across the app. Changes take effect immediately.",
+        "currencyLabel": "Currency",
+        "currencyHint": "Example: {{example}}",
+        "decimalLabel": "Decimal places",
+        "decimalHint": "Applies to amounts and freight rates.",
+        "dateFormatLabel": "Date format",
+        "dateFormatHint": "Example: {{example}}",
+        "timeFormatLabel": "Time format",
+        "timeFormat24": "24h",
+        "timeFormat12": "12h (AM/PM)",
+        "unitsLabel": "Units",
+        "unitsHint": "Weight converts kg ↔ lb, volume converts m³ ↔ ft³.",
+        "metric": "Metric (kg / m³)",
+        "imperial": "Imperial (lb / ft³)",
+        "saveSuccess": "Display settings saved."
+      },
+      "danger": {
+        "title": "Data management",
+        "description": "Leaving or deleting the team cannot be undone. Proceed with care.",
+        "leaveTitle": "Leave team",
+        "leaveDescription": "You'll be signed out of this team's data immediately. You can rejoin via an admin invite.",
+        "leaveAction": "Leave team",
+        "leaveConfirmTitle": "Leave this team?",
+        "leaveConfirmDescription": "You can rejoin later if the admin invites you, but you'll lose access to the team's data immediately.",
+        "leaveSuccess": "You have left the team.",
+        "deleteTitle": "Delete team",
+        "deleteDescription": "Permanently delete every shipment, event, API key, and membership in the team.",
+        "deleteAction": "Delete team",
+        "deleteConfirmTitle": "Really delete \"{{name}}\"?",
+        "deleteConfirmDescription": "All shipments, events, API keys, and memberships will be permanently deleted and cannot be recovered.",
+        "deleteSuccess": "Team deleted."
+      }
+    }
+  },
+  "auth": {
+    "appleButton": "Sign in with Apple",
+    "googleButton": "Sign in with Google",
+    "orWithEmail": "Or with Email",
+    "emailPlaceholder": "Email",
+    "passwordPlaceholder": "Password",
+    "hidePassword": "Hide password",
+    "showPassword": "Show password",
+    "signIn": {
+      "title": "Sign In",
+      "subtitle": "Your Social Campaigns",
+      "forgot": "Forgot Password?",
+      "submit": "Sign In",
+      "notMember": "Not a Member yet?",
+      "signUpLink": "Sign Up"
+    },
+    "signUp": {
+      "title": "Sign Up",
+      "subtitle": "Your Social Campaigns",
+      "passwordHint": "Use 8 or more characters with a mix of letters, numbers & symbols.",
+      "passwordTooShort": "Password must be at least 8 characters.",
+      "passwordMismatch": "Passwords do not match.",
+      "agreeRequired": "Please accept the terms.",
+      "repeatPlaceholder": "Repeat Password",
+      "acceptTerms": "I Accept the",
+      "terms": "Terms",
+      "submit": "Sign Up",
+      "already": "Already have an Account?",
+      "signInLink": "Sign in",
+      "codeSent": "A verification email has been sent."
+    },
+    "forgetPassword": {
+      "title": "Forgot Password?",
+      "subtitle": "Enter your email to reset your password.",
+      "emailPlaceholder": "Please enter your email address",
+      "submit": "Submit",
+      "back": "Back",
+      "codeSent": "We sent a reset code to your email."
+    },
+    "resetPassword": {
+      "title": "Setup New Password",
+      "codeSentTo": "Verification code sent to",
+      "sixDigitLabel": "6-digit code",
+      "sixDigitRequired": "Please enter the 6-digit code.",
+      "newPassword": "New password",
+      "repeatPassword": "Repeat password",
+      "submit": "Submit",
+      "remembered": "Remembered?",
+      "signInLink": "Sign in",
+      "success": "Password has been reset."
+    },
+    "twoStep": {
+      "title": "Two Step Verification",
+      "sentTo": "Enter the verification code we sent to",
+      "instruction": "Type your 6 digit security code",
+      "submit": "Submit",
+      "sixDigitRequired": "Please enter the 6-digit code.",
+      "noCode": "Didn't get the code?",
+      "resend": "Resend",
+      "or": "or",
+      "callUs": "Call Us",
+      "success": "Sign-up complete."
+    },
+    "accountType": {
+      "title": "Choose Account Type",
+      "subtitle": "If you need more info, please check out",
+      "helpLink": "Help Page",
+      "personalTitle": "Personal Account",
+      "personalDescription": "If you need more info, please check it out.",
+      "corporateTitle": "Corporate Account",
+      "corporateDescription": "Create corporate account to many users.",
+      "continue": "Continue"
+    },
+    "accountInfo": {
+      "title": "Account Info",
+      "subtitle": "If you need more info, please check out",
+      "helpLink": "Help Page",
+      "teamSize": "Specify Team Size",
+      "teamSizeHint": "Customers will see this shortened version of your statement descriptor.",
+      "teamName": "Team Account Name",
+      "planHeading": "Select Account Plan",
+      "companyLabel": "Company Account",
+      "companyDescription": "Use images to enhance your post flow.",
+      "developerLabel": "Developer Account",
+      "developerDescription": "Use images to your post time.",
+      "testingLabel": "Testing Account",
+      "testingDescription": "Use images to enhance time travel rivers.",
+      "previous": "Previous",
+      "continue": "Continue"
+    }
+  },
+  "pages": {
+    "appHome": {
+      "title": "Select team",
+      "noTeams": "You aren't in any team yet. Create one to get started.",
+      "pickTeam": "Choose which team to open.",
+      "enterTeam": "Open →",
+      "teamPlaceholder": "Team name",
+      "createNewTeam": "Create new team",
+      "createSubmit": "Create",
+      "createSuccess": "Team created.",
+      "untitledTeam": "Team #{{id}}"
+    },
+    "projects": {
+      "title": "Projects",
+      "description": "Track status and risk across shipment batches at a glance.",
+      "kpi": {
+        "demurrage": "Demurrage Risk",
+        "perDiem": "Per Diem Risk",
+        "arriving": "Arriving This Week"
+      },
+      "status": {
+        "inTransit": "In Transit",
+        "atPort": "At Port",
+        "delivered": "Delivered",
+        "delayed": "Delayed",
+        "pending": "Pending"
+      },
+      "card": {
+        "eta": "ETA",
+        "totalContainers": "Total Containers"
+      }
+    },
+    "reports": {
+      "title": "Reports",
+      "description": "Operational analytics on shipments, carriers, and destinations.",
+      "overviewTitle": "Overview",
+      "range": {
+        "today": "Today",
+        "7d": "Last 7 days",
+        "30d": "Last 30 days",
+        "qtd": "Quarter to date",
+        "ytd": "Year to date"
+      },
+      "kpi": {
+        "activeShipments": "Active Shipments",
+        "onTimeRate": "On-Time Rate",
+        "delayedShipments": "Delayed Shipments",
+        "demurrageRisk": "Demurrage Risk"
+      },
+      "series": {
+        "shipmentsVolume": "Shipments Volume",
+        "onTimePerformance": "On-Time Performance",
+        "avgTransitTime": "Avg Transit Time",
+        "costFees": "Demurrage / Per Diem"
+      },
+      "legend": {
+        "thisYear": "This year",
+        "lastYear": "Last year"
+      },
+      "unit": {
+        "shipments": "shipments",
+        "percent": "%",
+        "days": "days",
+        "usd": "USD"
+      },
+      "topCarriers": {
+        "title": "Top Carriers"
+      },
+      "carrierPerformance": {
+        "title": "Carrier Performance",
+        "onTime": "On-Time Rate"
+      },
+      "destinationShares": {
+        "title": "Shipments by Destination Region"
+      },
+      "destination": {
+        "usWest": "US West Coast",
+        "usEast": "US East Coast",
+        "eu": "EU (Rotterdam…)",
+        "sea": "SEA",
+        "other": "Other"
+      },
+      "exceptions": {
+        "title": "Exception Timeline (last 30 days)",
+        "kind": {
+          "delayed": "Delayed",
+          "etaChanged": "ETA changed",
+          "alert": "Alert raised",
+          "rollover": "Rollover"
+        },
+        "axis": {
+          "today": "Today",
+          "30dAgo": "30 days ago"
+        }
+      },
+      "dwellTime": {
+        "title": "Dwell Time by Port",
+        "unit": "Average days at port",
+        "valueLabel": "{{days}} days avg dwell"
+      },
+      "costBreakdown": {
+        "title": "Cost Breakdown",
+        "segments": {
+          "demurrage": "Demurrage",
+          "perDiem": "Per Diem",
+          "other": "Other"
+        }
+      },
+      "delayedRoutes": {
+        "title": "Top Delayed Routes",
+        "subtitle": "Delay rate (last 30 days)",
+        "shipments": "{{count}} shipments",
+        "avgDelay": "Avg delay {{days}}d"
+      }
+    },
+    "dashboard": {
+      "tabs": {
+        "overview": "Overview",
+        "liveMap": "Live Map",
+        "alerts": "Alerts",
+        "settings": "Settings"
+      },
+      "actions": {
+        "trackMbl": "Track MBL"
+      },
+      "pulse": {
+        "onTimeRate": "On-Time Rate",
+        "activeShipments": "Active Shipments",
+        "nextEta": "Next ETA",
+        "apiUsage": "API Usage (today)",
+        "members": "Team Members",
+        "noEta": "—",
+        "status": {
+          "on-track": "On Track",
+          "delayed": "Delayed",
+          "attention": "Attention"
+        }
+      },
+      "water": {
+        "title": "What's on the water?",
+        "kind": {
+          "arrival": "{{mbl}} arrived at {{location}}",
+          "departure": "{{mbl}} departed from {{location}}",
+          "stop": "{{mbl}} stopped at {{location}}"
+        }
+      },
+      "latest": {
+        "title": "Latest Shipments",
+        "viewAll": "View all",
+        "empty": "No shipments registered yet.",
+        "unknownCarrier": "Unknown carrier",
+        "trackCta": "Track new MBL"
+      },
+      "atRisk": {
+        "title": "At-Risk Shipments",
+        "count": "{{count}} total",
+        "col": {
+          "mbl": "MBL",
+          "requester": "Requester",
+          "eta": "ETA",
+          "risk": "Risk",
+          "status": "Status"
+        },
+        "overdueDays": "{{count}}d overdue",
+        "daysLeft": "{{count}}d left",
+        "level": {
+          "overdue": "Overdue",
+          "atRisk": "At Risk",
+          "attention": "Attention"
+        }
+      }
+    },
+    "liveMap": {
+      "title": "Live Map",
+      "subtitle": "Vessel positions across the fleet, refreshed in real time.",
+      "panelTitle": "Vessels ({{count}})",
+      "searchPlaceholder": "Search vessel, MBL, carrier",
+      "empty": "No vessels match the current filter.",
+      "filter": {
+        "all": "All",
+        "underway": "Underway",
+        "atPort": "At Port",
+        "anchored": "Anchored",
+        "delayed": "Delayed"
+      },
+      "legend": {
+        "title": "Status",
+        "underway": "Underway",
+        "at-port": "At Port",
+        "anchored": "Anchored",
+        "delayed": "Delayed"
+      },
+      "popup": {
+        "speed": "Speed: {{speed}} kn",
+        "eta": "ETA: {{eta}}"
+      }
+    },
+    "alerts": {
+      "title": "Alerts",
+      "subtitle": "Time-sensitive events across your tracked shipments.",
+      "summary": {
+        "critical": "Critical (unread)",
+        "warning": "Warning (unread)",
+        "info": "Info (unread)"
+      },
+      "filter": {
+        "all": "All",
+        "critical": "Critical",
+        "warning": "Warning",
+        "info": "Info"
+      },
+      "showUnread": "Unread only ({{count}})",
+      "empty": "All caught up — no alerts here.",
+      "kind": {
+        "demurrage": "Demurrage",
+        "per-diem": "Per Diem",
+        "delay": "Delay",
+        "scrape-failed": "Scrape Failed",
+        "arrival": "Arrival",
+        "carrier-change": "Carrier Update"
+      }
+    },
+    "dashboardSettings": {
+      "title": "Dashboard Settings",
+      "subtitle": "Tune alert thresholds, defaults, and channels.",
+      "save": "Save Changes",
+      "saved": "Preferences saved.",
+      "alertThresholds": {
+        "title": "Alert thresholds",
+        "description": "Trigger warnings before fees start accruing.",
+        "daysUnit": "days",
+        "demurrage": {
+          "label": "Demurrage warning lead time",
+          "hint": "Notify when demurrage will start within X days."
+        },
+        "perDiem": {
+          "label": "Per-diem warning lead time",
+          "hint": "Notify when per-diem will start within X days."
+        }
+      },
+      "defaultRange": {
+        "title": "Default time range",
+        "description": "Initial date filter applied across dashboard widgets.",
+        "options": {
+          "7d": "Last 7 days",
+          "30d": "Last 30 days",
+          "90d": "Last 90 days",
+          "all": "All time"
+        }
+      },
+      "channels": {
+        "title": "Notification channels",
+        "description": "Where alerts get delivered for this team.",
+        "email": {
+          "label": "Email",
+          "hint": "Send a digest to your registered notification email."
+        },
+        "slack": {
+          "label": "Slack",
+          "hint": "Post critical alerts to a connected Slack channel."
+        },
+        "inApp": {
+          "label": "In-app",
+          "hint": "Show alerts in the bell popover."
+        }
+      },
+      "density": {
+        "title": "Display density",
+        "description": "Compact mode trims padding to fit more on screen.",
+        "options": {
+          "comfortable": "Comfortable",
+          "compact": "Compact"
+        }
+      }
+    },
+    "ocean": {
+      "list": {
+        "title": "Shipments",
+        "description": "Manage every Ocean MBL registered to your team.",
+        "trackButton": "Track",
+        "viewAll": "All",
+        "viewOnShip": "On Ship",
+        "viewArrived": "Arrived",
+        "viewStoppedTracking": "Stopped Tracking",
+        "viewRecentlyAdded": "Recently Added",
+        "mblContainerCount_one": "{{count}} container",
+        "mblContainerCount_other": "{{count}} containers",
+        "mblSearch": "Search MBL",
+        "carrierFilter": "Carrier filter (e.g. MSC)",
+        "clearAll": "Clear all filters",
+        "mblChip": "MBL contains \"{{value}}\"",
+        "carrierChip": "Carrier: {{value}}",
+        "clearFilterAria": "Clear filter",
+        "unifiedSearchPlaceholder": "Search MBL or carrier",
+        "unifiedSearchChip": "Search: \"{{value}}\"",
+        "exportCsv": "Export CSV",
+        "exportEmpty": "Nothing to export.",
+        "exportFileName": "shipments",
+        "colMbl": "MBL",
+        "colCarrier": "Carrier",
+        "colRoute": "Route",
+        "colVessel": "Vessel",
+        "colEta": "ETA",
+        "colStatus": "Status",
+        "colUpdated": "Updated",
+        "noEta": "No ETA",
+        "shown": "{{count}} shown",
+        "total": " / {{total}} total",
+        "hasMore": "More results available. Pagination ships soon.",
+        "status": {
+          "pending": "Pending",
+          "tracking": "Tracking",
+          "awaiting_manifest": "Awaiting Manifest",
+          "failed": "Failed",
+          "stopped": "Tracking Stopped",
+          "cancelled": "Cancelled"
+        },
+        "expandRowAria": "Expand to see containers",
+        "collapseRowAria": "Collapse containers",
+        "expand": {
+          "loading": "Loading containers…",
+          "empty": "No containers for this shipment yet.",
+          "error": "Couldn't load containers."
+        },
+        "emptyFiltered": "No shipments match the current filters",
+        "emptyFilteredHint": "Adjust or clear the filters.",
+        "emptyAll": "No shipments registered yet",
+        "emptyView": "No shipments in {{view}} status",
+        "emptyHint": "Enter an MBL or container number to start tracking.",
+        "mblCopied": "MBL copied",
+        "actions": {
+          "stop": "Stop tracking",
+          "stopAria": "Stop tracking",
+          "copy": "Copy MBL",
+          "copyAria": "Copy MBL",
+          "moreAria": "More actions"
+        }
+      },
+      "containers": {
+        "title": "Containers",
+        "description": "Every container tracked across your team.",
+        "viewAll": "All",
+        "viewOnShip": "On Ship",
+        "viewArrived": "Arrived",
+        "viewStopped": "Stopped Tracking",
+        "searchPlaceholder": "Search by container number or MBL",
+        "colNumber": "Container",
+        "colShipment": "Shipment",
+        "colEquipment": "Equipment",
+        "colCarrier": "Carrier",
+        "colRoute": "Route",
+        "colEta": "ETA",
+        "colStatus": "Status",
+        "colTerminal": "Terminal",
+        "shown": "{{count}} shown",
+        "total": " / {{total}} total",
+        "hasMore": "More results available. Pagination ships soon.",
+        "empty": "No containers match the current filter.",
+        "physicalStatus": {
+          "registered": "Registered",
+          "gate_in": "Gate In",
+          "loaded": "Loaded",
+          "on_ship": "On Ship",
+          "discharged": "Discharged",
+          "gate_out": "Gate Out",
+          "empty_returned": "Empty Returned",
+          "unknown": "Unknown"
+        }
+      },
+      "detail": {
+        "back": "Shipments",
+        "openFullPage": "Open full page",
+        "carrierPending": "Carrier pending",
+        "voyagePrefix": "Voyage",
+        "stopTracking": "Stop tracking",
+        "routeLabel": "Route",
+        "routeCollecting": "Collecting route info",
+        "vesselLabel": "Vessel",
+        "etaLabel": "ETA",
+        "etdPrefix": "ETD",
+        "nextScrape": "Next scrape",
+        "stoppedAuto": "Automatic tracking stopped",
+        "containersCount": "{{count}} items",
+        "containersEmpty": "No container info yet",
+        "containersEmptyHint": "They'll appear here once scraping finishes.",
+        "estimatedBadge": "Estimated",
+        "eventPlaceholder": "Event",
+        "sizeUnknown": "Size unknown",
+        "stopSuccess": "Tracking stopped.",
+        "stopConfirmTitle": "Stop tracking {{mbl}}?",
+        "stopConfirmDescription": "Stopping disables auto-scraping. Existing data is kept; re-register via a new track request when you need updates.",
+        "detailsTitle": "Details",
+        "map": {
+          "emptyTitle": "Route data not available yet",
+          "emptyDescription": "Once POL / POD coordinates are collected the route will appear here.",
+          "departed": "Departed",
+          "eta": "ETA",
+          "lastUpdate": "Last update",
+          "enterFullscreen": "View fullscreen",
+          "exitFullscreen": "Exit fullscreen",
+          "vesselTitle": "Vessel position (estimated)",
+          "progress": "{{percent}}% of voyage complete",
+          "progressPending": "Awaiting departure",
+          "progressAtOrigin": "At origin (POL)",
+          "progressArrived": "Arrived at destination (POD)"
+        },
+        "organizeEmpty": "No customer, reference numbers, or tags yet. Use the edit button to add some.",
+        "organizeSaveSuccess": "Changes saved.",
+        "containersTitle": "Containers",
+        "containerEventsEmpty": "No events for this container yet",
+        "containerEventsEmptyHint": "Departure / discharge / gate-out events will land here once scraping picks them up.",
+        "resubmitTracking": "Retry tracking",
+        "resubmitSuccess": "Tracking resubmitted. The status will refresh shortly.",
+        "resubmitConfirmTitle": "Retry tracking for {{mbl}}?",
+        "resubmitConfirmDescription": "Status will flip back to pending and the scraper will run again immediately."
+      },
+      "track": {
+        "title": "Track",
+        "description": "Register MBL, booking, or container numbers to start real-time Ocean tracking.",
+        "tab": {
+          "quick": "Quick Entry",
+          "bulk": "Bulk Upload",
+          "history": "All Requests"
+        },
+        "quick": {
+          "hint": "Paste an MBL, booking, or container number. The shipping line is auto-selected from the 4-letter SCAC prefix. Use Add another to create several requests at once.",
+          "sectionIdentifier": "Identifier",
+          "sectionCarrier": "Carrier",
+          "sectionOrganize": "Organize",
+          "organizeHint": "Customer, tags and reference numbers help you filter and report later.",
+          "blLabel": "BL / Booking / Container",
+          "blPlaceholder": "MBL / Booking / Container",
+          "typeBl": "Bill of Lading",
+          "typeBooking": "Booking",
+          "typeContainer": "Container",
+          "shippingLineLabel": "Shipping Line",
+          "shippingLinePlaceholder": "Select carrier",
+          "shippingLineSearch": "Search carrier",
+          "shippingLineAuto": "Auto-detected",
+          "shippingLineNoResults": "No matching carrier",
+          "shippingLineMismatch": "{{prefix}} prefix is usually {{detected}}. Submit as {{selected}}?",
+          "shippingLineNone": "— None —",
+          "carrierRequired": "Pick a shipping line for every row before submitting.",
+          "customerLabel": "Customer",
+          "customerPlaceholder": "Pick or create a customer",
+          "customerSearch": "Search customers or type a new name",
+          "customerCreateNew": "Create new customer: \"{{name}}\"",
+          "customerNoResults": "No matching customers.",
+          "customerNone": "— None —",
+          "refLabel": "Ref Numbers",
+          "refPlaceholder": "PO / Order numbers (Enter or , to add)",
+          "refRemoveAria": "Remove {{value}}",
+          "tagsLabel": "Tags",
+          "tagsPlaceholder": "Pick or create tags",
+          "tagsSearch": "Search tags or type a new name",
+          "tagsCreateNew": "Create new tag: \"{{name}}\"",
+          "tagsNoResults": "No matching tags.",
+          "tagsManageHint": "Manage in Settings › Tags",
+          "tagRemoveAria": "Remove {{name}} tag",
+          "phaseBPending": "Saves with Phase B · 2026 Q2",
+          "expandRow": "Expand details",
+          "collapseRow": "Collapse details",
+          "addAnother": "Add another",
+          "removeRow": "Remove row",
+          "submitOne": "Create 1 tracking request",
+          "submitMany": "Create {{count}} tracking requests",
+          "submitting": "Requesting…",
+          "allSuccess": "Created {{count}} tracking requests.",
+          "partialSuccess": "{{succeeded}} succeeded · {{failed}} failed",
+          "allFailed": "All requests failed.",
+          "emptyBl": "Enter at least one BL / booking / container number."
+        },
+        "bulk": {
+          "title": "Bulk Spreadsheet Upload",
+          "description": "Register hundreds of MBLs at once via CSV. Uses the same engine as Quick Entry once ready."
+        },
+        "history": {
+          "title": "All Tracking Requests",
+          "description": "Review past Ocean requests — success, awaiting, failed — on one screen. Failed requests can be resubmitted."
+        },
+        "recently": {
+          "title": "Recently Added",
+          "viewAll": "View all",
+          "colRequest": "Tracking Request",
+          "colReference": "Reference #",
+          "colLine": "Line",
+          "colCustomer": "Customer",
+          "colAdded": "Added On",
+          "colStatus": "Status",
+          "colActions": "Actions",
+          "view": "View",
+          "empty": "No tracking requests yet."
+        },
+        "comingSoonBadge": "Launching 2026 Q2"
+      }
+    },
+    "developer": {
+      "usage": {
+        "title": "API Usage",
+        "description": "Monitor your team's API call volume against plan limits. Only API-key requests are counted — web JWT traffic is not.",
+        "dailyTitle": "Daily calls",
+        "window7": "7 days",
+        "window30": "30 days",
+        "window90": "90 days",
+        "today": "Today",
+        "todayRemaining": "{{remaining}} remaining ({{pct}}% used)",
+        "total": "Total for window",
+        "totalHint": "Selected window",
+        "currentPlan": "Current plan",
+        "dailyLimit": "/ daily limit",
+        "emptyTitle": "No API calls recorded",
+        "emptyHint": "API-key authenticated requests will appear here.",
+        "calls": "{{count}} calls",
+        "todayUsage": "Today's usage",
+        "resetHint": "Daily limits reset at midnight UTC. Additional API-key requests beyond the limit return HTTP 429."
+      }
+    },
+    "notFound": {
+      "title": "Page Not Found",
+      "alt": "Page not found",
+      "backHome": "Back to Home Page"
+    },
+    "comingSoon": {
+      "title": "Coming Soon",
+      "alt": "Coming soon",
+      "hours": "Hours",
+      "minutes": "Minutes",
+      "seconds": "Seconds",
+      "emailPlaceholder": "Enter your email to subscribe for updates."
+    },
+    "maintenance": {
+      "title": "Site is Under Maintenance",
+      "alt": "Under maintenance",
+      "needSupport": "Need support?"
+    }
+  },
+  "errors": {
+    "INVALID_CREDENTIALS": "Incorrect email or password.",
+    "USER_NOT_FOUND": "User not found.",
+    "EMAIL_ALREADY_EXISTS": "This email is already registered.",
+    "INVALID_EMAIL_CODE": "The verification code is invalid.",
+    "EXPIRED_EMAIL_CODE": "The verification code has expired.",
+    "PASSWORD_TOO_WEAK": "Password is too weak.",
+    "UNAUTHORIZED": "Authentication is required.",
+    "FORBIDDEN": "You don't have permission for that.",
+    "NOT_FOUND": "The requested resource was not found.",
+    "RATE_LIMITED": "Too many requests. Please try again shortly.",
+    "INTERNAL_SERVER_ERROR": "Something went wrong on the server.",
+    "NOT_TEAM_MEMBER": "You've been removed from the team. Redirecting to the team picker.",
+    "TEAM_NOT_FOUND": "Team not found.",
+    "TEAM_SCOPE_REQUIRED": "Please choose a team first.",
+    "TEAM_REQUIRED": "Please choose a team first.",
+    "ALREADY_EXISTS": "This item already exists in the current team.",
+    "FK_IN_USE": "Cannot delete — another record still references this item.",
+    "FK_REFERENCE_NOT_FOUND": "The referenced item no longer exists.",
+    "RATE_LIMIT_EXCEEDED": "Daily API quota reached. Please try again tomorrow.",
+    "BROWSER_ID_MISMATCH": "Your session was invalidated. Please sign in again.",
+    "ACCOUNT_SWITCHED": "A different account was detected. Please sign in again.",
+    "TIMEOUT": "The server is taking too long to respond. Please try again shortly.",
+    "NETWORK": "Please check your network connection.",
+    "UNKNOWN": "An unknown error occurred.",
+    "POPUP_BLOCKED": "The popup was blocked. Please check your browser settings.",
+    "OAUTH_FAILED": "OAuth sign-in failed.",
+    "OAUTH_WINDOW_CLOSED": "The OAuth window was closed.",
+    "GENERIC_FALLBACK": "Something went wrong. Please try again shortly."
+  },
+  "events": {
+    "shipmentTracking": "{{mbl}} is now being tracked.",
+    "shipmentFailed": "Tracking failed for {{mbl}}."
+  },
+  "time": {
+    "justNow": "just now",
+    "minutesAgo": "{{count}} min ago",
+    "hoursAgo": "{{count}} hr ago",
+    "daysAgo": "{{count}}d ago",
+    "weeksAgo": "{{count}}w ago",
+    "monthsAgo": "{{count}} mo ago",
+    "yearsAgo": "{{count}}y ago"
+  },
+  "oauth": {
+    "processing": "Processing authentication…"
+  },
+  "comingSoon": {
+    "notify": "Notify me on launch",
+    "outsideApp": "Please select a team before opening this page.",
+    "pageTitles": {
+      "oceanContainers": "Ocean Containers",
+      "oceanVessels": "Ocean Vessels",
+      "oceanSchedules": "Ocean Schedules",
+      "terminalContainers": "Terminal Containers",
+      "terminalAppointments": "Terminal Appointments",
+      "airShipments": "Air Shipments",
+      "airSchedules": "Air Schedules",
+      "airTrack": "Air Track",
+      "railShipments": "Rail Shipments",
+      "railTrack": "Rail Track",
+      "developerWebhooks": "Developer Webhooks",
+      "projects": "Projects",
+      "mobile": "Mobile app"
+    },
+    "pageDescriptions": {
+      "oceanContainers": "Manage individual container journeys with full event timelines.",
+      "oceanVessels": "Monitor vessel schedules, port calls, and arrival forecasts.",
+      "oceanSchedules": "Browse sailing schedules across carriers in one view.",
+      "terminalContainers": "Track containers inside the terminal by gate-in/out status.",
+      "terminalAppointments": "Book and manage terminal appointments directly.",
+      "airShipments": "Track AWB movements with airline APIs.",
+      "airSchedules": "View flight schedules and cargo capacity.",
+      "airTrack": "Start tracking air cargo by AWB (Air Waybill). Once ready, Air will get the same experience as Ocean Track.",
+      "railShipments": "Track rail carrier shipments and origin/destination yards.",
+      "railTrack": "Start tracking rail cargo by North American Class I Waybill numbers. Once ready, Rail will get the same experience as Ocean Track.",
+      "developerWebhooks": "Forward shipment events to your own infrastructure.",
+      "projects": "Organise shipments and work items by project with shared context and filters.",
+      "mobile": "iOS and Android apps covering the essentials on the go."
+    },
+    "eta": "Launching 2026 Q2"
+  },
+  "team": {
+    "untitledTeam": "Team #{{id}}",
+    "newTeamOrSwitch": "New team or switch",
+    "newTeamNamePlaceholder": "New team name",
+    "createTeam": "Create team",
+    "createTeamSuccess": "Team created."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "description": "Shipment activity and alerts at a glance.",
+    "greeting": "Hello, {{name}}",
+    "subtitle": "Here's your team's shipment status today.",
+    "kpi": {
+      "total": "Total shipments",
+      "tracking": "Tracking",
+      "arrivingSoon": "Arriving soon (within 3 days)",
+      "issues": "Issues",
+      "awaitingHint": "{{count}} awaiting"
+    },
+    "recent": {
+      "title": "Recently updated shipments",
+      "viewAll": "View all →",
+      "emptyTitle": "No shipments tracked yet",
+      "emptyHint": "Enter an MBL or container number to start tracking.",
+      "firstButton": "Register first MBL"
+    },
+    "carrierPending": "Carrier pending",
+    "status": {
+      "pending": "Pending",
+      "tracking": "Tracking",
+      "awaiting_manifest": "Awaiting Manifest",
+      "failed": "Failed",
+      "stopped": "Stopped",
+      "cancelled": "Cancelled"
+    }
+  },
+  "apiKeysTab": {
+    "overview": "API Overview",
+    "howToTitle": "How to set API",
+    "howToDescription": "Use images to enhance your post, improve its flow, add humor and explain complex topics.",
+    "getStarted": "Get Started",
+    "devToolsTitle": "Developer Tools",
+    "devToolsDescription": "Plan your blog post by choosing a topic, creating an outline conduct research, and checking facts.",
+    "createRule": "Create Rule",
+    "sessions": "Sign in Sessions",
+    "hour": "1 hour",
+    "sessionsColumns": {
+      "location": "Location",
+      "device": "Device",
+      "ip": "IP Address",
+      "time": "Time",
+      "status": "Status"
+    },
+    "apiKeysTitle": "API Keys",
+    "apiKeysDescription": "Issue and manage the keys external systems use to access the OMNIQ API.",
+    "newKey": "New API key",
+    "empty": "No API keys issued yet",
+    "emptyHint": "Click the button above to issue your first key.",
+    "columns": {
+      "name": "Name",
+      "key": "Key",
+      "lastUsed": "Last used",
+      "expires": "Expires",
+      "status": "Status"
+    },
+    "never": "No expiry",
+    "expiredAt": "Expired ({{ago}})",
+    "neverUsed": "Never used",
+    "revokeButton": "Revoke",
+    "revokeSuccess": "API key revoked.",
+    "revokeConfirmTitle": "Revoke '{{name}}'?",
+    "revokeConfirmDescription": "Revoked keys can no longer access the API. This is irreversible."
+  }
+}

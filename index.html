@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/icons/omniq-logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!--
+      Resource hints. Vite substitutes `%VITE_API_URL%` with the build-time
+      value from .env so the browser can start DNS / TCP / TLS toward the
+      API origin in parallel with JS parsing. Shaves ~200-500ms off the
+      first authenticated request on cold loads.
+
+      Google Fonts is loaded by index.css (`@import fonts.googleapis.com`)
+      — preconnecting both fonts.googleapis.com (CSS) and fonts.gstatic.com
+      (WOFF2 files) prevents the usual two-roundtrip font stall. The gstatic
+      preconnect needs `crossorigin` because font files are fetched with
+      CORS; the googleapis one does not.
+    -->
+    <link rel="preconnect" href="%VITE_API_URL%" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!--
+      Google Fonts stylesheet. Moved here from an `@import` inside
+      index.css so the browser can fetch the font CSS in parallel with the
+      rest of the stylesheet instead of serializing it. `display=swap` in
+      the URL tells the font provider to fall back to system fonts while
+      webfonts stream, preventing the invisible-text flash.
+    -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap"
+    />
+
+    <title>OMNIQ AI</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <div id="modal-root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

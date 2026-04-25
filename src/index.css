@@ -1,0 +1,373 @@
+/* Fonts are loaded via <link rel="stylesheet"> in index.html instead of a
+ * CSS @import here. @import chains the Google Fonts CSS request behind
+ * our own stylesheet (serialized download), while a <link> tag lets the
+ * browser parallelize it and pair with the existing preconnect hints.
+ * display=swap on the URL keeps text paintable with the system fallback
+ * until the webfont binary arrives.
+ */
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+    --font-heading: 'Instrument Serif', serif;
+    --font-sans: 'Inter', sans-serif;
+
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar);
+    --color-chart-5: var(--chart-5);
+    --color-chart-4: var(--chart-4);
+    --color-chart-3: var(--chart-3);
+    --color-chart-2: var(--chart-2);
+    --color-chart-1: var(--chart-1);
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    --color-success: var(--success);
+    --color-danger: var(--danger);
+
+    --color-snow-card-blue: var(--snow-card-blue);
+    --color-snow-card-purple: var(--snow-card-purple);
+    --color-snow-surface: var(--snow-surface);
+    --color-snow-chart-teal: var(--snow-chart-teal);
+    --color-snow-chart-blue: var(--snow-chart-blue);
+
+    --color-resend-bg: #0A0A0A;
+    --color-resend-card: #141414;
+    --color-resend-border: #1F1F1F;
+    --color-resend-green: #00DC82;
+    --color-resend-text: #EDEDED;
+    --color-resend-muted: #A1A1A1;
+    --color-resend-dim: #666666;
+    --color-resend-orange: #FF6B2C;
+    --color-resend-btn: #EDEDED;
+
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+    --background: #ffffff;
+    --foreground: #000000;
+    --card: #ffffff;
+    --card-foreground: #000000;
+    --popover: #ffffff;
+    --popover-foreground: #000000;
+    --primary: #000000;
+    --primary-foreground: #ffffff;
+    --secondary: #f9f9fa;
+    --secondary-foreground: #000000;
+    --muted: #f9f9fa;
+    --muted-foreground: rgba(0, 0, 0, 0.40);
+    --accent: #f9f9fa;
+    --accent-foreground: #000000;
+    --destructive: #ef4444;
+    --border: rgba(0, 0, 0, 0.10);
+    --input: rgba(0, 0, 0, 0.10);
+    --ring: rgba(0, 0, 0, 0.20);
+    --success: #22c55e;
+    --danger: #ef4444;
+    --chart-1: #6be6d3;
+    --chart-2: #7dbbff;
+    --chart-3: #a78bfa;
+    --chart-4: #000000;
+    --chart-5: #e5e7eb;
+    --radius: 0.75rem;
+    --sidebar: #ffffff;
+    --sidebar-foreground: #000000;
+    --sidebar-primary: #000000;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #f9f9fa;
+    --sidebar-accent-foreground: #000000;
+    --sidebar-border: rgba(0, 0, 0, 0.10);
+    --sidebar-ring: rgba(0, 0, 0, 0.20);
+
+    --snow-card-blue: #e6f1fd;
+    --snow-card-purple: #edeefc;
+    --snow-surface: #f9f9fa;
+    --snow-chart-teal: #6be6d3;
+    --snow-chart-blue: #7dbbff;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="switch"]:not([aria-disabled="true"]),
+  [role="checkbox"]:not([aria-disabled="true"]),
+  [role="radio"]:not([aria-disabled="true"]),
+  [role="menuitem"]:not([aria-disabled="true"]),
+  [role="option"]:not([aria-disabled="true"]),
+  [role="tab"]:not([aria-disabled="true"]),
+  summary,
+  label[for],
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled),
+  input[type="file"]:not(:disabled),
+  select:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+/* Hides the native scrollbar so an overlay scrollbar component can draw
+ * a custom indicator on top of the content without reserving any gutter
+ * width. See OverlayScroll component for the indicator itself. */
+@utility scrollbar-hidden {
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none; /* Chrome / Safari / Edge */
+}
+
+@utility heading-lg {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 32px;
+  color: var(--foreground);
+}
+
+@utility heading-md {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+@utility heading-sm {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+@utility text-body {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+@utility text-caption {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+}
+
+@utility text-caption-medium {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+@utility text-label {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  text-transform: uppercase;
+}
+
+/* COBE globe overlay label variants.
+ * Positioning (top/left with anchor(), opacity via --cobe-visible-*) is applied
+ * inline by the Globe component; these classes only provide visual styling.
+ * Gracefully degrades on browsers without CSS Anchor Positioning: labels stay
+ * at 0,0 with 0 opacity and never become visible. */
+
+/* Small white pill (city / airport codes). Sits above its anchor. */
+.globe-pill {
+  margin-top: -6px;
+  padding: 2px 6px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 3px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10px;
+  line-height: 1.2;
+  color: #1a1a1a;
+  white-space: nowrap;
+}
+
+/* Black pill (req/s, country flow, etc.). */
+.globe-pill-dark {
+  margin-bottom: -4px;
+  padding: 3px 7px;
+  background: #0a0a0a;
+  border-radius: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+/* Flight plane emoji — sticker outline + drop shadow, matching cobe's Flights showcase. */
+.globe-flight-plane {
+  margin-bottom: -4px;
+  font-size: 1.2rem;
+  line-height: 1;
+  filter: url(#cobe-sticker-outline) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+/* Default (cobe v2) showcase — pill + triangle pointer placed above a marker.
+ * Colors read from --globe-ink (accent) and --globe-bg (surface). Consumer can
+ * override both on the Globe wrapper to retheme. Defaults match cobe v2:
+ * ink ≈ lab(36 55.64 -107.68) ≈ #2A41DB, bg = #FFFFFF. */
+.globe-default-label {
+  margin-bottom: 8px;
+  padding: 0.15rem 0.45rem;
+  background: var(--globe-ink, #2a41db);
+  color: var(--globe-bg, #ffffff);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-radius: 2px;
+  filter: blur(var(--cobe-blur, 0));
+}
+
+.globe-default-label::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translate3d(-50%, -1px, 0);
+  border: 5px solid transparent;
+  border-top-color: var(--globe-ink, #2a41db);
+}
+
+/* Default arc label — inverse (bg as background, ink as text). */
+.globe-default-arc {
+  margin-bottom: 8px;
+  padding: 0.15rem 0.35rem;
+  background: var(--globe-bg, #ffffff);
+  color: var(--globe-ink, #2a41db);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-radius: 2px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  filter: blur(var(--cobe-blur, 0));
+}
+
+.globe-default-arc::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translate3d(-50%, -1px, 0);
+  border: 5px solid transparent;
+  border-top-color: var(--globe-bg, #ffffff);
+}
+
+/* Centered brand mark (e.g. "COBE") — sits on top of the canvas, fades in.
+ * Uses --globe-ink-dim so it can be darker than pills (those need to pop on
+ * the page background; this text sits on the light globe surface). */
+.globe-center-overlay {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  text-align: center;
+  color: var(--globe-ink-dim, var(--globe-ink, #2a41db));
+  pointer-events: none;
+  user-select: none;
+  z-index: 2;
+  animation: globe-fade-in 1.5s ease 0.2s both;
+}
+
+/* Orbital ring with text rotating around the globe on a tilted plane. */
+.globe-orbit-ring {
+  position: absolute;
+  inset: -2%;
+  pointer-events: none;
+  z-index: 1;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.1) 40%,
+    black 48%,
+    black 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.1) 40%,
+    black 48%,
+    black 100%
+  );
+}
+
+.globe-orbit-svg {
+  width: 100%;
+  height: 100%;
+  -webkit-transform: rotateX(62deg);
+  transform: rotateX(62deg);
+  animation:
+    globe-orbit-spin 30s linear infinite,
+    globe-fade-in 1.7s ease 0.5s both;
+}
+
+.globe-orbit-text {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 6px;
+  fill: var(--globe-ink-dim, var(--globe-ink, #2a41db));
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+@keyframes globe-orbit-spin {
+  from {
+    transform: rotateX(62deg) rotateZ(0deg);
+  }
+  to {
+    transform: rotateX(62deg) rotateZ(-360deg);
+  }
+}
+
+@keyframes globe-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

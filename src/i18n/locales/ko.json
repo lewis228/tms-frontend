@@ -1,0 +1,1231 @@
+{
+  "common": {
+    "save": "저장",
+    "saveChanges": "변경사항 저장",
+    "cancel": "취소",
+    "confirm": "확인",
+    "delete": "삭제",
+    "edit": "편집",
+    "create": "생성",
+    "add": "추가",
+    "remove": "제거",
+    "search": "검색",
+    "signOut": "로그아웃",
+    "soon": "예정",
+    "close": "닫기",
+    "loading": "불러오는 중…",
+    "saving": "저장 중…",
+    "retry": "다시 시도",
+    "required": "*",
+    "optional": "(선택)",
+    "yes": "예",
+    "no": "아니오",
+    "copy": "복사",
+    "copied": "복사됨",
+    "select": "선택",
+    "back": "뒤로",
+    "next": "다음",
+    "continue": "계속",
+    "noChanges": "변경사항이 없습니다.",
+    "none": "—",
+    "grid": {
+      "columnSettings": "컬럼 설정",
+      "toggleColumn": "{{label}} 컬럼 표시/숨김",
+      "dragHandle": "드래그해서 순서 변경"
+    }
+  },
+  "nav": {
+    "overview": "개요",
+    "dashboard": "대시보드",
+    "track": "트래킹",
+    "projects": "프로젝트",
+    "reports": "리포트",
+    "ocean": "해상",
+    "terminal": "터미널",
+    "air": "항공",
+    "rail": "철도",
+    "shipments": "선적",
+    "containers": "컨테이너",
+    "vessels": "선박",
+    "schedules": "스케줄",
+    "appointments": "예약",
+    "developer": "개발자",
+    "apiKeys": "API 키",
+    "usage": "사용량",
+    "documentation": "문서",
+    "webhooks": "웹훅",
+    "settings": "설정",
+    "team": "팀",
+    "members": "멤버",
+    "theme": "테마",
+    "notifications": "알림",
+    "privacy": "개인정보",
+    "tags": "태그",
+    "payment": "결제",
+    "plugins": "플러그인",
+    "favorites": "즐겨찾기",
+    "removeFavorite": "{{title}} 즐겨찾기에서 제거"
+  },
+  "sidebar": {
+    "demoMode": "데모 모드",
+    "demoShort": "데모",
+    "authDisabled": "인증 비활성화"
+  },
+  "header": {
+    "toggleSidebar": "사이드바 토글",
+    "favoriteThisPage": "이 페이지 즐겨찾기",
+    "unfavoriteThisPage": "즐겨찾기 해제",
+    "searchPlaceholder": "검색",
+    "theme": "테마",
+    "rightPanel": "오른쪽 패널"
+  },
+  "announcements": {
+    "title": "알림",
+    "empty": "새 공지사항이 없습니다",
+    "viewAll": "모두 보기",
+    "items": {
+      "mobileTab": "모바일 제품 탭이 새로워졌습니다",
+      "fileAttachment": "제품 파일, 사진 첨부 기능 추가",
+      "customDocs": "발주서, 거래명세서 커스텀 기능",
+      "labelPrint": "데스크톱 앱 라벨 인쇄 기능 업데이트",
+      "labelDesign": "라벨 커스텀 디자인 기능 추가",
+      "customReport": "커스텀 리포트 기능 추가 (Beta)",
+      "priceTemplate": "가격 템플릿 기능 추가"
+    }
+  },
+  "rightPanel": {
+    "notifications": "알림",
+    "activities": "활동",
+    "contacts": "연락처"
+  },
+  "chat": {
+    "searchPlaceholder": "검색",
+    "newChat": "새 대화",
+    "settings": "설정",
+    "typeMessage": "메시지 입력",
+    "send": "전송",
+    "call": "전화",
+    "videoCall": "화상 통화",
+    "more": "더보기",
+    "reply": "답장",
+    "reaction": "이모지 리액션",
+    "emptyState": "대화를 선택하세요",
+    "unreadBadge": "읽지 않은 메시지 {{count}}개"
+  },
+  "profile": {
+    "title": "프로필",
+    "signOut": "로그아웃",
+    "accountSecurity": "계정 보안",
+    "support": "지원",
+    "name": "이름",
+    "nameDescription": "프로필과 팀원 목록에 표시되는 이름입니다.",
+    "email": "이메일",
+    "password": "비밀번호",
+    "passwordDescription": "계정에 로그인할 때 사용할 영구 비밀번호를 설정하세요.",
+    "twoStep": "2단계 인증",
+    "twoStepDescription": "로그인 시 보안을 한 단계 더 강화합니다.",
+    "twoStepOff": "사용 안 함",
+    "eventNotifications": "이벤트 알림",
+    "eventNotificationsDescription": "Shipment 이벤트가 발생할 때 이메일·푸시로 알림을 받습니다. 언제든 해제할 수 있습니다.",
+    "logoutAllDevices": "모든 기기에서 로그아웃",
+    "logoutAllDevicesDescription": "이 기기를 제외한 다른 모든 활성 세션에서 로그아웃합니다.",
+    "deleteAccount": "계정 삭제",
+    "deleteAccountDescription": "계정을 영구 삭제하고 모든 기기에서 접근을 차단합니다.",
+    "language": "언어",
+    "languageDescription": "UI 언어를 선택합니다. 기본은 브라우저 언어를 따릅니다.",
+    "lang": {
+      "system": "브라우저 언어 설정",
+      "ko": "한국어",
+      "en": "English"
+    },
+    "signOutConfirmTitle": "로그아웃 하시겠습니까?",
+    "signOutConfirmDescription": "다시 로그인하려면 이메일과 비밀번호가 필요합니다.",
+    "changeName": {
+      "title": "이름 변경",
+      "firstName": "이름",
+      "lastName": "성",
+      "toastStub": "이름 변경은 곧 연동됩니다."
+    },
+    "changePassword": {
+      "title": "비밀번호 변경",
+      "current": "현재 비밀번호",
+      "new": "새 비밀번호",
+      "repeat": "비밀번호 확인",
+      "mismatch": "비밀번호가 일치하지 않습니다.",
+      "toastStub": "비밀번호 변경은 곧 연동됩니다."
+    },
+    "logoutAll": {
+      "title": "모든 기기에서 로그아웃",
+      "body": "이 기기를 제외한 다른 기기의 모든 세션에서 로그아웃됩니다.",
+      "success": "모든 기기에서 로그아웃되었습니다."
+    },
+    "delete": {
+      "title": "계정 삭제",
+      "warning": "계정이 영구적으로 삭제됩니다",
+      "warningDetail": "복구할 수 없으니 신중히 진행해주세요.",
+      "emailPrompt": "확인을 위해 현재 이메일 주소를 입력해주세요.",
+      "action": "삭제",
+      "confirmTitle": "계정을 정말 삭제할까요?",
+      "confirmDescription": "계정과 모든 관련 데이터가 영구적으로 삭제되며, 복구할 수 없습니다.",
+      "received": "계정 삭제 요청이 접수되었습니다."
+    }
+  },
+  "modal": {
+    "memberInvite": {
+      "title": "팀 멤버 추가",
+      "note": "추가할 사용자의 이메일을 입력해주세요. 이미 OMNIQ에 가입된 계정만 추가할 수 있습니다. 이메일 초대장 전송 기능은 곧 지원될 예정입니다.",
+      "emailLabel": "이메일",
+      "submit": "멤버 추가",
+      "submitting": "추가 중…",
+      "successToast": "멤버가 추가되었습니다."
+    },
+    "apiKeyCreate": {
+      "title": "새 API 키 생성",
+      "nameLabel": "이름",
+      "namePlaceholder": "예: Production, CI/CD, Mobile App",
+      "descriptionLabel": "설명",
+      "descriptionPlaceholder": "이 키의 사용 목적을 적어두면 나중에 관리가 쉬워집니다.",
+      "expiry": "유효기간",
+      "days7": "7일",
+      "days30": "30일",
+      "days90": "90일",
+      "year1": "1년",
+      "never": "무기한",
+      "expiryHint": "만료된 키는 자동으로 비활성화됩니다. 무기한을 선택하면 직접 폐기할 때까지 유효합니다.",
+      "submit": "API 키 생성",
+      "submitting": "생성 중…",
+      "draftTitle": "작성 중이던 내용이 있습니다",
+      "draftDescription": "이 화면에서 나가면 작성중이던 내용이 사라집니다."
+    },
+    "apiKeyCreated": {
+      "title": "API 키가 생성되었습니다",
+      "copyNow": "지금 복사하세요",
+      "copyNowDetail": "이 키는 이 화면에서만 전체 값을 볼 수 있습니다. 창을 닫으면 다시 확인할 수 없으니 비밀번호 관리자 등에 저장해주세요.",
+      "copyButton": "복사",
+      "copiedButton": "복사됨",
+      "saved": "저장했습니다",
+      "clipboardSuccess": "클립보드에 복사되었습니다.",
+      "clipboardDenied": "클립보드에 접근할 수 없습니다. 직접 복사해주세요."
+    },
+    "oceanShipmentOrganize": {
+      "title": "Shipment 편집"
+    }
+  },
+  "settings": {
+    "tags": {
+      "title": "태그",
+      "description": "태그를 생성해 Shipment에 부여하고, 필터·리포팅에 활용하세요.",
+      "createButton": "태그 생성",
+      "searchPlaceholder": "태그 이름 검색",
+      "sort": {
+        "nameAsc": "이름순 (A–Z)",
+        "nameDesc": "이름순 (Z–A)",
+        "usedDesc": "많이 사용",
+        "recentDesc": "최근 사용"
+      },
+      "tagsCount": "태그 {{count}}개",
+      "tagsCountFiltered": "{{filtered}} / {{total}}",
+      "newTagPlaceholder": "새 태그 이름 (예: priority, perishable)",
+      "duplicate": "이미 존재하는 태그",
+      "addTag": "추가",
+      "cancel": "취소",
+      "columnName": "이름",
+      "columnUsedIn": "사용 수",
+      "columnFirstAdded": "최초 생성",
+      "columnLastUsed": "최근 사용",
+      "columnActions": "액션",
+      "usedInShipments": "shipment {{count}}건",
+      "editAria": "{{name}} 편집",
+      "deleteAria": "{{name}} 삭제",
+      "emptyTitle": "아직 생성된 태그가 없습니다.",
+      "emptyTitleFiltered": "검색 결과가 없습니다.",
+      "emptyHint": "아래 '+ 태그 생성'을 눌러 첫 태그를 만들어보세요.",
+      "emptyHintFiltered": "다른 검색어를 입력해보세요.",
+      "heroEmptyTitle": "아직 생성된 태그가 없습니다",
+      "heroEmptyDescription": "태그를 만들어 Shipment에 부여하면 나중에 필터링·리포팅에 활용할 수 있어요.",
+      "footerNote": "태그는 Shipment 상세 화면에서 부여할 수 있습니다. 서버 연동은 다음 단계에 공개됩니다."
+    },
+    "privacy": {
+      "title": "개인정보",
+      "description": "쿠키와 데이터 보관 정책을 관리합니다.",
+      "cookie": {
+        "title": "쿠키 설정",
+        "description": "필수·기능·분석·광고 범주별로 쿠키 동의를 관리합니다.",
+        "customize": "커스터마이즈",
+        "strictTitle": "필수",
+        "strictDescription": "사이트 작동에 필수입니다. 항상 활성화됩니다.",
+        "functionalTitle": "기능",
+        "functionalDescription": "환경설정을 기억하고 기능을 향상시킵니다.",
+        "analyticsTitle": "분석",
+        "analyticsDescription": "사용 패턴을 측정해 사용 경험을 개선합니다.",
+        "marketingTitle": "마케팅",
+        "marketingDescription": "타게팅 광고에 사용됩니다."
+      },
+      "history": {
+        "title": "히스토리 보관",
+        "description": "활동 히스토리 보관 기간. 기본은 30일이며 최대 365일까지 늘릴 수 있습니다.",
+        "value": "30일"
+      },
+      "export": {
+        "title": "데이터 내보내기",
+        "description": "팀의 Shipment 데이터와 로그를 CSV/JSON으로 내보냅니다.",
+        "value": "요청"
+      },
+      "deleteWorkspace": {
+        "title": "워크스페이스 데이터 삭제",
+        "description": "팀의 모든 Shipment, Event, Scrape 로그를 완전 삭제합니다. 복구 불가.",
+        "value": "요청"
+      },
+      "footerNote": "각 항목의 상세 설정 화면은 다음 업데이트에서 순차 공개됩니다."
+    },
+    "payment": {
+      "title": "결제",
+      "description": "결제 수단과 Payout 인보이스 정보를 관리합니다.",
+      "addMethod": "결제 수단 추가",
+      "defaultBadge": "기본",
+      "payoutTitle": "Payout 인보이스 정보",
+      "payoutHint": "선택사항. 여기에 입력한 상호, 주소, 사업자 번호 등은 Payout 인보이스 생성 시 포함됩니다.",
+      "payoutPlaceholder": "상호, 주소, 사업자 번호 등을 입력하세요.",
+      "footerNote": "결제 수단 추가 / 삭제와 Payout 처리는 곧 연동됩니다."
+    },
+    "notifications": {
+      "title": "알림",
+      "description": "이벤트 알림 수신 방식과 채널을 관리합니다.",
+      "sectionEmail": "이메일",
+      "sectionInApp": "인앱",
+      "sectionExternal": "외부 채널",
+      "eventEmailLabel": "이벤트 알림 이메일",
+      "eventEmailDescription": "ETA 변경·도착·Customs Hold 등이 발생하면 즉시 이메일로 받습니다.",
+      "digestLabel": "Daily Digest",
+      "digestDescription": "하루 동안 변경된 shipment를 요약해 아침에 이메일로 받아봅니다.",
+      "pushLabel": "브라우저 푸시",
+      "pushDescription": "탭이 열려 있지 않아도 중요한 이벤트를 데스크탑 알림으로 받습니다.",
+      "slackLabel": "Slack",
+      "slackDescription": "팀 채널에 Shipment 이벤트를 실시간으로 전달합니다.",
+      "slackValue": "연결 안 됨",
+      "webhookLabel": "Webhook",
+      "webhookDescription": "고객 서버로 이벤트를 POST 합니다. 재시도와 서명 검증 포함.",
+      "webhookValue": "설정 안 됨"
+    },
+    "members": {
+      "title": "멤버",
+      "description": "팀 멤버를 추가하고 역할을 관리합니다.",
+      "addButton": "멤버 추가",
+      "selfBadge": "나",
+      "removeButton": "제거",
+      "selfCannotRemove": "본인은 직접 제거할 수 없습니다",
+      "removeSuccess": "멤버가 팀에서 제거되었습니다.",
+      "emptyTitle": "팀에 멤버가 없습니다",
+      "emptyDescription": "함께 일할 팀원을 이메일로 추가해보세요.",
+      "emptyCta": "첫 멤버 추가하기",
+      "removeConfirmTitle": "{{who}}님을 팀에서 제거할까요?",
+      "removeConfirmDescription": "이 사용자는 더 이상 팀의 데이터에 접근할 수 없습니다. 다시 추가할 수 있습니다.",
+      "roles": {
+        "owner": "오너",
+        "admin": "관리자",
+        "user": "멤버"
+      }
+    },
+    "theme": {
+      "title": "테마",
+      "description": "테마, 본문 글자 크기, 강조 색상을 개인화합니다.",
+      "modeLabel": "테마 모드",
+      "fontSizeLabel": "글자 크기",
+      "accentLabel": "강조 색상",
+      "fontSizeAria": "글자 크기 {{index}}",
+      "accentAria": "강조 색상 {{color}}",
+      "mode": {
+        "system": "시스템",
+        "light": "라이트",
+        "dark": "다크"
+      },
+      "footerNote": "선택은 이 브라우저 세션에만 적용됩니다. 계정 단위 저장과 실제 UI 다크 모드 전환은 다음 업데이트에서 이어집니다."
+    },
+    "plugins": {
+      "title": "플러그인",
+      "active": "{{active}}/{{total}} 활성",
+      "description": "외부 서비스 연동을 관리합니다. 활성화한 플러그인만 Shipment 이벤트를 전달받습니다.",
+      "moreOptions": "더보기",
+      "footerNote": "목록은 연동 예정 플러그인이며, 실제 인증·콜백 플로우는 순차적으로 오픈됩니다.",
+      "items": {
+        "slack": {
+          "name": "Slack",
+          "description": "팀 채널에 Shipment 이벤트를 실시간 전송합니다. ETA 변경, 도착, Customs Hold 알림."
+        },
+        "googleSheets": {
+          "name": "Google Sheets",
+          "description": "Shipment 데이터를 Google Sheets로 지속 동기화합니다."
+        },
+        "figma": {
+          "name": "Figma",
+          "description": "화물 현황 대시보드를 Figma 디자인 파일에 임베드해 공유합니다."
+        },
+        "zapier": {
+          "name": "Zapier",
+          "description": "6000+ 앱과 연결해 Shipment 이벤트 기반 워크플로를 자동화합니다."
+        },
+        "webhooks": {
+          "name": "Webhooks",
+          "description": "고객 서버로 이벤트를 직접 POST 하는 커스텀 통합."
+        }
+      }
+    },
+    "team": {
+      "title": "팀",
+      "description": "팀의 기본 정보, 회사 정보, 표시 설정을 관리합니다.",
+      "usage": {
+        "title": "사용량",
+        "description": "현재 {{plan}} 플랜 기준 이번 달 사용량입니다.",
+        "containerQueries": "컨테이너 조회",
+        "members": "멤버",
+        "apiKeys": "API 키",
+        "suffix": {
+          "times": "회",
+          "people": "명",
+          "items": "개"
+        }
+      },
+      "info": {
+        "title": "팀 정보",
+        "description": "팀 이름, 메모, 시간대를 관리합니다. 날짜/시간은 모두 UTC로 저장되고 여기서 지정한 시간대로만 표시됩니다.",
+        "nameLabel": "팀 이름",
+        "namePlaceholder": "팀 이름",
+        "nameRequired": "팀 이름은 비워둘 수 없습니다.",
+        "timezoneLabel": "시간대",
+        "memoLabel": "팀 메모",
+        "memoPlaceholder": "팀 내부용 메모 (선택)",
+        "saveSuccess": "팀 정보가 저장되었습니다."
+      },
+      "timezone": {
+        "searchPlaceholder": "시간대 검색",
+        "noResults": "일치하는 시간대가 없습니다."
+      },
+      "company": {
+        "title": "회사 정보",
+        "description": "인보이스 · 세관 서류에 표시되는 법적 회사 정보입니다.",
+        "businessName": "상호 (법인명)",
+        "registrationNumber": "사업자 등록번호",
+        "representative": "대표자명",
+        "phone": "연락 전화",
+        "email": "연락 이메일",
+        "emailHint": "청구서, 사용량 알림 등 팀 공용 이메일로 사용됩니다.",
+        "address": "주소",
+        "addressPlaceholder": "도로명 주소",
+        "saveSuccess": "회사 정보가 저장되었습니다."
+      },
+      "display": {
+        "title": "표시 설정",
+        "description": "금액·날짜·단위가 앱 전반에 어떻게 표시될지 결정합니다. 설정 즉시 모든 화면에 적용됩니다.",
+        "currencyLabel": "통화",
+        "currencyHint": "예: {{example}}",
+        "decimalLabel": "소수점 자릿수",
+        "decimalHint": "금액·운임에 적용됩니다.",
+        "dateFormatLabel": "날짜 형식",
+        "dateFormatHint": "예: {{example}}",
+        "timeFormatLabel": "시간 형식",
+        "timeFormat24": "24시",
+        "timeFormat12": "12시 (AM/PM)",
+        "unitsLabel": "단위계",
+        "unitsHint": "중량은 kg ↔ lb, 부피는 m³ ↔ ft³ 으로 환산됩니다.",
+        "metric": "Metric (kg / m³)",
+        "imperial": "Imperial (lb / ft³)",
+        "saveSuccess": "표시 설정이 저장되었습니다."
+      },
+      "danger": {
+        "title": "데이터 관리",
+        "description": "팀 나가기와 팀 삭제는 복구할 수 없습니다. 신중히 진행해주세요.",
+        "leaveTitle": "팀에서 나가기",
+        "leaveDescription": "이 팀의 데이터에서 즉시 로그아웃됩니다. 관리자 초대로 재합류할 수 있습니다.",
+        "leaveAction": "팀 나가기",
+        "leaveConfirmTitle": "팀에서 나가시겠습니까?",
+        "leaveConfirmDescription": "관리자의 재초대를 받으면 다시 합류할 수 있지만, 이 팀의 데이터에는 즉시 접근할 수 없게 됩니다.",
+        "leaveSuccess": "팀에서 나갔습니다.",
+        "deleteTitle": "팀 삭제",
+        "deleteDescription": "팀의 모든 데이터(Shipment, Event, API Key, 멤버)가 영구 삭제됩니다.",
+        "deleteAction": "팀 삭제",
+        "deleteConfirmTitle": "정말 \"{{name}}\" 팀을 삭제할까요?",
+        "deleteConfirmDescription": "팀의 모든 Shipment, Event, API Key, 멤버십이 영구적으로 삭제되며 복구할 수 없습니다.",
+        "deleteSuccess": "팀이 삭제되었습니다."
+      }
+    }
+  },
+  "auth": {
+    "appleButton": "Apple로 계속",
+    "googleButton": "Google로 계속",
+    "orWithEmail": "또는 이메일로",
+    "emailPlaceholder": "이메일",
+    "passwordPlaceholder": "비밀번호",
+    "hidePassword": "비밀번호 숨기기",
+    "showPassword": "비밀번호 표시",
+    "signIn": {
+      "title": "로그인",
+      "subtitle": "Your Social Campaigns",
+      "forgot": "비밀번호를 잊으셨나요?",
+      "submit": "로그인",
+      "notMember": "아직 회원이 아니신가요?",
+      "signUpLink": "회원가입"
+    },
+    "signUp": {
+      "title": "회원가입",
+      "subtitle": "Your Social Campaigns",
+      "passwordHint": "문자·숫자·특수문자를 섞어 8자 이상 사용하세요.",
+      "passwordTooShort": "비밀번호는 8자 이상이어야 합니다.",
+      "passwordMismatch": "비밀번호가 일치하지 않습니다.",
+      "agreeRequired": "약관에 동의해주세요.",
+      "repeatPlaceholder": "비밀번호 확인",
+      "acceptTerms": "약관에 동의합니다",
+      "terms": "약관",
+      "submit": "회원가입",
+      "already": "이미 계정이 있으신가요?",
+      "signInLink": "로그인",
+      "codeSent": "인증 메일이 발송되었습니다."
+    },
+    "forgetPassword": {
+      "title": "비밀번호를 잊으셨나요?",
+      "subtitle": "비밀번호를 재설정하려면 이메일을 입력하세요.",
+      "emailPlaceholder": "이메일 주소를 입력하세요",
+      "submit": "전송",
+      "back": "뒤로",
+      "codeSent": "비밀번호 재설정 인증코드가 발송되었습니다."
+    },
+    "resetPassword": {
+      "title": "새 비밀번호 설정",
+      "codeSentTo": "다음 이메일로 인증코드를 보냈습니다",
+      "sixDigitLabel": "6자리 인증코드",
+      "sixDigitRequired": "6자리 인증코드를 입력해주세요.",
+      "newPassword": "새 비밀번호",
+      "repeatPassword": "비밀번호 확인",
+      "submit": "전송",
+      "remembered": "기억나셨나요?",
+      "signInLink": "로그인",
+      "success": "비밀번호가 변경되었습니다."
+    },
+    "twoStep": {
+      "title": "2단계 인증",
+      "sentTo": "다음 이메일로 인증코드를 보냈습니다",
+      "instruction": "6자리 보안 코드를 입력하세요",
+      "submit": "제출",
+      "sixDigitRequired": "6자리 인증코드를 입력해주세요.",
+      "noCode": "코드를 받지 못하셨나요?",
+      "resend": "재발송",
+      "or": "또는",
+      "callUs": "전화 요청",
+      "success": "회원가입이 완료되었습니다."
+    },
+    "accountType": {
+      "title": "계정 유형 선택",
+      "subtitle": "추가 정보가 필요하면 다음을 확인하세요:",
+      "helpLink": "도움말",
+      "personalTitle": "개인 계정",
+      "personalDescription": "자세한 내용은 도움말을 확인하세요.",
+      "corporateTitle": "기업 계정",
+      "corporateDescription": "여러 사용자를 위한 기업 계정을 생성합니다.",
+      "continue": "계속"
+    },
+    "accountInfo": {
+      "title": "계정 정보",
+      "subtitle": "추가 정보가 필요하면 다음을 확인하세요:",
+      "helpLink": "도움말",
+      "teamSize": "팀 규모 선택",
+      "teamSizeHint": "고객에게는 명세서 설명자의 축약 버전이 표시됩니다.",
+      "teamName": "팀 계정 이름",
+      "planHeading": "계정 플랜 선택",
+      "companyLabel": "기업 계정",
+      "companyDescription": "이미지를 활용해 게시 플로우를 강화합니다.",
+      "developerLabel": "개발자 계정",
+      "developerDescription": "이미지를 활용해 게시 시간을 활용합니다.",
+      "testingLabel": "테스트 계정",
+      "testingDescription": "이미지를 활용해 여정 흐름을 시연합니다.",
+      "previous": "이전",
+      "continue": "계속"
+    }
+  },
+  "pages": {
+    "appHome": {
+      "title": "팀 선택",
+      "noTeams": "아직 소속된 팀이 없습니다. 새 팀을 만들어 시작하세요.",
+      "pickTeam": "들어갈 팀을 선택하세요.",
+      "enterTeam": "들어가기 →",
+      "teamPlaceholder": "팀 이름",
+      "createNewTeam": "새 팀 만들기",
+      "createSubmit": "생성",
+      "createSuccess": "팀이 생성되었습니다.",
+      "untitledTeam": "팀 #{{id}}"
+    },
+    "projects": {
+      "title": "프로젝트",
+      "description": "선적 배치 단위로 상태와 리스크를 한눈에 관리합니다.",
+      "kpi": {
+        "demurrage": "Demurrage 임박",
+        "perDiem": "Per Diem 임박",
+        "arriving": "이번 주 도착"
+      },
+      "status": {
+        "inTransit": "운송 중",
+        "atPort": "항구 도착",
+        "delivered": "배송 완료",
+        "delayed": "지연",
+        "pending": "대기"
+      },
+      "card": {
+        "eta": "ETA",
+        "totalContainers": "컨테이너"
+      }
+    },
+    "reports": {
+      "title": "리포트",
+      "description": "Shipment · 선사 · 목적지 기준 운영 지표를 한눈에 확인합니다.",
+      "overviewTitle": "Overview",
+      "range": {
+        "today": "오늘",
+        "7d": "최근 7일",
+        "30d": "최근 30일",
+        "qtd": "분기 누적",
+        "ytd": "연간 누적"
+      },
+      "kpi": {
+        "activeShipments": "진행 중 Shipment",
+        "onTimeRate": "정시 도착율",
+        "delayedShipments": "지연 Shipment",
+        "demurrageRisk": "체선료 위험"
+      },
+      "series": {
+        "shipmentsVolume": "Shipment 볼륨",
+        "onTimePerformance": "정시율 추이",
+        "avgTransitTime": "평균 운송일수",
+        "costFees": "Demurrage / Per Diem"
+      },
+      "legend": {
+        "thisYear": "올해",
+        "lastYear": "작년"
+      },
+      "unit": {
+        "shipments": "건",
+        "percent": "%",
+        "days": "일",
+        "usd": "USD"
+      },
+      "topCarriers": {
+        "title": "선사별 점유율"
+      },
+      "carrierPerformance": {
+        "title": "선사 정시율"
+      },
+      "destinationShares": {
+        "title": "도착 지역별 분포"
+      },
+      "destination": {
+        "usWest": "미국 서부",
+        "usEast": "미국 동부",
+        "eu": "유럽 (로테르담 등)",
+        "sea": "동남아",
+        "other": "기타"
+      },
+      "exceptions": {
+        "title": "이슈 타임라인 (최근 30일)",
+        "kind": {
+          "delayed": "지연",
+          "etaChanged": "ETA 변경",
+          "alert": "알림 발생",
+          "rollover": "롤오버"
+        },
+        "axis": {
+          "today": "오늘",
+          "30dAgo": "30일 전"
+        }
+      },
+      "dwellTime": {
+        "title": "항구별 체류시간",
+        "unit": "평균 체류일",
+        "valueLabel": "평균 {{days}}일 체류"
+      },
+      "costBreakdown": {
+        "title": "비용 구성",
+        "segments": {
+          "demurrage": "Demurrage",
+          "perDiem": "Per Diem",
+          "other": "기타"
+        }
+      },
+      "delayedRoutes": {
+        "title": "지연율 높은 항로",
+        "subtitle": "지연율 (최근 30일)",
+        "shipments": "{{count}}건",
+        "avgDelay": "평균 {{days}}일 지연"
+      }
+    },
+    "dashboard": {
+      "tabs": {
+        "overview": "Overview",
+        "liveMap": "Live Map",
+        "alerts": "Alerts",
+        "settings": "Settings"
+      },
+      "actions": {
+        "trackMbl": "MBL 등록"
+      },
+      "pulse": {
+        "onTimeRate": "정시 도착율",
+        "activeShipments": "진행 중 Shipment",
+        "nextEta": "가장 빠른 ETA",
+        "apiUsage": "오늘 API 사용량",
+        "members": "팀 멤버",
+        "noEta": "—",
+        "status": {
+          "on-track": "정상",
+          "delayed": "지연 다수",
+          "attention": "주의"
+        }
+      },
+      "water": {
+        "title": "What's on the water?",
+        "kind": {
+          "arrival": "{{mbl}} 이(가) {{location}} 에 도착했습니다",
+          "departure": "{{mbl}} 이(가) {{location}} 에서 출항했습니다",
+          "stop": "{{mbl}} 이(가) {{location}} 에서 정지됨"
+        }
+      },
+      "latest": {
+        "title": "최근 Shipments",
+        "viewAll": "모두 보기",
+        "empty": "아직 등록된 Shipment 가 없습니다.",
+        "unknownCarrier": "미확인 선사",
+        "trackCta": "새 MBL 등록"
+      },
+      "atRisk": {
+        "title": "위험 Shipments",
+        "count": "총 {{count}}건",
+        "col": {
+          "mbl": "MBL",
+          "requester": "담당자",
+          "eta": "ETA",
+          "risk": "기한",
+          "status": "상태"
+        },
+        "overdueDays": "{{count}}일 초과",
+        "daysLeft": "{{count}}일 남음",
+        "level": {
+          "overdue": "기한 초과",
+          "atRisk": "임박",
+          "attention": "주의"
+        }
+      }
+    },
+    "liveMap": {
+      "title": "Live Map",
+      "subtitle": "선박의 실시간 위치를 한눈에 확인합니다.",
+      "panelTitle": "선박 ({{count}}척)",
+      "searchPlaceholder": "선박명, MBL, 선사 검색",
+      "empty": "조건에 맞는 선박이 없습니다.",
+      "filter": {
+        "all": "전체",
+        "underway": "운항 중",
+        "atPort": "항구 정박",
+        "anchored": "묘박",
+        "delayed": "지연"
+      },
+      "legend": {
+        "title": "상태",
+        "underway": "운항 중",
+        "at-port": "항구 정박",
+        "anchored": "묘박",
+        "delayed": "지연"
+      },
+      "popup": {
+        "speed": "속도: {{speed}} kn",
+        "eta": "ETA: {{eta}}"
+      }
+    },
+    "alerts": {
+      "title": "알림",
+      "subtitle": "시간 압박이 있는 추적 이벤트를 한곳에서 봅니다.",
+      "summary": {
+        "critical": "긴급 (안 읽음)",
+        "warning": "경고 (안 읽음)",
+        "info": "정보 (안 읽음)"
+      },
+      "filter": {
+        "all": "전체",
+        "critical": "긴급",
+        "warning": "경고",
+        "info": "정보"
+      },
+      "showUnread": "안 읽음만 ({{count}})",
+      "empty": "현재 알림이 없습니다.",
+      "kind": {
+        "demurrage": "Demurrage",
+        "per-diem": "Per Diem",
+        "delay": "지연",
+        "scrape-failed": "조회 실패",
+        "arrival": "도착",
+        "carrier-change": "선사 업데이트"
+      }
+    },
+    "dashboardSettings": {
+      "title": "대시보드 설정",
+      "subtitle": "알림 임계값, 기본 필터, 채널을 조정합니다.",
+      "save": "저장",
+      "saved": "설정이 저장되었습니다.",
+      "alertThresholds": {
+        "title": "알림 임계값",
+        "description": "기한 도래 전 미리 알림을 받습니다.",
+        "daysUnit": "일",
+        "demurrage": {
+          "label": "Demurrage 사전 알림",
+          "hint": "Demurrage 가 X 일 후 시작될 때 알립니다."
+        },
+        "perDiem": {
+          "label": "Per Diem 사전 알림",
+          "hint": "Per Diem 이 X 일 후 시작될 때 알립니다."
+        }
+      },
+      "defaultRange": {
+        "title": "기본 기간 필터",
+        "description": "대시보드 위젯의 초기 날짜 범위입니다.",
+        "options": {
+          "7d": "최근 7일",
+          "30d": "최근 30일",
+          "90d": "최근 90일",
+          "all": "전체 기간"
+        }
+      },
+      "channels": {
+        "title": "알림 채널",
+        "description": "이 팀의 알림을 받을 경로입니다.",
+        "email": {
+          "label": "이메일",
+          "hint": "등록된 알림 이메일로 다이제스트 발송."
+        },
+        "slack": {
+          "label": "Slack",
+          "hint": "Slack 채널로 긴급 알림 전송."
+        },
+        "inApp": {
+          "label": "앱 내",
+          "hint": "헤더 종 아이콘 팝오버에 알림 표시."
+        }
+      },
+      "density": {
+        "title": "표시 밀도",
+        "description": "Compact 모드는 패딩을 줄여 더 많이 보여줍니다.",
+        "options": {
+          "comfortable": "Comfortable",
+          "compact": "Compact"
+        }
+      }
+    },
+    "ocean": {
+      "list": {
+        "title": "선적",
+        "description": "팀에 등록된 모든 Ocean MBL을 관리합니다.",
+        "trackButton": "트래킹",
+        "viewAll": "전체",
+        "viewOnShip": "선박 위",
+        "viewArrived": "도착",
+        "viewStoppedTracking": "추적 종료",
+        "viewRecentlyAdded": "최근 등록",
+        "mblContainerCount": "컨테이너 {{count}}개",
+        "mblSearch": "MBL 검색",
+        "carrierFilter": "Carrier 필터 (예: MSC)",
+        "clearAll": "필터 모두 지우기",
+        "mblChip": "MBL 포함 \"{{value}}\"",
+        "carrierChip": "Carrier: {{value}}",
+        "clearFilterAria": "필터 지우기",
+        "unifiedSearchPlaceholder": "MBL, 선사 검색",
+        "unifiedSearchChip": "검색어: \"{{value}}\"",
+        "exportCsv": "엑셀 내보내기",
+        "exportEmpty": "내보낼 데이터가 없습니다.",
+        "exportFileName": "shipments",
+        "colMbl": "MBL",
+        "colCarrier": "Carrier",
+        "colRoute": "경로",
+        "colVessel": "선박",
+        "colEta": "ETA",
+        "colStatus": "상태",
+        "colUpdated": "업데이트",
+        "noEta": "ETA 없음",
+        "shown": "{{count}}개 표시",
+        "total": " / 총 {{total}}개",
+        "hasMore": "더 많은 결과가 있습니다. 페이지네이션은 곧 추가됩니다.",
+        "status": {
+          "pending": "대기 중",
+          "tracking": "추적 중",
+          "awaiting_manifest": "데이터 대기 중",
+          "failed": "실패",
+          "stopped": "추적 종료",
+          "cancelled": "취소됨"
+        },
+        "expandRowAria": "컨테이너 보기",
+        "collapseRowAria": "컨테이너 접기",
+        "expand": {
+          "loading": "컨테이너 불러오는 중…",
+          "empty": "이 shipment 에 컨테이너가 아직 없습니다.",
+          "error": "컨테이너를 불러오지 못했습니다."
+        },
+        "emptyFiltered": "조건에 맞는 shipment가 없습니다",
+        "emptyFilteredHint": "필터를 조정하거나 지워보세요.",
+        "emptyAll": "아직 등록된 shipment가 없습니다",
+        "emptyView": "{{view}} 상태의 shipment가 없습니다",
+        "emptyHint": "MBL 또는 Container 번호를 하나 입력해 추적을 시작하세요.",
+        "mblCopied": "MBL이 복사되었습니다",
+        "actions": {
+          "stop": "추적 중단",
+          "stopAria": "추적 중단",
+          "copy": "MBL 복사",
+          "copyAria": "MBL 복사",
+          "moreAria": "더 보기"
+        }
+      },
+      "containers": {
+        "title": "Containers",
+        "description": "팀이 추적 중인 모든 컨테이너를 확인합니다.",
+        "viewAll": "전체",
+        "viewOnShip": "선박 위",
+        "viewArrived": "도착",
+        "viewStopped": "추적 종료",
+        "searchPlaceholder": "컨테이너 번호 또는 MBL 검색",
+        "colNumber": "컨테이너",
+        "colShipment": "Shipment",
+        "colEquipment": "사양",
+        "colCarrier": "선사",
+        "colRoute": "경로",
+        "colEta": "ETA",
+        "colStatus": "상태",
+        "colTerminal": "터미널",
+        "shown": "{{count}}개 표시",
+        "total": " / 총 {{total}}개",
+        "hasMore": "더 많은 결과가 있습니다.",
+        "empty": "현재 필터에 해당하는 컨테이너가 없습니다.",
+        "physicalStatus": {
+          "registered": "등록됨",
+          "gate_in": "Gate In",
+          "loaded": "적재 완료",
+          "on_ship": "선박 위",
+          "discharged": "하역 완료",
+          "gate_out": "Gate Out",
+          "empty_returned": "반납 완료",
+          "unknown": "알 수 없음"
+        }
+      },
+      "detail": {
+        "back": "선적",
+        "openFullPage": "전체 페이지로 열기",
+        "carrierPending": "선사 확인 중",
+        "voyagePrefix": "항차",
+        "stopTracking": "추적 중단",
+        "routeLabel": "경로",
+        "routeCollecting": "경로 정보 수집 중",
+        "vesselLabel": "선박",
+        "etaLabel": "ETA",
+        "etdPrefix": "ETD",
+        "nextScrape": "다음 스크래핑",
+        "stoppedAuto": "자동 추적 중단됨",
+        "containersCount": "{{count}}개",
+        "containersEmpty": "아직 컨테이너 정보가 없습니다",
+        "containersEmptyHint": "스크래핑 완료 후 여기에 표시됩니다.",
+        "estimatedBadge": "예상",
+        "eventPlaceholder": "이벤트",
+        "sizeUnknown": "사이즈 미확인",
+        "stopSuccess": "추적이 중단되었습니다.",
+        "stopConfirmTitle": "{{mbl}} 추적을 중단할까요?",
+        "stopConfirmDescription": "추적을 중단하면 자동 스크래핑이 종료됩니다. 기존 데이터는 유지되며, 필요하면 새 추적으로 다시 등록할 수 있습니다.",
+        "detailsTitle": "세부 정보",
+        "map": {
+          "emptyTitle": "경로 정보가 아직 없습니다",
+          "emptyDescription": "POL / POD 좌표가 수집되면 루트가 여기에 표시됩니다.",
+          "departed": "출발",
+          "eta": "ETA",
+          "lastUpdate": "최근 업데이트",
+          "enterFullscreen": "전체 화면으로 보기",
+          "exitFullscreen": "전체 화면 종료",
+          "vesselTitle": "선박 위치 (추정)",
+          "progress": "항해 진행률 {{percent}}%",
+          "progressPending": "출항 대기 중",
+          "progressAtOrigin": "출발 전 (POL 대기)",
+          "progressArrived": "도착 (POD 접안)"
+        },
+        "organizeEmpty": "아직 거래처/참조번호/태그가 없습니다. 편집 버튼으로 추가하세요.",
+        "organizeSaveSuccess": "변경사항이 저장되었습니다.",
+        "containersTitle": "컨테이너",
+        "containerEventsEmpty": "이 컨테이너의 이벤트가 아직 없습니다",
+        "containerEventsEmptyHint": "스크래핑이 완료되면 출항·양하·반출 등이 이곳에 쌓입니다.",
+        "resubmitTracking": "추적 재시도",
+        "resubmitSuccess": "추적이 재시도되었습니다. 잠시 후 자동으로 갱신됩니다.",
+        "resubmitConfirmTitle": "{{mbl}} 추적을 다시 시도할까요?",
+        "resubmitConfirmDescription": "상태가 대기 중으로 되돌아가고 즉시 스크래핑이 다시 실행됩니다."
+      },
+      "track": {
+        "title": "트래킹",
+        "description": "MBL / Booking / Container 번호를 등록해 실시간 Ocean 추적을 시작합니다.",
+        "tab": {
+          "quick": "빠른 등록",
+          "bulk": "일괄 업로드",
+          "history": "전체 요청"
+        },
+        "quick": {
+          "hint": "MBL · Booking · Container 번호를 붙여넣으세요. 앞 4자리 SCAC으로 선사가 자동 선택됩니다. 여러 건은 Add another로 한 번에 등록할 수 있습니다.",
+          "sectionIdentifier": "식별자",
+          "sectionCarrier": "선사",
+          "sectionOrganize": "정리",
+          "organizeHint": "Customer · Tags · Ref #는 검색/필터 편의를 위한 메타데이터입니다.",
+          "blLabel": "BL / Booking / Container",
+          "blPlaceholder": "MBL / Booking / Container",
+          "typeBl": "Bill of Lading",
+          "typeBooking": "Booking",
+          "typeContainer": "Container",
+          "shippingLineLabel": "선사",
+          "shippingLinePlaceholder": "선사 선택",
+          "shippingLineSearch": "선사 검색",
+          "shippingLineAuto": "자동 감지",
+          "shippingLineNoResults": "일치하는 선사가 없습니다",
+          "shippingLineMismatch": "{{prefix}} 접두사는 보통 {{detected}}입니다. {{selected}}(으)로 제출할까요?",
+          "shippingLineNone": "— 선택 안함 —",
+          "carrierRequired": "각 행의 선사를 선택해야 제출할 수 있습니다.",
+          "customerLabel": "Customer",
+          "customerPlaceholder": "거래처 선택 또는 새로 만들기",
+          "customerSearch": "거래처 검색 또는 새 이름 입력",
+          "customerCreateNew": "새 거래처 만들기: \"{{name}}\"",
+          "customerNoResults": "일치하는 거래처가 없습니다.",
+          "customerNone": "— 선택 안함 —",
+          "refLabel": "Ref Numbers",
+          "refPlaceholder": "PO/Order 번호 (Enter 또는 , 로 구분)",
+          "refRemoveAria": "{{value}} 제거",
+          "tagsLabel": "Tags",
+          "tagsPlaceholder": "태그 선택 또는 새로 만들기",
+          "tagsSearch": "태그 검색 또는 새 이름 입력",
+          "tagsCreateNew": "새 태그 만들기: \"{{name}}\"",
+          "tagsNoResults": "일치하는 태그가 없습니다.",
+          "tagsManageHint": "태그 수정/삭제는 설정 › 태그에서",
+          "tagRemoveAria": "{{name}} 태그 제거",
+          "phaseBPending": "Phase B에서 저장 · 2026 Q2",
+          "expandRow": "세부 펼치기",
+          "collapseRow": "세부 접기",
+          "addAnother": "다른 건 추가",
+          "removeRow": "이 줄 삭제",
+          "submitOne": "1건 추적 요청",
+          "submitMany": "{{count}}건 추적 요청",
+          "submitting": "요청 중…",
+          "allSuccess": "{{count}}건 모두 요청 완료",
+          "partialSuccess": "{{succeeded}}건 성공 · {{failed}}건 실패",
+          "allFailed": "모든 요청이 실패했습니다.",
+          "emptyBl": "BL / Booking / Container 번호를 최소 1건 입력하세요."
+        },
+        "bulk": {
+          "title": "Bulk Spreadsheet Upload",
+          "description": "CSV로 수백 개의 MBL을 한 번에 등록하세요. 준비가 완료되면 Quick Entry와 동일한 엔진을 사용합니다."
+        },
+        "history": {
+          "title": "All Tracking Requests",
+          "description": "과거 Ocean 추적 요청을 성공 / 대기 / 실패별로 한 화면에서 확인하고 실패 건은 Resubmit으로 재시도합니다."
+        },
+        "recently": {
+          "title": "최근 등록",
+          "viewAll": "전체 보기",
+          "colRequest": "추적 요청",
+          "colReference": "Reference #",
+          "colLine": "선사",
+          "colCustomer": "Customer",
+          "colAdded": "등록",
+          "colStatus": "상태",
+          "colActions": "액션",
+          "view": "보기",
+          "empty": "아직 등록된 요청이 없습니다."
+        },
+        "comingSoonBadge": "2026 Q2 출시 예정"
+      }
+    },
+    "developer": {
+      "usage": {
+        "title": "API 사용량",
+        "description": "팀의 API 호출량과 플랜 한도를 모니터링합니다. API Key 인증 요청만 카운트되며 JWT(웹앱) 트래픽은 집계되지 않습니다.",
+        "dailyTitle": "일별 호출량",
+        "window7": "7일",
+        "window30": "30일",
+        "window90": "90일",
+        "today": "오늘 호출",
+        "todayRemaining": "{{remaining}} 남음 ({{pct}}% 사용)",
+        "total": "전체 기간 합계",
+        "totalHint": "선택된 기간",
+        "currentPlan": "현재 플랜",
+        "dailyLimit": "/ 일 한도",
+        "emptyTitle": "기록된 API 호출이 없습니다",
+        "emptyHint": "API Key로 인증된 요청이 여기에 집계됩니다.",
+        "calls": "{{count}} 호출",
+        "todayUsage": "오늘 사용률",
+        "resetHint": "일일 한도는 자정(UTC)에 리셋됩니다. 한도를 초과하면 추가 API Key 요청은 429 응답을 받습니다."
+      }
+    },
+    "notFound": {
+      "title": "페이지를 찾을 수 없습니다",
+      "alt": "페이지를 찾을 수 없음",
+      "backHome": "홈으로 돌아가기"
+    },
+    "comingSoon": {
+      "title": "Coming Soon",
+      "alt": "Coming soon",
+      "hours": "시간",
+      "minutes": "분",
+      "seconds": "초",
+      "emailPlaceholder": "업데이트를 구독할 이메일을 입력하세요."
+    },
+    "maintenance": {
+      "title": "점검 중입니다",
+      "alt": "점검 중",
+      "needSupport": "지원이 필요하신가요?"
+    }
+  },
+  "errors": {
+    "INVALID_CREDENTIALS": "이메일 또는 비밀번호가 올바르지 않습니다.",
+    "USER_NOT_FOUND": "존재하지 않는 사용자입니다.",
+    "EMAIL_ALREADY_EXISTS": "이미 가입된 이메일입니다.",
+    "INVALID_EMAIL_CODE": "인증 코드가 올바르지 않습니다.",
+    "EXPIRED_EMAIL_CODE": "인증 코드가 만료되었습니다.",
+    "PASSWORD_TOO_WEAK": "비밀번호가 너무 약합니다.",
+    "UNAUTHORIZED": "인증이 필요합니다.",
+    "FORBIDDEN": "권한이 없습니다.",
+    "NOT_FOUND": "요청하신 리소스를 찾을 수 없습니다.",
+    "RATE_LIMITED": "요청이 너무 많습니다. 잠시 후 다시 시도해주세요.",
+    "INTERNAL_SERVER_ERROR": "서버에 문제가 발생했습니다.",
+    "NOT_TEAM_MEMBER": "팀에서 제외되었습니다. 팀 선택 화면으로 이동합니다.",
+    "TEAM_NOT_FOUND": "해당 팀을 찾을 수 없습니다.",
+    "TEAM_SCOPE_REQUIRED": "팀을 먼저 선택해주세요.",
+    "TEAM_REQUIRED": "팀을 먼저 선택해주세요.",
+    "ALREADY_EXISTS": "현재 팀에 이미 존재하는 항목입니다.",
+    "FK_IN_USE": "다른 데이터가 참조 중이라 삭제할 수 없습니다.",
+    "FK_REFERENCE_NOT_FOUND": "참조하는 리소스가 더 이상 존재하지 않습니다.",
+    "RATE_LIMIT_EXCEEDED": "일일 API 호출 한도를 초과했습니다. 내일 다시 시도해주세요.",
+    "BROWSER_ID_MISMATCH": "세션이 만료되었습니다. 다시 로그인해주세요.",
+    "ACCOUNT_SWITCHED": "다른 계정이 감지되었습니다. 다시 로그인해주세요.",
+    "TIMEOUT": "서버 응답이 지연되고 있습니다. 잠시 후 다시 시도해 주세요.",
+    "NETWORK": "네트워크 연결을 확인해 주세요.",
+    "UNKNOWN": "알 수 없는 오류가 발생했습니다.",
+    "POPUP_BLOCKED": "팝업이 차단되었습니다. 브라우저 설정을 확인해주세요.",
+    "OAUTH_FAILED": "OAuth 로그인에 실패했습니다.",
+    "OAUTH_WINDOW_CLOSED": "OAuth 창이 닫혔습니다.",
+    "GENERIC_FALLBACK": "문제가 발생했습니다. 잠시 후 다시 시도해주세요."
+  },
+  "events": {
+    "shipmentTracking": "{{mbl}} 추적이 시작되었습니다.",
+    "shipmentFailed": "{{mbl}} 추적에 실패했습니다."
+  },
+  "time": {
+    "justNow": "방금 전",
+    "minutesAgo": "{{count}}분 전",
+    "hoursAgo": "{{count}}시간 전",
+    "daysAgo": "{{count}}일 전",
+    "weeksAgo": "{{count}}주 전",
+    "monthsAgo": "{{count}}개월 전",
+    "yearsAgo": "{{count}}년 전"
+  },
+  "oauth": {
+    "processing": "인증 처리 중..."
+  },
+  "comingSoon": {
+    "notify": "출시 알림 받기",
+    "outsideApp": "이 페이지를 열기 전 팀을 선택해주세요.",
+    "pageTitles": {
+      "oceanContainers": "Ocean 컨테이너",
+      "oceanVessels": "Ocean 선박",
+      "oceanSchedules": "Ocean 스케줄",
+      "terminalContainers": "터미널 컨테이너",
+      "terminalAppointments": "터미널 예약",
+      "airShipments": "항공 선적",
+      "airSchedules": "항공 스케줄",
+      "airTrack": "항공 트래킹",
+      "railShipments": "철도 선적",
+      "railTrack": "철도 트래킹",
+      "developerWebhooks": "개발자 웹훅",
+      "projects": "프로젝트",
+      "mobile": "모바일 앱"
+    },
+    "pageDescriptions": {
+      "oceanContainers": "개별 컨테이너 여정을 이벤트 타임라인과 함께 관리합니다.",
+      "oceanVessels": "선박 스케줄, 기항, 도착 예측을 모니터링합니다.",
+      "oceanSchedules": "선사별 항로 스케줄을 한 화면에서 확인합니다.",
+      "terminalContainers": "터미널 내 컨테이너를 게이트 인/아웃 상태로 추적합니다.",
+      "terminalAppointments": "터미널 예약을 바로 관리합니다.",
+      "airShipments": "AWB 움직임을 항공사 API로 추적합니다.",
+      "airSchedules": "항공편 스케줄과 화물 적재량을 확인합니다.",
+      "airTrack": "AWB(Air Waybill)로 항공 화물 추적을 시작합니다. 준비가 완료되면 Ocean Track과 동일한 경험을 항공에도 제공합니다.",
+      "railShipments": "철도 선적을 출발·도착 야드까지 추적합니다.",
+      "railTrack": "북미 Class I Waybill로 철도 화물 추적을 시작합니다. 준비가 완료되면 Ocean Track과 동일한 경험을 철도에도 제공합니다.",
+      "developerWebhooks": "Shipment 이벤트를 고객 인프라로 전달합니다.",
+      "projects": "프로젝트 단위로 Shipment 와 업무를 묶어 공통 컨텍스트와 필터를 공유합니다.",
+      "mobile": "iOS·Android 앱으로 외부에서도 핵심 기능을 사용합니다."
+    },
+    "eta": "2026 Q2 출시 예정"
+  },
+  "team": {
+    "untitledTeam": "팀 #{{id}}",
+    "newTeamOrSwitch": "새 팀 또는 전환",
+    "newTeamNamePlaceholder": "새 팀 이름",
+    "createTeam": "팀 만들기",
+    "createTeamSuccess": "팀이 생성되었습니다."
+  },
+  "dashboard": {
+    "title": "대시보드",
+    "description": "Shipment 활동과 알림을 한눈에 확인합니다.",
+    "greeting": "안녕하세요, {{name}}님",
+    "subtitle": "오늘의 팀 shipment 현황입니다.",
+    "kpi": {
+      "total": "전체 Shipments",
+      "tracking": "추적 중",
+      "arrivingSoon": "도착 임박 (3일 이내)",
+      "issues": "이슈 있음",
+      "awaitingHint": "데이터 대기 {{count}}건"
+    },
+    "recent": {
+      "title": "최근 업데이트된 Shipments",
+      "viewAll": "전체 보기 →",
+      "emptyTitle": "아직 추적 중인 shipment가 없습니다",
+      "emptyHint": "MBL 또는 Container 번호를 하나 입력해 추적을 시작해보세요.",
+      "firstButton": "첫 MBL 등록하기"
+    },
+    "carrierPending": "선사 확인 중",
+    "status": {
+      "pending": "대기 중",
+      "tracking": "추적 중",
+      "awaiting_manifest": "데이터 대기",
+      "failed": "실패",
+      "stopped": "중단됨",
+      "cancelled": "취소됨"
+    }
+  },
+  "apiKeysTab": {
+    "overview": "API Overview",
+    "howToTitle": "How to set API",
+    "howToDescription": "Use images to enhance your post, improve its flow, add humor and explain complex topics.",
+    "getStarted": "시작하기",
+    "devToolsTitle": "Developer Tools",
+    "devToolsDescription": "Plan your blog post by choosing a topic, creating an outline conduct research, and checking facts.",
+    "createRule": "규칙 만들기",
+    "sessions": "로그인 세션",
+    "hour": "1시간",
+    "sessionsColumns": {
+      "location": "위치",
+      "device": "기기",
+      "ip": "IP 주소",
+      "time": "시간",
+      "status": "상태"
+    },
+    "apiKeysTitle": "API 키",
+    "apiKeysDescription": "외부 시스템에서 OMNIQ API에 접근할 때 사용하는 키를 발급하고 관리합니다.",
+    "newKey": "새 API 키",
+    "empty": "아직 발급된 API 키가 없습니다",
+    "emptyHint": "위 버튼을 눌러 첫 키를 발급해보세요.",
+    "columns": {
+      "name": "이름",
+      "key": "키",
+      "lastUsed": "마지막 사용",
+      "expires": "만료",
+      "status": "상태"
+    },
+    "never": "무기한",
+    "expiredAt": "만료됨 ({{ago}})",
+    "neverUsed": "사용된 적 없음",
+    "revokeButton": "폐기",
+    "revokeSuccess": "API 키가 폐기되었습니다.",
+    "revokeConfirmTitle": "'{{name}}' 키를 폐기할까요?",
+    "revokeConfirmDescription": "폐기된 키로는 더 이상 API에 접근할 수 없습니다. 이 작업은 되돌릴 수 없습니다."
+  }
+}

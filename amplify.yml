@@ -1,0 +1,28 @@
+# AWS Amplify hosting build spec. Lives in the repo root so Amplify picks
+# it up automatically — no console clicking needed.
+#
+# Notes:
+# - `customHeaders` live in `customHttp.yml` (sibling file). Amplify reads
+#   both and merges their responses.
+# - `npm ci` is deliberate over `npm install` so lockfile drift fails the
+#   build instead of silently upgrading a dep in production.
+# - `node_modules` is cached between builds to keep CI under ~1 min after
+#   the first green run; the Vite `dist/` output is not cached because it
+#   reflects the current source.
+
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm ci
+    build:
+      commands:
+        - npm run build
+  artifacts:
+    baseDirectory: dist
+    files:
+      - "**/*"
+  cache:
+    paths:
+      - node_modules/**/*

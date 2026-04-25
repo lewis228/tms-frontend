@@ -1,0 +1,52 @@
+customHeaders:
+  # Hashed build assets (JS / CSS / fonts / images emitted by Vite with a
+  # content hash in the filename). Safe to cache forever — a content change
+  # produces a new filename, so stale copies simply stop being referenced.
+  # The 1-year max-age + `immutable` lets browsers skip revalidation on
+  # every page navigation, which is the biggest win on return visits.
+  - pattern: "/assets/**"
+    headers:
+      - key: Cache-Control
+        value: "public, max-age=31536000, immutable"
+  - pattern: "/icons/**"
+    headers:
+      - key: Cache-Control
+        value: "public, max-age=31536000, immutable"
+  - pattern: "/images/**"
+    headers:
+      - key: Cache-Control
+        value: "public, max-age=31536000, immutable"
+  - pattern: "**/*.woff2"
+    headers:
+      - key: Cache-Control
+        value: "public, max-age=31536000, immutable"
+
+  # index.html and the SPA fallback. Must be revalidated on every request
+  # so a deploy propagates instantly — cached HTML pointing at a new build
+  # hash would 404 on its script tags otherwise.
+  - pattern: "/"
+    headers:
+      - key: Cache-Control
+        value: "public, max-age=0, must-revalidate"
+      - key: X-Content-Type-Options
+        value: "nosniff"
+      - key: X-Frame-Options
+        value: "SAMEORIGIN"
+      - key: Referrer-Policy
+        value: "strict-origin-when-cross-origin"
+      - key: Permissions-Policy
+        value: "camera=(), microphone=(), geolocation=(self)"
+  - pattern: "/index.html"
+    headers:
+      - key: Cache-Control
+        value: "public, max-age=0, must-revalidate"
+
+  # Baseline security headers for everything else (covers page HTML
+  # responses served via the SPA 200-rewrite). Amplify's default also sets
+  # Strict-Transport-Security so we don't re-declare it here.
+  - pattern: "**/*"
+    headers:
+      - key: X-Content-Type-Options
+        value: "nosniff"
+      - key: Referrer-Policy
+        value: "strict-origin-when-cross-origin"
