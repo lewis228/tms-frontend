@@ -7,9 +7,15 @@ export async function listNotifications(params: {
   size?: number;
   unreadOnly?: boolean;
 }): Promise<PagedResponse<NotificationEntity>> {
+  // FastAPI Query(bool) 가 axios 의 boolean 직렬화 ("true"/"false") 를 파싱 가능하지만,
+  // false 일 땐 query string 자체를 생략해 백엔드 default 와 일치시킨다 (명시성 + URL 짧게).
+  const queryParams: Record<string, number | string> = {};
+  if (params.page !== undefined) queryParams.page = params.page;
+  if (params.size !== undefined) queryParams.size = params.size;
+  if (params.unreadOnly) queryParams.unreadOnly = "true";
   const { data } = await api.get<PagedResponse<NotificationEntity>>(
     "/notifications",
-    { params },
+    { params: queryParams },
   );
   return data;
 }

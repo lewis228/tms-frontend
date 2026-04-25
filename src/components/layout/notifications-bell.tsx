@@ -1,8 +1,11 @@
 // 헤더 우측 Bell — 미확인 카운트 + 클릭 시 popover 로 최근 알림.
 //
 // 서버 inbox 사용 (api/v1/notifications). WS event 가 도착하면 캐시 invalidate.
+// 성능 최적화: list 쿼리는 popover 가 열렸을 때만 fetch (lazy). 미확인 카운트만 상시 폴.
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
+import Loader from "@/components/loader";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -18,7 +21,12 @@ import { notificationLinkFor } from "@/lib/notification-link";
 const PREVIEW_LIMIT = 8;
 
 export default function NotificationsBell() {
-  const { data: page } = useNotificationsData(1);
+  const [open, setOpen] = useState(false);
+  const { data: page, isPending: isListPending } = useNotificationsData(
+    1,
+    false,
+    { enabled: open },
+  );
   const { data: unread = 0 } = useUnreadNotificationCountData();
 
   const { mutate: markRead } = useMarkNotificationRead();
@@ -28,7 +36,7 @@ export default function NotificationsBell() {
   const preview = (page?.items ?? []).slice(0, PREVIEW_LIMIT);
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <button
           type="button"
@@ -57,7 +65,11 @@ export default function NotificationsBell() {
           </Button>
         </div>
 
-        {preview.length === 0 ? (
+        {open && isListPending ? (
+          <div className="flex justify-center py-6">
+            <Loader />
+          </div>
+        ) : preview.length === 0 ? (
           <div className="px-3 py-6 text-center text-xs text-muted-foreground">
             새 알림이 없습니다.
           </div>

@@ -7,6 +7,7 @@ import { PAGE_SIZE, QUERY_KEYS } from "@/lib/constants";
 export function useNotificationsData(
   page: number = 1,
   unreadOnly: boolean = false,
+  options: { enabled?: boolean } = {},
 ) {
   return useQuery({
     queryKey: QUERY_KEYS.notification.list({
@@ -14,7 +15,7 @@ export function useNotificationsData(
       size: PAGE_SIZE,
       unreadOnly,
     }),
-    queryFn: () =>
-      listNotifications({ page, size: PAGE_SIZE, unreadOnly }),
+    queryFn: () => listNotifications({ page, size: PAGE_SIZE, unreadOnly }),
+    enabled: options.enabled ?? true,
   });
 }
