@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 import AlertModal from "@/components/modal/alert-modal";
+import CustomerEditorModal from "@/components/customer/customer-editor-modal";
 import LocationEditorModal from "@/components/location/location-editor-modal";
 import TerminalEditorModal from "@/components/terminal/terminal-editor-modal";
 import VesselEditorModal from "@/components/vessel/vessel-editor-modal";
@@ -19,6 +20,7 @@ export default function ModalProvider({ children }: { children: ReactNode }) {
           <VesselEditorModal />
           <TerminalEditorModal />
           <LocationEditorModal />
+          <CustomerEditorModal />
         </>,
         document.getElementById("modal-root")!,
       )}
