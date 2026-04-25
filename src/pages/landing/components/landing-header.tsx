@@ -116,7 +116,10 @@ export default function LandingHeader() {
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const location = useLocation();
 
+  // 라우트 전환 시 dropdown 자동 닫기 — 외부 source(pathname) 와 sync 하는 적합한 useEffect.
+  // (모든 NavLink 에 onClick 추가 대신 한 곳에서 처리)
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setOpenDropdown(null);
   }, [location.pathname]);
 

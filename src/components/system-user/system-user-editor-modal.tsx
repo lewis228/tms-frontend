@@ -2,7 +2,7 @@
 //
 // CREATE: email/name/password/role/phone. SUPER_ADMIN 은 셀렉트 비활성.
 // EDIT: name/phone/isActive/role. email/password 는 별도 (User 셀프 변경).
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -21,36 +21,47 @@ import type { UserRole } from "@/types";
 
 const ROLES: UserRole[] = ["SUPER_ADMIN", "ADMIN", "DISPATCHER", "DRIVER"];
 
+type OpenModal = Extract<
+  ReturnType<typeof useSystemUserEditorModal>,
+  { isOpen: true }
+>;
+
 export default function SystemUserEditorModal() {
   const modal = useSystemUserEditorModal();
+  return (
+    <Dialog
+      open={modal.isOpen}
+      onOpenChange={(o) => !o && modal.actions.close()}
+    >
+      <DialogContent>
+        {modal.isOpen && (
+          <Body
+            key={modal.type === "EDIT" ? `e-${modal.user.id}` : "c"}
+            modal={modal}
+          />
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+}
 
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
+function Body({ modal }: { modal: OpenModal }) {
+  const [email, setEmail] = useState(
+    modal.type === "CREATE" ? "" : modal.user.email,
+  );
+  const [name, setName] = useState(
+    modal.type === "CREATE" ? "" : modal.user.name,
+  );
   const [password, setPassword] = useState("");
-  const [phone, setPhone] = useState("");
-  const [role, setRole] = useState<UserRole>("DISPATCHER");
-  const [isActive, setIsActive] = useState(true);
-
-  useEffect(() => {
-    if (!modal.isOpen) return;
-    if (modal.type === "CREATE") {
-      setEmail("");
-      setName("");
-      setPassword("");
-      setPhone("");
-      setRole("DISPATCHER");
-      setIsActive(true);
-    } else {
-      const u = modal.user;
-      setEmail(u.email);
-      setName(u.name);
-      setPassword("");
-      setPhone(u.phone ?? "");
-      setRole(u.role);
-      setIsActive(u.isActive);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [modal.isOpen]);
+  const [phone, setPhone] = useState(
+    modal.type === "CREATE" ? "" : (modal.user.phone ?? ""),
+  );
+  const [role, setRole] = useState<UserRole>(
+    modal.type === "CREATE" ? "DISPATCHER" : modal.user.role,
+  );
+  const [isActive, setIsActive] = useState(
+    modal.type === "CREATE" ? true : modal.user.isActive,
+  );
 
   const { mutate: createU, isPending: isCreatePending } = useCreateUser({
     onSuccess: () => {
@@ -73,7 +84,6 @@ export default function SystemUserEditorModal() {
   const isPending = isCreatePending || isUpdatePending;
 
   const handleSave = () => {
-    if (!modal.isOpen) return;
     if (!name.trim()) return;
     if (modal.type === "CREATE") {
       if (!email.trim() || !password.trim()) {
@@ -111,110 +121,101 @@ export default function SystemUserEditorModal() {
   };
 
   return (
-    <Dialog
-      open={modal.isOpen}
-      onOpenChange={(o) => !o && modal.actions.close()}
-    >
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle className="font-sans">
-            {modal.isOpen && modal.type === "CREATE"
-              ? "사용자 생성"
-              : "사용자 수정"}
-          </DialogTitle>
-        </DialogHeader>
-        <div className="flex flex-col gap-3">
-          <Field label="이메일" required>
-            <Input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={isPending || (modal.isOpen && modal.type === "EDIT")}
-            />
-          </Field>
-          <Field label="이름" required>
-            <Input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              disabled={isPending}
-              maxLength={128}
-            />
-          </Field>
-          {modal.isOpen && modal.type === "CREATE" && (
-            <Field label="비밀번호 (최소 8자)" required>
-              <Input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={isPending}
-                minLength={8}
-              />
-            </Field>
-          )}
-          <Field label="전화">
-            <Input
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              disabled={isPending}
-            />
-          </Field>
-          <Field label="Role" required>
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value as UserRole)}
-              disabled={isPending}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
-            >
-              {ROLES.map((r) => (
-                <option key={r} value={r} disabled={r === "SUPER_ADMIN"}>
-                  {r}
-                  {r === "SUPER_ADMIN" ? " (API 생성 불가)" : ""}
-                </option>
-              ))}
-            </select>
-            {role === "DRIVER" && (
-              <span className="text-xs text-amber-600">
-                ⚠ Driver 메타(license/truck)까지 입력하려면 /app/master/drivers
-                에서 생성하세요.
-              </span>
-            )}
-          </Field>
-          {modal.isOpen && modal.type === "EDIT" && (
-            <div className="flex items-center gap-2 rounded-md border bg-muted/30 px-3 py-2 text-sm">
-              <input
-                id="isActive"
-                type="checkbox"
-                checked={isActive}
-                onChange={(e) => setIsActive(e.target.checked)}
-                disabled={isPending}
-              />
-              <label htmlFor="isActive">Active</label>
-            </div>
-          )}
-        </div>
-        <div className="flex justify-end gap-2 pt-2">
-          <Button
-            variant="outline"
-            onClick={() => modal.actions.close()}
+    <>
+      <DialogHeader>
+        <DialogTitle className="font-sans">
+          {modal.type === "CREATE" ? "사용자 생성" : "사용자 수정"}
+        </DialogTitle>
+      </DialogHeader>
+      <div className="flex flex-col gap-3">
+        <Field label="이메일" required>
+          <Input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={isPending || modal.type === "EDIT"}
+          />
+        </Field>
+        <Field label="이름" required>
+          <Input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             disabled={isPending}
+            maxLength={128}
+          />
+        </Field>
+        {modal.type === "CREATE" && (
+          <Field label="비밀번호 (최소 8자)" required>
+            <Input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={isPending}
+              minLength={8}
+            />
+          </Field>
+        )}
+        <Field label="전화">
+          <Input
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            disabled={isPending}
+          />
+        </Field>
+        <Field label="Role" required>
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value as UserRole)}
+            disabled={isPending}
+            className="rounded-md border bg-background px-3 py-2 text-sm"
           >
-            취소
-          </Button>
-          <Button
-            onClick={handleSave}
-            disabled={
-              isPending ||
-              !name.trim() ||
-              (modal.isOpen &&
-                modal.type === "CREATE" &&
-                (!email.trim() || password.length < 8))
-            }
-          >
-            저장
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
+            {ROLES.map((r) => (
+              <option key={r} value={r} disabled={r === "SUPER_ADMIN"}>
+                {r}
+                {r === "SUPER_ADMIN" ? " (API 생성 불가)" : ""}
+              </option>
+            ))}
+          </select>
+          {role === "DRIVER" && (
+            <span className="text-xs text-amber-600">
+              ⚠ Driver 메타(license/truck)까지 입력하려면 /app/master/drivers
+              에서 생성하세요.
+            </span>
+          )}
+        </Field>
+        {modal.type === "EDIT" && (
+          <div className="flex items-center gap-2 rounded-md border bg-muted/30 px-3 py-2 text-sm">
+            <input
+              id="isActive"
+              type="checkbox"
+              checked={isActive}
+              onChange={(e) => setIsActive(e.target.checked)}
+              disabled={isPending}
+            />
+            <label htmlFor="isActive">Active</label>
+          </div>
+        )}
+      </div>
+      <div className="flex justify-end gap-2 pt-2">
+        <Button
+          variant="outline"
+          onClick={() => modal.actions.close()}
+          disabled={isPending}
+        >
+          취소
+        </Button>
+        <Button
+          onClick={handleSave}
+          disabled={
+            isPending ||
+            !name.trim() ||
+            (modal.type === "CREATE" && (!email.trim() || password.length < 8))
+          }
+        >
+          저장
+        </Button>
+      </div>
+    </>
   );
 }
 

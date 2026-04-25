@@ -25,7 +25,7 @@ import {
 import type { UserEntity } from "@/types";
 
 export default function SystemUserList() {
-  const [tenantId, setTenantId] = useState<string | null>(null);
+  const [selectedTenantId, setSelectedTenantId] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
@@ -33,12 +33,8 @@ export default function SystemUserList() {
   const { data: tenants, isPending: tenantsPending, error: tenantsError } =
     useTenantsData();
 
-  // tenant 자동 default — 첫 번째.
-  useEffect(() => {
-    if (!tenantId && tenants && tenants.length > 0) {
-      setTenantId(tenants[0].id);
-    }
-  }, [tenants, tenantId]);
+  // 사용자가 select 로 명시 변경하기 전까지는 첫 tenant 를 default 로 사용 (derived).
+  const tenantId = selectedTenantId ?? tenants?.[0]?.id ?? null;
 
   useEffect(() => {
     const t = setTimeout(() => setSearch(searchInput.trim().toLowerCase()), 300);
@@ -94,7 +90,7 @@ export default function SystemUserList() {
         <select
           value={tenantId ?? ""}
           onChange={(e) => {
-            setTenantId(e.target.value || null);
+            setSelectedTenantId(e.target.value || null);
             setPage(1);
           }}
           className="rounded-md border bg-background px-3 py-2 text-sm"

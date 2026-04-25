@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -14,38 +14,52 @@ import { useUpdateCustomer } from "@/hooks/mutations/customer/use-update-custome
 import { generateErrorMessage } from "@/lib/error";
 import { useCustomerEditorModal } from "@/store/customer-editor-modal";
 
+type OpenModal = Extract<
+  ReturnType<typeof useCustomerEditorModal>,
+  { isOpen: true }
+>;
+
 export default function CustomerEditorModal() {
   const modal = useCustomerEditorModal();
+  return (
+    <Dialog
+      open={modal.isOpen}
+      onOpenChange={(o) => !o && modal.actions.close()}
+    >
+      <DialogContent>
+        {modal.isOpen && (
+          <Body
+            key={modal.type === "EDIT" ? `e-${modal.customer.id}` : "c"}
+            modal={modal}
+          />
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+}
 
-  const [name, setName] = useState("");
-  const [code, setCode] = useState("");
-  const [billingAddress, setBillingAddress] = useState("");
-  const [contactName, setContactName] = useState("");
-  const [contactEmail, setContactEmail] = useState("");
-  const [contactPhone, setContactPhone] = useState("");
-  const [note, setNote] = useState("");
-
-  useEffect(() => {
-    if (!modal.isOpen) return;
-    if (modal.type === "CREATE") {
-      setName("");
-      setCode("");
-      setBillingAddress("");
-      setContactName("");
-      setContactEmail("");
-      setContactPhone("");
-      setNote("");
-    } else {
-      setName(modal.customer.name);
-      setCode(modal.customer.code ?? "");
-      setBillingAddress(modal.customer.billingAddress ?? "");
-      setContactName(modal.customer.contactName ?? "");
-      setContactEmail(modal.customer.contactEmail ?? "");
-      setContactPhone(modal.customer.contactPhone ?? "");
-      setNote(modal.customer.note ?? "");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [modal.isOpen]);
+function Body({ modal }: { modal: OpenModal }) {
+  const [name, setName] = useState(
+    modal.type === "CREATE" ? "" : modal.customer.name,
+  );
+  const [code, setCode] = useState(
+    modal.type === "CREATE" ? "" : (modal.customer.code ?? ""),
+  );
+  const [billingAddress, setBillingAddress] = useState(
+    modal.type === "CREATE" ? "" : (modal.customer.billingAddress ?? ""),
+  );
+  const [contactName, setContactName] = useState(
+    modal.type === "CREATE" ? "" : (modal.customer.contactName ?? ""),
+  );
+  const [contactEmail, setContactEmail] = useState(
+    modal.type === "CREATE" ? "" : (modal.customer.contactEmail ?? ""),
+  );
+  const [contactPhone, setContactPhone] = useState(
+    modal.type === "CREATE" ? "" : (modal.customer.contactPhone ?? ""),
+  );
+  const [note, setNote] = useState(
+    modal.type === "CREATE" ? "" : (modal.customer.note ?? ""),
+  );
 
   const { mutate: createCustomer, isPending: isCreatePending } =
     useCreateCustomer({
@@ -70,7 +84,6 @@ export default function CustomerEditorModal() {
   const isPending = isCreatePending || isUpdatePending;
 
   const handleSave = () => {
-    if (!modal.isOpen) return;
     if (name.trim() === "") return;
     const payload = {
       name: name.trim(),
@@ -89,87 +102,83 @@ export default function CustomerEditorModal() {
   };
 
   return (
-    <Dialog open={modal.isOpen} onOpenChange={(o) => !o && modal.actions.close()}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle className="font-sans">
-            {modal.isOpen && modal.type === "CREATE"
-              ? "고객사 생성"
-              : "고객사 수정"}
-          </DialogTitle>
-        </DialogHeader>
-        <div className="flex flex-col gap-3">
-          <Field label="이름" required>
-            <Input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              disabled={isPending}
-              placeholder="Acme Logistics"
-            />
-          </Field>
-          <Field label="코드">
-            <Input
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              disabled={isPending}
-              placeholder="ACME"
-              maxLength={64}
-            />
-          </Field>
-          <Field label="청구 주소">
-            <Input
-              value={billingAddress}
-              onChange={(e) => setBillingAddress(e.target.value)}
-              disabled={isPending}
-            />
-          </Field>
-          <div className="grid grid-cols-2 gap-3">
-            <Field label="담당자 이름">
-              <Input
-                value={contactName}
-                onChange={(e) => setContactName(e.target.value)}
-                disabled={isPending}
-              />
-            </Field>
-            <Field label="담당자 전화">
-              <Input
-                value={contactPhone}
-                onChange={(e) => setContactPhone(e.target.value)}
-                disabled={isPending}
-                placeholder="+1 213 555 0100"
-              />
-            </Field>
-          </div>
-          <Field label="담당자 이메일">
-            <Input
-              type="email"
-              value={contactEmail}
-              onChange={(e) => setContactEmail(e.target.value)}
-              disabled={isPending}
-            />
-          </Field>
-          <Field label="메모">
-            <Input
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              disabled={isPending}
-            />
-          </Field>
-        </div>
-        <div className="flex justify-end gap-2 pt-2">
-          <Button
-            variant="outline"
-            onClick={() => modal.actions.close()}
+    <>
+      <DialogHeader>
+        <DialogTitle className="font-sans">
+          {modal.type === "CREATE" ? "고객사 생성" : "고객사 수정"}
+        </DialogTitle>
+      </DialogHeader>
+      <div className="flex flex-col gap-3">
+        <Field label="이름" required>
+          <Input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             disabled={isPending}
-          >
-            취소
-          </Button>
-          <Button onClick={handleSave} disabled={isPending || !name.trim()}>
-            저장
-          </Button>
+            placeholder="Acme Logistics"
+          />
+        </Field>
+        <Field label="코드">
+          <Input
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            disabled={isPending}
+            placeholder="ACME"
+            maxLength={64}
+          />
+        </Field>
+        <Field label="청구 주소">
+          <Input
+            value={billingAddress}
+            onChange={(e) => setBillingAddress(e.target.value)}
+            disabled={isPending}
+          />
+        </Field>
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="담당자 이름">
+            <Input
+              value={contactName}
+              onChange={(e) => setContactName(e.target.value)}
+              disabled={isPending}
+            />
+          </Field>
+          <Field label="담당자 전화">
+            <Input
+              value={contactPhone}
+              onChange={(e) => setContactPhone(e.target.value)}
+              disabled={isPending}
+              placeholder="+1 213 555 0100"
+            />
+          </Field>
         </div>
-      </DialogContent>
-    </Dialog>
+        <Field label="담당자 이메일">
+          <Input
+            type="email"
+            value={contactEmail}
+            onChange={(e) => setContactEmail(e.target.value)}
+            disabled={isPending}
+          />
+        </Field>
+        <Field label="메모">
+          <Input
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            disabled={isPending}
+          />
+        </Field>
+      </div>
+      <div className="flex justify-end gap-2 pt-2">
+        <Button
+          variant="outline"
+          onClick={() => modal.actions.close()}
+          disabled={isPending}
+        >
+          취소
+        </Button>
+        <Button onClick={handleSave} disabled={isPending || !name.trim()}>
+          저장
+        </Button>
+      </div>
+    </>
   );
 }
 

@@ -1,5 +1,6 @@
 // Vessel 생성 / 수정 모달.
-import { useEffect, useState } from "react";
+// modal.isOpen 이 true 일 때만 Body 마운트 + key 로 type/id 변경 시 자동 리셋.
+import { useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -15,29 +16,43 @@ import { useUpdateVessel } from "@/hooks/mutations/vessel/use-update-vessel";
 import { generateErrorMessage } from "@/lib/error";
 import { useVesselEditorModal } from "@/store/vessel-editor-modal";
 
+type OpenModal = Extract<
+  ReturnType<typeof useVesselEditorModal>,
+  { isOpen: true }
+>;
+
 export default function VesselEditorModal() {
   const modal = useVesselEditorModal();
+  return (
+    <Dialog
+      open={modal.isOpen}
+      onOpenChange={(o) => !o && modal.actions.close()}
+    >
+      <DialogContent>
+        {modal.isOpen && (
+          <Body
+            key={modal.type === "EDIT" ? `e-${modal.vessel.id}` : "c"}
+            modal={modal}
+          />
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+}
 
-  const [name, setName] = useState("");
-  const [imoNumber, setImoNumber] = useState("");
-  const [line, setLine] = useState("");
-  const [note, setNote] = useState("");
-
-  useEffect(() => {
-    if (!modal.isOpen) return;
-    if (modal.type === "CREATE") {
-      setName("");
-      setImoNumber("");
-      setLine("");
-      setNote("");
-    } else {
-      setName(modal.vessel.name);
-      setImoNumber(modal.vessel.imoNumber ?? "");
-      setLine(modal.vessel.line ?? "");
-      setNote(modal.vessel.note ?? "");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [modal.isOpen]);
+function Body({ modal }: { modal: OpenModal }) {
+  const [name, setName] = useState(
+    modal.type === "CREATE" ? "" : modal.vessel.name,
+  );
+  const [imoNumber, setImoNumber] = useState(
+    modal.type === "CREATE" ? "" : (modal.vessel.imoNumber ?? ""),
+  );
+  const [line, setLine] = useState(
+    modal.type === "CREATE" ? "" : (modal.vessel.line ?? ""),
+  );
+  const [note, setNote] = useState(
+    modal.type === "CREATE" ? "" : (modal.vessel.note ?? ""),
+  );
 
   const { mutate: createVessel, isPending: isCreatePending } = useCreateVessel({
     onSuccess: () => {
@@ -60,7 +75,6 @@ export default function VesselEditorModal() {
   const isPending = isCreatePending || isUpdatePending;
 
   const handleSave = () => {
-    if (!modal.isOpen) return;
     if (name.trim() === "") return;
     const payload = {
       name: name.trim(),
@@ -76,61 +90,59 @@ export default function VesselEditorModal() {
   };
 
   return (
-    <Dialog open={modal.isOpen} onOpenChange={(o) => !o && modal.actions.close()}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle className="font-sans">
-            {modal.isOpen && modal.type === "CREATE" ? "선박 생성" : "선박 수정"}
-          </DialogTitle>
-        </DialogHeader>
-        <div className="flex flex-col gap-3">
-          <Field label="이름" required>
-            <Input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              disabled={isPending}
-              placeholder="OOCL Hong Kong"
-            />
-          </Field>
-          <Field label="IMO 번호">
-            <Input
-              value={imoNumber}
-              onChange={(e) => setImoNumber(e.target.value)}
-              disabled={isPending}
-              placeholder="9776171"
-              maxLength={16}
-            />
-          </Field>
-          <Field label="선사">
-            <Input
-              value={line}
-              onChange={(e) => setLine(e.target.value)}
-              disabled={isPending}
-              placeholder="OOCL"
-            />
-          </Field>
-          <Field label="메모">
-            <Input
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              disabled={isPending}
-            />
-          </Field>
-        </div>
-        <div className="flex justify-end gap-2 pt-2">
-          <Button
-            variant="outline"
-            onClick={() => modal.actions.close()}
+    <>
+      <DialogHeader>
+        <DialogTitle className="font-sans">
+          {modal.type === "CREATE" ? "선박 생성" : "선박 수정"}
+        </DialogTitle>
+      </DialogHeader>
+      <div className="flex flex-col gap-3">
+        <Field label="이름" required>
+          <Input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             disabled={isPending}
-          >
-            취소
-          </Button>
-          <Button onClick={handleSave} disabled={isPending || !name.trim()}>
-            저장
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
+            placeholder="OOCL Hong Kong"
+          />
+        </Field>
+        <Field label="IMO 번호">
+          <Input
+            value={imoNumber}
+            onChange={(e) => setImoNumber(e.target.value)}
+            disabled={isPending}
+            placeholder="9776171"
+            maxLength={16}
+          />
+        </Field>
+        <Field label="선사">
+          <Input
+            value={line}
+            onChange={(e) => setLine(e.target.value)}
+            disabled={isPending}
+            placeholder="OOCL"
+          />
+        </Field>
+        <Field label="메모">
+          <Input
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            disabled={isPending}
+          />
+        </Field>
+      </div>
+      <div className="flex justify-end gap-2 pt-2">
+        <Button
+          variant="outline"
+          onClick={() => modal.actions.close()}
+          disabled={isPending}
+        >
+          취소
+        </Button>
+        <Button onClick={handleSave} disabled={isPending || !name.trim()}>
+          저장
+        </Button>
+      </div>
+    </>
   );
 }
 

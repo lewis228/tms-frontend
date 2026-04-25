@@ -4,7 +4,7 @@
 // 수정: deliveryOrderId 변경 불가 (서버도 안 받음). status 변경은 transition 별도.
 //
 // 백엔드 game: D/O PLANNING→DISPATCHED 게이트 충족하려면 first leg 가 driver_id + pickup_date 필요.
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -33,48 +33,61 @@ const STEPS: DeliveryStatus[] = [
 const MOVE_TYPES: MoveType[] = ["LOADED", "EMPTY"];
 const SERVICE_TYPES: ServiceType[] = ["LIVE", "DROP"];
 
+type OpenModal = Extract<
+  ReturnType<typeof useLegEditorModal>,
+  { isOpen: true }
+>;
+
 export default function LegEditorModal() {
   const modal = useLegEditorModal();
+  return (
+    <Dialog
+      open={modal.isOpen}
+      onOpenChange={(o) => !o && modal.actions.close()}
+    >
+      <DialogContent className="!max-w-2xl max-h-[90vh] overflow-y-auto">
+        {modal.isOpen && (
+          <Body
+            key={modal.type === "EDIT" ? `e-${modal.leg.id}` : "c"}
+            modal={modal}
+          />
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+}
 
-  const [step, setStep] = useState<DeliveryStatus>("DISPATCHED");
-  const [moveType, setMoveType] = useState<MoveType>("LOADED");
-  const [serviceType, setServiceType] = useState<ServiceType>("DROP");
-  const [driverId, setDriverId] = useState("");
-  const [pickupLocationId, setPickupLocationId] = useState("");
-  const [pickupDate, setPickupDate] = useState("");
-  const [deliveryLocationId, setDeliveryLocationId] = useState("");
-  const [deliveryDate, setDeliveryDate] = useState("");
-  const [note, setNote] = useState("");
+function Body({ modal }: { modal: OpenModal }) {
+  const [step, setStep] = useState<DeliveryStatus>(
+    modal.type === "CREATE" ? "DISPATCHED" : modal.leg.step,
+  );
+  const [moveType, setMoveType] = useState<MoveType>(
+    modal.type === "CREATE" ? "LOADED" : modal.leg.moveType,
+  );
+  const [serviceType, setServiceType] = useState<ServiceType>(
+    modal.type === "CREATE" ? "DROP" : modal.leg.serviceType,
+  );
+  const [driverId, setDriverId] = useState(
+    modal.type === "CREATE" ? "" : (modal.leg.driverId ?? ""),
+  );
+  const [pickupLocationId, setPickupLocationId] = useState(
+    modal.type === "CREATE" ? "" : (modal.leg.pickupLocationId ?? ""),
+  );
+  const [pickupDate, setPickupDate] = useState(
+    modal.type === "CREATE" ? "" : toLocalInput(modal.leg.pickupDate),
+  );
+  const [deliveryLocationId, setDeliveryLocationId] = useState(
+    modal.type === "CREATE" ? "" : (modal.leg.deliveryLocationId ?? ""),
+  );
+  const [deliveryDate, setDeliveryDate] = useState(
+    modal.type === "CREATE" ? "" : toLocalInput(modal.leg.deliveryDate),
+  );
+  const [note, setNote] = useState(
+    modal.type === "CREATE" ? "" : (modal.leg.note ?? ""),
+  );
 
   const { data: driversData } = useDriversData(1);
   const { data: locationsData } = useLocationsData(1);
-
-  useEffect(() => {
-    if (!modal.isOpen) return;
-    if (modal.type === "CREATE") {
-      setStep("DISPATCHED");
-      setMoveType("LOADED");
-      setServiceType("DROP");
-      setDriverId("");
-      setPickupLocationId("");
-      setPickupDate("");
-      setDeliveryLocationId("");
-      setDeliveryDate("");
-      setNote("");
-    } else {
-      const l = modal.leg;
-      setStep(l.step);
-      setMoveType(l.moveType);
-      setServiceType(l.serviceType);
-      setDriverId(l.driverId ?? "");
-      setPickupLocationId(l.pickupLocationId ?? "");
-      setPickupDate(toLocalInput(l.pickupDate));
-      setDeliveryLocationId(l.deliveryLocationId ?? "");
-      setDeliveryDate(toLocalInput(l.deliveryDate));
-      setNote(l.note ?? "");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [modal.isOpen]);
 
   const { mutate: createLeg, isPending: isCreatePending } = useCreateLeg({
     onSuccess: () => {
@@ -97,7 +110,6 @@ export default function LegEditorModal() {
   const isPending = isCreatePending || isUpdatePending;
 
   const handleSave = () => {
-    if (!modal.isOpen) return;
     const payload = {
       step,
       moveType,
@@ -117,144 +129,139 @@ export default function LegEditorModal() {
   };
 
   return (
-    <Dialog
-      open={modal.isOpen}
-      onOpenChange={(o) => !o && modal.actions.close()}
-    >
-      <DialogContent className="!max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="font-sans">
-            {modal.isOpen && modal.type === "CREATE" ? "Leg 생성" : "Leg 수정"}
-          </DialogTitle>
-        </DialogHeader>
-        <div className="grid grid-cols-2 gap-3">
-          <Field label="Step (D/O 단계)" required>
-            <select
-              value={step}
-              onChange={(e) => setStep(e.target.value as DeliveryStatus)}
-              disabled={isPending}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
-            >
-              {STEPS.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
-          </Field>
-          <Field label="Move Type" required>
-            <select
-              value={moveType}
-              onChange={(e) => setMoveType(e.target.value as MoveType)}
-              disabled={isPending}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
-            >
-              {MOVE_TYPES.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
-          </Field>
-          <Field label="Service Type" required>
-            <select
-              value={serviceType}
-              onChange={(e) => setServiceType(e.target.value as ServiceType)}
-              disabled={isPending}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
-            >
-              {SERVICE_TYPES.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
-          </Field>
-          <Field label="Driver">
-            <select
-              value={driverId}
-              onChange={(e) => setDriverId(e.target.value)}
-              disabled={isPending}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
-            >
-              <option value="">— 미지정 —</option>
-              {(driversData?.items ?? []).map((d) => (
-                <option key={d.id} value={d.id}>
-                  {d.name} ({d.email})
-                </option>
-              ))}
-            </select>
-          </Field>
-          <Field label="Pickup Location">
-            <select
-              value={pickupLocationId}
-              onChange={(e) => setPickupLocationId(e.target.value)}
-              disabled={isPending}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
-            >
-              <option value="">—</option>
-              {(locationsData?.items ?? []).map((l) => (
-                <option key={l.id} value={l.id}>
-                  {l.name} ({l.kind})
-                </option>
-              ))}
-            </select>
-          </Field>
-          <Field label="Pickup Date">
-            <Input
-              type="datetime-local"
-              value={pickupDate}
-              onChange={(e) => setPickupDate(e.target.value)}
-              disabled={isPending}
-            />
-          </Field>
-          <Field label="Delivery Location">
-            <select
-              value={deliveryLocationId}
-              onChange={(e) => setDeliveryLocationId(e.target.value)}
-              disabled={isPending}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
-            >
-              <option value="">—</option>
-              {(locationsData?.items ?? []).map((l) => (
-                <option key={l.id} value={l.id}>
-                  {l.name} ({l.kind})
-                </option>
-              ))}
-            </select>
-          </Field>
-          <Field label="Delivery Date">
-            <Input
-              type="datetime-local"
-              value={deliveryDate}
-              onChange={(e) => setDeliveryDate(e.target.value)}
-              disabled={isPending}
-            />
-          </Field>
-          <div className="col-span-2">
-            <Field label="메모">
-              <Input
-                value={note}
-                onChange={(e) => setNote(e.target.value)}
-                disabled={isPending}
-              />
-            </Field>
-          </div>
-        </div>
-        <div className="flex justify-end gap-2 pt-2">
-          <Button
-            variant="outline"
-            onClick={() => modal.actions.close()}
+    <>
+      <DialogHeader>
+        <DialogTitle className="font-sans">
+          {modal.type === "CREATE" ? "Leg 생성" : "Leg 수정"}
+        </DialogTitle>
+      </DialogHeader>
+      <div className="grid grid-cols-2 gap-3">
+        <Field label="Step (D/O 단계)" required>
+          <select
+            value={step}
+            onChange={(e) => setStep(e.target.value as DeliveryStatus)}
             disabled={isPending}
+            className="rounded-md border bg-background px-3 py-2 text-sm"
           >
-            취소
-          </Button>
-          <Button onClick={handleSave} disabled={isPending}>
-            저장
-          </Button>
+            {STEPS.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+        </Field>
+        <Field label="Move Type" required>
+          <select
+            value={moveType}
+            onChange={(e) => setMoveType(e.target.value as MoveType)}
+            disabled={isPending}
+            className="rounded-md border bg-background px-3 py-2 text-sm"
+          >
+            {MOVE_TYPES.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+        </Field>
+        <Field label="Service Type" required>
+          <select
+            value={serviceType}
+            onChange={(e) => setServiceType(e.target.value as ServiceType)}
+            disabled={isPending}
+            className="rounded-md border bg-background px-3 py-2 text-sm"
+          >
+            {SERVICE_TYPES.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+        </Field>
+        <Field label="Driver">
+          <select
+            value={driverId}
+            onChange={(e) => setDriverId(e.target.value)}
+            disabled={isPending}
+            className="rounded-md border bg-background px-3 py-2 text-sm"
+          >
+            <option value="">— 미지정 —</option>
+            {(driversData?.items ?? []).map((d) => (
+              <option key={d.id} value={d.id}>
+                {d.name} ({d.email})
+              </option>
+            ))}
+          </select>
+        </Field>
+        <Field label="Pickup Location">
+          <select
+            value={pickupLocationId}
+            onChange={(e) => setPickupLocationId(e.target.value)}
+            disabled={isPending}
+            className="rounded-md border bg-background px-3 py-2 text-sm"
+          >
+            <option value="">—</option>
+            {(locationsData?.items ?? []).map((l) => (
+              <option key={l.id} value={l.id}>
+                {l.name} ({l.kind})
+              </option>
+            ))}
+          </select>
+        </Field>
+        <Field label="Pickup Date">
+          <Input
+            type="datetime-local"
+            value={pickupDate}
+            onChange={(e) => setPickupDate(e.target.value)}
+            disabled={isPending}
+          />
+        </Field>
+        <Field label="Delivery Location">
+          <select
+            value={deliveryLocationId}
+            onChange={(e) => setDeliveryLocationId(e.target.value)}
+            disabled={isPending}
+            className="rounded-md border bg-background px-3 py-2 text-sm"
+          >
+            <option value="">—</option>
+            {(locationsData?.items ?? []).map((l) => (
+              <option key={l.id} value={l.id}>
+                {l.name} ({l.kind})
+              </option>
+            ))}
+          </select>
+        </Field>
+        <Field label="Delivery Date">
+          <Input
+            type="datetime-local"
+            value={deliveryDate}
+            onChange={(e) => setDeliveryDate(e.target.value)}
+            disabled={isPending}
+          />
+        </Field>
+        <div className="col-span-2">
+          <Field label="메모">
+            <Input
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              disabled={isPending}
+            />
+          </Field>
         </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+      <div className="flex justify-end gap-2 pt-2">
+        <Button
+          variant="outline"
+          onClick={() => modal.actions.close()}
+          disabled={isPending}
+        >
+          취소
+        </Button>
+        <Button onClick={handleSave} disabled={isPending}>
+          저장
+        </Button>
+      </div>
+    </>
   );
 }
 

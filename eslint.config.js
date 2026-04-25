@@ -22,11 +22,6 @@ export default defineConfig([
     rules: {
       '@typescript-eslint/no-unused-vars': 'error',
       '@typescript-eslint/no-explicit-any': 'error',
-      // 모달 편집기 패턴: isOpen 토글 시 useEffect 로 form state 를 리셋한다.
-      // 이는 zustand 모달 스토어 라는 "외부 시스템과 동기화" 사례라 의도된 사용이고,
-      // 14+ 개의 editor-modal 컴포넌트가 동일한 패턴을 따른다.
-      // 추후 key 기반 remount 로 바꿀 수 있으나 이번 phase 범위 밖.
-      'react-hooks/set-state-in-effect': 'off',
     },
   },
   // shadcn/ui 자동 생성 파일은 컴포넌트와 variant 함수(cva 등)를 같은 파일에서 export 하는

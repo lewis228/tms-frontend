@@ -1,5 +1,5 @@
 // PENDING/CALCULATED → CALCULATED. system_total + extras 입력.
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,12 @@ import { useSettlementExtrasData } from "@/hooks/queries/use-settlement-extras-d
 import { generateErrorMessage } from "@/lib/error";
 import { useCalculateSettlementModal } from "@/store/settlement-action-modal";
 import type { ExtraChargeInput } from "@/api/settlement";
+import type { ExtraChargeEntity } from "@/types";
+
+type Modal = ReturnType<typeof useCalculateSettlementModal>;
+type SettlementData = NonNullable<
+  ReturnType<typeof useSettlementByIdData>["data"]
+>;
 
 export default function SettlementCalculateModal() {
   const modal = useCalculateSettlementModal();
@@ -27,21 +33,51 @@ export default function SettlementCalculateModal() {
     modal.isOpen ? modal.settlementId : null,
   );
 
-  const [systemTotal, setSystemTotal] = useState("");
-  const [rows, setRows] = useState<ExtraChargeInput[]>([]);
+  const ready = modal.isOpen && settlement !== undefined && extras !== undefined;
 
-  useEffect(() => {
-    if (!modal.isOpen) return;
-    setSystemTotal(settlement?.systemTotal ?? "0");
-    setRows(
-      (extras ?? []).map((e) => ({
-        type: e.type,
-        amount: e.amount,
-        description: e.description,
-      })),
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [modal.isOpen, settlement?.id, extras?.length]);
+  return (
+    <Dialog
+      open={modal.isOpen}
+      onOpenChange={(o) => !o && modal.actions.close()}
+    >
+      <DialogContent className="!max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="font-sans">Calculate Settlement</DialogTitle>
+        </DialogHeader>
+        {ready ? (
+          <Body
+            key={settlement.id}
+            modal={modal}
+            settlement={settlement}
+            extras={extras}
+          />
+        ) : modal.isOpen ? (
+          <div className="py-8 text-center text-sm text-muted-foreground">
+            로딩 중...
+          </div>
+        ) : null}
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function Body({
+  modal,
+  settlement,
+  extras,
+}: {
+  modal: Modal;
+  settlement: SettlementData;
+  extras: ExtraChargeEntity[];
+}) {
+  const [systemTotal, setSystemTotal] = useState(settlement.systemTotal ?? "0");
+  const [rows, setRows] = useState<ExtraChargeInput[]>(
+    extras.map((e) => ({
+      type: e.type,
+      amount: e.amount,
+      description: e.description,
+    })),
+  );
 
   const { mutate, isPending } = useCalculateSettlement({
     onSuccess: () => {
@@ -66,43 +102,33 @@ export default function SettlementCalculateModal() {
   };
 
   return (
-    <Dialog
-      open={modal.isOpen}
-      onOpenChange={(o) => !o && modal.actions.close()}
-    >
-      <DialogContent className="!max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="font-sans">Calculate Settlement</DialogTitle>
-        </DialogHeader>
-        <div className="flex flex-col gap-3">
-          <div className="flex flex-col gap-1">
-            <label className="text-xs text-muted-foreground">
-              System Total <span className="text-destructive">*</span>
-            </label>
-            <Input
-              type="number"
-              step="0.01"
-              value={systemTotal}
-              onChange={(e) => setSystemTotal(e.target.value)}
-              disabled={isPending}
-              className="text-right"
-            />
-          </div>
-          <ExtrasEditor rows={rows} setRows={setRows} disabled={isPending} />
-        </div>
-        <div className="flex justify-end gap-2 pt-2">
-          <Button
-            variant="outline"
-            onClick={() => modal.actions.close()}
-            disabled={isPending}
-          >
-            취소
-          </Button>
-          <Button onClick={handleSave} disabled={isPending}>
-            {isPending ? "계산중..." : "계산"}
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
+    <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-1">
+        <label className="text-xs text-muted-foreground">
+          System Total <span className="text-destructive">*</span>
+        </label>
+        <Input
+          type="number"
+          step="0.01"
+          value={systemTotal}
+          onChange={(e) => setSystemTotal(e.target.value)}
+          disabled={isPending}
+          className="text-right"
+        />
+      </div>
+      <ExtrasEditor rows={rows} setRows={setRows} disabled={isPending} />
+      <div className="flex justify-end gap-2 pt-2">
+        <Button
+          variant="outline"
+          onClick={() => modal.actions.close()}
+          disabled={isPending}
+        >
+          취소
+        </Button>
+        <Button onClick={handleSave} disabled={isPending}>
+          {isPending ? "계산중..." : "계산"}
+        </Button>
+      </div>
+    </div>
   );
 }
