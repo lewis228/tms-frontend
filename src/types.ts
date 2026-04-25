@@ -106,6 +106,50 @@ export type CustomerEntity = {
   updatedAt: string;
 };
 
+export type TerminalEntity = {
+  id: string;
+  tenantId: string;
+  name: string;
+  code: string | null;
+  address: string | null;
+  latitude: string | null;
+  longitude: string | null;
+  isActive: boolean;
+  note: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type VesselEntity = {
+  id: string;
+  tenantId: string;
+  name: string;
+  imoNumber: string | null;
+  line: string | null;
+  isActive: boolean;
+  note: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type LocationEntity = {
+  id: string;
+  tenantId: string;
+  name: string;
+  kind: LocationKind;
+  address: string | null;
+  latitude: string | null;
+  longitude: string | null;
+  customerId: string | null;
+  isActive: boolean;
+  note: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+// 백엔드 DriverCreatedResponse — POST /drivers 응답에 1회 임시 비번 포함.
+export type DriverCreatedResponse = DriverEntity & { tempPassword: string };
+
 export type PagedResponse<T> = {
   items: T[];
   total: number;
