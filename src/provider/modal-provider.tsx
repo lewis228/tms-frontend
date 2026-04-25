@@ -5,6 +5,8 @@ import { createPortal } from "react-dom";
 
 import AlertModal from "@/components/modal/alert-modal";
 import CustomerEditorModal from "@/components/customer/customer-editor-modal";
+import DriverEditorModal from "@/components/driver/driver-editor-modal";
+import DriverTempPasswordModal from "@/components/driver/driver-temp-password-modal";
 import LocationEditorModal from "@/components/location/location-editor-modal";
 import TerminalEditorModal from "@/components/terminal/terminal-editor-modal";
 import VesselEditorModal from "@/components/vessel/vessel-editor-modal";
@@ -21,6 +23,8 @@ export default function ModalProvider({ children }: { children: ReactNode }) {
           <TerminalEditorModal />
           <LocationEditorModal />
           <CustomerEditorModal />
+          <DriverEditorModal />
+          <DriverTempPasswordModal />
         </>,
         document.getElementById("modal-root")!,
       )}
