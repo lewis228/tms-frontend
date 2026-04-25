@@ -50,6 +50,12 @@ export const QUERY_KEYS = {
       ["delivery-order", "list", params] as const,
     byId: (id: string) => ["delivery-order", "byId", id] as const,
   },
+  settlement: {
+    all: ["settlement"] as const,
+    list: (params: Record<string, unknown> = {}) =>
+      ["settlement", "list", params] as const,
+    byId: (id: string) => ["settlement", "byId", id] as const,
+  },
   leg: {
     all: ["leg"] as const,
     list: (params: Record<string, unknown> = {}) =>
