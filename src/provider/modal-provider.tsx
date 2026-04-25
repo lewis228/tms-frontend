@@ -8,6 +8,7 @@ import CustomerEditorModal from "@/components/customer/customer-editor-modal";
 import DeliveryOrderCreateModal from "@/components/delivery-order/delivery-order-create-modal";
 import DriverEditorModal from "@/components/driver/driver-editor-modal";
 import DriverTempPasswordModal from "@/components/driver/driver-temp-password-modal";
+import LegEditorModal from "@/components/leg/leg-editor-modal";
 import LocationEditorModal from "@/components/location/location-editor-modal";
 import TerminalEditorModal from "@/components/terminal/terminal-editor-modal";
 import VesselEditorModal from "@/components/vessel/vessel-editor-modal";
@@ -26,8 +27,9 @@ export default function ModalProvider({ children }: { children: ReactNode }) {
           <CustomerEditorModal />
           <DriverEditorModal />
           <DriverTempPasswordModal />
-          {/* Delivery Orders */}
+          {/* Delivery Orders / Legs */}
           <DeliveryOrderCreateModal />
+          <LegEditorModal />
         </>,
         document.getElementById("modal-root")!,
       )}
