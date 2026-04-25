@@ -34,6 +34,7 @@ const AccountingRatesPage = lazy(
   () => import("@/pages/accounting-rates-page"),
 );
 const SystemTenantsPage = lazy(() => import("@/pages/system-tenants-page"));
+const SystemUsersPage = lazy(() => import("@/pages/system-users-page"));
 
 function Placeholder({ name }: { name: string }) {
   return (
@@ -96,7 +97,7 @@ export default function RootRoute() {
               />
               <Route
                 path="system/users"
-                element={<Placeholder name="System / Users" />}
+                element={<SystemUsersPage />}
               />
             </Route>
 
