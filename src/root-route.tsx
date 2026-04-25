@@ -29,6 +29,7 @@ const MasterDriversPage = lazy(() => import("@/pages/master-drivers-page"));
 const DeliveryOrdersPage = lazy(() => import("@/pages/delivery-orders-page"));
 const DispatchPage = lazy(() => import("@/pages/dispatch-page"));
 const DriverSchedulePage = lazy(() => import("@/pages/driver-schedule-page"));
+const AccountingPage = lazy(() => import("@/pages/accounting-page"));
 
 function Placeholder({ name }: { name: string }) {
   return (
@@ -69,10 +70,7 @@ export default function RootRoute() {
             </Route>
 
             <Route element={<ProtectedRoute require="DISPATCHER" />}>
-              <Route
-                path="accounting"
-                element={<Placeholder name="Settlements" />}
-              />
+              <Route path="accounting" element={<AccountingPage />} />
             </Route>
             <Route element={<ProtectedRoute require="ADMIN" />}>
               <Route

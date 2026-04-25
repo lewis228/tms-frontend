@@ -10,6 +10,10 @@ import DriverEditorModal from "@/components/driver/driver-editor-modal";
 import DriverTempPasswordModal from "@/components/driver/driver-temp-password-modal";
 import LegEditorModal from "@/components/leg/leg-editor-modal";
 import LocationEditorModal from "@/components/location/location-editor-modal";
+import SettlementAdjustModal from "@/components/settlement/settlement-adjust-modal";
+import SettlementApproveModal from "@/components/settlement/settlement-approve-modal";
+import SettlementCalculateModal from "@/components/settlement/settlement-calculate-modal";
+import SettlementUnapproveModal from "@/components/settlement/settlement-unapprove-modal";
 import TerminalEditorModal from "@/components/terminal/terminal-editor-modal";
 import VesselEditorModal from "@/components/vessel/vessel-editor-modal";
 
@@ -30,6 +34,11 @@ export default function ModalProvider({ children }: { children: ReactNode }) {
           {/* Delivery Orders / Legs */}
           <DeliveryOrderCreateModal />
           <LegEditorModal />
+          {/* Settlements */}
+          <SettlementCalculateModal />
+          <SettlementAdjustModal />
+          <SettlementApproveModal />
+          <SettlementUnapproveModal />
         </>,
         document.getElementById("modal-root")!,
       )}
