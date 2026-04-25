@@ -238,6 +238,18 @@ export type RealtimeEvent = {
   occurredAt: string;
 };
 
+// In-app notification — WS event 가 도착하면 store 에 누적.
+// 백엔드 알림 도메인 별도 도입 전까지는 클라이언트 메모리에만 보관 (persist 안 함).
+export type InAppNotification = {
+  id: string; // crypto.randomUUID
+  type: string; // RealtimeEvent.type 그대로
+  title: string; // localized 표시 제목
+  description: string | null; // 본문 (e.g. "D/O REF1234 → DISPATCHED")
+  link: string | null; // 클릭 시 이동 (e.g. "/app/delivery-orders?do=:id")
+  read: boolean;
+  occurredAt: string; // ISO
+};
+
 // Phase 8: Settlement / ExtraCharge / AuditLog / RateSetting
 export type ExtraChargeEntity = {
   id: string;

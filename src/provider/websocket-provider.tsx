@@ -12,12 +12,14 @@ import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { QUERY_KEYS } from "@/lib/constants";
+import { realtimeToNotification } from "@/lib/notifications-format";
 import { realtimeWs, type ServerEvent } from "@/lib/websocket";
 import {
   useCurrentTenantId,
   useCurrentUser,
   useIsBootstrapped,
 } from "@/store/auth";
+import { usePushNotification } from "@/store/notifications";
 
 export default function WebSocketProvider({
   children,
@@ -28,6 +30,7 @@ export default function WebSocketProvider({
   const isBootstrapped = useIsBootstrapped();
   const user = useCurrentUser();
   const tenantId = useCurrentTenantId();
+  const pushNotification = usePushNotification();
 
   useEffect(() => {
     if (!isBootstrapped || !user || !tenantId) {
@@ -37,6 +40,15 @@ export default function WebSocketProvider({
     realtimeWs.connect(tenantId);
 
     const off = realtimeWs.addListener((evt: ServerEvent) => {
+      const n = realtimeToNotification({
+        type: evt.type,
+        tenantId: evt.tenantId,
+        actorId: evt.actorId ?? null,
+        payload: evt.payload ?? null,
+        occurredAt: evt.occurredAt,
+      });
+      if (n) pushNotification(n);
+
       const payload = (evt.payload ?? {}) as Record<string, unknown>;
       const deliveryOrderId =
         typeof payload.deliveryOrderId === "string"
@@ -114,7 +126,7 @@ export default function WebSocketProvider({
     return () => {
       off();
     };
-  }, [isBootstrapped, user, tenantId, qc]);
+  }, [isBootstrapped, user, tenantId, qc, pushNotification]);
 
   return <>{children}</>;
 }

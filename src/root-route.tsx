@@ -35,6 +35,7 @@ const AccountingRatesPage = lazy(
 );
 const SystemTenantsPage = lazy(() => import("@/pages/system-tenants-page"));
 const SystemUsersPage = lazy(() => import("@/pages/system-users-page"));
+const NotificationsPage = lazy(() => import("@/pages/notifications-page"));
 
 function Placeholder({ name }: { name: string }) {
   return (
@@ -64,6 +65,7 @@ export default function RootRoute() {
           <Route element={<AppLayout />}>
             <Route index element={<Navigate to="/app/dashboard" replace />} />
             <Route path="dashboard" element={<DashboardPage />} />
+            <Route path="notifications" element={<NotificationsPage />} />
 
             <Route element={<ProtectedRoute require="DISPATCHER" />}>
               <Route path="dispatch" element={<DispatchPage />} />
