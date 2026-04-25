@@ -5,9 +5,9 @@ import AtRiskTable from "@/components/dashboard/at-risk-table";
 import DashboardTabs from "@/components/dashboard/dashboard-tabs";
 import LatestShipmentsCard from "@/components/dashboard/latest-shipments-card";
 import OnTheWaterFeed from "@/components/dashboard/on-the-water-feed";
-import TeamPulseCard from "@/components/dashboard/team-pulse-card";
+import TenantPulseCard from "@/components/dashboard/tenant-pulse-card";
 import { useOceanShipmentsData } from "@/hooks/queries/use-ocean-shipments-data";
-import { useTeamUsageData } from "@/hooks/queries/use-team-usage-data";
+import { useTenantUsageData } from "@/hooks/queries/use-tenant-usage-data";
 import { useSession } from "@/store/session";
 
 // Earliest upcoming ETA across the shipment list — picks the smallest
@@ -27,9 +27,9 @@ function pickNextEta(etas: (string | null)[]): string | null {
   });
 }
 
-// Dashboard Overview — redesigned around a "team pulse" hero, a live
+// Dashboard Overview — redesigned around a "tenant pulse" hero, a live
 // activity feed, a latest-shipments list, and an at-risk table. The
-// hero + latest list use real hooks (shipments, team usage); the
+// hero + latest list use real hooks (shipments, tenant usage); the
 // activity feed and at-risk rows read from mock data until matching
 // backend endpoints land. Wiring points are labelled inline so the
 // swap-in later is mechanical.
@@ -38,10 +38,10 @@ export default function DashboardPage() {
   const navigate = useNavigate();
   const params = useParams();
   const session = useSession();
-  const teamId = params.teamId ? Number(params.teamId) : undefined;
+  const tenantId = params.tenantId ? Number(params.tenantId) : undefined;
 
   const { data: shipmentsData } = useOceanShipmentsData();
-  const { data: usage } = useTeamUsageData({ teamId, days: 30 });
+  const { data: usage } = useTenantUsageData({ tenantId, days: 30 });
 
   const shipments = shipmentsData?.data ?? [];
 
@@ -70,14 +70,14 @@ export default function DashboardPage() {
     return { total, active, onTimeRate, nextEta, status };
   }, [shipments]);
 
-  const teamName =
-    session?.user.teams.find((teamRow) => teamRow.team_id === teamId)
-      ?.team_name ??
-    t("team.untitledTeam", { id: teamId ?? "" });
+  const tenantName =
+    session?.user.tenants.find((tenantRow) => tenantRow.tenant_id === tenantId)
+      ?.tenant_name ??
+    t("tenant.untitledTenant", { id: tenantId ?? "" });
 
-  // Member avatars — no per-team member list at /user/me yet, so fall
+  // Member avatars — no per-tenant member list at /user/me yet, so fall
   // back to pravatar thumbs keyed off the current user. Swap for the
-  // real member roster (useTeamMembersData) once wired.
+  // real member roster (useTenantMembersData) once wired.
   const memberAvatars = [
     `https://i.pravatar.cc/40?u=${session?.user.id ?? "me"}`,
     "https://i.pravatar.cc/40?u=dana",
@@ -86,7 +86,7 @@ export default function DashboardPage() {
   const extraMemberCount = 2;
 
   const handleTrackClick = () => {
-    navigate(`/app/${teamId}/ocean/track`);
+    navigate(`/app/${tenantId}/ocean/track`);
   };
 
   return (
@@ -107,8 +107,8 @@ export default function DashboardPage() {
 
       <DashboardTabs onTrackClick={handleTrackClick} />
 
-      <TeamPulseCard
-        teamName={teamName}
+      <TenantPulseCard
+        tenantName={tenantName}
         status={pulse.status}
         onTimeRatePercent={pulse.onTimeRate}
         activeShipments={pulse.active}

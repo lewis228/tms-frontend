@@ -9,10 +9,10 @@ export type ProfileEntity = {
   auth_provider: string;
 };
 
-export type UserTeamRow = {
+export type UserTenantRow = {
   id: number;
-  team_id: number;
-  team_name: string | null;
+  tenant_id: number;
+  tenant_name: string | null;
   permission_group_id: number | null;
 };
 
@@ -36,7 +36,7 @@ export type AppUser = {
   notification_email: string | null;
   event_notification_enabled: boolean;
   language: string | null;
-  teams: UserTeamRow[];
+  tenants: UserTenantRow[];
   files: FileAssetEntity[];
 };
 
@@ -44,7 +44,7 @@ export type AppSession = {
   user: AppUser;
 };
 
-export type TeamEntity = {
+export type TenantEntity = {
   id: number;
   name: string;
   email: string | null;
@@ -53,11 +53,11 @@ export type TeamEntity = {
   timezone: string | null;
 };
 
-// A single team membership row enriched with the member's user info. `id`
-// is the UserTeam row id; `user_id` targets the user themselves (needed for
+// A single tenant membership row enriched with the member's user info. `id`
+// is the UserTenant row id; `user_id` targets the user themselves (needed for
 // DELETE). The two are kept distinct because a re-invited user gets a new
-// UserTeam row.
-export type TeamMemberEntity = {
+// UserTenant row.
+export type TenantMemberEntity = {
   id: number;
   user_id: number;
   email: string;
@@ -68,13 +68,13 @@ export type TeamMemberEntity = {
   created_at: string | null;
 };
 
-export type TeamUsageDailyPoint = {
+export type TenantUsageDailyPoint = {
   date: string; // ISO YYYY-MM-DD (UTC)
   count: number;
 };
 
-export type TeamUsage = {
-  daily: TeamUsageDailyPoint[];
+export type TenantUsage = {
+  daily: TenantUsageDailyPoint[];
   total_count: number;
   today_count: number;
   plan: string;
@@ -83,7 +83,7 @@ export type TeamUsage = {
 
 export type ApiKeyEntity = {
   id: number;
-  team_id: number;
+  tenant_id: number;
   name: string;
   description: string | null;
   prefix: string;
@@ -165,7 +165,7 @@ export type CarrierEntity = {
 
 export type OceanShipmentEntity = {
   id: number;
-  team_id: number;
+  tenant_id: number;
   mbl: string;
   // Carrier is now required at the API boundary (Quick Entry forces selection).
   // Kept nullable in the nested object only to match LocationEntity semantics
@@ -193,7 +193,7 @@ export type OceanShipmentEntity = {
   tracking_frequency: string | null;
   next_scrape_at: string | null;
   // Phase B user metadata. `customer` is a single-assignment FK to the
-  // team-scoped `customers` master — nested for display. `ref_numbers` is
+  // tenant-scoped `customers` master — nested for display. `ref_numbers` is
   // always an array (empty when unset); the backend flattens the join table
   // back to strings on the wire for render simplicity. `tags` is also always
   // an array (empty when unset).
@@ -369,10 +369,10 @@ export type PaymentRecord = {
 };
 
 // Tag assigned to shipments for filtering / reporting. Backed by the
-// backend `tags` table — team-scoped, unique on (team_id, name).
+// backend `tags` table — tenant-scoped, unique on (tenant_id, name).
 export type TagEntity = {
   id: number;
-  team_id: number;
+  tenant_id: number;
   name: string;
   color: string | null; // hex, e.g. "#10b981"
   created_at: string | null;
@@ -380,10 +380,10 @@ export type TagEntity = {
 };
 
 // Customer assigned to shipments (single-assignment M:1). Backed by the
-// backend `customers` table — team-scoped, unique on (team_id, name).
+// backend `customers` table — tenant-scoped, unique on (tenant_id, name).
 export type CustomerEntity = {
   id: number;
-  team_id: number;
+  tenant_id: number;
   name: string;
   created_at: string | null;
   updated_at: string | null;

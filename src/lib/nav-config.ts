@@ -3,9 +3,9 @@
 // imported from non-component code (breadcrumb lookups, analytics event
 // tagging, etc.) without pulling in the sidebar render cost.
 //
-// Each leaf's `path` is *relative* to the team-scoped root `/app/:teamId` —
-// the shell (TeamScopedLayout) prepends the team segment when rendering
-// actual links. This keeps the nav tree team-agnostic.
+// Each leaf's `path` is *relative* to the tenant-scoped root `/app/:tenantId` —
+// the shell (TenantScopedLayout) prepends the tenant segment when rendering
+// actual links. This keeps the nav tree tenant-agnostic.
 
 // Icon names are stringly-typed so the config is serialisable (favourites
 // persist via localStorage). The Sidebar maps these back to lucide-react
@@ -77,7 +77,7 @@ export type NavNode = NavLeaf | NavSection;
 // all stay in sync with the active locale. Keep these keys stable — they
 // persist via the favourites store and are referenced from breadcrumb paths.
 export const NAV_CONFIG: readonly NavNode[] = [
-  // ── Overview (team-wide dashboards & reports) ─────────────
+  // ── Overview (tenant-wide dashboards & reports) ─────────────
   // Dashboard / Reports 를 한 섹션으로 묶어 나머지 도메인 섹션들과 depth 를
   // 통일한다 (모든 최상위가 "펼치기 가능한 section"). 이 구조가 Terminal49 /
   // Project44 계열 SaaS 의 IA 와도 일관.
@@ -263,7 +263,7 @@ export const NAV_CONFIG: readonly NavNode[] = [
 
   // ── Settings ─────────────────────────────────────────────
   // Profile is *not* in this section — it opens as a modal from the user
-  // avatar above the team switcher.
+  // avatar above the tenant switcher.
   {
     type: "section",
     label: "nav.settings",
@@ -271,9 +271,9 @@ export const NAV_CONFIG: readonly NavNode[] = [
     children: [
       {
         type: "leaf",
-        label: "nav.team",
+        label: "nav.tenant",
         iconName: "UsersRound",
-        path: "/settings/team",
+        path: "/settings/tenant",
       },
       {
         type: "leaf",
@@ -323,8 +323,8 @@ export const NAV_CONFIG: readonly NavNode[] = [
 
 // ── Helpers ────────────────────────────────────────────────
 
-/** Strip the `/app/<teamId>` prefix so paths in NAV_CONFIG can match directly. */
-function stripTeamPrefix(pathname: string): string {
+/** Strip the `/app/<tenantId>` prefix so paths in NAV_CONFIG can match directly. */
+function stripTenantPrefix(pathname: string): string {
   const m = pathname.match(/^\/app\/\d+(.*)$/);
   return m ? m[1] : "";
 }
@@ -338,7 +338,7 @@ function stripTeamPrefix(pathname: string): string {
 export function resolveNavMatch(
   pathname: string,
 ): { leaf: NavLeaf; section?: NavSection } | null {
-  const sub = stripTeamPrefix(pathname);
+  const sub = stripTenantPrefix(pathname);
 
   for (const node of NAV_CONFIG) {
     if (node.type === "leaf") {

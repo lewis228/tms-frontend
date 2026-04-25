@@ -21,8 +21,8 @@ function humanize(segment: string): string {
 export function resolveBreadcrumb(pathname: string): string[] {
   const match = resolveNavMatch(pathname);
 
-  const teamScoped = pathname.match(/^\/app\/\d+(.*)$/);
-  const sub = teamScoped ? teamScoped[1] : "";
+  const tenantScoped = pathname.match(/^\/app\/\d+(.*)$/);
+  const sub = tenantScoped ? tenantScoped[1] : "";
 
   if (match) {
     const base: string[] = [];

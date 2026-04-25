@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { combine, devtools, persist } from "zustand/middleware";
 
 // User-level UI language preference. Persisted to localStorage so the choice
-// survives logout (this is an app-wide preference, not team-scoped).
+// survives logout (this is an app-wide preference, not tenant-scoped).
 //
 // Resolution rule: `system` inspects `navigator.language`. Only `ko` and `en`
 // ship as real translations right now, so anything the browser reports that

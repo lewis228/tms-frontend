@@ -46,7 +46,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import TeamSwitcher from "@/components/layout/team-switcher";
+import TenantSwitcher from "@/components/layout/tenant-switcher";
 import { useSignOut } from "@/hooks/mutations/auth/use-sign-out";
 import { useOpenAlertModal } from "@/store/alert-modal";
 import { useIsSidebarCollapsed } from "@/store/sidebar";
@@ -101,13 +101,13 @@ const ICON_MAP: Record<NavIconName, LucideIcon> = {
 
 const IS_MOCK_MODE = import.meta.env.VITE_MOCK_SESSION === "true";
 
-// Build an absolute `/app/:teamId/...` URL from a nav leaf's relative path.
-// Falls back to `/app` when the component is rendered outside a team scope
-// (shouldn't happen — it's only mounted by TeamScopedLayout — but defend).
-function absolutePath(relativePath: string, teamId: string | undefined): string {
-  if (!teamId) return "/app";
-  if (relativePath === "") return `/app/${teamId}`;
-  return `/app/${teamId}${relativePath}`;
+// Build an absolute `/app/:tenantId/...` URL from a nav leaf's relative path.
+// Falls back to `/app` when the component is rendered outside a tenant scope
+// (shouldn't happen — it's only mounted by TenantScopedLayout — but defend).
+function absolutePath(relativePath: string, tenantId: string | undefined): string {
+  if (!tenantId) return "/app";
+  if (relativePath === "") return `/app/${tenantId}`;
+  return `/app/${tenantId}${relativePath}`;
 }
 
 export default function Sidebar() {
@@ -116,7 +116,7 @@ export default function Sidebar() {
   const isCollapsed = useIsSidebarCollapsed();
   const openAlertModal = useOpenAlertModal();
   const { t } = useTranslation();
-  const teamId = params.teamId;
+  const tenantId = params.tenantId;
 
   const { mutate: signOut, isPending: isSignOutPending } = useSignOut({
     onError: (error) => {
@@ -152,12 +152,12 @@ export default function Sidebar() {
         </div>
 
         <div className="pb-3">
-          <TeamSwitcher isCollapsed={isCollapsed} />
+          <TenantSwitcher isCollapsed={isCollapsed} />
         </div>
 
         <FavoritesSection
           isCollapsed={isCollapsed}
-          teamId={teamId}
+          tenantId={tenantId}
           pathname={location.pathname}
         />
 
@@ -166,7 +166,7 @@ export default function Sidebar() {
             <NavNodeRow
               key={nodeKey(node)}
               node={node}
-              teamId={teamId}
+              tenantId={tenantId}
               isCollapsed={isCollapsed}
               currentPath={location.pathname}
               activeLeafPath={activeMatch?.leaf.path}
@@ -230,14 +230,14 @@ function nodeKey(node: NavNode): string {
 
 function NavNodeRow({
   node,
-  teamId,
+  tenantId,
   isCollapsed,
   currentPath,
   activeLeafPath,
   activeSectionLabel,
 }: {
   node: NavNode;
-  teamId: string | undefined;
+  tenantId: string | undefined;
   isCollapsed: boolean;
   currentPath: string;
   activeLeafPath: string | undefined;
@@ -250,7 +250,7 @@ function NavNodeRow({
     return (
       <LeafRow
         leaf={node}
-        teamId={teamId}
+        tenantId={tenantId}
         isCollapsed={isCollapsed}
         currentPath={currentPath}
         activeLeafPath={activeLeafPath}
@@ -260,7 +260,7 @@ function NavNodeRow({
   return (
     <SectionRow
       section={node}
-      teamId={teamId}
+      tenantId={tenantId}
       isCollapsed={isCollapsed}
       currentPath={currentPath}
       activeLeafPath={activeLeafPath}
@@ -271,14 +271,14 @@ function NavNodeRow({
 
 function SectionRow({
   section,
-  teamId,
+  tenantId,
   isCollapsed,
   currentPath,
   activeLeafPath,
   defaultExpanded,
 }: {
   section: NavSection;
-  teamId: string | undefined;
+  tenantId: string | undefined;
   isCollapsed: boolean;
   currentPath: string;
   activeLeafPath: string | undefined;
@@ -312,7 +312,7 @@ function SectionRow({
           <LeafRow
             key={child.path}
             leaf={child}
-            teamId={teamId}
+            tenantId={tenantId}
             isCollapsed
             currentPath={currentPath}
             activeLeafPath={activeLeafPath}
@@ -346,7 +346,7 @@ function SectionRow({
             <LeafRow
               key={child.path}
               leaf={child}
-              teamId={teamId}
+              tenantId={tenantId}
               isCollapsed={false}
               currentPath={currentPath}
               activeLeafPath={activeLeafPath}
@@ -361,13 +361,13 @@ function SectionRow({
 
 function LeafRow({
   leaf,
-  teamId,
+  tenantId,
   isCollapsed,
   activeLeafPath,
   nested,
 }: {
   leaf: NavLeaf;
-  teamId: string | undefined;
+  tenantId: string | undefined;
   isCollapsed: boolean;
   currentPath: string;
   activeLeafPath: string | undefined;
@@ -376,7 +376,7 @@ function LeafRow({
   const { t } = useTranslation();
   const Icon = ICON_MAP[leaf.iconName];
   const isActive = leaf.path === activeLeafPath;
-  const href = absolutePath(leaf.path, teamId);
+  const href = absolutePath(leaf.path, tenantId);
 
   if (leaf.external) {
     return (
@@ -568,11 +568,11 @@ function pickInitial(user: AppUser): string {
 
 function FavoritesSection({
   isCollapsed,
-  teamId,
+  tenantId,
   pathname,
 }: {
   isCollapsed: boolean;
-  teamId: string | undefined;
+  tenantId: string | undefined;
   pathname: string;
 }) {
   const favorites = useFavorites();
@@ -596,8 +596,8 @@ function FavoritesSection({
         </Tooltip>
         {favorites.map((fav) => {
           const Icon = ICON_MAP[fav.iconName as NavIconName] ?? Sparkles;
-          // Favorites store team-agnostic paths (e.g. "/ocean/shipments").
-          // Prepend the CURRENT team so switching teams follows the user.
+          // Favorites store tenant-agnostic paths (e.g. "/ocean/shipments").
+          // Prepend the CURRENT tenant so switching tenants follows the user.
           // Legacy rows that still carry `/app/{oldId}/...` get their id
           // swapped for the same reason; the persist migration cleans them
           // up on next write. Normalising both sides (strip query + trailing
@@ -607,7 +607,7 @@ function FavoritesSection({
             .replace(/^\/app\/\d+/, "")
             .replace(/\?.*$/, "")
             .replace(/\/$/, "");
-          const absolute = `/app/${teamId}${relative}`;
+          const absolute = `/app/${tenantId}${relative}`;
           const isActive = pathname.replace(/\/$/, "") === absolute;
           return (
             <Tooltip key={fav.path} delayDuration={0}>
@@ -649,7 +649,7 @@ function FavoritesSection({
           .replace(/^\/app\/\d+/, "")
           .replace(/\?.*$/, "")
           .replace(/\/$/, "");
-        const absolute = `/app/${teamId}${relative}`;
+        const absolute = `/app/${tenantId}${relative}`;
         const isActive = pathname.replace(/\/$/, "") === absolute;
         return (
           <div

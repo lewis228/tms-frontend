@@ -16,7 +16,7 @@ export default function DxSection() {
         <FadeIn delay={0.1}>
           <p className="mt-4 max-w-lg text-base leading-relaxed text-resend-muted">
             Operators get a polished dashboard the moment they sign in. Platform
-            teams get a clean REST API, webhooks, and a sandbox — so carriers,
+            tenants get a clean REST API, webhooks, and a sandbox — so carriers,
             terminals, and your own systems{" "}
             <em className="text-resend-text">just work together.</em>
           </p>

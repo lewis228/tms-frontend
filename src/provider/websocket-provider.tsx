@@ -4,18 +4,18 @@ import { useTranslation } from "react-i18next";
 import { useQueryClient } from "@tanstack/react-query";
 import { shipmentWs, type ServerEvent } from "@/lib/websocket";
 import { useSession } from "@/store/session";
-import { useTeamScope } from "@/store/team-scope";
+import { useTenantScope } from "@/store/tenant-scope";
 import { QUERY_KEYS } from "@/lib/constants";
 
 /**
  * App 레벨 WebSocket 마운트.
  *
- * `team_id` 가 바뀌거나 세션이 만료되면 연결을 재수립한다. 이벤트는 React Query
+ * `tenant_id` 가 바뀌거나 세션이 만료되면 연결을 재수립한다. 이벤트는 React Query
  * 캐시 무효화 + 선택적 toast 로 처리. 채팅은 향후 같은 훅 베이스에서 타입 분기만
  * 추가하면 된다.
  *
- * SessionProvider / MemberOnlyLayout 가 세션을 확정한 뒤에만 teamId 가 세팅되므로
- * 여기서 별도 가드는 불필요 — teamId 가 null 이면 connect 를 skip 한다.
+ * SessionProvider / MemberOnlyLayout 가 세션을 확정한 뒤에만 tenantId 가 세팅되므로
+ * 여기서 별도 가드는 불필요 — tenantId 가 null 이면 connect 를 skip 한다.
  */
 export default function WebSocketProvider({
   children,
@@ -24,15 +24,15 @@ export default function WebSocketProvider({
 }) {
   const queryClient = useQueryClient();
   const session = useSession();
-  const teamId = useTeamScope();
+  const tenantId = useTenantScope();
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (!session || teamId === null) {
+    if (!session || tenantId === null) {
       shipmentWs.disconnect();
       return;
     }
-    shipmentWs.connect(teamId);
+    shipmentWs.connect(tenantId);
 
     const unsubscribe = shipmentWs.addListener((evt: ServerEvent) => {
       switch (evt.type) {
@@ -73,7 +73,7 @@ export default function WebSocketProvider({
     return () => {
       unsubscribe();
     };
-  }, [session, teamId, queryClient, t]);
+  }, [session, tenantId, queryClient, t]);
 
   return <>{children}</>;
 }

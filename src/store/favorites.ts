@@ -24,7 +24,7 @@ type State = {
 // First-time users land on the Dashboard, so pre-pinning it in Favorites
 // gives them the intended "single-click back to home" shortcut out of the
 // box. The empty path matches the Dashboard leaf in NAV_CONFIG (root of
-// the team-scoped routes) and the title/iconName keys mirror it so the
+// the tenant-scoped routes) and the title/iconName keys mirror it so the
 // sidebar renderer picks up the exact same label + icon.
 const DEFAULT_FAVORITES: FavoriteItem[] = [
   { path: "", title: "nav.dashboard", iconName: "LayoutDashboard" },
@@ -32,10 +32,10 @@ const DEFAULT_FAVORITES: FavoriteItem[] = [
 
 const initialState: State = { items: DEFAULT_FAVORITES };
 
-// Strip `/app/{teamId}` prefix so favorites are team-agnostic — a pinned
-// page follows the user across team switches instead of pinning them back
-// to the team where they first clicked the star.
-const stripTeamPrefix = (path: string) => path.replace(/^\/app\/\d+/, "");
+// Strip `/app/{tenantId}` prefix so favorites are tenant-agnostic — a pinned
+// page follows the user across tenant switches instead of pinning them back
+// to the tenant where they first clicked the star.
+const stripTenantPrefix = (path: string) => path.replace(/^\/app\/\d+/, "");
 
 const useFavoritesStore = create(
   devtools(
@@ -44,10 +44,10 @@ const useFavoritesStore = create(
         actions: {
           // Atomic toggle keyed by path. Used by the Header star button so
           // callers don't need to know whether the current page is pinned.
-          // Path is normalised so re-toggling from a different team still
+          // Path is normalised so re-toggling from a different tenant still
           // finds the existing row.
           toggle: (item: FavoriteItem) => {
-            const normalised = { ...item, path: stripTeamPrefix(item.path) };
+            const normalised = { ...item, path: stripTenantPrefix(item.path) };
             const { items } = get();
             const existing = items.find((i) => i.path === normalised.path);
             if (existing) {
@@ -59,7 +59,7 @@ const useFavoritesStore = create(
             }
           },
           remove: (path: string) => {
-            const normalised = stripTeamPrefix(path);
+            const normalised = stripTenantPrefix(path);
             set((s) => ({
               items: s.items.filter((i) => i.path !== normalised),
             }));
@@ -71,8 +71,8 @@ const useFavoritesStore = create(
       })),
       {
         name: "FavoritesStore",
-        // v2 moved to team-agnostic paths; migrate legacy rows by stripping
-        // the `/app/{teamId}` prefix. v3 adds Dashboard as a default pin
+        // v2 moved to tenant-agnostic paths; migrate legacy rows by stripping
+        // the `/app/{tenantId}` prefix. v3 adds Dashboard as a default pin
         // for anyone whose saved list is empty — respects customised lists
         // (keep as-is), just fills the void for fresh installs that already
         // persisted an empty `items: []` before this change.
@@ -83,7 +83,7 @@ const useFavoritesStore = create(
           if (version < 2) {
             items = items.map((i) => ({
               ...i,
-              path: stripTeamPrefix(i.path),
+              path: stripTenantPrefix(i.path),
             }));
           }
           if (version < 3 && items.length === 0) {

@@ -7,7 +7,7 @@ import { Route, Routes } from "react-router-dom";
 // opposite of what we want.
 import GuestOnlyLayout from "@/components/layout/guest-only-layout";
 import MemberOnlyLayout from "@/components/layout/member-only-layout";
-import TeamScopedLayout from "@/components/layout/team-scoped-layout";
+import TenantScopedLayout from "@/components/layout/tenant-scoped-layout";
 import GlobalLoader from "@/components/global-loader";
 
 // Every page below is split into its own chunk by Vite (one `import()`
@@ -51,7 +51,7 @@ const DeveloperApiKeysPage = lazy(
   () => import("@/pages/developer-api-keys-page"),
 );
 const DeveloperUsagePage = lazy(() => import("@/pages/developer-usage-page"));
-const SettingsTeamPage = lazy(() => import("@/pages/settings-team-page"));
+const SettingsTenantPage = lazy(() => import("@/pages/settings-tenant-page"));
 const SettingsMembersPage = lazy(() => import("@/pages/settings-members-page"));
 const SettingsNotificationsPage = lazy(
   () => import("@/pages/settings-notifications-page"),
@@ -164,7 +164,7 @@ export default function RootRoute() {
         <Route path="/app" element={<MemberOnlyLayout />}>
           <Route index element={<AppHomePage />} />
 
-          <Route path=":teamId" element={<TeamScopedLayout />}>
+          <Route path=":tenantId" element={<TenantScopedLayout />}>
             <Route index element={<DashboardPage />} />
 
             <Route path="live-map" element={<LiveMapPage />} />
@@ -231,7 +231,7 @@ export default function RootRoute() {
               element={<DeveloperWebhooksComingSoonPage />}
             />
 
-            <Route path="settings/team" element={<SettingsTeamPage />} />
+            <Route path="settings/tenant" element={<SettingsTenantPage />} />
             <Route
               path="settings/members"
               element={<SettingsMembersPage />}

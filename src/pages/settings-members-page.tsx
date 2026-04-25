@@ -34,15 +34,15 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useTeamMembersData } from "@/hooks/queries/use-team-members-data";
-import { useRemoveTeamMember } from "@/hooks/mutations/team-member/use-remove-team-member";
+import { useTenantMembersData } from "@/hooks/queries/use-tenant-members-data";
+import { useRemoveTenantMember } from "@/hooks/mutations/tenant-member/use-remove-tenant-member";
 import { useOpenMemberInviteModal } from "@/store/member-invite-modal";
 import { useOpenAlertModal } from "@/store/alert-modal";
 import { useSession } from "@/store/session";
 import { formatTimeAgo } from "@/lib/time";
 import { generateErrorMessage } from "@/lib/error";
 import { cn } from "@/lib/utils";
-import type { TeamMemberEntity } from "@/types";
+import type { TenantMemberEntity } from "@/types";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -54,12 +54,12 @@ const ROLE_LABEL: Record<string, string> = {
   user: "Member",
 };
 
-function getAvatarUrl(member: TeamMemberEntity) {
+function getAvatarUrl(member: TenantMemberEntity) {
   const slug = member.email.replace(/[^a-z0-9]/gi, "");
   return `https://i.pravatar.cc/80?u=${slug}`;
 }
 
-function getSerialId(member: TeamMemberEntity) {
+function getSerialId(member: TenantMemberEntity) {
   return `#CM${String(member.id).padStart(4, "0")}`;
 }
 
@@ -74,14 +74,14 @@ export default function SettingsMembersPage() {
   const params = useParams();
   const session = useSession();
   const { t } = useTranslation();
-  const teamId = params.teamId ? Number(params.teamId) : undefined;
+  const tenantId = params.tenantId ? Number(params.tenantId) : undefined;
   const openInviteModal = useOpenMemberInviteModal();
   const openAlertModal = useOpenAlertModal();
 
-  const { data: members, error, isPending } = useTeamMembersData(teamId);
+  const { data: members, error, isPending } = useTenantMembersData(tenantId);
 
   const { mutate: removeMember, isPending: isRemoveMemberPending } =
-    useRemoveTeamMember({
+    useRemoveTenantMember({
       onSuccess: () => {
         toast.success(t("settings.members.removeSuccess"), {
           position: "top-center",
@@ -100,13 +100,13 @@ export default function SettingsMembersPage() {
     return typeof raw === "number" ? raw : Number(raw);
   }, [session]);
 
-  const handleRemoveClick = (member: TeamMemberEntity) => {
-    if (!teamId) return;
+  const handleRemoveClick = (member: TenantMemberEntity) => {
+    if (!tenantId) return;
     const who = member.name ?? member.email;
     openAlertModal({
       title: t("settings.members.removeConfirmTitle", { who }),
       description: t("settings.members.removeConfirmDescription"),
-      onPositive: () => removeMember({ teamId, userId: member.user_id }),
+      onPositive: () => removeMember({ tenantId, userId: member.user_id }),
     });
   };
 
@@ -217,7 +217,7 @@ export default function SettingsMembersPage() {
                     variant="ghost"
                     size="icon-sm"
                     onClick={() => openInviteModal()}
-                    disabled={!teamId}
+                    disabled={!tenantId}
                     aria-label="Add member"
                   >
                     <Plus className="size-4" />
@@ -312,13 +312,13 @@ function MembersListView({
   onRemove,
   isRemoving,
 }: {
-  members: TeamMemberEntity[];
+  members: TenantMemberEntity[];
   currentUserId: number | null;
   selectedIds: Set<number>;
   isAllSelected: boolean;
   onToggleSelectAll: () => void;
   onToggleSelect: (id: number) => void;
-  onRemove: (member: TeamMemberEntity) => void;
+  onRemove: (member: TenantMemberEntity) => void;
   isRemoving: boolean;
 }) {
   return (
@@ -378,7 +378,7 @@ function MemberTableRow({
   onRemove,
   isRemoving,
 }: {
-  member: TeamMemberEntity;
+  member: TenantMemberEntity;
   isSelected: boolean;
   isSelf: boolean;
   onToggleSelect: () => void;
@@ -484,7 +484,7 @@ function MemberTableRow({
 // ---------------------------------------------------------------------------
 // Grid View
 // ---------------------------------------------------------------------------
-function MembersGridView({ members }: { members: TeamMemberEntity[] }) {
+function MembersGridView({ members }: { members: TenantMemberEntity[] }) {
   return (
     <div className="grid grid-cols-[repeat(auto-fill,minmax(90px,1fr))] gap-1 px-7">
       {members.map((member) => {

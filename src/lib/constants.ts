@@ -1,28 +1,28 @@
 export const QUERY_KEYS = {
-  team: {
-    all: ["team"],
-    byId: (teamId: number) => ["team", "byId", teamId],
+  tenant: {
+    all: ["tenant"],
+    byId: (tenantId: number) => ["tenant", "byId", tenantId],
   },
-  teamMember: {
-    all: ["team-member"],
-    listByTeam: (teamId: number) => ["team-member", "list", teamId],
+  tenantMember: {
+    all: ["tenant-member"],
+    listByTenant: (tenantId: number) => ["tenant-member", "list", tenantId],
   },
-  teamUsage: {
-    all: ["team-usage"],
-    byTeam: (teamId: number, days: number) => [
-      "team-usage",
-      "byTeam",
-      teamId,
+  tenantUsage: {
+    all: ["tenant-usage"],
+    byTenant: (tenantId: number, days: number) => [
+      "tenant-usage",
+      "byTenant",
+      tenantId,
       days,
     ],
   },
   apiKey: {
     all: ["api-key"],
-    listByTeam: (teamId: number) => ["api-key", "list", teamId],
-    byId: (teamId: number, apiKeyId: number) => [
+    listByTenant: (tenantId: number) => ["api-key", "list", tenantId],
+    byId: (tenantId: number, apiKeyId: number) => [
       "api-key",
       "byId",
-      teamId,
+      tenantId,
       apiKeyId,
     ],
   },
@@ -40,7 +40,7 @@ export const QUERY_KEYS = {
   },
   oceanContainer: {
     all: ["ocean-container"],
-    // Global team-wide containers list (Terminal49 Containers page).
+    // Global tenant-wide containers list (Terminal49 Containers page).
     list: (params: Record<string, unknown> = {}) => [
       "ocean-container",
       "list",
@@ -49,18 +49,18 @@ export const QUERY_KEYS = {
   },
   tag: {
     all: ["tag"],
-    // Tags are team-scoped, so the team acts as the outer partitioning key.
-    // One cache slot per team — switching team gives a fresh fetch rather
-    // than overwriting the previous team's list.
-    listByTeam: (teamId: number) => ["tag", "list", teamId],
+    // Tags are tenant-scoped, so the tenant acts as the outer partitioning key.
+    // One cache slot per tenant — switching tenant gives a fresh fetch rather
+    // than overwriting the previous tenant's list.
+    listByTenant: (tenantId: number) => ["tag", "list", tenantId],
   },
   customer: {
     all: ["customer"],
-    // Same partitioning rule as tags — team-scoped autocomplete source.
-    listByTeam: (teamId: number) => ["customer", "list", teamId],
+    // Same partitioning rule as tags — tenant-scoped autocomplete source.
+    listByTenant: (tenantId: number) => ["customer", "list", tenantId],
   },
   carrier: {
-    // Global master catalogue — not team scoped. One cache slot per filter
+    // Global master catalogue — not tenant scoped. One cache slot per filter
     // combo (supported_only / scrapable_only / search).
     all: ["carrier"],
     list: (params: Record<string, unknown> = {}) => [
@@ -70,7 +70,7 @@ export const QUERY_KEYS = {
     ],
   },
   fleet: {
-    // Team-scoped list of vessels carrying this team's active shipments.
+    // Tenant-scoped list of vessels carrying this tenant's active shipments.
     // Populated by REST on first load, then kept fresh via WebSocket events
     // ("vessel.position_updated") that patch each vessel's `position` slot.
     all: ["fleet"],

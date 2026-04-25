@@ -14,7 +14,7 @@ const FEATURES = [
   { icon: Monitor, title: "Carrier health monitoring", desc: "Per-carrier success rate dashboards + alerting when a site starts blocking — we swap fingerprints before you notice." },
   { icon: FileCheck, title: "Terminal visibility", desc: "LA/LB LFD, holds, and yard positions come from eModal, APM, Fenix, YTI, and LBCT integrations — a single status per container." },
   { icon: Building, title: "Battle-tested stack", desc: "Playwright / curl_cffi / Camoufox hybrid engine fights bot walls; Celery + Redis queue scales horizontally behind the API." },
-  { icon: Lock, title: "SaaS-grade auth", desc: "JWT for web users, X-API-Key for servers, plan-based rate limits, and team-scoped multi-tenancy at the DB level." },
+  { icon: Lock, title: "SaaS-grade auth", desc: "JWT for web users, X-API-Key for servers, plan-based rate limits, and tenant-scoped multi-tenancy at the DB level." },
 ];
 
 export default function DeliverabilitySection() {

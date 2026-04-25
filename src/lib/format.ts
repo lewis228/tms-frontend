@@ -1,17 +1,17 @@
-import { getTeamPreferences } from "@/store/team-preferences";
+import { getTenantPreferences } from "@/store/tenant-preferences";
 
 // Centralised formatters. Every amount/date/weight/volume displayed in the
 // app should funnel through one of these so timezone, currency, decimal
-// places, etc. stay consistent with the user's team preferences.
+// places, etc. stay consistent with the user's tenant preferences.
 //
 // **UTC-first rule.** All date inputs here must be UTC ISO strings (what the
 // backend emits). These helpers are the *only* place we shift to the user's
 // display timezone. Don't do ad-hoc `new Date(x).toLocaleString()` in
 // components — it silently uses the browser's zone and diverges from other
-// members of the same team.
+// members of the same tenant.
 //
-// Reactivity: formatters read `getTeamPreferences()` on each call. Inside
-// React components, also subscribe via `useTeamPreferences()` from the
+// Reactivity: formatters read `getTenantPreferences()` on each call. Inside
+// React components, also subscribe via `useTenantPreferences()` from the
 // store so the component re-renders when prefs change.
 
 const CURRENCY_SYMBOL: Record<string, string> = {
@@ -25,7 +25,7 @@ const CURRENCY_SYMBOL: Record<string, string> = {
 // ── Amount ──────────────────────────────────────────────────────────
 
 export function formatAmount(value: number): string {
-  const { currency, decimalPlaces } = getTeamPreferences();
+  const { currency, decimalPlaces } = getTenantPreferences();
   const symbol = CURRENCY_SYMBOL[currency] ?? "";
   const formatted = value.toLocaleString(undefined, {
     minimumFractionDigits: decimalPlaces,
@@ -58,7 +58,7 @@ function pickPart(
 }
 
 export function formatDate(iso: string | Date): string {
-  const { timezone, dateFormat } = getTeamPreferences();
+  const { timezone, dateFormat } = getTenantPreferences();
   const parts = partsFor(iso, timezone);
   const yyyy = pickPart(parts, "year");
   const mm = pickPart(parts, "month");
@@ -76,7 +76,7 @@ export function formatDate(iso: string | Date): string {
 }
 
 export function formatTime(iso: string | Date): string {
-  const { timezone, timeFormat } = getTeamPreferences();
+  const { timezone, timeFormat } = getTenantPreferences();
   const d = typeof iso === "string" ? new Date(iso) : iso;
   return new Intl.DateTimeFormat("en-US", {
     timeZone: timezone,
@@ -93,7 +93,7 @@ export function formatDateTime(iso: string | Date): string {
 // ── Weight / Volume ────────────────────────────────────────────────
 
 export function formatWeight(kg: number): string {
-  const { unitSystem } = getTeamPreferences();
+  const { unitSystem } = getTenantPreferences();
   if (unitSystem === "metric") {
     return `${kg.toLocaleString(undefined, {
       maximumFractionDigits: 2,
@@ -104,7 +104,7 @@ export function formatWeight(kg: number): string {
 }
 
 export function formatVolume(cbm: number): string {
-  const { unitSystem } = getTeamPreferences();
+  const { unitSystem } = getTenantPreferences();
   if (unitSystem === "metric") {
     return `${cbm.toLocaleString(undefined, {
       maximumFractionDigits: 3,

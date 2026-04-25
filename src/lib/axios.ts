@@ -3,7 +3,7 @@ import axios, {
   type AxiosRequestConfig,
   type InternalAxiosRequestConfig,
 } from "axios";
-import { getCurrentTeamId } from "@/lib/team-scope";
+import { getCurrentTenantId } from "@/lib/tenant-scope";
 import { generateRequestId } from "@/lib/request-id";
 import { toastError } from "@/lib/toast";
 import { generateErrorMessage } from "@/lib/error";
@@ -45,11 +45,11 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  // X-Team-Id — current selected team (URL `/app/:teamId/*`). Auth endpoints
-  // are team-agnostic, so skip them; /user/me is too but the header is harmless.
-  const teamId = getCurrentTeamId();
-  if (teamId !== null && !config.url?.startsWith("/auth/")) {
-    headers["X-Team-Id"] = String(teamId);
+  // X-Tenant-Id — current selected tenant (URL `/app/:tenantId/*`). Auth endpoints
+  // are tenant-agnostic, so skip them; /user/me is too but the header is harmless.
+  const tenantId = getCurrentTenantId();
+  if (tenantId !== null && !config.url?.startsWith("/auth/")) {
+    headers["X-Tenant-Id"] = String(tenantId);
   }
 
   // Common correlation headers for server logs and client-version gating.
@@ -112,16 +112,16 @@ api.interceptors.response.use(
       | (AxiosRequestConfig & { _retry?: boolean })
       | undefined;
 
-    // 403 NOT_TEAM_MEMBER — user lost membership (kicked, team deleted, or
+    // 403 NOT_TENANT_MEMBER — user lost membership (kicked, tenant deleted, or
     // hand-edited URL). Emit a global event so MemberOnlyLayout can clear the
-    // scope and redirect to /app (team hub). Does not reject with a retry —
+    // scope and redirect to /app (tenant hub). Does not reject with a retry —
     // we want the caller to surface the error normally.
     if (error.response?.status === 403) {
       const data = error.response?.data as
         | { code?: string }
         | undefined;
-      if (data?.code === "NOT_TEAM_MEMBER" && typeof window !== "undefined") {
-        window.dispatchEvent(new Event("team:not-member"));
+      if (data?.code === "NOT_TENANT_MEMBER" && typeof window !== "undefined") {
+        window.dispatchEvent(new Event("tenant:not-member"));
       }
     }
 
