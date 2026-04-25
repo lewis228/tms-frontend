@@ -55,6 +55,14 @@ export const QUERY_KEYS = {
     list: (params: Record<string, unknown> = {}) =>
       ["settlement", "list", params] as const,
     byId: (id: string) => ["settlement", "byId", id] as const,
+    extras: (id: string) => ["settlement", "extras", id] as const,
+    auditLogs: (id: string) => ["settlement", "auditLogs", id] as const,
+  },
+  rateSetting: {
+    all: ["rate-setting"] as const,
+    list: (params: Record<string, unknown> = {}) =>
+      ["rate-setting", "list", params] as const,
+    byId: (id: string) => ["rate-setting", "byId", id] as const,
   },
   leg: {
     all: ["leg"] as const,

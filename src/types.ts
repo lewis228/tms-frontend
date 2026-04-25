@@ -237,3 +237,39 @@ export type RealtimeEvent = {
   payload: Record<string, unknown> | null;
   occurredAt: string;
 };
+
+// Phase 8: Settlement / ExtraCharge / AuditLog / RateSetting
+export type ExtraChargeEntity = {
+  id: string;
+  settlementId: string;
+  type: string;
+  amount: string;
+  description: string | null;
+  createdAt: string;
+};
+
+export type SettlementAuditLog = {
+  id: string;
+  settlementId: string;
+  action: string;
+  actorId: string | null;
+  before: Record<string, unknown> | null;
+  after: Record<string, unknown> | null;
+  reason: string | null;
+  createdAt: string;
+};
+
+export type RateSettingEntity = {
+  id: string;
+  tenantId: string;
+  name: string;
+  rateType: RateType;
+  flatAmount: string | null;
+  ratePercent: string | null;
+  ratePerMile: string | null;
+  effectiveDate: string;
+  isActive: boolean;
+  description: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
