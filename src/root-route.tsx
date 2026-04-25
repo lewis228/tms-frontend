@@ -22,6 +22,7 @@ const MaintenancePage = lazy(() => import("@/pages/maintenance-page"));
 const LandingLayout = lazy(() => import("@/pages/landing/landing-layout"));
 const LandingPage = lazy(() => import("@/pages/landing/landing-page"));
 const MasterVesselsPage = lazy(() => import("@/pages/master-vessels-page"));
+const MasterTerminalsPage = lazy(() => import("@/pages/master-terminals-page"));
 
 function Placeholder({ name }: { name: string }) {
   return (
@@ -88,10 +89,7 @@ export default function RootRoute() {
               path="master/drivers"
               element={<Placeholder name="Drivers" />}
             />
-            <Route
-              path="master/terminals"
-              element={<Placeholder name="Terminals" />}
-            />
+            <Route path="master/terminals" element={<MasterTerminalsPage />} />
             <Route path="master/vessels" element={<MasterVesselsPage />} />
             <Route
               path="master/locations"
