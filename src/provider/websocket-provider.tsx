@@ -89,13 +89,20 @@ export default function WebSocketProvider({
         case "settlement.adjusted":
         case "settlement.approved":
         case "settlement.unapproved":
-          // Settlement 도메인은 Phase 8 에서 query keys 추가 후 invalidate.
-          // legId 가 있으면 leg 캐시도 갱신.
+          qc.invalidateQueries({ queryKey: QUERY_KEYS.settlement.all });
+          if (settlementId) {
+            qc.invalidateQueries({
+              queryKey: QUERY_KEYS.settlement.byId(settlementId),
+            });
+            qc.invalidateQueries({
+              queryKey: QUERY_KEYS.settlement.extras(settlementId),
+            });
+            qc.invalidateQueries({
+              queryKey: QUERY_KEYS.settlement.auditLogs(settlementId),
+            });
+          }
           if (legId) {
             qc.invalidateQueries({ queryKey: QUERY_KEYS.leg.byId(legId) });
-          }
-          if (settlementId) {
-            // future: invalidate settlement.byId(settlementId)
           }
           break;
         default:
