@@ -1,40 +1,38 @@
+// 단일 axios 인스턴스. 백엔드 TMS API (FastAPI) 와 매칭.
+//
+// 인터셉터:
+// 1. Request — Authorization: Bearer <access>, X-Tenant-Id (SUPER_ADMIN 만), X-Request-ID.
+// 2. Response 401 — refresh token 으로 /api/v1/auth/refresh 호출, 성공 시 원 요청 1회 재시도.
+//                    refresh 도 실패하면 store clear + /sign-in.
+//
+// 동시성:
+// - refresh in-flight 인 동안 다른 401 들이 오면 같은 promise 를 await (단일 호출 보장).
 import axios, {
   type AxiosError,
   type AxiosRequestConfig,
   type InternalAxiosRequestConfig,
 } from "axios";
-import { getCurrentTenantId } from "@/lib/tenant-scope";
+
+import {
+  authStore,
+  clearAuth,
+  getAccessToken,
+  getRefreshToken,
+  setTokensModule,
+  getCurrentRoleModule,
+  getCurrentTenantIdModule,
+} from "@/store/auth";
 import { generateRequestId } from "@/lib/request-id";
-import { toastError } from "@/lib/toast";
-import { generateErrorMessage } from "@/lib/error";
+import type { TokenPair } from "@/types";
 
-const APP_VERSION = import.meta.env.VITE_APP_VERSION ?? "0.0.0";
+const APP_VERSION = import.meta.env.VITE_APP_VERSION ?? "0.1.0";
 
-export const ACCESS_TOKEN_KEY = "access_token";
-
-// `||` fallback catches empty strings in .env (e.g. `VITE_API_URL=`), not just null/undefined.
 export const API_BASE_URL =
   import.meta.env.VITE_API_URL || "http://localhost:8080";
 
-// All domain endpoints live under /api/v1. Exported separately from
-// API_BASE_URL so OAuth popup URLs and refresh calls (which bypass the axios
-// instance to avoid its interceptor) can share the same prefix.
 export const API_V1_URL = `${API_BASE_URL}/api/v1`;
 
-export function getAccessToken(): string | null {
-  return localStorage.getItem(ACCESS_TOKEN_KEY);
-}
-export function setAccessToken(token: string) {
-  localStorage.setItem(ACCESS_TOKEN_KEY, token);
-}
-export function clearAccessToken() {
-  localStorage.removeItem(ACCESS_TOKEN_KEY);
-}
-
-const api = axios.create({
-  baseURL: API_V1_URL,
-  withCredentials: true,
-});
+const api = axios.create({ baseURL: API_V1_URL });
 
 api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   config.headers = config.headers ?? {};
@@ -45,15 +43,13 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  // X-Tenant-Id — current selected tenant (URL `/app/:tenantId/*`). Auth endpoints
-  // are tenant-agnostic, so skip them; /user/me is too but the header is harmless.
-  const tenantId = getCurrentTenantId();
-  if (tenantId !== null && !config.url?.startsWith("/auth/")) {
-    headers["X-Tenant-Id"] = String(tenantId);
+  // SUPER_ADMIN 만 X-Tenant-Id 사용 (다른 tenant 조작). 일반 사용자는 JWT 의 tenant_id 면 충분.
+  const role = getCurrentRoleModule();
+  const tenantId = getCurrentTenantIdModule();
+  if (role === "SUPER_ADMIN" && tenantId && !config.url?.startsWith("/auth/")) {
+    headers["X-Tenant-Id"] = tenantId;
   }
 
-  // Common correlation headers for server logs and client-version gating.
-  // X-Request-ID survives retries — the 401-refresh path below preserves it.
   if (!headers["X-Request-ID"]) {
     headers["X-Request-ID"] = generateRequestId();
   }
@@ -65,20 +61,17 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 
 let refreshPromise: Promise<string> | null = null;
 
-// HTTP 401 재시도 경로와 WebSocket 재연결 경로가 동시에 refresh 를 호출할 수
-// 있다. 함수 내부에서 in-flight 프로미스를 공유하도록 가드를 둠.
 export async function refreshAccessToken(): Promise<string> {
   if (refreshPromise) return refreshPromise;
   refreshPromise = (async () => {
     try {
-      const resp = await axios.post(
-        `${API_V1_URL}/auth/token/access`,
-        {},
-        { withCredentials: true },
-      );
-      const newToken: string = resp.data.access_token;
-      setAccessToken(newToken);
-      return newToken;
+      const refresh = getRefreshToken();
+      if (!refresh) throw new Error("no refresh token");
+      const resp = await axios.post<TokenPair>(`${API_V1_URL}/auth/refresh`, {
+        refreshToken: refresh,
+      });
+      setTokensModule(resp.data.accessToken, resp.data.refreshToken);
+      return resp.data.accessToken;
     } finally {
       refreshPromise = null;
     }
@@ -86,8 +79,6 @@ export async function refreshAccessToken(): Promise<string> {
   return refreshPromise;
 }
 
-// JWT 의 exp 클레임을 디코드해 leeway 초 안에 만료되는지 판정. 토큰이 없거나
-// 디코드 실패하면 "만료됨" 으로 취급 (호출부가 refresh 로 복구 시도).
 export function isAccessTokenExpiringSoon(leewaySec: number = 30): boolean {
   const token = getAccessToken();
   if (!token) return true;
@@ -112,63 +103,38 @@ api.interceptors.response.use(
       | (AxiosRequestConfig & { _retry?: boolean })
       | undefined;
 
-    // 403 NOT_TENANT_MEMBER — user lost membership (kicked, tenant deleted, or
-    // hand-edited URL). Emit a global event so MemberOnlyLayout can clear the
-    // scope and redirect to /app (tenant hub). Does not reject with a retry —
-    // we want the caller to surface the error normally.
-    if (error.response?.status === 403) {
-      const data = error.response?.data as
-        | { code?: string }
-        | undefined;
-      if (data?.code === "NOT_TENANT_MEMBER" && typeof window !== "undefined") {
-        window.dispatchEvent(new Event("tenant:not-member"));
-      }
-    }
-
-    // Auto-toast for infrastructure-class failures the caller can't meaningfully
-    // recover from. 4xx is left to the caller (form validation, optimistic
-    // rollback, etc.) — the dedup layer in lib/toast will collapse duplicates
-    // across bursts (e.g. multiple parallel queries all seeing the same 503).
-    const status = error.response?.status;
-    const isNetworkError = !error.response;
-    const isServerError = typeof status === "number" && status >= 500;
-    if (
-      (isServerError || isNetworkError) &&
-      !original?.url?.includes("/auth/token/access")
-    ) {
-      toastError(generateErrorMessage(error));
-    }
-
     if (
       !original ||
       error.response?.status !== 401 ||
       original._retry ||
-      original.url?.includes("/auth/token/access")
+      original.url?.includes("/auth/refresh") ||
+      original.url?.includes("/auth/login")
     ) {
       return Promise.reject(error);
     }
 
     original._retry = true;
-
     try {
       const newToken = await refreshAccessToken();
-
       original.headers = original.headers ?? {};
       (original.headers as Record<string, string>)["Authorization"] =
         `Bearer ${newToken}`;
       return api(original);
     } catch (refreshErr) {
-      clearAccessToken();
+      clearAuth();
       if (typeof window !== "undefined") {
-        // Custom event lets SessionProvider clear Zustand session. Avoids a
-        // hard window.location navigation, which on unauthenticated routes
-        // (`/`, `/sign-in`) causes an infinite reload loop: the next mount
-        // calls fetchMe → 401 → refresh → 401 → nav → reload → ...
-        window.dispatchEvent(new Event("auth:session-expired"));
+        window.location.href = "/sign-in";
       }
       return Promise.reject(refreshErr);
     }
   },
 );
+
+// store 가 clear 되면 in-flight refresh 도 무효화.
+authStore.subscribe((state, prev) => {
+  if (prev.refreshToken && !state.refreshToken) {
+    refreshPromise = null;
+  }
+});
 
 export default api;

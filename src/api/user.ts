@@ -1,22 +1,59 @@
+// /api/v1/users/* 매핑.
 import api from "@/lib/axios";
-import type { AppUser } from "@/types";
+import type { PagedResponse, UserEntity, UserRole } from "@/types";
 
-// Fields editable from the Profile page. Mirrors the backend
-// UserProfileUpdateRequest — all fields optional so the client can PATCH
-// partial updates.
-export type UpdateMePayload = {
-  name?: string | null;
-  phone?: string | null;
-  event_notification_enabled?: boolean;
-  language?: string | null;
-  // File attachments — two-step flow: UI gets a temp key from /file/upload-urls,
-  // then passes it here for the server to confirm. Kept optional; Profile UI
-  // doesn't surface file upload yet.
-  temp_keys?: string[];
-  remove_file_ids?: number[];
-};
-
-export async function updateMe(payload: UpdateMePayload) {
-  const { data } = await api.patch<AppUser>("/user/me", payload);
+export async function fetchMe(): Promise<UserEntity> {
+  const { data } = await api.get<UserEntity>("/users/me");
   return data;
+}
+
+export async function changeMyPassword(payload: {
+  currentPassword?: string;
+  newPassword: string;
+}): Promise<UserEntity> {
+  const { data } = await api.patch<UserEntity>("/users/me/password", payload);
+  return data;
+}
+
+export async function listUsers(
+  params: { page?: number; size?: number } = {},
+): Promise<PagedResponse<UserEntity>> {
+  const { data } = await api.get<PagedResponse<UserEntity>>("/users", {
+    params,
+  });
+  return data;
+}
+
+export async function fetchUser(id: string): Promise<UserEntity> {
+  const { data } = await api.get<UserEntity>(`/users/${id}`);
+  return data;
+}
+
+export async function createUser(payload: {
+  email: string;
+  name: string;
+  password: string;
+  role: UserRole;
+  phone?: string | null;
+  tenantId?: string | null;
+}): Promise<UserEntity> {
+  const { data } = await api.post<UserEntity>("/users", payload);
+  return data;
+}
+
+export async function updateUser(
+  id: string,
+  payload: Partial<{
+    name: string;
+    phone: string | null;
+    isActive: boolean;
+    role: UserRole;
+  }>,
+): Promise<UserEntity> {
+  const { data } = await api.patch<UserEntity>(`/users/${id}`, payload);
+  return data;
+}
+
+export async function deleteUser(id: string): Promise<void> {
+  await api.delete(`/users/${id}`);
 }

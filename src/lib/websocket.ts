@@ -1,43 +1,56 @@
+// 백엔드 WebSocket 클라이언트. ste 의 ShipmentWebSocket 패턴을 그대로 차용 +
+// 백엔드 envelope 매칭 (`{type, tenantId, actorId, payload, occurredAt}`).
+//
+// 백엔드 endpoint: `WS /api/v1/ws?token=<accessJWT>&tenant_id=<id>` (SUPER_ADMIN 만 query).
+// Close codes: 4001 EXPIRED / 4002 INVALID / 4003 NO_TENANT / 4004 IDLE_TIMEOUT.
+//
+// 클라:
+// - 30s 마다 ping 전송. 60s pong 없어도 backend idle close 로 정리됨.
+// - 서버 ping 받으면 즉시 pong 응답.
+// - 만료 직전이면 connect 전에 refreshAccessToken().
+// - 4001(EXPIRED) close → refresh 후 reconnect.
+// - 그 외 close → exponential backoff 재연결.
 import {
   API_BASE_URL,
-  getAccessToken,
   isAccessTokenExpiringSoon,
   refreshAccessToken,
 } from "@/lib/axios";
-
-// ws(s)://<api-host>/api/v1/ws 로 연결.
-// API_BASE_URL 은 http(s) 기반 — ws(s) 로 스킴 치환.
-function wsUrlFor(tenantId: number, token: string): string {
-  const httpBase = API_BASE_URL.replace(/^http(s?):\/\//, "ws$1://");
-  // 프론트 axios 인스턴스의 baseURL 은 `${API_BASE_URL}/api/v1` 이라
-  // WS 도 동일 prefix 아래 둔다 (main.py 의 FastAPI root).
-  return `${httpBase}/api/v1/ws?token=${encodeURIComponent(token)}&tenant_id=${tenantId}`;
-}
+import { getAccessToken, getCurrentRoleModule } from "@/store/auth";
 
 export type ServerEvent = {
   type: string;
-  timestamp: string;
-  tenant_id: number;
-  payload: Record<string, unknown>;
+  tenantId: string;
+  actorId: string | null;
+  payload: Record<string, unknown> | null;
+  occurredAt: string;
 };
 
 type EventListener = (evt: ServerEvent) => void;
 
-// Singleton — App 전체에서 연결 하나만 유지한다.
-// tenant_id 가 바뀌면 reconnect 로 재수립 (X-Tenant-Id 처럼 연결 단위로 바인딩).
-class ShipmentWebSocket {
-  private ws: WebSocket | null = null;
-  private tenantId: number | null = null;
-  private listeners: Set<EventListener> = new Set();
+const PING_INTERVAL_MS = 30_000;
+const CLOSE_EXPIRED = 4001;
 
-  // 재연결 백오프 — 1s / 2s / 4s / 8s / cap 30s.
+function wsUrlFor(tenantId: string, token: string): string {
+  const httpBase = API_BASE_URL.replace(/^http(s?):\/\//, "ws$1://");
+  const role = getCurrentRoleModule();
+  const url = new URL(`${httpBase}/api/v1/ws`);
+  url.searchParams.set("token", token);
+  if (role === "SUPER_ADMIN") {
+    url.searchParams.set("tenant_id", tenantId);
+  }
+  return url.toString();
+}
+
+class RealtimeWebSocket {
+  private ws: WebSocket | null = null;
+  private tenantId: string | null = null;
+  private listeners: Set<EventListener> = new Set();
   private retryTimer: ReturnType<typeof setTimeout> | null = null;
   private retryAttempt = 0;
-
-  // 명시적 disconnect 인지, 네트워크 끊김인지 구분.
   private intentionalClose = false;
+  private pingTimer: ReturnType<typeof setInterval> | null = null;
 
-  connect(tenantId: number): void {
+  connect(tenantId: string): void {
     if (this.tenantId === tenantId && this.ws?.readyState === WebSocket.OPEN) {
       return;
     }
@@ -54,6 +67,10 @@ class ShipmentWebSocket {
       clearTimeout(this.retryTimer);
       this.retryTimer = null;
     }
+    if (this.pingTimer) {
+      clearInterval(this.pingTimer);
+      this.pingTimer = null;
+    }
     if (this.ws) {
       try {
         this.ws.close();
@@ -67,33 +84,24 @@ class ShipmentWebSocket {
 
   addListener(fn: EventListener): () => void {
     this.listeners.add(fn);
-    return () => this.listeners.delete(fn);
+    return () => {
+      this.listeners.delete(fn);
+    };
   }
 
   private async _open(): Promise<void> {
     const tenantId = this.tenantId;
-    if (tenantId === null) {
-      // 팀 없음 — 상위(`WebSocketProvider`)가 tenantId 세팅되면 connect() 재호출.
-      return;
-    }
+    if (tenantId === null) return;
 
-    // 연결 직전 토큰 상태 점검. 만료됐거나 곧 만료면 refresh 선행 — 아니면
-    // 서버가 1008(Policy Violation) 으로 핸드셰이크를 거부하고, 프론트는 같은
-    // 만료 토큰으로 영영 재시도하는 루프에 빠진다 (axios 의 401 refresh 가
-    // WebSocket 에는 닿지 않기 때문).
     let token = getAccessToken();
     if (!token || isAccessTokenExpiringSoon()) {
       try {
         token = await refreshAccessToken();
       } catch {
-        // refresh 도 실패 = refresh 쿠키 만료 또는 세션 무효. axios 인터셉터의
-        // "auth:session-expired" 이벤트 경로가 로그아웃 UI 를 담당하므로 여기선
-        // 조용히 포기. 토큰이 다시 생기면 상위에서 connect() 재호출.
         return;
       }
     }
 
-    // async 대기 중 disconnect() / 팀 전환이 일어났을 수 있으니 재확인.
     if (this.intentionalClose || this.tenantId !== tenantId || !token) {
       return;
     }
@@ -104,29 +112,60 @@ class ShipmentWebSocket {
 
       ws.onopen = () => {
         this.retryAttempt = 0;
+        this._startHeartbeat();
       };
       ws.onmessage = (event) => {
-        let parsed: ServerEvent | null = null;
+        let parsed: unknown = null;
         try {
-          parsed = JSON.parse(event.data) as ServerEvent;
+          parsed = JSON.parse(event.data);
         } catch {
           return;
         }
-        if (!parsed) return;
+        if (
+          parsed === null ||
+          typeof parsed !== "object" ||
+          !("type" in parsed)
+        ) {
+          return;
+        }
+        const obj = parsed as Record<string, unknown>;
+        if (obj.type === "ping") {
+          try {
+            ws.send(JSON.stringify({ type: "pong" }));
+          } catch {
+            // ignore
+          }
+          return;
+        }
+        if (obj.type === "pong") return;
+        const evt = obj as unknown as ServerEvent;
         for (const fn of this.listeners) {
           try {
-            fn(parsed);
+            fn(evt);
           } catch {
             // 개별 리스너 실패가 다른 리스너를 막지 않도록 삼킨다.
           }
         }
       };
       ws.onerror = () => {
-        // onclose 가 이어서 실행되므로 여기선 no-op.
+        // onclose 가 이어 실행되므로 여기선 no-op.
       };
-      ws.onclose = () => {
+      ws.onclose = (event) => {
         this.ws = null;
-        if (this.intentionalClose) {
+        if (this.pingTimer) {
+          clearInterval(this.pingTimer);
+          this.pingTimer = null;
+        }
+        if (this.intentionalClose) return;
+        if (event.code === CLOSE_EXPIRED) {
+          void (async () => {
+            try {
+              await refreshAccessToken();
+            } catch {
+              return;
+            }
+            void this._open();
+          })();
           return;
         }
         this._scheduleReconnect();
@@ -134,6 +173,19 @@ class ShipmentWebSocket {
     } catch {
       this._scheduleReconnect();
     }
+  }
+
+  private _startHeartbeat(): void {
+    if (this.pingTimer) clearInterval(this.pingTimer);
+    this.pingTimer = setInterval(() => {
+      if (this.ws?.readyState === WebSocket.OPEN) {
+        try {
+          this.ws.send(JSON.stringify({ type: "ping" }));
+        } catch {
+          // ignore — 다음 onclose 가 처리.
+        }
+      }
+    }, PING_INTERVAL_MS);
   }
 
   private _scheduleReconnect(): void {
@@ -147,4 +199,4 @@ class ShipmentWebSocket {
   }
 }
 
-export const shipmentWs = new ShipmentWebSocket();
+export const realtimeWs = new RealtimeWebSocket();
