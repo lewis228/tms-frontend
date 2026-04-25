@@ -73,6 +73,12 @@ export const QUERY_KEYS = {
     byDriver: (driverId: string) => ["leg", "byDriver", driverId] as const,
     byId: (id: string) => ["leg", "byId", id] as const,
   },
+  notification: {
+    all: ["notification"] as const,
+    list: (params: Record<string, unknown> = {}) =>
+      ["notification", "list", params] as const,
+    unreadCount: ["notification", "unreadCount"] as const,
+  },
 };
 
 export const PAGE_SIZE = 20;

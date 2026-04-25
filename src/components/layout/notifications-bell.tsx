@@ -1,7 +1,6 @@
 // 헤더 우측 Bell — 미확인 카운트 + 클릭 시 popover 로 최근 알림.
 //
-// store/notifications 가 WebSocketProvider 로부터 push 받음.
-// 백엔드 알림 inbox 도메인 추후 도입 시 이 위젯이 fetch 로 전환.
+// 서버 inbox 사용 (api/v1/notifications). WS event 가 도착하면 캐시 invalidate.
 import { Link } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
@@ -10,22 +9,23 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  useMarkAllNotificationsRead,
-  useMarkNotificationRead,
-  useNotifications,
-  useUnreadNotificationCount,
-} from "@/store/notifications";
+import { useMarkAllNotificationsRead } from "@/hooks/mutations/notification/use-mark-all-notifications-read";
+import { useMarkNotificationRead } from "@/hooks/mutations/notification/use-mark-notification-read";
+import { useNotificationsData } from "@/hooks/queries/use-notifications-data";
+import { useUnreadNotificationCountData } from "@/hooks/queries/use-unread-notification-count-data";
+import { notificationLinkFor } from "@/lib/notification-link";
 
 const PREVIEW_LIMIT = 8;
 
 export default function NotificationsBell() {
-  const items = useNotifications();
-  const unread = useUnreadNotificationCount();
-  const markRead = useMarkNotificationRead();
-  const markAllRead = useMarkAllNotificationsRead();
+  const { data: page } = useNotificationsData(1);
+  const { data: unread = 0 } = useUnreadNotificationCountData();
 
-  const preview = items.slice(0, PREVIEW_LIMIT);
+  const { mutate: markRead } = useMarkNotificationRead();
+  const { mutate: markAll, isPending: isMarkAllPending } =
+    useMarkAllNotificationsRead();
+
+  const preview = (page?.items ?? []).slice(0, PREVIEW_LIMIT);
 
   return (
     <Popover>
@@ -49,8 +49,8 @@ export default function NotificationsBell() {
           <Button
             variant="ghost"
             size="sm"
-            disabled={unread === 0}
-            onClick={() => markAllRead()}
+            disabled={unread === 0 || isMarkAllPending}
+            onClick={() => markAll()}
             className="h-auto px-2 py-1 text-xs"
           >
             모두 읽음
@@ -64,21 +64,22 @@ export default function NotificationsBell() {
         ) : (
           <ul className="max-h-80 overflow-y-auto py-1">
             {preview.map((n) => {
+              const link = notificationLinkFor(n);
               const inner = (
                 <div className="flex w-full flex-col gap-0.5">
                   <div className="flex items-center gap-2">
-                    {!n.read && (
+                    {!n.isRead && (
                       <span className="size-1.5 shrink-0 rounded-full bg-blue-500" />
                     )}
                     <span className="truncate text-sm">{n.title}</span>
                   </div>
-                  {n.description && (
+                  {n.body && (
                     <span className="truncate text-xs text-muted-foreground">
-                      {n.description}
+                      {n.body}
                     </span>
                   )}
                   <span className="text-[10px] text-muted-foreground">
-                    {new Date(n.occurredAt).toLocaleString("ko-KR", {
+                    {new Date(n.createdAt).toLocaleString("ko-KR", {
                       dateStyle: "short",
                       timeStyle: "short",
                     })}
@@ -88,14 +89,14 @@ export default function NotificationsBell() {
 
               const className =
                 "block w-full px-3 py-2 text-left transition-colors hover:bg-accent/50 " +
-                (n.read ? "" : "bg-blue-50/40");
+                (n.isRead ? "" : "bg-blue-50/40");
 
-              if (n.link) {
+              if (link) {
                 return (
                   <li key={n.id}>
                     <Link
-                      to={n.link}
-                      onClick={() => markRead(n.id)}
+                      to={link}
+                      onClick={() => !n.isRead && markRead(n.id)}
                       className={className}
                     >
                       {inner}
@@ -107,7 +108,7 @@ export default function NotificationsBell() {
                 <li key={n.id}>
                   <button
                     type="button"
-                    onClick={() => markRead(n.id)}
+                    onClick={() => !n.isRead && markRead(n.id)}
                     className={className}
                   >
                     {inner}

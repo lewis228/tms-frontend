@@ -238,16 +238,23 @@ export type RealtimeEvent = {
   occurredAt: string;
 };
 
-// In-app notification — WS event 가 도착하면 store 에 누적.
-// 백엔드 알림 도메인 별도 도입 전까지는 클라이언트 메모리에만 보관 (persist 안 함).
-export type InAppNotification = {
-  id: string; // crypto.randomUUID
-  type: string; // RealtimeEvent.type 그대로
-  title: string; // localized 표시 제목
-  description: string | null; // 본문 (e.g. "D/O REF1234 → DISPATCHED")
-  link: string | null; // 클릭 시 이동 (e.g. "/app/delivery-orders?do=:id")
-  read: boolean;
-  occurredAt: string; // ISO
+// 백엔드 Notification entity (서버 fan-out 결과).
+// channel/status 는 string 으로 받음 (ENUM 변경 시 프론트 immutable).
+export type NotificationEntity = {
+  id: string;
+  tenantId: string;
+  userId: string | null;
+  channel: string;
+  status: string;
+  eventType: string;
+  title: string;
+  body: string | null;
+  payload: Record<string, unknown> | null;
+  isRead: boolean;
+  readAt: string | null;
+  sentAt: string | null;
+  createdAt: string;
+  updatedAt: string;
 };
 
 // Phase 8: Settlement / ExtraCharge / AuditLog / RateSetting

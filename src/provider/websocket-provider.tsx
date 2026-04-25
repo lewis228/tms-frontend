@@ -6,20 +6,18 @@
 // - file.uploaded
 // - settlement.calculated/adjusted/approved/unapproved
 //
-// 본 Provider 는 envelope 의 type 을 보고 해당 캐시 키를 invalidate. UI 토스트 알림은
-// notifications 도메인에서 별도 처리 예정 (Phase 7+).
+// 백엔드 fan_out_event 가 inbox row 를 자동 생성하므로 프론트는 알림 list/count
+// 캐시 무효화만 처리. 다음 fetch 에서 새 알림이 보임.
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { QUERY_KEYS } from "@/lib/constants";
-import { realtimeToNotification } from "@/lib/notifications-format";
 import { realtimeWs, type ServerEvent } from "@/lib/websocket";
 import {
   useCurrentTenantId,
   useCurrentUser,
   useIsBootstrapped,
 } from "@/store/auth";
-import { usePushNotification } from "@/store/notifications";
 
 export default function WebSocketProvider({
   children,
@@ -30,7 +28,6 @@ export default function WebSocketProvider({
   const isBootstrapped = useIsBootstrapped();
   const user = useCurrentUser();
   const tenantId = useCurrentTenantId();
-  const pushNotification = usePushNotification();
 
   useEffect(() => {
     if (!isBootstrapped || !user || !tenantId) {
@@ -40,15 +37,6 @@ export default function WebSocketProvider({
     realtimeWs.connect(tenantId);
 
     const off = realtimeWs.addListener((evt: ServerEvent) => {
-      const n = realtimeToNotification({
-        type: evt.type,
-        tenantId: evt.tenantId,
-        actorId: evt.actorId ?? null,
-        payload: evt.payload ?? null,
-        occurredAt: evt.occurredAt,
-      });
-      if (n) pushNotification(n);
-
       const payload = (evt.payload ?? {}) as Record<string, unknown>;
       const deliveryOrderId =
         typeof payload.deliveryOrderId === "string"
@@ -62,6 +50,21 @@ export default function WebSocketProvider({
         typeof payload.settlementId === "string"
           ? payload.settlementId
           : null;
+
+      // 모든 inbox 대상 이벤트 → 알림 캐시 무효화 (서버 fan-out 후 다음 fetch 에서 보임).
+      const inboxTypes = new Set([
+        "do.created",
+        "do.status_changed",
+        "leg.created",
+        "leg.status_changed",
+        "settlement.calculated",
+        "settlement.adjusted",
+        "settlement.approved",
+        "settlement.unapproved",
+      ]);
+      if (inboxTypes.has(evt.type)) {
+        qc.invalidateQueries({ queryKey: QUERY_KEYS.notification.all });
+      }
 
       switch (evt.type) {
         case "do.created":
@@ -126,7 +129,7 @@ export default function WebSocketProvider({
     return () => {
       off();
     };
-  }, [isBootstrapped, user, tenantId, qc, pushNotification]);
+  }, [isBootstrapped, user, tenantId, qc]);
 
   return <>{children}</>;
 }
