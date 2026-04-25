@@ -4,13 +4,17 @@ import type { ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 import AlertModal from "@/components/modal/alert-modal";
+import VesselEditorModal from "@/components/vessel/vessel-editor-modal";
 
 export default function ModalProvider({ children }: { children: ReactNode }) {
   return (
     <>
       {createPortal(
         <>
+          {/* 시스템 */}
           <AlertModal />
+          {/* Master Data */}
+          <VesselEditorModal />
         </>,
         document.getElementById("modal-root")!,
       )}
