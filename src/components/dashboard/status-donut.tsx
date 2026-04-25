@@ -52,7 +52,7 @@ export default function StatusDonut({
               ))}
             </Pie>
             <Tooltip
-              formatter={(value: number, name: string) => [`${value} 건`, name]}
+              formatter={(value, name) => [`${Number(value)} 건`, String(name)]}
               contentStyle={{ fontSize: 12 }}
             />
           </PieChart>

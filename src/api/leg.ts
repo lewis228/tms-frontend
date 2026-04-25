@@ -42,6 +42,15 @@ export async function fetchLegsByDeliveryOrder(
   return data.items;
 }
 
+export async function fetchLegsByDriver(
+  driverId: string,
+): Promise<LegEntity[]> {
+  const { data } = await api.get<PagedResponse<LegEntity>>("/legs", {
+    params: { driverId, page: 1, size: 100 },
+  });
+  return data.items;
+}
+
 export async function fetchLeg(id: string): Promise<LegEntity> {
   const { data } = await api.get<LegEntity>(`/legs/${id}`);
   return data;

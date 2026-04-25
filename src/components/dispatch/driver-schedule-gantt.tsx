@@ -9,7 +9,7 @@ import Fallback from "@/components/fallback";
 import { useDriversData } from "@/hooks/queries/use-drivers-data";
 import { useLegsByDriverData } from "@/hooks/queries/use-legs-by-driver-data";
 import { useOpenEditLegModal } from "@/store/leg-editor-modal";
-import type { DriverEntity, LegEntity, LegStatus } from "@/types";
+import type { DriverEntity, LegStatus } from "@/types";
 
 const DAYS_BEFORE = 3;
 const DAYS_AFTER = 3;
