@@ -1,10 +1,11 @@
-// Dispatch Workspace — `?view=list|board` 로 뷰 전환. drawer 는 ?do=:id 로 같이 동작.
-// Phase 5b 에서 timeline / map 추가 예정.
+// Dispatch Workspace — `?view=list|board|timeline|map` 4뷰. drawer 는 ?do=:id 동기화.
 import { useSearchParams } from "react-router-dom";
 
 import DeliveryOrderDrawer from "@/components/delivery-order/delivery-order-drawer";
 import DispatchBoardView from "@/components/dispatch/dispatch-board-view";
 import DispatchListView from "@/components/dispatch/dispatch-list-view";
+import DispatchMapView from "@/components/dispatch/dispatch-map-view";
+import DispatchTimelineView from "@/components/dispatch/dispatch-timeline-view";
 
 type DispatchView = "list" | "board" | "timeline" | "map";
 const VIEWS: DispatchView[] = ["list", "board", "timeline", "map"];
@@ -30,26 +31,22 @@ export default function DispatchPage() {
         <div className="flex gap-1 rounded-md border p-0.5">
           {VIEWS.map((v) => {
             const active = view === v;
-            const disabled = v === "timeline" || v === "map";
             return (
               <button
                 key={v}
                 type="button"
-                onClick={() => !disabled && setView(v)}
-                disabled={disabled}
+                onClick={() => setView(v)}
                 className={
                   "rounded px-3 py-1 text-xs transition-colors " +
                   (active
                     ? "bg-accent text-accent-foreground font-medium"
-                    : disabled
-                      ? "text-muted-foreground/50 cursor-not-allowed"
-                      : "text-muted-foreground hover:bg-accent/50")
+                    : "text-muted-foreground hover:bg-accent/50")
                 }
               >
                 {v === "list" && "List"}
                 {v === "board" && "Board"}
-                {v === "timeline" && "Timeline (5b)"}
-                {v === "map" && "Map (5b)"}
+                {v === "timeline" && "Timeline"}
+                {v === "map" && "Map"}
               </button>
             );
           })}
@@ -58,6 +55,8 @@ export default function DispatchPage() {
 
       {view === "list" && <DispatchListView />}
       {view === "board" && <DispatchBoardView />}
+      {view === "timeline" && <DispatchTimelineView />}
+      {view === "map" && <DispatchMapView />}
 
       <DeliveryOrderDrawer />
     </div>
