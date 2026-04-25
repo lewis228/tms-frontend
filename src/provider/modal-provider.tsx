@@ -15,6 +15,7 @@ import SettlementAdjustModal from "@/components/settlement/settlement-adjust-mod
 import SettlementApproveModal from "@/components/settlement/settlement-approve-modal";
 import SettlementCalculateModal from "@/components/settlement/settlement-calculate-modal";
 import SettlementUnapproveModal from "@/components/settlement/settlement-unapprove-modal";
+import TenantEditorModal from "@/components/tenant/tenant-editor-modal";
 import TerminalEditorModal from "@/components/terminal/terminal-editor-modal";
 import VesselEditorModal from "@/components/vessel/vessel-editor-modal";
 
@@ -42,6 +43,8 @@ export default function ModalProvider({ children }: { children: ReactNode }) {
           <SettlementUnapproveModal />
           {/* Rate Settings */}
           <RateSettingEditorModal />
+          {/* System (SUPER_ADMIN) */}
+          <TenantEditorModal />
         </>,
         document.getElementById("modal-root")!,
       )}

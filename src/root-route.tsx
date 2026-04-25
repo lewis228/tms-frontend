@@ -33,6 +33,7 @@ const AccountingPage = lazy(() => import("@/pages/accounting-page"));
 const AccountingRatesPage = lazy(
   () => import("@/pages/accounting-rates-page"),
 );
+const SystemTenantsPage = lazy(() => import("@/pages/system-tenants-page"));
 
 function Placeholder({ name }: { name: string }) {
   return (
@@ -91,7 +92,7 @@ export default function RootRoute() {
             <Route element={<ProtectedRoute require="SUPER_ADMIN" />}>
               <Route
                 path="system/tenants"
-                element={<Placeholder name="System / Tenants" />}
+                element={<SystemTenantsPage />}
               />
               <Route
                 path="system/users"
