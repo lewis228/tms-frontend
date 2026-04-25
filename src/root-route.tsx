@@ -27,6 +27,7 @@ const MasterLocationsPage = lazy(() => import("@/pages/master-locations-page"));
 const MasterCustomersPage = lazy(() => import("@/pages/master-customers-page"));
 const MasterDriversPage = lazy(() => import("@/pages/master-drivers-page"));
 const DeliveryOrdersPage = lazy(() => import("@/pages/delivery-orders-page"));
+const DispatchPage = lazy(() => import("@/pages/dispatch-page"));
 
 function Placeholder({ name }: { name: string }) {
   return (
@@ -58,10 +59,7 @@ export default function RootRoute() {
             <Route path="dashboard" element={<DashboardPage />} />
 
             <Route element={<ProtectedRoute require="DISPATCHER" />}>
-              <Route
-                path="dispatch"
-                element={<Placeholder name="Dispatch" />}
-              />
+              <Route path="dispatch" element={<DispatchPage />} />
               <Route
                 path="dispatch/drivers"
                 element={<Placeholder name="Driver Schedule" />}
