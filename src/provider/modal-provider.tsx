@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 
 import AlertModal from "@/components/modal/alert-modal";
 import CustomerEditorModal from "@/components/customer/customer-editor-modal";
+import DeliveryOrderCreateModal from "@/components/delivery-order/delivery-order-create-modal";
 import DriverEditorModal from "@/components/driver/driver-editor-modal";
 import DriverTempPasswordModal from "@/components/driver/driver-temp-password-modal";
 import LocationEditorModal from "@/components/location/location-editor-modal";
@@ -25,6 +26,8 @@ export default function ModalProvider({ children }: { children: ReactNode }) {
           <CustomerEditorModal />
           <DriverEditorModal />
           <DriverTempPasswordModal />
+          {/* Delivery Orders */}
+          <DeliveryOrderCreateModal />
         </>,
         document.getElementById("modal-root")!,
       )}
