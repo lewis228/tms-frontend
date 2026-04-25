@@ -30,6 +30,9 @@ const DeliveryOrdersPage = lazy(() => import("@/pages/delivery-orders-page"));
 const DispatchPage = lazy(() => import("@/pages/dispatch-page"));
 const DriverSchedulePage = lazy(() => import("@/pages/driver-schedule-page"));
 const AccountingPage = lazy(() => import("@/pages/accounting-page"));
+const AccountingRatesPage = lazy(
+  () => import("@/pages/accounting-rates-page"),
+);
 
 function Placeholder({ name }: { name: string }) {
   return (
@@ -75,7 +78,7 @@ export default function RootRoute() {
             <Route element={<ProtectedRoute require="ADMIN" />}>
               <Route
                 path="accounting/rates"
-                element={<Placeholder name="Rate Settings" />}
+                element={<AccountingRatesPage />}
               />
             </Route>
 

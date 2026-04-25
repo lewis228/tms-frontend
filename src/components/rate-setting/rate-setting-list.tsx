@@ -1,0 +1,206 @@
+import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import Loader from "@/components/loader";
+import Fallback from "@/components/fallback";
+import { useDeleteRateSetting } from "@/hooks/mutations/rate-setting/use-delete-rate-setting";
+import { useUpdateRateSetting } from "@/hooks/mutations/rate-setting/use-update-rate-setting";
+import { useRateSettingsData } from "@/hooks/queries/use-rate-settings-data";
+import { generateErrorMessage } from "@/lib/error";
+import { useOpenAlertModal } from "@/store/alert-modal";
+import {
+  useOpenCreateRateSettingModal,
+  useOpenEditRateSettingModal,
+} from "@/store/rate-setting-editor-modal";
+import type { RateSettingEntity } from "@/types";
+
+export default function RateSettingList() {
+  const [page, setPage] = useState(1);
+  const [searchInput, setSearchInput] = useState("");
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    const t = setTimeout(() => setSearch(searchInput.trim().toLowerCase()), 300);
+    return () => clearTimeout(t);
+  }, [searchInput]);
+
+  const { data, isPending, error } = useRateSettingsData(page);
+  const openCreate = useOpenCreateRateSettingModal();
+  const openEdit = useOpenEditRateSettingModal();
+  const openAlert = useOpenAlertModal();
+
+  const { mutate: deleteRate } = useDeleteRateSetting({
+    onSuccess: () =>
+      toast.success("Rate setting 이 삭제되었습니다.", {
+        position: "top-center",
+      }),
+    onError: (err) =>
+      toast.error(generateErrorMessage(err), { position: "top-center" }),
+  });
+
+  const { mutate: updateRate } = useUpdateRateSetting({
+    onSuccess: () =>
+      toast.success("활성 상태가 변경되었습니다.", {
+        position: "top-center",
+      }),
+    onError: (err) =>
+      toast.error(generateErrorMessage(err), { position: "top-center" }),
+  });
+
+  const filtered = useMemo<RateSettingEntity[]>(() => {
+    if (!data) return [];
+    if (!search) return data.items;
+    return data.items.filter(
+      (r) =>
+        r.name.toLowerCase().includes(search) ||
+        (r.description ?? "").toLowerCase().includes(search) ||
+        r.rateType.toLowerCase().includes(search),
+    );
+  }, [data, search]);
+
+  if (error) return <Fallback />;
+  if (isPending) return <Loader />;
+
+  const handleDelete = (r: RateSettingEntity) => {
+    openAlert({
+      title: "Rate setting 을 삭제하시겠습니까?",
+      description: `'${r.name}' 을(를) 삭제합니다. 복구할 수 없습니다.`,
+      onPositive: () => deleteRate(r.id),
+    });
+  };
+
+  const formatAmount = (r: RateSettingEntity): string => {
+    if (r.rateType === "FLAT_RATE") return r.flatAmount ?? "—";
+    if (r.rateType === "PERCENTAGE") return `${r.ratePercent ?? "—"}%`;
+    if (r.rateType === "PER_MILE") return `${r.ratePerMile ?? "—"}/mi`;
+    return "—";
+  };
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center justify-between gap-2">
+        <Input
+          placeholder="이름 / 설명 / 타입 검색"
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          className="max-w-sm"
+        />
+        <Button onClick={() => openCreate()}>새 Rate</Button>
+      </div>
+
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>이름</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead className="text-right">금액</TableHead>
+              <TableHead>Effective</TableHead>
+              <TableHead>Active</TableHead>
+              <TableHead>설명</TableHead>
+              <TableHead className="text-right">동작</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filtered.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={7}
+                  className="text-center text-muted-foreground"
+                >
+                  데이터가 없습니다.
+                </TableCell>
+              </TableRow>
+            ) : (
+              filtered.map((r) => (
+                <TableRow key={r.id}>
+                  <TableCell className="font-medium">{r.name}</TableCell>
+                  <TableCell className="font-mono text-xs">
+                    {r.rateType}
+                  </TableCell>
+                  <TableCell className="text-right font-mono">
+                    {formatAmount(r)}
+                  </TableCell>
+                  <TableCell>{r.effectiveDate}</TableCell>
+                  <TableCell>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        updateRate({
+                          id: r.id,
+                          payload: { isActive: !r.isActive },
+                        })
+                      }
+                      className={
+                        "rounded px-2 py-0.5 text-xs " +
+                        (r.isActive
+                          ? "bg-green-100 text-green-700"
+                          : "bg-slate-100 text-slate-600")
+                      }
+                    >
+                      {r.isActive ? "✓ Active" : "Inactive"}
+                    </button>
+                  </TableCell>
+                  <TableCell className="max-w-xs truncate text-xs text-muted-foreground">
+                    {r.description ?? "—"}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => openEdit(r)}
+                    >
+                      수정
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="ml-2 text-destructive"
+                      onClick={() => handleDelete(r)}
+                    >
+                      삭제
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
+
+      <div className="flex items-center justify-between text-sm">
+        <span className="text-muted-foreground">
+          전체 {data.total}건 · {data.page}/{Math.max(1, data.pages)} 페이지
+        </span>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={page <= 1}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+          >
+            이전
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={page >= data.pages}
+            onClick={() => setPage((p) => p + 1)}
+          >
+            다음
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
