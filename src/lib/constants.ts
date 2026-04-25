@@ -56,6 +56,7 @@ export const QUERY_KEYS = {
       ["leg", "list", params] as const,
     byDeliveryOrder: (deliveryOrderId: string) =>
       ["leg", "byDeliveryOrder", deliveryOrderId] as const,
+    byDriver: (driverId: string) => ["leg", "byDriver", driverId] as const,
     byId: (id: string) => ["leg", "byId", id] as const,
   },
 };

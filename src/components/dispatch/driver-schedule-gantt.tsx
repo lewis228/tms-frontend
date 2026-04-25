@@ -1,15 +1,13 @@
 // Driver Schedule Gantt — 행=driver, 컬럼=오늘 ±3일 7일, bar=assigned legs.
 //
-// bar 는 leg.pickup_date ~ leg.delivery_date. 한쪽만 있으면 단일 점.
-// bar 클릭 → leg-editor-modal (EDIT).
-//
-// 백엔드 driver filter 없어 클라가 useLegsData(size=100) 받아 driver 별로 그루핑.
+// 백엔드 driver filter (`?driverId=`) 사용. driver 마다 useQuery 별도 (lazy).
+// driver 가 100명 이상이어도 캐시 키가 driver 별로 분리되어 무효화 효율적.
 import { useMemo } from "react";
 
 import Loader from "@/components/loader";
 import Fallback from "@/components/fallback";
 import { useDriversData } from "@/hooks/queries/use-drivers-data";
-import { useLegsData } from "@/hooks/queries/use-legs-data";
+import { useLegsByDriverData } from "@/hooks/queries/use-legs-by-driver-data";
 import { useOpenEditLegModal } from "@/store/leg-editor-modal";
 import type { DriverEntity, LegEntity, LegStatus } from "@/types";
 
@@ -30,20 +28,8 @@ function startOfDay(d: Date): Date {
   return x;
 }
 
-export default function DriverScheduleGantt() {
-  const {
-    data: legsData,
-    isPending: legsPending,
-    error: legsError,
-  } = useLegsData(1, 100);
-  const {
-    data: driversData,
-    isPending: driversPending,
-    error: driversError,
-  } = useDriversData(1);
-  const openEdit = useOpenEditLegModal();
-
-  const range = useMemo(() => {
+function useGanttRange() {
+  return useMemo(() => {
     const today = startOfDay(new Date());
     const start = new Date(today);
     start.setDate(start.getDate() - DAYS_BEFORE);
@@ -58,33 +44,21 @@ export default function DriverScheduleGantt() {
     }
     return { start, end, days };
   }, []);
+}
 
-  const legsByDriver = useMemo(() => {
-    const m = new Map<string, LegEntity[]>();
-    if (!legsData) return m;
-    for (const leg of legsData.items) {
-      if (!leg.driverId) continue;
-      const arr = m.get(leg.driverId) ?? [];
-      arr.push(leg);
-      m.set(leg.driverId, arr);
-    }
-    return m;
-  }, [legsData]);
+export default function DriverScheduleGantt() {
+  const {
+    data: driversData,
+    isPending: driversPending,
+    error: driversError,
+  } = useDriversData(1);
 
-  if (legsError || driversError) return <Fallback />;
-  if (legsPending || driversPending) return <Loader />;
+  const range = useGanttRange();
+
+  if (driversError) return <Fallback />;
+  if (driversPending) return <Loader />;
 
   const activeDrivers = (driversData?.items ?? []).filter((d) => d.isActive);
-
-  // 0~1 fraction (해당 시각이 range 안인지). null = 범위 밖.
-  const fraction = (iso: string | null): number | null => {
-    if (!iso) return null;
-    const t = new Date(iso).getTime();
-    const startT = range.start.getTime();
-    const endT = range.end.getTime();
-    if (t < startT || t > endT) return null;
-    return (t - startT) / (endT - startT);
-  };
 
   return (
     <div className="rounded-md border">
@@ -117,13 +91,7 @@ export default function DriverScheduleGantt() {
         </div>
       ) : (
         activeDrivers.map((driver) => (
-          <DriverRow
-            key={driver.id}
-            driver={driver}
-            legs={legsByDriver.get(driver.id) ?? []}
-            fraction={fraction}
-            onLegClick={(leg) => openEdit(leg)}
-          />
+          <DriverRow key={driver.id} driver={driver} range={range} />
         ))
       )}
     </div>
@@ -132,22 +100,33 @@ export default function DriverScheduleGantt() {
 
 function DriverRow({
   driver,
-  legs,
-  fraction,
-  onLegClick,
+  range,
 }: {
   driver: DriverEntity;
-  legs: LegEntity[];
-  fraction: (iso: string | null) => number | null;
-  onLegClick: (leg: LegEntity) => void;
+  range: ReturnType<typeof useGanttRange>;
 }) {
+  const { data: legs, isPending } = useLegsByDriverData(driver.id);
+  const openEdit = useOpenEditLegModal();
+
+  const fraction = (iso: string | null): number | null => {
+    if (!iso) return null;
+    const t = new Date(iso).getTime();
+    const startT = range.start.getTime();
+    const endT = range.end.getTime();
+    if (t < startT || t > endT) return null;
+    return (t - startT) / (endT - startT);
+  };
+
+  const items = legs ?? [];
+
   return (
     <div className="grid grid-cols-[200px_1fr] border-b last:border-b-0">
       <div className="flex items-center gap-2 border-r px-3 py-3 text-xs">
         <div className="flex flex-col">
           <span className="font-medium">{driver.name}</span>
           <span className="text-muted-foreground">
-            {driver.truckNumber ?? "—"} · {legs.length} legs
+            {driver.truckNumber ?? "—"} ·{" "}
+            {isPending ? "…" : `${items.length} legs`}
           </span>
         </div>
       </div>
@@ -162,18 +141,16 @@ function DriverRow({
             />
           ))}
         </div>
-        {legs.map((leg) => {
+        {items.map((leg) => {
           const pf = fraction(leg.pickupDate);
           const df = fraction(leg.deliveryDate);
-          // 둘 다 없으면 표시 안 함 (범위 밖).
           if (pf === null && df === null) return null;
-          // 한 쪽만 있으면 점.
           if (pf !== null && df === null) {
             return (
               <button
                 key={leg.id}
                 type="button"
-                onClick={() => onLegClick(leg)}
+                onClick={() => openEdit(leg)}
                 title={`${leg.step} · ${leg.status}`}
                 className={`absolute top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full ring-2 ring-white ${LEG_STATUS_COLOR[leg.status]}`}
                 style={{ left: `${pf * 100}%` }}
@@ -185,20 +162,19 @@ function DriverRow({
               <button
                 key={leg.id}
                 type="button"
-                onClick={() => onLegClick(leg)}
+                onClick={() => openEdit(leg)}
                 title={`${leg.step} · ${leg.status}`}
                 className={`absolute top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full ring-2 ring-white ${LEG_STATUS_COLOR[leg.status]}`}
                 style={{ left: `${df * 100}%` }}
               />
             );
           }
-          // 둘 다 있고 df > pf 면 bar.
           if (pf !== null && df !== null && df > pf) {
             return (
               <button
                 key={leg.id}
                 type="button"
-                onClick={() => onLegClick(leg)}
+                onClick={() => openEdit(leg)}
                 title={`${leg.step} · ${leg.status}`}
                 className={`absolute top-1/2 h-4 -translate-y-1/2 rounded ${LEG_STATUS_COLOR[leg.status]} text-[10px] text-white`}
                 style={{

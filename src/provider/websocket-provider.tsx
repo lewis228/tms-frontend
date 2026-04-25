@@ -44,6 +44,8 @@ export default function WebSocketProvider({
           : null;
       const legId =
         typeof payload.legId === "string" ? payload.legId : null;
+      const driverId =
+        typeof payload.driverId === "string" ? payload.driverId : null;
       const settlementId =
         typeof payload.settlementId === "string"
           ? payload.settlementId
@@ -70,6 +72,11 @@ export default function WebSocketProvider({
               queryKey: QUERY_KEYS.deliveryOrder.byId(deliveryOrderId),
             });
             qc.invalidateQueries({ queryKey: QUERY_KEYS.deliveryOrder.all });
+          }
+          if (driverId) {
+            qc.invalidateQueries({
+              queryKey: QUERY_KEYS.leg.byDriver(driverId),
+            });
           }
           if (legId) {
             qc.invalidateQueries({ queryKey: QUERY_KEYS.leg.byId(legId) });
