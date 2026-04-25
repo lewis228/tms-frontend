@@ -44,6 +44,20 @@ export const QUERY_KEYS = {
       ["location", "list", params] as const,
     byId: (id: string) => ["location", "byId", id] as const,
   },
+  deliveryOrder: {
+    all: ["delivery-order"] as const,
+    list: (params: Record<string, unknown> = {}) =>
+      ["delivery-order", "list", params] as const,
+    byId: (id: string) => ["delivery-order", "byId", id] as const,
+  },
+  leg: {
+    all: ["leg"] as const,
+    list: (params: Record<string, unknown> = {}) =>
+      ["leg", "list", params] as const,
+    byDeliveryOrder: (deliveryOrderId: string) =>
+      ["leg", "byDeliveryOrder", deliveryOrderId] as const,
+    byId: (id: string) => ["leg", "byId", id] as const,
+  },
 };
 
 export const PAGE_SIZE = 20;

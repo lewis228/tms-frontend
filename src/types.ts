@@ -150,6 +150,64 @@ export type LocationEntity = {
 // 백엔드 DriverCreatedResponse — POST /drivers 응답에 1회 임시 비번 포함.
 export type DriverCreatedResponse = DriverEntity & { tempPassword: string };
 
+export type DeliveryOrderEntity = {
+  id: string;
+  tenantId: string;
+  status: DeliveryStatus;
+  direction: ShipmentDirection;
+  blNumber: string | null;
+  bookingNumber: string | null;
+  reference: string | null;
+  customerId: string;
+  terminalId: string | null;
+  vesselId: string | null;
+  deliveryLocationId: string | null;
+  returnLocationId: string | null;
+  containerNumber: string | null;
+  containerSize: ContainerSize | null;
+  containerType: string | null;
+  chassisNumber: string | null;
+  eta: string | null;
+  pickupAppointment: string | null;
+  deliveryAppointment: string | null;
+  returnAppointment: string | null;
+  demurrageLfd: string | null;
+  detentionLfd: string | null;
+  emptyDate: string | null;
+  loadedDate: string | null;
+  blReleased: boolean;
+  pierPassPaid: boolean;
+  customsCleared: boolean;
+  internalNote: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type LegEntity = {
+  id: string;
+  tenantId: string;
+  deliveryOrderId: string;
+  step: DeliveryStatus;
+  moveType: MoveType;
+  serviceType: ServiceType;
+  status: LegStatus;
+  driverId: string | null;
+  pickupLocationId: string | null;
+  pickupDate: string | null;
+  deliveryLocationId: string | null;
+  deliveryDate: string | null;
+  startedAt: string | null;
+  arrivedAt: string | null;
+  completedAt: string | null;
+  failureReason: string | null;
+  storageDays: number;
+  isSettled: boolean;
+  settlementId: string | null;
+  note: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type PagedResponse<T> = {
   items: T[];
   total: number;
