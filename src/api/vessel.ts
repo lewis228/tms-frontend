@@ -3,7 +3,7 @@ import api from "@/lib/axios";
 import type { PagedResponse, VesselEntity } from "@/types";
 
 export async function fetchVessels(
-  params: { page?: number; size?: number } = {},
+  params: { page?: number; size?: number; q?: string } = {},
 ): Promise<PagedResponse<VesselEntity>> {
   const { data } = await api.get<PagedResponse<VesselEntity>>("/vessels", {
     params,

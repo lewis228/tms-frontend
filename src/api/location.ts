@@ -3,7 +3,7 @@ import api from "@/lib/axios";
 import type { LocationEntity, LocationKind, PagedResponse } from "@/types";
 
 export async function fetchLocations(
-  params: { page?: number; size?: number } = {},
+  params: { page?: number; size?: number; q?: string } = {},
 ): Promise<PagedResponse<LocationEntity>> {
   const { data } = await api.get<PagedResponse<LocationEntity>>("/locations", {
     params,

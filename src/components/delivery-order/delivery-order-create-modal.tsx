@@ -3,6 +3,11 @@
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
+import { fetchCustomers } from "@/api/customer";
+import { fetchLocations } from "@/api/location";
+import { fetchTerminals } from "@/api/terminal";
+import { fetchVessels } from "@/api/vessel";
+import SearchableSelect from "@/components/searchable-select";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,14 +17,19 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useCreateDeliveryOrder } from "@/hooks/mutations/delivery-order/use-create-delivery-order";
-import { useCustomersData } from "@/hooks/queries/use-customers-data";
-import { useLocationsData } from "@/hooks/queries/use-locations-data";
-import { useTerminalsData } from "@/hooks/queries/use-terminals-data";
-import { useVesselsData } from "@/hooks/queries/use-vessels-data";
 import { CONTAINER_NUMBER_PATTERN } from "@/lib/delivery-order";
 import { generateErrorMessage } from "@/lib/error";
 import { useDeliveryOrderCreateModal } from "@/store/delivery-order-create-modal";
-import type { ContainerSize, ShipmentDirection } from "@/types";
+import type {
+  ContainerSize,
+  CustomerEntity,
+  LocationEntity,
+  ShipmentDirection,
+  TerminalEntity,
+  VesselEntity,
+} from "@/types";
+
+const SEARCH_SIZE = 50;
 
 const SIZES: ContainerSize[] = [
   "20GP",
@@ -69,10 +79,6 @@ function Body({ modal }: { modal: Modal }) {
   const [detentionLfd, setDetentionLfd] = useState("");
   const [internalNote, setInternalNote] = useState("");
 
-  const { data: customersData } = useCustomersData(1);
-  const { data: terminalsData } = useTerminalsData(1);
-  const { data: vesselsData } = useVesselsData(1);
-  const { data: locationsData } = useLocationsData(1);
 
   const containerNormalised = useMemo(
     () => containerNumber.toUpperCase().replace(/[\s-]/g, ""),
@@ -157,20 +163,17 @@ function Body({ modal }: { modal: Modal }) {
             </select>
           </Field>
           <Field label="고객사" required>
-            <select
+            <SearchableSelect<CustomerEntity>
               value={customerId}
-              onChange={(e) => setCustomerId(e.target.value)}
+              onSelect={(id) => setCustomerId(id)}
+              fetchList={(q) =>
+                fetchCustomers({ q, size: SEARCH_SIZE }).then((r) => r.items)
+              }
+              queryKeyBase={["customer", "search"]}
+              getLabel={(c) => `${c.name}${c.code ? ` (${c.code})` : ""}`}
+              placeholder="고객사 선택"
               disabled={isPending}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
-            >
-              <option value="">— 선택 —</option>
-              {(customersData?.items ?? []).map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                  {c.code ? ` (${c.code})` : ""}
-                </option>
-              ))}
-            </select>
+            />
           </Field>
           <Field label="B/L 번호">
             <Input
@@ -250,64 +253,60 @@ function Body({ modal }: { modal: Modal }) {
       <Section title="메타">
         <div className="grid grid-cols-2 gap-3">
           <Field label="터미널">
-            <select
+            <SearchableSelect<TerminalEntity>
               value={terminalId}
-              onChange={(e) => setTerminalId(e.target.value)}
+              onSelect={(id) => setTerminalId(id)}
+              fetchList={(q) =>
+                fetchTerminals({ q, size: SEARCH_SIZE }).then((r) => r.items)
+              }
+              queryKeyBase={["terminal", "search"]}
+              getLabel={(t) => t.name}
+              placeholder="—"
+              emptyLabel="— 선택 안함 —"
               disabled={isPending}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
-            >
-              <option value="">—</option>
-              {(terminalsData?.items ?? []).map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.name}
-                </option>
-              ))}
-            </select>
+            />
           </Field>
           <Field label="본선">
-            <select
+            <SearchableSelect<VesselEntity>
               value={vesselId}
-              onChange={(e) => setVesselId(e.target.value)}
+              onSelect={(id) => setVesselId(id)}
+              fetchList={(q) =>
+                fetchVessels({ q, size: SEARCH_SIZE }).then((r) => r.items)
+              }
+              queryKeyBase={["vessel", "search"]}
+              getLabel={(v) => v.name}
+              placeholder="—"
+              emptyLabel="— 선택 안함 —"
               disabled={isPending}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
-            >
-              <option value="">—</option>
-              {(vesselsData?.items ?? []).map((v) => (
-                <option key={v.id} value={v.id}>
-                  {v.name}
-                </option>
-              ))}
-            </select>
+            />
           </Field>
           <Field label="배송 장소">
-            <select
+            <SearchableSelect<LocationEntity>
               value={deliveryLocationId}
-              onChange={(e) => setDeliveryLocationId(e.target.value)}
+              onSelect={(id) => setDeliveryLocationId(id)}
+              fetchList={(q) =>
+                fetchLocations({ q, size: SEARCH_SIZE }).then((r) => r.items)
+              }
+              queryKeyBase={["location", "search"]}
+              getLabel={(l) => `${l.name} (${l.kind})`}
+              placeholder="—"
+              emptyLabel="— 선택 안함 —"
               disabled={isPending}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
-            >
-              <option value="">—</option>
-              {(locationsData?.items ?? []).map((l) => (
-                <option key={l.id} value={l.id}>
-                  {l.name} ({l.kind})
-                </option>
-              ))}
-            </select>
+            />
           </Field>
           <Field label="반납 장소">
-            <select
+            <SearchableSelect<LocationEntity>
               value={returnLocationId}
-              onChange={(e) => setReturnLocationId(e.target.value)}
+              onSelect={(id) => setReturnLocationId(id)}
+              fetchList={(q) =>
+                fetchLocations({ q, size: SEARCH_SIZE }).then((r) => r.items)
+              }
+              queryKeyBase={["location", "search"]}
+              getLabel={(l) => `${l.name} (${l.kind})`}
+              placeholder="—"
+              emptyLabel="— 선택 안함 —"
               disabled={isPending}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
-            >
-              <option value="">—</option>
-              {(locationsData?.items ?? []).map((l) => (
-                <option key={l.id} value={l.id}>
-                  {l.name} ({l.kind})
-                </option>
-              ))}
-            </select>
+            />
           </Field>
         </div>
       </Section>

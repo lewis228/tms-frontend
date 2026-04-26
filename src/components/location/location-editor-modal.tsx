@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { fetchCustomer, fetchCustomers } from "@/api/customer";
+import SearchableSelect from "@/components/searchable-select";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,12 +13,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useCustomersData } from "@/hooks/queries/use-customers-data";
 import { useCreateLocation } from "@/hooks/mutations/location/use-create-location";
 import { useUpdateLocation } from "@/hooks/mutations/location/use-update-location";
 import { generateErrorMessage } from "@/lib/error";
 import { useLocationEditorModal } from "@/store/location-editor-modal";
-import type { LocationKind } from "@/types";
+import type { CustomerEntity, LocationKind } from "@/types";
+
+const SEARCH_SIZE = 50;
 
 const KINDS: LocationKind[] = ["YARD", "CUSTOMER", "PORT", "OTHER"];
 
@@ -66,8 +69,6 @@ function Body({ modal }: { modal: OpenModal }) {
   const [note, setNote] = useState(
     modal.type === "CREATE" ? "" : (modal.location.note ?? ""),
   );
-
-  const { data: customersData } = useCustomersData(1);
 
   const handleKindChange = (next: LocationKind) => {
     setKind(next);
@@ -159,20 +160,19 @@ function Body({ modal }: { modal: OpenModal }) {
           </select>
         </Field>
         <Field label="고객사 (kind=CUSTOMER 인 경우 필수)">
-          <select
+          <SearchableSelect<CustomerEntity>
             value={customerId}
-            onChange={(e) => setCustomerId(e.target.value)}
+            onSelect={(id) => setCustomerId(id)}
+            fetchList={(q) =>
+              fetchCustomers({ q, size: SEARCH_SIZE }).then((r) => r.items)
+            }
+            fetchById={(id) => fetchCustomer(id)}
+            queryKeyBase={["customer", "search"]}
+            getLabel={(c) => `${c.name}${c.code ? ` (${c.code})` : ""}`}
+            placeholder="— 선택 —"
+            emptyLabel="— 선택 안함 —"
             disabled={isPending || kind !== "CUSTOMER"}
-            className="rounded-md border bg-background px-3 py-2 text-sm disabled:opacity-50"
-          >
-            <option value="">— 선택 —</option>
-            {(customersData?.items ?? []).map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-                {c.code ? ` (${c.code})` : ""}
-              </option>
-            ))}
-          </select>
+          />
         </Field>
         <Field label="주소">
           <Input

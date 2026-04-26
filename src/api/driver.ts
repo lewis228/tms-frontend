@@ -10,7 +10,12 @@ import type {
 } from "@/types";
 
 export async function fetchDrivers(
-  params: { page?: number; size?: number; activeOnly?: boolean } = {},
+  params: {
+    page?: number;
+    size?: number;
+    activeOnly?: boolean;
+    q?: string;
+  } = {},
 ): Promise<PagedResponse<DriverEntity>> {
   const { data } = await api.get<PagedResponse<DriverEntity>>("/drivers", {
     params,

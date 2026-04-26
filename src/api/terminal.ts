@@ -3,7 +3,7 @@ import api from "@/lib/axios";
 import type { PagedResponse, TerminalEntity } from "@/types";
 
 export async function fetchTerminals(
-  params: { page?: number; size?: number } = {},
+  params: { page?: number; size?: number; q?: string } = {},
 ): Promise<PagedResponse<TerminalEntity>> {
   const { data } = await api.get<PagedResponse<TerminalEntity>>("/terminals", {
     params,

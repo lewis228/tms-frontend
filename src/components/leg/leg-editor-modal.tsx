@@ -7,6 +7,9 @@
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { fetchDriver, fetchDrivers } from "@/api/driver";
+import { fetchLocation, fetchLocations } from "@/api/location";
+import SearchableSelect from "@/components/searchable-select";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -15,13 +18,19 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useDriversData } from "@/hooks/queries/use-drivers-data";
-import { useLocationsData } from "@/hooks/queries/use-locations-data";
 import { useCreateLeg } from "@/hooks/mutations/leg/use-create-leg";
 import { useUpdateLeg } from "@/hooks/mutations/leg/use-update-leg";
 import { generateErrorMessage } from "@/lib/error";
 import { useLegEditorModal } from "@/store/leg-editor-modal";
-import type { DeliveryStatus, MoveType, ServiceType } from "@/types";
+import type {
+  DeliveryStatus,
+  DriverEntity,
+  LocationEntity,
+  MoveType,
+  ServiceType,
+} from "@/types";
+
+const SEARCH_SIZE = 50;
 
 const STEPS: DeliveryStatus[] = [
   "DISPATCHED",
@@ -85,9 +94,6 @@ function Body({ modal }: { modal: OpenModal }) {
   const [note, setNote] = useState(
     modal.type === "CREATE" ? "" : (modal.leg.note ?? ""),
   );
-
-  const { data: driversData } = useDriversData(1);
-  const { data: locationsData } = useLocationsData(1);
 
   const { mutate: createLeg, isPending: isCreatePending } = useCreateLeg({
     onSuccess: () => {
@@ -179,34 +185,36 @@ function Body({ modal }: { modal: OpenModal }) {
           </select>
         </Field>
         <Field label="Driver">
-          <select
+          <SearchableSelect<DriverEntity>
             value={driverId}
-            onChange={(e) => setDriverId(e.target.value)}
+            onSelect={(id) => setDriverId(id)}
+            fetchList={(q) =>
+              fetchDrivers({ q, size: SEARCH_SIZE, activeOnly: true }).then(
+                (r) => r.items,
+              )
+            }
+            fetchById={(id) => fetchDriver(id)}
+            queryKeyBase={["driver", "search"]}
+            getLabel={(d) => `${d.name} (${d.email})`}
+            placeholder="— 미지정 —"
+            emptyLabel="— 미지정 —"
             disabled={isPending}
-            className="rounded-md border bg-background px-3 py-2 text-sm"
-          >
-            <option value="">— 미지정 —</option>
-            {(driversData?.items ?? []).map((d) => (
-              <option key={d.id} value={d.id}>
-                {d.name} ({d.email})
-              </option>
-            ))}
-          </select>
+          />
         </Field>
         <Field label="Pickup Location">
-          <select
+          <SearchableSelect<LocationEntity>
             value={pickupLocationId}
-            onChange={(e) => setPickupLocationId(e.target.value)}
+            onSelect={(id) => setPickupLocationId(id)}
+            fetchList={(q) =>
+              fetchLocations({ q, size: SEARCH_SIZE }).then((r) => r.items)
+            }
+            fetchById={(id) => fetchLocation(id)}
+            queryKeyBase={["location", "search"]}
+            getLabel={(l) => `${l.name} (${l.kind})`}
+            placeholder="—"
+            emptyLabel="— 선택 안함 —"
             disabled={isPending}
-            className="rounded-md border bg-background px-3 py-2 text-sm"
-          >
-            <option value="">—</option>
-            {(locationsData?.items ?? []).map((l) => (
-              <option key={l.id} value={l.id}>
-                {l.name} ({l.kind})
-              </option>
-            ))}
-          </select>
+          />
         </Field>
         <Field label="Pickup Date">
           <Input
@@ -217,19 +225,19 @@ function Body({ modal }: { modal: OpenModal }) {
           />
         </Field>
         <Field label="Delivery Location">
-          <select
+          <SearchableSelect<LocationEntity>
             value={deliveryLocationId}
-            onChange={(e) => setDeliveryLocationId(e.target.value)}
+            onSelect={(id) => setDeliveryLocationId(id)}
+            fetchList={(q) =>
+              fetchLocations({ q, size: SEARCH_SIZE }).then((r) => r.items)
+            }
+            fetchById={(id) => fetchLocation(id)}
+            queryKeyBase={["location", "search"]}
+            getLabel={(l) => `${l.name} (${l.kind})`}
+            placeholder="—"
+            emptyLabel="— 선택 안함 —"
             disabled={isPending}
-            className="rounded-md border bg-background px-3 py-2 text-sm"
-          >
-            <option value="">—</option>
-            {(locationsData?.items ?? []).map((l) => (
-              <option key={l.id} value={l.id}>
-                {l.name} ({l.kind})
-              </option>
-            ))}
-          </select>
+          />
         </Field>
         <Field label="Delivery Date">
           <Input

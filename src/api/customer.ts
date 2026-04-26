@@ -3,7 +3,7 @@ import api from "@/lib/axios";
 import type { CustomerEntity, PagedResponse } from "@/types";
 
 export async function fetchCustomers(
-  params: { page?: number; size?: number } = {},
+  params: { page?: number; size?: number; q?: string } = {},
 ): Promise<PagedResponse<CustomerEntity>> {
   const { data } = await api.get<PagedResponse<CustomerEntity>>("/customers", {
     params,
