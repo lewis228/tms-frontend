@@ -29,9 +29,9 @@ const APP_VERSION = import.meta.env.VITE_APP_VERSION ?? "0.1.0";
 export const API_BASE_URL =
   import.meta.env.VITE_API_URL || "http://localhost:8080";
 
-// 백엔드 ROOT_PATH 는 ""로 시작. 운영에서는 reverse proxy 가 /api/v1 → backend / 로 rewrite.
-// 따라서 baseURL 은 그대로 BASE_URL 사용 (prefix 없음).
-export const API_V1_URL = API_BASE_URL;
+// 백엔드 main.py 가 모든 router 를 /api/v1 prefix 아래에 마운트한다.
+// 따라서 프론트 baseURL 도 /api/v1 까지 포함.
+export const API_V1_URL = `${API_BASE_URL}/api/v1`;
 
 const api = axios.create({ baseURL: API_V1_URL });
 

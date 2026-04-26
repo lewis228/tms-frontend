@@ -22,6 +22,7 @@ import StatusBadge from "@/components/delivery-order/status-badge";
 import { useCustomersData } from "@/hooks/queries/use-customers-data";
 import { useDeliveryOrdersData } from "@/hooks/queries/use-delivery-orders-data";
 import { useOpenCreateDeliveryOrderModal } from "@/store/delivery-order-create-modal";
+import { useOpenAIIntakeModal } from "@/store/ai-intake-modal";
 import { STATUS_ORDER } from "@/lib/delivery-order";
 import type { DeliveryOrderEntity, DeliveryStatus } from "@/types";
 
@@ -48,6 +49,7 @@ export default function DeliveryOrderList() {
   const { data, isPending, error } = useDeliveryOrdersData(page);
   const { data: customersData } = useCustomersData(1);
   const openCreate = useOpenCreateDeliveryOrderModal();
+  const openAIIntake = useOpenAIIntakeModal();
 
   const customerNameById = useMemo(() => {
     const m = new Map<number, string>();
@@ -102,6 +104,9 @@ export default function DeliveryOrderList() {
             ))}
           </select>
         </div>
+        <Button variant="outline" onClick={() => openAIIntake()}>
+          AI 로 등록
+        </Button>
         <Button onClick={() => openCreate()}>새 D/O</Button>
       </div>
 

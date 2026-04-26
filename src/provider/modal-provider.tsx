@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 import AlertModal from "@/components/modal/alert-modal";
+import AIIntakeModal from "@/components/modal/ai-intake-modal";
 import CustomerEditorModal from "@/components/customer/customer-editor-modal";
 import DeliveryOrderCreateModal from "@/components/delivery-order/delivery-order-create-modal";
 import DriverEditorModal from "@/components/driver/driver-editor-modal";
@@ -36,6 +37,7 @@ export default function ModalProvider({ children }: { children: ReactNode }) {
           <DriverTempPasswordModal />
           {/* Delivery Orders / Legs */}
           <DeliveryOrderCreateModal />
+          <AIIntakeModal />
           <LegEditorModal />
           {/* Settlements */}
           <SettlementCalculateModal />
