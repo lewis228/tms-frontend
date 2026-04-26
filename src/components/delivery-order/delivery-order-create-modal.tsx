@@ -57,26 +57,47 @@ export default function DeliveryOrderCreateModal() {
   );
 }
 
+// AI Intake 추출 결과 → input 포맷 변환 유틸.
+// datetime-local input: "YYYY-MM-DDTHH:mm". date input: "YYYY-MM-DD".
+const isoToLocalInput = (iso: string | null | undefined): string => {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
+const dateToInput = (s: string | null | undefined): string =>
+  s ? s.slice(0, 10) : "";
+
+const ALLOWED_SIZES: ContainerSize[] = ["20GP", "40GP", "40HC", "40OT", "45HC", "20RF", "40RF"];
+
 function Body({ modal }: { modal: Modal }) {
+  // AI Intake prefill — modal.prefill 이 있으면 초기값으로 사용. 없으면 빈값.
+  const p = modal.prefill ?? null;
+  const initContainerSize = ((): ContainerSize | "" => {
+    const s = p?.container_size;
+    return s && (ALLOWED_SIZES as readonly string[]).includes(s) ? (s as ContainerSize) : "";
+  })();
+
   const [direction, setDirection] = useState<ShipmentDirection>("IMPORT");
   const [customerId, setCustomerId] = useState<number | null>(null);
-  const [blNumber, setBlNumber] = useState("");
-  const [bookingNumber, setBookingNumber] = useState("");
-  const [reference, setReference] = useState("");
-  const [containerNumber, setContainerNumber] = useState("");
-  const [containerSize, setContainerSize] = useState<ContainerSize | "">("");
-  const [containerType, setContainerType] = useState("");
-  const [chassisNumber, setChassisNumber] = useState("");
+  const [blNumber, setBlNumber] = useState(p?.bl_number ?? "");
+  const [bookingNumber, setBookingNumber] = useState(p?.booking_number ?? "");
+  const [reference, setReference] = useState(p?.reference ?? "");
+  const [containerNumber, setContainerNumber] = useState(p?.container_number ?? "");
+  const [containerSize, setContainerSize] = useState<ContainerSize | "">(initContainerSize);
+  const [containerType, setContainerType] = useState(p?.container_type ?? "");
+  const [chassisNumber, setChassisNumber] = useState(p?.chassis_number ?? "");
   const [terminalId, setTerminalId] = useState<number | null>(null);
   const [vesselId, setVesselId] = useState<number | null>(null);
   const [deliveryLocationId, setDeliveryLocationId] = useState<number | null>(null);
   const [returnLocationId, setReturnLocationId] = useState<number | null>(null);
-  const [eta, setEta] = useState("");
-  const [pickupAppointment, setPickupAppointment] = useState("");
-  const [deliveryAppointment, setDeliveryAppointment] = useState("");
-  const [returnAppointment, setReturnAppointment] = useState("");
-  const [demurrageLfd, setDemurrageLfd] = useState("");
-  const [detentionLfd, setDetentionLfd] = useState("");
+  const [eta, setEta] = useState(isoToLocalInput(p?.eta));
+  const [pickupAppointment, setPickupAppointment] = useState(isoToLocalInput(p?.pickup_appointment));
+  const [deliveryAppointment, setDeliveryAppointment] = useState(isoToLocalInput(p?.delivery_appointment));
+  const [returnAppointment, setReturnAppointment] = useState(isoToLocalInput(p?.return_appointment));
+  const [demurrageLfd, setDemurrageLfd] = useState(dateToInput(p?.demurrage_lfd));
+  const [detentionLfd, setDetentionLfd] = useState(dateToInput(p?.detention_lfd));
   const [internalNote, setInternalNote] = useState("");
 
 

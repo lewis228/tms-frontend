@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/loader";
 import { useAIIntakeModal } from "@/store/ai-intake-modal";
+import { useOpenCreateDeliveryOrderModalWithPrefill } from "@/store/delivery-order-create-modal";
 import { useExtractDeliveryOrderFromFile } from "@/hooks/mutations/ai-intake/use-extract-delivery-order";
 import { generateErrorMessage } from "@/lib/error";
 import type { AIIntakeResponse } from "@/api/ai-intake";
@@ -107,13 +108,14 @@ function Body({ close }: { close: () => void }) {
       )}
 
       {result && (
-        <ResultView result={result} />
+        <ResultView result={result} close={close} />
       )}
     </div>
   );
 }
 
-function ResultView({ result }: { result: AIIntakeResponse }) {
+function ResultView({ result, close }: { result: AIIntakeResponse; close: () => void }) {
+  const openCreateWithPrefill = useOpenCreateDeliveryOrderModalWithPrefill();
   const conf = Math.round(result.confidence * 100);
   const fields = result.fields;
   const rows: { key: string; label: string; value: string | null | undefined }[] = [
@@ -132,26 +134,36 @@ function ResultView({ result }: { result: AIIntakeResponse }) {
     { key: "detention_lfd", label: "Detention LFD", value: fields.detention_lfd },
   ];
 
+  const handleUse = () => {
+    openCreateWithPrefill(fields);
+    close();
+  };
+
   return (
-    <div className="rounded-md border bg-muted/20 p-3 text-sm">
-      <div className="mb-2 flex items-center justify-between">
-        <strong>추출 결과</strong>
-        <span className="text-xs text-muted-foreground">
-          provider={result.provider} · confidence {conf}%
-        </span>
+    <div className="flex flex-col gap-3">
+      <div className="rounded-md border bg-muted/20 p-3 text-sm">
+        <div className="mb-2 flex items-center justify-between">
+          <strong>추출 결과</strong>
+          <span className="text-xs text-muted-foreground">
+            provider={result.provider} · confidence {conf}%
+          </span>
+        </div>
+        <table className="w-full text-xs">
+          <tbody>
+            {rows.map((r) => (
+              <tr key={r.key} className="border-b last:border-0">
+                <td className="w-40 py-1 text-muted-foreground">{r.label}</td>
+                <td className="py-1 font-mono">{r.value || "—"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-      <table className="w-full text-xs">
-        <tbody>
-          {rows.map((r) => (
-            <tr key={r.key} className="border-b last:border-0">
-              <td className="w-40 py-1 text-muted-foreground">{r.label}</td>
-              <td className="py-1 font-mono">{r.value || "—"}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <p className="mt-3 text-xs text-muted-foreground">
-        * 추출 결과를 D/O 생성 모달로 자동 prefill 하는 기능은 다음 단계에서 추가됩니다.
+      <div className="flex justify-end">
+        <Button onClick={handleUse}>이 결과로 D/O 생성</Button>
+      </div>
+      <p className="text-xs text-muted-foreground">
+        고객사 / 터미널 / 본선 / 장소는 자동 매칭 안 됩니다 — 생성 모달에서 직접 선택하세요.
       </p>
     </div>
   );
