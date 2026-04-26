@@ -13,11 +13,13 @@ export default function DeliveryOrderDetailPage() {
   const params = useParams();
   const navigate = useNavigate();
   const idStr = params.id;
-  if (!idStr) return <Navigate to="/app/delivery-orders" replace />;
-  const id = Number(idStr);
-  if (!Number.isFinite(id)) return <Navigate to="/app/delivery-orders" replace />;
+  const idNum = idStr ? Number(idStr) : Number.NaN;
+  const valid = Number.isFinite(idNum);
 
-  const { data, isPending, error } = useDeliveryOrderByIdData(id);
+  // hook 은 항상 같은 순서로 호출. 잘못된 id 면 enabled=false 유지.
+  const { data, isPending, error } = useDeliveryOrderByIdData(valid ? idNum : null);
+
+  if (!valid) return <Navigate to="/app/delivery-orders" replace />;
 
   return (
     <div className="flex flex-col gap-4 p-6">

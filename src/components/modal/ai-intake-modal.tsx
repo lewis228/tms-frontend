@@ -3,6 +3,7 @@
 // 백엔드 /api/v1/ai-intake/extract 호출. provider 는 백엔드 환경변수로 결정.
 // 추출 결과 (snake_case fields) 를 그대로 표시. D/O 생성 연결은 다음 단계.
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import {
@@ -23,6 +24,7 @@ const ACCEPT = "image/jpeg,image/png,image/webp,image/heic,application/pdf";
 const MAX_BYTES = 10 * 1024 * 1024;
 
 export default function AIIntakeModal() {
+  const { t } = useTranslation();
   const modal = useAIIntakeModal();
   return (
     <Dialog
@@ -31,7 +33,7 @@ export default function AIIntakeModal() {
     >
       <DialogContent className="!max-w-2xl">
         <DialogHeader>
-          <DialogTitle className="font-sans">AI 로 D/O 자동 등록</DialogTitle>
+          <DialogTitle className="font-sans">{t("aiIntake.title")}</DialogTitle>
         </DialogHeader>
         {modal.isOpen && <Body close={modal.actions.close} />}
       </DialogContent>
@@ -40,14 +42,11 @@ export default function AIIntakeModal() {
 }
 
 function Body({ close }: { close: () => void }) {
+  const { t } = useTranslation();
   const [file, setFile] = useState<File | null>(null);
   const [result, setResult] = useState<AIIntakeResponse | null>(null);
 
   const { mutate: extract, isPending } = useExtractDeliveryOrderFromFile({
-    onSuccess: () => {
-      // result 는 mutate onSuccess 에서 받기 위해 mutateAsync 사용 권장.
-      // 여기는 콜백 분리 — 아래 onClickExtract 가 mutateAsync 사용.
-    },
     onError: (err) =>
       toast.error(generateErrorMessage(err), { position: "top-center" }),
   });
@@ -56,9 +55,10 @@ function Body({ close }: { close: () => void }) {
     setResult(null);
     if (!f) return setFile(null);
     if (f.size > MAX_BYTES) {
-      toast.error(`파일 크기가 ${Math.round(MAX_BYTES / 1024 / 1024)}MB 를 초과합니다.`, {
-        position: "top-center",
-      });
+      toast.error(
+        t("aiIntake.fileTooLarge", { maxMb: Math.round(MAX_BYTES / 1024 / 1024) }),
+        { position: "top-center" },
+      );
       return;
     }
     setFile(f);
@@ -73,9 +73,8 @@ function Body({ close }: { close: () => void }) {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* 1) 파일 선택 */}
       <div className="flex flex-col gap-2">
-        <label className="text-sm font-medium">D/O 파일 (PDF / 이미지)</label>
+        <label className="text-sm font-medium">{t("aiIntake.fileLabel")}</label>
         <input
           type="file"
           accept={ACCEPT}
@@ -90,48 +89,45 @@ function Body({ close }: { close: () => void }) {
         )}
       </div>
 
-      {/* 2) 추출 버튼 */}
       <div className="flex justify-end gap-2">
         <Button variant="outline" onClick={close} disabled={isPending}>
-          닫기
+          {t("common.close")}
         </Button>
         <Button onClick={onClickExtract} disabled={!file || isPending}>
-          {isPending ? "추출 중..." : "추출"}
+          {isPending ? t("aiIntake.extracting") : t("aiIntake.extract")}
         </Button>
       </div>
 
-      {/* 3) 진행 / 결과 */}
       {isPending && (
         <div className="flex justify-center py-6">
           <Loader />
         </div>
       )}
 
-      {result && (
-        <ResultView result={result} close={close} />
-      )}
+      {result && <ResultView result={result} close={close} />}
     </div>
   );
 }
 
 function ResultView({ result, close }: { result: AIIntakeResponse; close: () => void }) {
+  const { t } = useTranslation();
   const openCreateWithPrefill = useOpenCreateDeliveryOrderModalWithPrefill();
   const conf = Math.round(result.confidence * 100);
   const fields = result.fields;
   const rows: { key: string; label: string; value: string | null | undefined }[] = [
-    { key: "bl_number", label: "B/L 번호", value: fields.bl_number },
-    { key: "booking_number", label: "Booking 번호", value: fields.booking_number },
-    { key: "reference", label: "Reference", value: fields.reference },
-    { key: "container_number", label: "컨테이너 번호", value: fields.container_number },
-    { key: "container_size", label: "사이즈", value: fields.container_size },
-    { key: "container_type", label: "타입", value: fields.container_type },
-    { key: "chassis_number", label: "섀시", value: fields.chassis_number },
-    { key: "eta", label: "ETA", value: fields.eta },
-    { key: "pickup_appointment", label: "Pickup", value: fields.pickup_appointment },
-    { key: "delivery_appointment", label: "Delivery", value: fields.delivery_appointment },
-    { key: "return_appointment", label: "Return", value: fields.return_appointment },
-    { key: "demurrage_lfd", label: "Demurrage LFD", value: fields.demurrage_lfd },
-    { key: "detention_lfd", label: "Detention LFD", value: fields.detention_lfd },
+    { key: "bl_number", label: t("aiIntake.fields.blNumber"), value: fields.bl_number },
+    { key: "booking_number", label: t("aiIntake.fields.bookingNumber"), value: fields.booking_number },
+    { key: "reference", label: t("aiIntake.fields.reference"), value: fields.reference },
+    { key: "container_number", label: t("aiIntake.fields.containerNumber"), value: fields.container_number },
+    { key: "container_size", label: t("aiIntake.fields.containerSize"), value: fields.container_size },
+    { key: "container_type", label: t("aiIntake.fields.containerType"), value: fields.container_type },
+    { key: "chassis_number", label: t("aiIntake.fields.chassisNumber"), value: fields.chassis_number },
+    { key: "eta", label: t("aiIntake.fields.eta"), value: fields.eta },
+    { key: "pickup_appointment", label: t("aiIntake.fields.pickup"), value: fields.pickup_appointment },
+    { key: "delivery_appointment", label: t("aiIntake.fields.delivery"), value: fields.delivery_appointment },
+    { key: "return_appointment", label: t("aiIntake.fields.return"), value: fields.return_appointment },
+    { key: "demurrage_lfd", label: t("aiIntake.fields.demurrageLfd"), value: fields.demurrage_lfd },
+    { key: "detention_lfd", label: t("aiIntake.fields.detentionLfd"), value: fields.detention_lfd },
   ];
 
   const handleUse = () => {
@@ -143,7 +139,7 @@ function ResultView({ result, close }: { result: AIIntakeResponse; close: () => 
     <div className="flex flex-col gap-3">
       <div className="rounded-md border bg-muted/20 p-3 text-sm">
         <div className="mb-2 flex items-center justify-between">
-          <strong>추출 결과</strong>
+          <strong>{t("aiIntake.result")}</strong>
           <span className="text-xs text-muted-foreground">
             provider={result.provider} · confidence {conf}%
           </span>
@@ -160,11 +156,9 @@ function ResultView({ result, close }: { result: AIIntakeResponse; close: () => 
         </table>
       </div>
       <div className="flex justify-end">
-        <Button onClick={handleUse}>이 결과로 D/O 생성</Button>
+        <Button onClick={handleUse}>{t("aiIntake.useResult")}</Button>
       </div>
-      <p className="text-xs text-muted-foreground">
-        고객사 / 터미널 / 본선 / 장소는 자동 매칭 안 됩니다 — 생성 모달에서 직접 선택하세요.
-      </p>
+      <p className="text-xs text-muted-foreground">{t("aiIntake.matchHint")}</p>
     </div>
   );
 }

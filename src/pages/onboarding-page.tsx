@@ -7,6 +7,7 @@
 // 이미 완료된 사용자가 와도 안전하게 step 4 ("완료") 화면 표시.
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Check, Loader2 } from "lucide-react";
 
@@ -69,17 +70,16 @@ export default function OnboardingPage() {
 }
 
 function Header({ step }: { step: number }) {
+  const { t } = useTranslation();
   const stages: { idx: number; label: string }[] = [
-    { idx: 1, label: "회사 정보" },
-    { idx: 2, label: "첫 고객사" },
-    { idx: 3, label: "첫 기사" },
+    { idx: 1, label: t("onboarding.stepCompany") },
+    { idx: 2, label: t("onboarding.stepCustomer") },
+    { idx: 3, label: t("onboarding.stepDriver") },
   ];
   return (
     <div className="flex flex-col gap-2">
-      <h1 className="text-2xl font-semibold">TMS Pro 시작하기</h1>
-      <p className="text-sm text-muted-foreground">
-        간단한 3단계만 마치면 운송 운영을 시작할 수 있습니다.
-      </p>
+      <h1 className="text-2xl font-semibold">{t("onboarding.title")}</h1>
+      <p className="text-sm text-muted-foreground">{t("onboarding.subtitle")}</p>
       <div className="mt-2 flex items-center gap-2">
         {stages.map((s, i) => {
           const done = step > s.idx;
@@ -119,6 +119,7 @@ function Header({ step }: { step: number }) {
 
 // ── Step 1: 회사 정보 ─────────────────────────────────────────
 function Step1({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
+  const { t } = useTranslation();
   const [companyName, setCompanyName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [timezone, setTimezone] = useState("Asia/Seoul");
@@ -138,7 +139,9 @@ function Step1({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
 
   const handleNext = () => {
     if (!companyName.trim()) {
-      toast.error("회사명을 입력하세요.", { position: "top-center" });
+      toast.error(t("onboarding.validation.companyNameRequired"), {
+        position: "top-center",
+      });
       return;
     }
     updateT({
@@ -152,8 +155,8 @@ function Step1({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
   };
 
   return (
-    <Card title="1. 회사 정보">
-      <Field label="회사명" required>
+    <Card title={t("onboarding.step1Title")}>
+      <Field label={t("onboarding.field.companyName")} required>
         <Input
           value={companyName}
           onChange={(e) => setCompanyName(e.target.value)}
@@ -161,7 +164,7 @@ function Step1({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
           disabled={isPending}
         />
       </Field>
-      <Field label="대표 전화">
+      <Field label={t("onboarding.field.phoneNumber")}>
         <Input
           value={phoneNumber}
           onChange={(e) => setPhoneNumber(e.target.value)}
@@ -169,7 +172,7 @@ function Step1({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
           disabled={isPending}
         />
       </Field>
-      <Field label="Timezone">
+      <Field label={t("onboarding.field.timezone")}>
         <Input
           value={timezone}
           onChange={(e) => setTimezone(e.target.value)}
@@ -180,7 +183,7 @@ function Step1({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
       <Footer>
         <Button onClick={handleNext} disabled={isPending}>
           {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-          다음
+          {t("common.next")}
         </Button>
       </Footer>
     </Card>
@@ -189,6 +192,7 @@ function Step1({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
 
 // ── Step 2: 첫 고객사 ─────────────────────────────────────────
 function Step2({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
+  const { t } = useTranslation();
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
 
@@ -207,7 +211,9 @@ function Step2({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
 
   const handleNext = () => {
     if (!name.trim()) {
-      toast.error("고객사 이름을 입력하세요.", { position: "top-center" });
+      toast.error(t("onboarding.validation.customerNameRequired"), {
+        position: "top-center",
+      });
       return;
     }
     createC({
@@ -217,11 +223,9 @@ function Step2({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
   };
 
   return (
-    <Card title="2. 첫 고객사 등록">
-      <p className="text-xs text-muted-foreground">
-        나중에 마스터 데이터에서 추가/수정할 수 있습니다.
-      </p>
-      <Field label="고객사 이름" required>
+    <Card title={t("onboarding.step2Title")}>
+      <p className="text-xs text-muted-foreground">{t("onboarding.step2Hint")}</p>
+      <Field label={t("onboarding.field.customerName")} required>
         <Input
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -229,7 +233,7 @@ function Step2({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
           disabled={isPending}
         />
       </Field>
-      <Field label="코드">
+      <Field label={t("onboarding.field.customerCode")}>
         <Input
           value={code}
           onChange={(e) => setCode(e.target.value)}
@@ -240,7 +244,7 @@ function Step2({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
       <Footer>
         <Button onClick={handleNext} disabled={isPending}>
           {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-          다음
+          {t("common.next")}
         </Button>
       </Footer>
     </Card>
@@ -249,6 +253,7 @@ function Step2({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
 
 // ── Step 3: 첫 기사 ───────────────────────────────────────────
 function Step3({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -262,7 +267,6 @@ function Step3({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
   const { mutate: createD, isPending: isCreatePending } = useCreateDriver({
     onSuccess: (created) => {
       setTempPassword(created.tempPassword);
-      // step3 완료 + completed=true 한꺼번에
       updateOnb({
         tenantId,
         payload: { step3Done: true, completed: true },
@@ -276,7 +280,9 @@ function Step3({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
 
   const handleNext = () => {
     if (!email.trim() || !name.trim()) {
-      toast.error("이메일과 이름을 입력하세요.", { position: "top-center" });
+      toast.error(t("onboarding.validation.driverFieldsRequired"), {
+        position: "top-center",
+      });
       return;
     }
     createD({
@@ -287,12 +293,9 @@ function Step3({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
   };
 
   return (
-    <Card title="3. 첫 기사 등록">
-      <p className="text-xs text-muted-foreground">
-        기사가 모바일 앱에 로그인할 이메일을 입력하세요. 임시 비밀번호는 등록
-        직후 1회 표시됩니다.
-      </p>
-      <Field label="이메일" required>
+    <Card title={t("onboarding.step3Title")}>
+      <p className="text-xs text-muted-foreground">{t("onboarding.step3Hint")}</p>
+      <Field label={t("onboarding.field.driverEmail")} required>
         <Input
           type="email"
           value={email}
@@ -301,7 +304,7 @@ function Step3({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
           disabled={isPending || tempPassword !== null}
         />
       </Field>
-      <Field label="이름" required>
+      <Field label={t("onboarding.field.driverName")} required>
         <Input
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -309,7 +312,7 @@ function Step3({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
           disabled={isPending || tempPassword !== null}
         />
       </Field>
-      <Field label="전화">
+      <Field label={t("onboarding.field.driverPhone")}>
         <Input
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
@@ -319,10 +322,10 @@ function Step3({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
       </Field>
       {tempPassword && (
         <div className="rounded-md border bg-yellow-50 p-3 text-sm">
-          <strong>임시 비밀번호:</strong>{" "}
+          <strong>{t("onboarding.tempPasswordTitle")}</strong>{" "}
           <code className="font-mono">{tempPassword}</code>
           <p className="mt-1 text-xs text-muted-foreground">
-            기사에게 별도로 전달하세요. 첫 로그인 시 변경하게 됩니다.
+            {t("onboarding.tempPasswordHint")}
           </p>
         </div>
       )}
@@ -330,10 +333,10 @@ function Step3({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
         {tempPassword === null ? (
           <Button onClick={handleNext} disabled={isPending}>
             {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-            등록
+            {t("onboarding.register")}
           </Button>
         ) : (
-          <Button onClick={onDone}>완료로 이동</Button>
+          <Button onClick={onDone}>{t("onboarding.goToDone")}</Button>
         )}
       </Footer>
     </Card>
@@ -342,14 +345,12 @@ function Step3({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
 
 // ── 완료 ─────────────────────────────────────────────────────
 function Done({ onContinue }: { onContinue: () => void }) {
+  const { t } = useTranslation();
   return (
-    <Card title="설정 완료 ✨">
-      <p className="text-sm">
-        TMS Pro 의 기본 데이터가 준비되었습니다. 이제 D/O 를 생성하고 운송을
-        시작할 수 있습니다.
-      </p>
+    <Card title={t("onboarding.doneTitle")}>
+      <p className="text-sm">{t("onboarding.doneDescription")}</p>
       <Footer>
-        <Button onClick={onContinue}>대시보드로</Button>
+        <Button onClick={onContinue}>{t("onboarding.goToDashboard")}</Button>
       </Footer>
     </Card>
   );

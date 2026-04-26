@@ -1,1 +1,113 @@
-{}
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "next": "Next",
+    "back": "Back",
+    "previous": "Previous",
+    "confirm": "Confirm",
+    "loading": "Loading...",
+    "search": "Search",
+    "required": "Required",
+    "optional": "Optional",
+    "yes": "Yes",
+    "no": "No",
+    "active": "Active",
+    "inactive": "Inactive",
+    "all": "All",
+    "none": "—",
+    "createdAt": "Created",
+    "updatedAt": "Updated"
+  },
+  "toast": {
+    "saved": "Saved.",
+    "created": "Created.",
+    "updated": "Updated.",
+    "deleted": "Deleted.",
+    "createFailed": "Failed to create.",
+    "updateFailed": "Failed to update.",
+    "deleteFailed": "Failed to delete."
+  },
+  "errors": {
+    "UNAUTHORIZED": "Authentication required.",
+    "FORBIDDEN": "You don't have access.",
+    "NOT_FOUND": "Not found.",
+    "RATE_LIMITED": "Too many requests. Please retry shortly.",
+    "INTERNAL_SERVER_ERROR": "An internal server error occurred.",
+    "TIMEOUT": "Request timed out.",
+    "NETWORK": "Network error.",
+    "UNKNOWN": "An unknown error occurred."
+  },
+  "time": {
+    "justNow": "just now",
+    "minutesAgo": "{{count}} min ago",
+    "hoursAgo": "{{count}} h ago",
+    "daysAgo": "{{count}} d ago",
+    "weeksAgo": "{{count}} w ago",
+    "monthsAgo": "{{count}} mo ago",
+    "yearsAgo": "{{count}} y ago"
+  },
+  "onboarding": {
+    "title": "Get started with TMS Pro",
+    "subtitle": "Just three quick steps and you can start dispatching.",
+    "stepCompany": "Company",
+    "stepCustomer": "First customer",
+    "stepDriver": "First driver",
+    "step1Title": "1. Company info",
+    "step2Title": "2. Add your first customer",
+    "step3Title": "3. Add your first driver",
+    "step2Hint": "You can add or edit more later from Master Data.",
+    "step3Hint": "The driver will sign in to the mobile app with this email. A temporary password is shown once after creation.",
+    "doneTitle": "All set ✨",
+    "doneDescription": "TMS Pro is ready. You can now create delivery orders and start dispatching.",
+    "goToDashboard": "Go to dashboard",
+    "register": "Register",
+    "goToDone": "Continue",
+    "tempPasswordTitle": "Temporary password:",
+    "tempPasswordHint": "Share this with the driver. They'll change it on first sign-in.",
+    "field": {
+      "companyName": "Company name",
+      "phoneNumber": "Main phone",
+      "timezone": "Timezone",
+      "customerName": "Customer name",
+      "customerCode": "Code",
+      "driverEmail": "Email",
+      "driverName": "Name",
+      "driverPhone": "Phone"
+    },
+    "validation": {
+      "companyNameRequired": "Company name is required.",
+      "customerNameRequired": "Customer name is required.",
+      "driverFieldsRequired": "Email and name are required."
+    }
+  },
+  "aiIntake": {
+    "title": "Auto-create D/O with AI",
+    "fileLabel": "D/O file (PDF / image)",
+    "extract": "Extract",
+    "extracting": "Extracting...",
+    "useResult": "Create D/O from this",
+    "result": "Extracted fields",
+    "fileTooLarge": "File exceeds {{maxMb}}MB.",
+    "matchHint": "Customer / Terminal / Vessel / Location are not auto-matched — select them in the create modal.",
+    "fields": {
+      "blNumber": "B/L number",
+      "bookingNumber": "Booking number",
+      "reference": "Reference",
+      "containerNumber": "Container number",
+      "containerSize": "Size",
+      "containerType": "Type",
+      "chassisNumber": "Chassis",
+      "eta": "ETA",
+      "pickup": "Pickup",
+      "delivery": "Delivery",
+      "return": "Return",
+      "demurrageLfd": "Demurrage LFD",
+      "detentionLfd": "Detention LFD"
+    }
+  }
+}
