@@ -44,38 +44,70 @@ export type TokenPair = {
   tokenType: string;
 };
 
-export type LoginResponse = TokenPair & {
-  userId: number;
-  tenantId: number | null;
-  role: UserRole;
-  mustChangePassword: boolean;
+// 백엔드 /auth/login 응답 — access/refresh 토큰만. 사용자 정보는 별도 /users/me.
+export type LoginResponse = {
+  accessToken: string;
+  refreshToken: string | null;
 };
 
+// 백엔드 TenantDetailResponseSchema (camelCase). slug / planTier / contactEmail 같은 필드는
+// 백엔드 모델에 없으니 제거. phoneNumber 가 공용 연락처 역할.
 export type TenantEntity = {
   id: number;
   name: string;
-  slug: string;
-  planTier: string;
   isActive: boolean;
-  timezone: string;
-  contactEmail: string | null;
-  contactPhone: string | null;
-  createdAt: string;
-  updatedAt: string;
+  // 온보딩
+  onboardingStep1Done: boolean;
+  onboardingStep2Done: boolean;
+  onboardingStep3Done: boolean;
+  onboardingCompleted: boolean;
+  // 회사 / 연락
+  memo: string | null;
+  timezone: string | null;
+  imageUrl: string | null;
+  companyName: string | null;
+  registrationNumber: string | null;
+  address: string | null;
+  representativeName: string | null;
+  phoneNumber: string | null;
+  // 표시 / 운영
+  currency: string | null;
+  decimalPlaces: number;
+  productInfoDisplay: string | null;
+  productInfoTemplate: string | null;
+  excelProductIdentification: string | null;
+  gs1GtinEnabled: boolean;
+  files: unknown[];
+  createdAt: string | null;
+  updatedAt: string | null;
 };
 
+// 백엔드 UserTenantRowResponseSchema — 한 user 의 tenant 멤버십 1건.
+export type UserTenantMembership = {
+  id: number;
+  tenantId: number;
+  tenantName: string | null;
+  permissionGroupId: number | null;
+};
+
+// 백엔드 UserResponseSchema (camelCase 변환 후) 와 1:1.
+// N:M 모델: 한 user 가 여러 tenant 에 소속 가능 → tenants 배열.
+// "현재 활성 tenant" 는 별도 store (currentTenantId) 에서 관리.
 export type UserEntity = {
   id: number;
-  tenantId: number | null;
-  email: string;
-  name: string;
+  email: string | null;
   role: UserRole;
+  name: string | null;
   phone: string | null;
   isActive: boolean;
-  mustChangePassword: boolean;
-  lastLoginAt: string | null;
-  createdAt: string;
-  updatedAt: string;
+  authProvider: string;
+  notificationEmail: string | null;
+  eventNotificationEnabled: boolean;
+  language: string | null;
+  tenants: UserTenantMembership[];
+  files: unknown[];
+  createdAt: string | null;
+  updatedAt: string | null;
 };
 
 export type DriverEntity = {

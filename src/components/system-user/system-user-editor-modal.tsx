@@ -47,10 +47,10 @@ export default function SystemUserEditorModal() {
 
 function Body({ modal }: { modal: OpenModal }) {
   const [email, setEmail] = useState(
-    modal.type === "CREATE" ? "" : modal.user.email,
+    modal.type === "CREATE" ? "" : (modal.user.email ?? ""),
   );
   const [name, setName] = useState(
-    modal.type === "CREATE" ? "" : modal.user.name,
+    modal.type === "CREATE" ? "" : (modal.user.name ?? ""),
   );
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState(

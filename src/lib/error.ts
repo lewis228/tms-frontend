@@ -26,14 +26,22 @@ const CODE_KO: Record<string, string> = {
   ERR_CONFLICT: "이미 존재하는 데이터입니다.",
   ERR_VALIDATION: "입력값이 올바르지 않습니다.",
   ERR_INVALID_STATE_TRANSITION: "현재 상태에서는 이 동작을 수행할 수 없습니다.",
+  ERR_INVALID_LEG_TRANSITION: "Leg 상태를 변경할 수 없습니다.",
+  ERR_INVALID_SETTLEMENT_TRANSITION: "정산 상태를 변경할 수 없습니다.",
   ERR_INTEGRITY: "데이터 무결성 위반입니다.",
   ERR_DATABASE: "데이터베이스 오류가 발생했습니다.",
   ERR_INTERNAL: "서버 내부 오류가 발생했습니다.",
 
-  // 도메인
+  // 도메인 — 파일 / AI / 정산
   ERR_FILE_NOT_UPLOADED: "파일 업로드가 완료되지 않았습니다.",
+  ERR_FILE_TYPE: "지원하지 않는 파일 형식입니다.",
+  ERR_FILE_EMPTY: "빈 파일은 업로드할 수 없습니다.",
+  ERR_FILE_TOO_LARGE: "파일 크기가 너무 큽니다.",
   ERR_AI_DISABLED: "AI Intake 가 비활성화되어 있습니다.",
   ERR_APPROVED_LOCKED: "승인된 정산은 수정할 수 없습니다.",
+
+  // Driver mobile
+  ERR_FORBIDDEN_LEG: "본인에게 배정된 Leg 이 아닙니다.",
 };
 
 type ErrorEnvelope = {

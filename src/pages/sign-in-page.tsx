@@ -24,12 +24,14 @@ export default function SignInPage() {
     setIsPending(true);
     try {
       const tokens = await signIn({ email: email.trim(), password });
-      setTokensModule(tokens.accessToken, tokens.refreshToken);
+      // 백엔드 (웹) 는 refresh 토큰을 HttpOnly 쿠키로만 송신 → body 의 refreshToken 은 null.
+      const refreshToken = tokens.refreshToken ?? "";
+      setTokensModule(tokens.accessToken, refreshToken);
       const me = await fetchMe();
       setBootstrappedSession({
         user: me,
         accessToken: tokens.accessToken,
-        refreshToken: tokens.refreshToken,
+        refreshToken,
       });
       const from = (location.state as { from?: string } | null)?.from;
       navigate(from && from.startsWith("/app") ? from : "/app/dashboard", {

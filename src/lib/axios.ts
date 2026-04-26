@@ -19,7 +19,6 @@ import {
   getAccessToken,
   getRefreshToken,
   setTokensModule,
-  getCurrentRoleModule,
   getCurrentTenantIdModule,
 } from "@/store/auth";
 import { generateRequestId } from "@/lib/request-id";
@@ -30,7 +29,9 @@ const APP_VERSION = import.meta.env.VITE_APP_VERSION ?? "0.1.0";
 export const API_BASE_URL =
   import.meta.env.VITE_API_URL || "http://localhost:8080";
 
-export const API_V1_URL = `${API_BASE_URL}/api/v1`;
+// 백엔드 ROOT_PATH 는 ""로 시작. 운영에서는 reverse proxy 가 /api/v1 → backend / 로 rewrite.
+// 따라서 baseURL 은 그대로 BASE_URL 사용 (prefix 없음).
+export const API_V1_URL = API_BASE_URL;
 
 const api = axios.create({ baseURL: API_V1_URL });
 
@@ -43,10 +44,12 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  // SUPER_ADMIN 만 X-Tenant-Id 사용 (다른 tenant 조작). 일반 사용자는 JWT 의 tenant_id 면 충분.
-  const role = getCurrentRoleModule();
+  // X-Tenant-Id — 백엔드 get_tenant_scope 가 모든 도메인 endpoint 에서 필수로 요구.
+  // 일반 사용자: 자기 멤버십 tenant 중 currentTenantId 사용.
+  // SUPER_ADMIN: 멤버십 없이도 다른 tenant 조작 (currentTenantId 가 그 대상).
+  // /auth/* 는 헤더 불필요.
   const tenantId = getCurrentTenantIdModule();
-  if (role === "SUPER_ADMIN" && tenantId && !config.url?.startsWith("/auth/")) {
+  if (tenantId && !config.url?.startsWith("/auth/")) {
     headers["X-Tenant-Id"] = String(tenantId);
   }
 
@@ -67,9 +70,10 @@ export async function refreshAccessToken(): Promise<string> {
     try {
       const refresh = getRefreshToken();
       if (!refresh) throw new Error("no refresh token");
-      const resp = await axios.post<TokenPair>(`${API_V1_URL}/auth/refresh`, {
-        refreshToken: refresh,
-      });
+      const resp = await axios.post<TokenPair>(
+        `${API_V1_URL}/auth/token/refresh`,
+        { refreshToken: refresh },
+      );
       setTokensModule(resp.data.accessToken, resp.data.refreshToken);
       return resp.data.accessToken;
     } finally {
@@ -107,7 +111,7 @@ api.interceptors.response.use(
       !original ||
       error.response?.status !== 401 ||
       original._retry ||
-      original.url?.includes("/auth/refresh") ||
+      original.url?.includes("/auth/token/refresh") ||
       original.url?.includes("/auth/login")
     ) {
       return Promise.reject(error);

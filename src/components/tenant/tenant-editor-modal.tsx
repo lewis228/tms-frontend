@@ -42,20 +42,14 @@ function Body({ modal }: { modal: OpenModal }) {
   const [name, setName] = useState(
     modal.type === "CREATE" ? "" : modal.tenant.name,
   );
-  const [slug, setSlug] = useState(
-    modal.type === "CREATE" ? "" : modal.tenant.slug,
-  );
-  const [planTier, setPlanTier] = useState(
-    modal.type === "CREATE" ? "basic" : modal.tenant.planTier,
+  const [companyName, setCompanyName] = useState(
+    modal.type === "CREATE" ? "" : (modal.tenant.companyName ?? ""),
   );
   const [timezone, setTimezone] = useState(
-    modal.type === "CREATE" ? "UTC" : modal.tenant.timezone,
+    modal.type === "CREATE" ? "Asia/Seoul" : (modal.tenant.timezone ?? "Asia/Seoul"),
   );
-  const [contactEmail, setContactEmail] = useState(
-    modal.type === "CREATE" ? "" : (modal.tenant.contactEmail ?? ""),
-  );
-  const [contactPhone, setContactPhone] = useState(
-    modal.type === "CREATE" ? "" : (modal.tenant.contactPhone ?? ""),
+  const [phoneNumber, setPhoneNumber] = useState(
+    modal.type === "CREATE" ? "" : (modal.tenant.phoneNumber ?? ""),
   );
 
   const { mutate: createT, isPending: isCreatePending } = useCreateTenant({
@@ -77,37 +71,19 @@ function Body({ modal }: { modal: OpenModal }) {
   });
 
   const isPending = isCreatePending || isUpdatePending;
-  const slugInvalid = slug !== "" && !/^[a-z0-9-]{2,64}$/.test(slug);
 
   const handleSave = () => {
     if (!name.trim()) return;
+    const payload = {
+      name: name.trim(),
+      companyName: companyName.trim() || null,
+      timezone: timezone.trim() || null,
+      phoneNumber: phoneNumber.trim() || null,
+    };
     if (modal.type === "CREATE") {
-      if (slugInvalid || slug.trim() === "") {
-        toast.error(
-          "slug 형식이 올바르지 않습니다 (소문자/숫자/하이픈 2-64자).",
-          { position: "top-center" },
-        );
-        return;
-      }
-      createT({
-        name: name.trim(),
-        slug: slug.trim(),
-        planTier,
-        timezone,
-        contactEmail: contactEmail.trim() || null,
-        contactPhone: contactPhone.trim() || null,
-      });
+      createT(payload);
     } else {
-      updateT({
-        id: modal.tenant.id,
-        payload: {
-          name: name.trim(),
-          planTier,
-          timezone,
-          contactEmail: contactEmail.trim() || null,
-          contactPhone: contactPhone.trim() || null,
-        },
-      });
+      updateT({ id: modal.tenant.id, payload });
     }
   };
 
@@ -127,53 +103,26 @@ function Body({ modal }: { modal: OpenModal }) {
             placeholder="Acme Drayage"
           />
         </Field>
-        <Field
-          label="Slug (생성 후 변경 불가, 소문자/숫자/하이픈 2-64자)"
-          required={modal.type === "CREATE"}
-        >
+        <Field label="회사명">
           <Input
-            value={slug}
-            onChange={(e) => setSlug(e.target.value)}
-            disabled={isPending || modal.type === "EDIT"}
-            placeholder="acme-drayage"
-            className={slugInvalid ? "border-destructive" : undefined}
-          />
-          {slugInvalid && (
-            <span className="text-xs text-destructive">
-              형식이 올바르지 않습니다.
-            </span>
-          )}
-        </Field>
-        <div className="grid grid-cols-2 gap-3">
-          <Field label="Plan Tier">
-            <Input
-              value={planTier}
-              onChange={(e) => setPlanTier(e.target.value)}
-              disabled={isPending}
-              maxLength={32}
-            />
-          </Field>
-          <Field label="Timezone">
-            <Input
-              value={timezone}
-              onChange={(e) => setTimezone(e.target.value)}
-              disabled={isPending}
-              placeholder="UTC / Asia/Seoul / America/Los_Angeles"
-            />
-          </Field>
-        </div>
-        <Field label="Contact Email">
-          <Input
-            type="email"
-            value={contactEmail}
-            onChange={(e) => setContactEmail(e.target.value)}
+            value={companyName}
+            onChange={(e) => setCompanyName(e.target.value)}
             disabled={isPending}
+            placeholder="Acme Drayage Inc."
           />
         </Field>
-        <Field label="Contact Phone">
+        <Field label="Timezone">
           <Input
-            value={contactPhone}
-            onChange={(e) => setContactPhone(e.target.value)}
+            value={timezone}
+            onChange={(e) => setTimezone(e.target.value)}
+            disabled={isPending}
+            placeholder="Asia/Seoul / America/Los_Angeles"
+          />
+        </Field>
+        <Field label="전화">
+          <Input
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
             disabled={isPending}
           />
         </Field>

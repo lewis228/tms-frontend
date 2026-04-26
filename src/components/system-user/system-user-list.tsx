@@ -58,8 +58,8 @@ export default function SystemUserList() {
     if (!search) return data.items;
     return data.items.filter(
       (u) =>
-        u.email.toLowerCase().includes(search) ||
-        u.name.toLowerCase().includes(search) ||
+        (u.email ?? "").toLowerCase().includes(search) ||
+        (u.name ?? "").toLowerCase().includes(search) ||
         u.role.toLowerCase().includes(search),
     );
   }, [data, search]);
@@ -97,7 +97,8 @@ export default function SystemUserList() {
         >
           {tenants.map((t) => (
             <option key={t.id} value={t.id}>
-              {t.name} ({t.slug})
+              {t.name}
+              {t.companyName ? ` · ${t.companyName}` : ""}
             </option>
           ))}
         </select>
@@ -130,7 +131,7 @@ export default function SystemUserList() {
                   <TableHead>Role</TableHead>
                   <TableHead>전화</TableHead>
                   <TableHead>Active</TableHead>
-                  <TableHead>마지막 로그인</TableHead>
+                  <TableHead>가입일</TableHead>
                   <TableHead className="text-right">동작</TableHead>
                 </TableRow>
               </TableHeader>
@@ -161,10 +162,9 @@ export default function SystemUserList() {
                         )}
                       </TableCell>
                       <TableCell className="text-xs">
-                        {u.lastLoginAt
-                          ? new Date(u.lastLoginAt).toLocaleString("ko-KR", {
+                        {u.createdAt
+                          ? new Date(u.createdAt).toLocaleDateString("ko-KR", {
                               dateStyle: "short",
-                              timeStyle: "short",
                             })
                           : "—"}
                       </TableCell>

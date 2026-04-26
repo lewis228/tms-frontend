@@ -60,8 +60,7 @@ export default function TenantList() {
     return data.filter(
       (t) =>
         t.name.toLowerCase().includes(search) ||
-        t.slug.toLowerCase().includes(search) ||
-        (t.contactEmail ?? "").toLowerCase().includes(search),
+        (t.companyName ?? "").toLowerCase().includes(search),
     );
   }, [data, search]);
 
@@ -81,7 +80,7 @@ export default function TenantList() {
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between gap-2">
         <Input
-          placeholder="이름 / slug / 이메일 검색"
+          placeholder="이름 / 회사명 검색"
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           className="max-w-sm"
@@ -94,10 +93,9 @@ export default function TenantList() {
           <TableHeader>
             <TableRow>
               <TableHead>이름</TableHead>
-              <TableHead>Slug</TableHead>
-              <TableHead>Plan</TableHead>
+              <TableHead>회사명</TableHead>
               <TableHead>Timezone</TableHead>
-              <TableHead>Email</TableHead>
+              <TableHead>전화</TableHead>
               <TableHead>Active</TableHead>
               <TableHead className="text-right">동작</TableHead>
             </TableRow>
@@ -106,7 +104,7 @@ export default function TenantList() {
             {filtered.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={7}
+                  colSpan={6}
                   className="text-center text-muted-foreground"
                 >
                   데이터가 없습니다.
@@ -116,13 +114,12 @@ export default function TenantList() {
               filtered.map((t) => (
                 <TableRow key={t.id}>
                   <TableCell className="font-medium">{t.name}</TableCell>
-                  <TableCell className="font-mono text-xs">{t.slug}</TableCell>
-                  <TableCell>{t.planTier}</TableCell>
+                  <TableCell className="text-xs">{t.companyName ?? "—"}</TableCell>
                   <TableCell className="font-mono text-xs">
-                    {t.timezone}
+                    {t.timezone ?? "—"}
                   </TableCell>
                   <TableCell className="text-xs">
-                    {t.contactEmail ?? "—"}
+                    {t.phoneNumber ?? "—"}
                   </TableCell>
                   <TableCell>
                     <button
