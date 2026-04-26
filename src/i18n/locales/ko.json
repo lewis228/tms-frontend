@@ -21,7 +21,17 @@
     "all": "전체",
     "none": "—",
     "createdAt": "생성일",
-    "updatedAt": "수정일"
+    "updatedAt": "수정일",
+    "actions": "동작",
+    "noData": "데이터가 없습니다.",
+    "page": "페이지",
+    "totalCount": "전체 {{count}}건",
+    "selectPlaceholder": "선택하세요",
+    "noSelection": "— 선택 안함 —",
+    "saving": "저장 중...",
+    "deleting": "삭제 중...",
+    "creating": "생성 중...",
+    "loadFailed": "데이터를 불러오지 못했습니다."
   },
   "toast": {
     "saved": "저장되었습니다.",
@@ -30,16 +40,44 @@
     "deleted": "삭제되었습니다.",
     "createFailed": "생성에 실패했습니다.",
     "updateFailed": "수정에 실패했습니다.",
-    "deleteFailed": "삭제에 실패했습니다."
+    "deleteFailed": "삭제에 실패했습니다.",
+    "copied": "복사되었습니다."
   },
   "errors": {
     "UNAUTHORIZED": "인증이 필요합니다.",
     "FORBIDDEN": "접근 권한이 없습니다.",
+    "FORBIDDEN_ROLE": "해당 작업을 수행할 권한이 부족합니다.",
+    "TENANT_MISMATCH": "다른 테넌트의 데이터에 접근할 수 없습니다.",
+    "TENANT_REQUIRED": "테넌트가 지정되지 않았습니다.",
+    "NO_TENANT": "사용자에게 테넌트가 없습니다.",
+    "AUTH_INVALID": "이메일 또는 비밀번호가 일치하지 않습니다.",
+    "TOKEN_EXPIRED": "세션이 만료되었습니다. 다시 로그인해 주세요.",
+    "TOKEN_INVALID": "유효하지 않은 토큰입니다.",
+    "TOKEN_TYPE": "토큰 종류가 올바르지 않습니다.",
+    "PASSWORD_MISMATCH": "현재 비밀번호가 일치하지 않습니다.",
+    "PW_NOT_REQUIRED": "비밀번호 변경이 필요한 상태가 아닙니다.",
+    "SUPER_ADMIN_FORBIDDEN": "SUPER_ADMIN 은 API 로 생성할 수 없습니다.",
+    "ROLE_HIERARCHY": "본인보다 상위 등급의 사용자를 만들 수 없습니다.",
     "NOT_FOUND": "데이터를 찾을 수 없습니다.",
-    "RATE_LIMITED": "요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.",
-    "INTERNAL_SERVER_ERROR": "서버 내부 오류가 발생했습니다.",
+    "CONFLICT": "이미 존재하는 데이터입니다.",
+    "VALIDATION": "입력값이 올바르지 않습니다.",
+    "INVALID_STATE_TRANSITION": "현재 상태에서는 이 동작을 수행할 수 없습니다.",
+    "INVALID_LEG_TRANSITION": "Leg 상태를 변경할 수 없습니다.",
+    "INVALID_SETTLEMENT_TRANSITION": "정산 상태를 변경할 수 없습니다.",
+    "INTEGRITY": "데이터 무결성 위반입니다.",
+    "DATABASE": "데이터베이스 오류가 발생했습니다.",
+    "INTERNAL": "서버 내부 오류가 발생했습니다.",
+    "FILE_NOT_UPLOADED": "파일 업로드가 완료되지 않았습니다.",
+    "FILE_TYPE": "지원하지 않는 파일 형식입니다.",
+    "FILE_EMPTY": "빈 파일은 업로드할 수 없습니다.",
+    "FILE_TOO_LARGE": "파일 크기가 너무 큽니다.",
+    "AI_DISABLED": "AI Intake 가 비활성화되어 있습니다.",
+    "APPROVED_LOCKED": "승인된 정산은 수정할 수 없습니다.",
+    "FORBIDDEN_LEG": "본인에게 배정된 Leg 이 아닙니다.",
     "TIMEOUT": "요청이 시간 초과되었습니다.",
     "NETWORK": "네트워크 오류가 발생했습니다.",
+    "RATE_LIMITED": "요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.",
+    "INTERNAL_SERVER_ERROR": "서버 내부 오류가 발생했습니다.",
     "UNKNOWN": "알 수 없는 오류가 발생했습니다."
   },
   "time": {
@@ -50,6 +88,30 @@
     "weeksAgo": "{{count}}주 전",
     "monthsAgo": "{{count}}개월 전",
     "yearsAgo": "{{count}}년 전"
+  },
+  "field": {
+    "name": "이름",
+    "email": "이메일",
+    "phone": "전화",
+    "code": "코드",
+    "address": "주소",
+    "note": "메모",
+    "role": "Role",
+    "active": "활성",
+    "password": "비밀번호",
+    "lastLogin": "마지막 로그인",
+    "joinedAt": "가입일"
+  },
+  "favorites": {
+    "addToFavorites": "Favorites 에 추가",
+    "removeFromFavorites": "Favorites 에서 제거",
+    "title": "즐겨찾기"
+  },
+  "alertModal": {
+    "discardDraft": {
+      "title": "작성 중이던 내용이 있습니다",
+      "description": "이 화면에서 나가면 작성중이던 내용이 사라집니다."
+    }
   },
   "onboarding": {
     "title": "TMS Pro 시작하기",
@@ -108,6 +170,310 @@
       "return": "Return",
       "demurrageLfd": "Demurrage LFD",
       "detentionLfd": "Detention LFD"
+    }
+  },
+  "customer": {
+    "domain": "고객사",
+    "newButton": "새 고객사",
+    "createTitle": "고객사 생성",
+    "editTitle": "고객사 수정",
+    "deletePromptTitle": "'{{name}}' 고객사를 삭제하시겠습니까?",
+    "deletePromptDesc": "복구할 수 없습니다.",
+    "field": {
+      "billingAddress": "청구 주소",
+      "contactName": "담당자",
+      "contactEmail": "담당자 이메일",
+      "contactPhone": "담당자 전화"
+    },
+    "validation": {
+      "nameRequired": "이름을 입력하세요."
+    }
+  },
+  "terminal": {
+    "domain": "터미널",
+    "newButton": "새 터미널",
+    "createTitle": "터미널 생성",
+    "editTitle": "터미널 수정",
+    "deletePromptTitle": "'{{name}}' 터미널을 삭제하시겠습니까?",
+    "deletePromptDesc": "복구할 수 없습니다.",
+    "field": {
+      "latitude": "위도",
+      "longitude": "경도"
+    },
+    "validation": {
+      "nameRequired": "이름을 입력하세요."
+    }
+  },
+  "vessel": {
+    "domain": "본선",
+    "newButton": "새 본선",
+    "createTitle": "본선 생성",
+    "editTitle": "본선 수정",
+    "deletePromptTitle": "'{{name}}' 본선을 삭제하시겠습니까?",
+    "deletePromptDesc": "복구할 수 없습니다.",
+    "field": {
+      "imoNumber": "IMO 번호",
+      "line": "선사"
+    },
+    "validation": {
+      "nameRequired": "이름을 입력하세요."
+    }
+  },
+  "location": {
+    "domain": "장소",
+    "newButton": "새 장소",
+    "createTitle": "장소 생성",
+    "editTitle": "장소 수정",
+    "deletePromptTitle": "'{{name}}' 장소를 삭제하시겠습니까?",
+    "deletePromptDesc": "복구할 수 없습니다.",
+    "field": {
+      "kind": "종류",
+      "latitude": "위도",
+      "longitude": "경도",
+      "customer": "고객사"
+    },
+    "validation": {
+      "nameRequired": "이름을 입력하세요.",
+      "customerRequired": "CUSTOMER 종류는 customer 를 선택해야 합니다."
+    }
+  },
+  "driver": {
+    "domain": "기사",
+    "newButton": "새 기사",
+    "createTitle": "기사 생성",
+    "editTitle": "기사 수정",
+    "deletePromptTitle": "'{{name}}' 기사를 삭제하시겠습니까?",
+    "deletePromptDesc": "복구할 수 없습니다.",
+    "field": {
+      "licenseNumber": "면허 번호",
+      "licenseState": "면허 주",
+      "truckNumber": "차량 번호"
+    },
+    "tempPassword": {
+      "title": "기사 가입 완료",
+      "description": "임시 비밀번호를 기사에게 전달하세요. 첫 로그인 시 변경하게 됩니다.",
+      "label": "임시 비밀번호",
+      "copy": "복사"
+    },
+    "validation": {
+      "emailRequired": "이메일을 입력하세요.",
+      "nameRequired": "이름을 입력하세요."
+    }
+  },
+  "tenant": {
+    "domain": "Tenant",
+    "newButton": "새 Tenant",
+    "createTitle": "Tenant 생성",
+    "editTitle": "Tenant 수정",
+    "deletePromptTitle": "Tenant '{{name}}' 을(를) 삭제하시겠습니까?",
+    "deletePromptDesc": "⚠ Tenant 삭제는 CASCADE 로 모든 사용자/D-O/Leg/Settlement/파일 등 모든 연관 데이터가 영구 삭제됩니다. 복구할 수 없습니다.",
+    "searchPlaceholder": "이름 / 회사명 검색",
+    "field": {
+      "name": "이름",
+      "companyName": "회사명",
+      "timezone": "Timezone",
+      "phone": "전화"
+    },
+    "validation": {
+      "nameRequired": "이름을 입력하세요."
+    }
+  },
+  "systemUser": {
+    "domain": "사용자",
+    "newButton": "새 사용자",
+    "createTitle": "사용자 생성",
+    "editTitle": "사용자 수정",
+    "deletePromptTitle": "'{{name}}' 사용자를 삭제하시겠습니까?",
+    "deletePromptDesc": "복구할 수 없습니다.",
+    "searchPlaceholder": "이메일 / 이름 / role 검색",
+    "noTenants": "Tenant 가 없습니다. /app/system/tenants 에서 먼저 생성하세요.",
+    "field": {
+      "passwordMin": "비밀번호 (최소 8자)"
+    },
+    "validation": {
+      "fieldsRequired": "이메일과 비밀번호를 입력하세요.",
+      "passwordTooShort": "비밀번호는 8자 이상."
+    }
+  },
+  "deliveryOrder": {
+    "domain": "D/O",
+    "newButton": "새 D/O",
+    "aiCreateButton": "AI 로 등록",
+    "createTitle": "D/O 생성",
+    "searchPlaceholder": "컨테이너 / B/L / Booking / Reference",
+    "viewDetail": "상세 →",
+    "backToList": "목록",
+    "section": {
+      "basic": "기본",
+      "container": "컨테이너",
+      "meta": "메타",
+      "schedule": "일정",
+      "gates": "게이트"
+    },
+    "field": {
+      "direction": "방향",
+      "customer": "고객사",
+      "blNumber": "B/L 번호",
+      "bookingNumber": "Booking 번호",
+      "reference": "Reference",
+      "containerNumber": "컨테이너 번호",
+      "containerSize": "사이즈",
+      "containerType": "타입",
+      "chassisNumber": "섀시",
+      "terminal": "터미널",
+      "vessel": "본선",
+      "deliveryLocation": "배송 장소",
+      "returnLocation": "반납 장소",
+      "eta": "ETA",
+      "pickupAppointment": "Pickup",
+      "deliveryAppointment": "Delivery",
+      "returnAppointment": "Return",
+      "demurrageLfd": "Demurrage LFD",
+      "detentionLfd": "Detention LFD",
+      "internalNote": "내부 메모"
+    },
+    "validation": {
+      "customerRequired": "고객사를 선택하세요.",
+      "containerInvalid": "컨테이너 번호 형식이 올바르지 않습니다 (예: ABCD1234567)."
+    },
+    "table": {
+      "status": "상태",
+      "direction": "방향",
+      "container": "컨테이너",
+      "customer": "고객사",
+      "bl": "B/L",
+      "pickup": "픽업",
+      "delivery": "배송"
+    },
+    "drawer": {
+      "title": "D/O"
+    }
+  },
+  "leg": {
+    "domain": "Leg",
+    "newButton": "Leg 생성",
+    "createTitle": "Leg 생성",
+    "editTitle": "Leg 수정",
+    "deletePromptTitle": "Leg 을(를) 삭제하시겠습니까?",
+    "deletePromptDesc": "복구할 수 없습니다.",
+    "field": {
+      "step": "Step (D/O 단계)",
+      "moveType": "Move Type",
+      "serviceType": "Service Type",
+      "driver": "기사",
+      "pickupLocation": "픽업 장소",
+      "pickupDate": "픽업 시각",
+      "deliveryLocation": "배송 장소",
+      "deliveryDate": "배송 시각",
+      "note": "메모"
+    },
+    "transition": {
+      "failureReasonPrompt": "실패 사유를 입력하세요"
+    }
+  },
+  "settlement": {
+    "domain": "정산",
+    "drawer": {
+      "title": "Settlement"
+    },
+    "table": {
+      "leg": "Leg",
+      "status": "상태",
+      "systemTotal": "시스템",
+      "driverReported": "기사 보고",
+      "discrepancy": "차이",
+      "finalAmount": "최종"
+    },
+    "filter": {
+      "all": "전체",
+      "search": "Leg ID / 메모 검색"
+    },
+    "calculate": {
+      "title": "정산 계산",
+      "submit": "계산"
+    },
+    "adjust": {
+      "title": "정산 조정",
+      "submit": "조정",
+      "noteRequired": "메모를 입력하세요."
+    },
+    "approve": {
+      "title": "정산 승인",
+      "submit": "승인"
+    },
+    "unapprove": {
+      "title": "승인 취소",
+      "reasonRequired": "사유를 입력하세요.",
+      "submit": "승인 취소"
+    },
+    "field": {
+      "systemTotal": "시스템 합계",
+      "driverReported": "기사 보고 금액",
+      "finalAmount": "최종 금액",
+      "hasFlag": "이상 표시",
+      "note": "메모",
+      "reason": "사유"
+    },
+    "extras": {
+      "title": "부가 청구",
+      "addRow": "추가",
+      "type": "유형",
+      "amount": "금액",
+      "description": "설명"
+    }
+  },
+  "rateSetting": {
+    "domain": "단가",
+    "newButton": "새 단가",
+    "createTitle": "단가 생성",
+    "editTitle": "단가 수정",
+    "deletePromptTitle": "'{{name}}' 단가를 삭제하시겠습니까?",
+    "deletePromptDesc": "복구할 수 없습니다."
+  },
+  "dispatch": {
+    "title": "디스패치",
+    "view": {
+      "list": "목록",
+      "board": "보드",
+      "timeline": "타임라인",
+      "map": "지도",
+      "gantt": "Gantt"
+    },
+    "board": {
+      "blocked": "{{from}} → {{to}} 전이 불가",
+      "empty": "비어있음"
+    },
+    "containerUnnamed": "(컨테이너 미지정)"
+  },
+  "dashboard": {
+    "title": "대시보드",
+    "urgent": {
+      "title": "임박 D/O",
+      "noUrgent": "임박 항목이 없습니다."
+    },
+    "donut": {
+      "title": "상태 분포"
+    }
+  },
+  "notification": {
+    "title": "알림",
+    "empty": "알림이 없습니다.",
+    "markAllRead": "모두 읽음",
+    "viewAll": "전체 보기"
+  },
+  "auth": {
+    "signIn": {
+      "title": "Sign in",
+      "subtitle": "TMS Pro",
+      "submit": "Sign in",
+      "submitting": "Signing in...",
+      "forgotHint": "비밀번호를 잊으셨나요?",
+      "help": "도움말"
+    },
+    "forbidden": {
+      "title": "접근 권한이 없습니다",
+      "description": "이 페이지에 접근할 수 있는 권한이 없습니다.",
+      "back": "대시보드로"
     }
   }
 }

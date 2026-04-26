@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,7 @@ export default function TenantEditorModal() {
 }
 
 function Body({ modal }: { modal: OpenModal }) {
+  const { t } = useTranslation();
   const [name, setName] = useState(
     modal.type === "CREATE" ? "" : modal.tenant.name,
   );
@@ -54,7 +56,7 @@ function Body({ modal }: { modal: OpenModal }) {
 
   const { mutate: createT, isPending: isCreatePending } = useCreateTenant({
     onSuccess: () => {
-      toast.success("Tenant 가 생성되었습니다.", { position: "top-center" });
+      toast.success(t("toast.created"), { position: "top-center" });
       modal.actions.close();
     },
     onError: (err) =>
@@ -63,7 +65,7 @@ function Body({ modal }: { modal: OpenModal }) {
 
   const { mutate: updateT, isPending: isUpdatePending } = useUpdateTenant({
     onSuccess: () => {
-      toast.success("Tenant 가 수정되었습니다.", { position: "top-center" });
+      toast.success(t("toast.updated"), { position: "top-center" });
       modal.actions.close();
     },
     onError: (err) =>
@@ -91,11 +93,11 @@ function Body({ modal }: { modal: OpenModal }) {
     <>
       <DialogHeader>
         <DialogTitle className="font-sans">
-          {modal.type === "CREATE" ? "Tenant 생성" : "Tenant 수정"}
+          {t(modal.type === "CREATE" ? "tenant.createTitle" : "tenant.editTitle")}
         </DialogTitle>
       </DialogHeader>
       <div className="flex flex-col gap-3">
-        <Field label="이름" required>
+        <Field label={t("tenant.field.name")} required>
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -103,7 +105,7 @@ function Body({ modal }: { modal: OpenModal }) {
             placeholder="Acme Drayage"
           />
         </Field>
-        <Field label="회사명">
+        <Field label={t("tenant.field.companyName")}>
           <Input
             value={companyName}
             onChange={(e) => setCompanyName(e.target.value)}
@@ -111,7 +113,7 @@ function Body({ modal }: { modal: OpenModal }) {
             placeholder="Acme Drayage Inc."
           />
         </Field>
-        <Field label="Timezone">
+        <Field label={t("tenant.field.timezone")}>
           <Input
             value={timezone}
             onChange={(e) => setTimezone(e.target.value)}
@@ -119,7 +121,7 @@ function Body({ modal }: { modal: OpenModal }) {
             placeholder="Asia/Seoul / America/Los_Angeles"
           />
         </Field>
-        <Field label="전화">
+        <Field label={t("tenant.field.phone")}>
           <Input
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
@@ -133,10 +135,10 @@ function Body({ modal }: { modal: OpenModal }) {
           onClick={() => modal.actions.close()}
           disabled={isPending}
         >
-          취소
+          {t("common.cancel")}
         </Button>
         <Button onClick={handleSave} disabled={isPending || !name.trim()}>
-          저장
+          {t("common.save")}
         </Button>
       </div>
     </>

@@ -21,7 +21,17 @@
     "all": "All",
     "none": "—",
     "createdAt": "Created",
-    "updatedAt": "Updated"
+    "updatedAt": "Updated",
+    "actions": "Actions",
+    "noData": "No data.",
+    "page": "page",
+    "totalCount": "{{count}} total",
+    "selectPlaceholder": "Select...",
+    "noSelection": "— None —",
+    "saving": "Saving...",
+    "deleting": "Deleting...",
+    "creating": "Creating...",
+    "loadFailed": "Failed to load."
   },
   "toast": {
     "saved": "Saved.",
@@ -30,16 +40,44 @@
     "deleted": "Deleted.",
     "createFailed": "Failed to create.",
     "updateFailed": "Failed to update.",
-    "deleteFailed": "Failed to delete."
+    "deleteFailed": "Failed to delete.",
+    "copied": "Copied."
   },
   "errors": {
     "UNAUTHORIZED": "Authentication required.",
     "FORBIDDEN": "You don't have access.",
+    "FORBIDDEN_ROLE": "Insufficient role for this action.",
+    "TENANT_MISMATCH": "Cannot access another tenant's data.",
+    "TENANT_REQUIRED": "Tenant is not specified.",
+    "NO_TENANT": "User has no tenant.",
+    "AUTH_INVALID": "Email or password is incorrect.",
+    "TOKEN_EXPIRED": "Session expired. Please sign in again.",
+    "TOKEN_INVALID": "Invalid token.",
+    "TOKEN_TYPE": "Invalid token type.",
+    "PASSWORD_MISMATCH": "Current password does not match.",
+    "PW_NOT_REQUIRED": "Password change is not required.",
+    "SUPER_ADMIN_FORBIDDEN": "SUPER_ADMIN cannot be created via API.",
+    "ROLE_HIERARCHY": "Cannot create a user with a higher role than yours.",
     "NOT_FOUND": "Not found.",
-    "RATE_LIMITED": "Too many requests. Please retry shortly.",
-    "INTERNAL_SERVER_ERROR": "An internal server error occurred.",
+    "CONFLICT": "Already exists.",
+    "VALIDATION": "Invalid input.",
+    "INVALID_STATE_TRANSITION": "This action is not allowed in the current state.",
+    "INVALID_LEG_TRANSITION": "Cannot change Leg state.",
+    "INVALID_SETTLEMENT_TRANSITION": "Cannot change settlement state.",
+    "INTEGRITY": "Data integrity violation.",
+    "DATABASE": "Database error.",
+    "INTERNAL": "An internal server error occurred.",
+    "FILE_NOT_UPLOADED": "File upload incomplete.",
+    "FILE_TYPE": "Unsupported file type.",
+    "FILE_EMPTY": "Cannot upload empty file.",
+    "FILE_TOO_LARGE": "File too large.",
+    "AI_DISABLED": "AI Intake is disabled.",
+    "APPROVED_LOCKED": "Approved settlements cannot be edited.",
+    "FORBIDDEN_LEG": "This Leg is not assigned to you.",
     "TIMEOUT": "Request timed out.",
     "NETWORK": "Network error.",
+    "RATE_LIMITED": "Too many requests. Please retry shortly.",
+    "INTERNAL_SERVER_ERROR": "An internal server error occurred.",
     "UNKNOWN": "An unknown error occurred."
   },
   "time": {
@@ -50,6 +88,30 @@
     "weeksAgo": "{{count}} w ago",
     "monthsAgo": "{{count}} mo ago",
     "yearsAgo": "{{count}} y ago"
+  },
+  "field": {
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "code": "Code",
+    "address": "Address",
+    "note": "Note",
+    "role": "Role",
+    "active": "Active",
+    "password": "Password",
+    "lastLogin": "Last login",
+    "joinedAt": "Joined"
+  },
+  "favorites": {
+    "addToFavorites": "Add to Favorites",
+    "removeFromFavorites": "Remove from Favorites",
+    "title": "Favorites"
+  },
+  "alertModal": {
+    "discardDraft": {
+      "title": "You have unsaved changes",
+      "description": "Leaving will discard the draft."
+    }
   },
   "onboarding": {
     "title": "Get started with TMS Pro",
@@ -108,6 +170,310 @@
       "return": "Return",
       "demurrageLfd": "Demurrage LFD",
       "detentionLfd": "Detention LFD"
+    }
+  },
+  "customer": {
+    "domain": "Customer",
+    "newButton": "New customer",
+    "createTitle": "New customer",
+    "editTitle": "Edit customer",
+    "deletePromptTitle": "Delete customer '{{name}}'?",
+    "deletePromptDesc": "This cannot be undone.",
+    "field": {
+      "billingAddress": "Billing address",
+      "contactName": "Contact name",
+      "contactEmail": "Contact email",
+      "contactPhone": "Contact phone"
+    },
+    "validation": {
+      "nameRequired": "Name is required."
+    }
+  },
+  "terminal": {
+    "domain": "Terminal",
+    "newButton": "New terminal",
+    "createTitle": "New terminal",
+    "editTitle": "Edit terminal",
+    "deletePromptTitle": "Delete terminal '{{name}}'?",
+    "deletePromptDesc": "This cannot be undone.",
+    "field": {
+      "latitude": "Latitude",
+      "longitude": "Longitude"
+    },
+    "validation": {
+      "nameRequired": "Name is required."
+    }
+  },
+  "vessel": {
+    "domain": "Vessel",
+    "newButton": "New vessel",
+    "createTitle": "New vessel",
+    "editTitle": "Edit vessel",
+    "deletePromptTitle": "Delete vessel '{{name}}'?",
+    "deletePromptDesc": "This cannot be undone.",
+    "field": {
+      "imoNumber": "IMO number",
+      "line": "Line"
+    },
+    "validation": {
+      "nameRequired": "Name is required."
+    }
+  },
+  "location": {
+    "domain": "Location",
+    "newButton": "New location",
+    "createTitle": "New location",
+    "editTitle": "Edit location",
+    "deletePromptTitle": "Delete location '{{name}}'?",
+    "deletePromptDesc": "This cannot be undone.",
+    "field": {
+      "kind": "Kind",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "customer": "Customer"
+    },
+    "validation": {
+      "nameRequired": "Name is required.",
+      "customerRequired": "CUSTOMER kind requires a customer."
+    }
+  },
+  "driver": {
+    "domain": "Driver",
+    "newButton": "New driver",
+    "createTitle": "New driver",
+    "editTitle": "Edit driver",
+    "deletePromptTitle": "Delete driver '{{name}}'?",
+    "deletePromptDesc": "This cannot be undone.",
+    "field": {
+      "licenseNumber": "License number",
+      "licenseState": "License state",
+      "truckNumber": "Truck number"
+    },
+    "tempPassword": {
+      "title": "Driver registered",
+      "description": "Share the temporary password with the driver. They'll change it on first sign-in.",
+      "label": "Temporary password",
+      "copy": "Copy"
+    },
+    "validation": {
+      "emailRequired": "Email is required.",
+      "nameRequired": "Name is required."
+    }
+  },
+  "tenant": {
+    "domain": "Tenant",
+    "newButton": "New tenant",
+    "createTitle": "New tenant",
+    "editTitle": "Edit tenant",
+    "deletePromptTitle": "Delete tenant '{{name}}'?",
+    "deletePromptDesc": "⚠ Deleting a tenant CASCADEs to all users / D/O / Leg / Settlement / files. This cannot be undone.",
+    "searchPlaceholder": "Name / company",
+    "field": {
+      "name": "Name",
+      "companyName": "Company name",
+      "timezone": "Timezone",
+      "phone": "Phone"
+    },
+    "validation": {
+      "nameRequired": "Name is required."
+    }
+  },
+  "systemUser": {
+    "domain": "User",
+    "newButton": "New user",
+    "createTitle": "New user",
+    "editTitle": "Edit user",
+    "deletePromptTitle": "Delete user '{{name}}'?",
+    "deletePromptDesc": "This cannot be undone.",
+    "searchPlaceholder": "Email / name / role",
+    "noTenants": "No tenants. Create one in /app/system/tenants first.",
+    "field": {
+      "passwordMin": "Password (min 8 chars)"
+    },
+    "validation": {
+      "fieldsRequired": "Email and password are required.",
+      "passwordTooShort": "Password must be at least 8 characters."
+    }
+  },
+  "deliveryOrder": {
+    "domain": "D/O",
+    "newButton": "New D/O",
+    "aiCreateButton": "Create with AI",
+    "createTitle": "New D/O",
+    "searchPlaceholder": "Container / B/L / Booking / Reference",
+    "viewDetail": "Detail →",
+    "backToList": "List",
+    "section": {
+      "basic": "Basic",
+      "container": "Container",
+      "meta": "Meta",
+      "schedule": "Schedule",
+      "gates": "Gates"
+    },
+    "field": {
+      "direction": "Direction",
+      "customer": "Customer",
+      "blNumber": "B/L",
+      "bookingNumber": "Booking",
+      "reference": "Reference",
+      "containerNumber": "Container number",
+      "containerSize": "Size",
+      "containerType": "Type",
+      "chassisNumber": "Chassis",
+      "terminal": "Terminal",
+      "vessel": "Vessel",
+      "deliveryLocation": "Delivery location",
+      "returnLocation": "Return location",
+      "eta": "ETA",
+      "pickupAppointment": "Pickup",
+      "deliveryAppointment": "Delivery",
+      "returnAppointment": "Return",
+      "demurrageLfd": "Demurrage LFD",
+      "detentionLfd": "Detention LFD",
+      "internalNote": "Internal note"
+    },
+    "validation": {
+      "customerRequired": "Please select a customer.",
+      "containerInvalid": "Invalid container number (e.g. ABCD1234567)."
+    },
+    "table": {
+      "status": "Status",
+      "direction": "Dir",
+      "container": "Container",
+      "customer": "Customer",
+      "bl": "B/L",
+      "pickup": "Pickup",
+      "delivery": "Delivery"
+    },
+    "drawer": {
+      "title": "D/O"
+    }
+  },
+  "leg": {
+    "domain": "Leg",
+    "newButton": "New leg",
+    "createTitle": "New leg",
+    "editTitle": "Edit leg",
+    "deletePromptTitle": "Delete this leg?",
+    "deletePromptDesc": "This cannot be undone.",
+    "field": {
+      "step": "Step (D/O stage)",
+      "moveType": "Move type",
+      "serviceType": "Service type",
+      "driver": "Driver",
+      "pickupLocation": "Pickup location",
+      "pickupDate": "Pickup at",
+      "deliveryLocation": "Delivery location",
+      "deliveryDate": "Delivery at",
+      "note": "Note"
+    },
+    "transition": {
+      "failureReasonPrompt": "Enter the failure reason"
+    }
+  },
+  "settlement": {
+    "domain": "Settlement",
+    "drawer": {
+      "title": "Settlement"
+    },
+    "table": {
+      "leg": "Leg",
+      "status": "Status",
+      "systemTotal": "System",
+      "driverReported": "Reported",
+      "discrepancy": "Diff",
+      "finalAmount": "Final"
+    },
+    "filter": {
+      "all": "All",
+      "search": "Leg ID / note"
+    },
+    "calculate": {
+      "title": "Calculate settlement",
+      "submit": "Calculate"
+    },
+    "adjust": {
+      "title": "Adjust settlement",
+      "submit": "Adjust",
+      "noteRequired": "Note is required."
+    },
+    "approve": {
+      "title": "Approve settlement",
+      "submit": "Approve"
+    },
+    "unapprove": {
+      "title": "Unapprove",
+      "reasonRequired": "Reason is required.",
+      "submit": "Unapprove"
+    },
+    "field": {
+      "systemTotal": "System total",
+      "driverReported": "Driver reported amount",
+      "finalAmount": "Final amount",
+      "hasFlag": "Flag as exception",
+      "note": "Note",
+      "reason": "Reason"
+    },
+    "extras": {
+      "title": "Extra charges",
+      "addRow": "Add",
+      "type": "Type",
+      "amount": "Amount",
+      "description": "Description"
+    }
+  },
+  "rateSetting": {
+    "domain": "Rate",
+    "newButton": "New rate",
+    "createTitle": "New rate",
+    "editTitle": "Edit rate",
+    "deletePromptTitle": "Delete rate '{{name}}'?",
+    "deletePromptDesc": "This cannot be undone."
+  },
+  "dispatch": {
+    "title": "Dispatch",
+    "view": {
+      "list": "List",
+      "board": "Board",
+      "timeline": "Timeline",
+      "map": "Map",
+      "gantt": "Gantt"
+    },
+    "board": {
+      "blocked": "{{from}} → {{to}} not allowed",
+      "empty": "Empty"
+    },
+    "containerUnnamed": "(no container)"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "urgent": {
+      "title": "Urgent D/O",
+      "noUrgent": "No urgent items."
+    },
+    "donut": {
+      "title": "Status distribution"
+    }
+  },
+  "notification": {
+    "title": "Notifications",
+    "empty": "No notifications.",
+    "markAllRead": "Mark all read",
+    "viewAll": "View all"
+  },
+  "auth": {
+    "signIn": {
+      "title": "Sign in",
+      "subtitle": "TMS Pro",
+      "submit": "Sign in",
+      "submitting": "Signing in...",
+      "forgotHint": "Forgot your password?",
+      "help": "Help"
+    },
+    "forbidden": {
+      "title": "Access denied",
+      "description": "You don't have permission to access this page.",
+      "back": "Go to dashboard"
     }
   }
 }

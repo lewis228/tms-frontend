@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -25,12 +26,13 @@ import {
 import type { TenantEntity } from "@/types";
 
 export default function TenantList() {
+  const { t: tt } = useTranslation();
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    const t = setTimeout(() => setSearch(searchInput.trim().toLowerCase()), 300);
-    return () => clearTimeout(t);
+    const id = setTimeout(() => setSearch(searchInput.trim().toLowerCase()), 300);
+    return () => clearTimeout(id);
   }, [searchInput]);
 
   const { data, isPending, error } = useTenantsData();
@@ -40,16 +42,14 @@ export default function TenantList() {
 
   const { mutate: deleteT } = useDeleteTenant({
     onSuccess: () =>
-      toast.success("Tenant 가 삭제되었습니다.", { position: "top-center" }),
+      toast.success(tt("toast.deleted"), { position: "top-center" }),
     onError: (err) =>
       toast.error(generateErrorMessage(err), { position: "top-center" }),
   });
 
   const { mutate: updateT } = useUpdateTenant({
     onSuccess: () =>
-      toast.success("활성 상태가 변경되었습니다.", {
-        position: "top-center",
-      }),
+      toast.success(tt("toast.updated"), { position: "top-center" }),
     onError: (err) =>
       toast.error(generateErrorMessage(err), { position: "top-center" }),
   });
@@ -69,9 +69,8 @@ export default function TenantList() {
 
   const handleDelete = (t: TenantEntity) => {
     openAlert({
-      title: `Tenant '${t.name}' 을(를) 삭제하시겠습니까?`,
-      description:
-        "⚠ Tenant 삭제는 CASCADE 로 모든 사용자/D-O/Leg/Settlement/파일 등 모든 연관 데이터가 영구 삭제됩니다. 복구할 수 없습니다.",
+      title: tt("tenant.deletePromptTitle", { name: t.name }),
+      description: tt("tenant.deletePromptDesc"),
       onPositive: () => deleteT(t.id),
     });
   };
@@ -80,24 +79,24 @@ export default function TenantList() {
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between gap-2">
         <Input
-          placeholder="이름 / 회사명 검색"
+          placeholder={tt("tenant.searchPlaceholder")}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           className="max-w-sm"
         />
-        <Button onClick={() => openCreate()}>새 Tenant</Button>
+        <Button onClick={() => openCreate()}>{tt("tenant.newButton")}</Button>
       </div>
 
       <div className="rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>이름</TableHead>
-              <TableHead>회사명</TableHead>
-              <TableHead>Timezone</TableHead>
-              <TableHead>전화</TableHead>
-              <TableHead>Active</TableHead>
-              <TableHead className="text-right">동작</TableHead>
+              <TableHead>{tt("tenant.field.name")}</TableHead>
+              <TableHead>{tt("tenant.field.companyName")}</TableHead>
+              <TableHead>{tt("tenant.field.timezone")}</TableHead>
+              <TableHead>{tt("tenant.field.phone")}</TableHead>
+              <TableHead>{tt("common.active")}</TableHead>
+              <TableHead className="text-right">{tt("common.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -107,7 +106,7 @@ export default function TenantList() {
                   colSpan={6}
                   className="text-center text-muted-foreground"
                 >
-                  데이터가 없습니다.
+                  {tt("common.noData")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -137,7 +136,7 @@ export default function TenantList() {
                           : "bg-slate-100 text-slate-600")
                       }
                     >
-                      {t.isActive ? "✓ Active" : "Inactive"}
+                      {t.isActive ? `✓ ${tt("common.active")}` : tt("common.inactive")}
                     </button>
                   </TableCell>
                   <TableCell className="text-right">
@@ -146,7 +145,7 @@ export default function TenantList() {
                       size="sm"
                       onClick={() => openEdit(t)}
                     >
-                      수정
+                      {tt("common.edit")}
                     </Button>
                     <Button
                       variant="ghost"
@@ -154,7 +153,7 @@ export default function TenantList() {
                       className="ml-2 text-destructive"
                       onClick={() => handleDelete(t)}
                     >
-                      삭제
+                      {tt("common.delete")}
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -164,7 +163,9 @@ export default function TenantList() {
         </Table>
       </div>
 
-      <div className="text-xs text-muted-foreground">전체 {data.length}개</div>
+      <div className="text-xs text-muted-foreground">
+        {tt("common.totalCount", { count: data.length })}
+      </div>
     </div>
   );
 }

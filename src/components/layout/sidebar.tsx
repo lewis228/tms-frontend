@@ -3,6 +3,7 @@
 // FAVORITES 섹션은 사이드바 상단. 사용자가 nav-leaf 우측 별표 클릭으로 토글.
 // favorites store 가 path/title/iconName 을 영구 저장 (localStorage).
 import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { type NavIconName, visibleNavFor } from "@/lib/nav-config";
 import { clearAuth, useCurrentRole, useCurrentUser } from "@/store/auth";
@@ -109,6 +110,7 @@ function NavLeafLink({
   iconName: NavIconName;
   active: boolean;
 }) {
+  const { t } = useTranslation();
   const isFav = useIsFavorited(path);
   const toggle = useToggleFavorite();
 
@@ -133,7 +135,7 @@ function NavLeafLink({
       <button
         type="button"
         onClick={handleStarClick}
-        title={isFav ? "Favorites 에서 제거" : "Favorites 에 추가"}
+        title={t(isFav ? "favorites.removeFromFavorites" : "favorites.addToFavorites")}
         className={
           "transition-opacity " +
           (isFav
@@ -154,6 +156,7 @@ function FavoriteLeafLink({
   fav: FavoriteItem;
   active: boolean;
 }) {
+  const { t } = useTranslation();
   const toggle = useToggleFavorite();
 
   const handleRemove = (e: React.MouseEvent) => {
@@ -177,7 +180,7 @@ function FavoriteLeafLink({
       <button
         type="button"
         onClick={handleRemove}
-        title="Favorites 에서 제거"
+        title={t("favorites.removeFromFavorites")}
         className="text-amber-500"
       >
         ★
