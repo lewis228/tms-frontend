@@ -9,6 +9,7 @@
 // 7일 범위 밖이거나 약속 미정인 D/O 는 상단 "미정 / 범위 밖" 영역에 별도 표시.
 // 행 클릭 → drawer (?do=:id).
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
 import Loader from "@/components/loader";
@@ -30,6 +31,7 @@ function startOfDay(d: Date): Date {
 }
 
 export default function DispatchTimelineView() {
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const { data, isPending, error } = useDeliveryOrdersData(1);
   const { data: customersData } = useCustomersData(1);
@@ -96,7 +98,7 @@ export default function DispatchTimelineView() {
       {outRange.length > 0 && (
         <div className="rounded-md border bg-muted/30 p-3">
           <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            범위 밖 / 약속 미정 ({outRange.length})
+            {t("dispatch.timeline.outOfRange", { count: outRange.length })}
           </div>
           <div className="flex flex-wrap gap-2">
             {outRange.map((d) => (
@@ -107,7 +109,9 @@ export default function DispatchTimelineView() {
                 className="flex items-center gap-2 rounded border bg-background px-2 py-1 text-xs hover:bg-accent/50"
               >
                 <StatusBadge status={d.status} />
-                <span className="font-mono">{d.containerNumber ?? "(미지정)"}</span>
+                <span className="font-mono">
+                  {d.containerNumber ?? t("dispatch.containerUnset")}
+                </span>
                 <span className="text-muted-foreground">
                   {customerName(d.customerId)}
                 </span>
@@ -121,7 +125,7 @@ export default function DispatchTimelineView() {
       <div className="rounded-md border">
         <div className="grid grid-cols-[200px_1fr] border-b bg-muted/40">
           <div className="border-r px-3 py-2 text-xs font-semibold text-muted-foreground">
-            D/O
+            {t("dispatch.timeline.headerDo")}
           </div>
           <div className="grid grid-cols-7 text-center text-xs">
             {range.days.map((d, i) => {
@@ -143,7 +147,7 @@ export default function DispatchTimelineView() {
 
         {inRange.length === 0 ? (
           <div className="px-3 py-6 text-center text-sm text-muted-foreground">
-            범위 안에 약속이 있는 D/O 가 없습니다.
+            {t("dispatch.timeline.noInRange")}
           </div>
         ) : (
           inRange.map((d) => (
@@ -159,9 +163,15 @@ export default function DispatchTimelineView() {
       </div>
 
       <div className="flex gap-3 text-xs text-muted-foreground">
-        <Legend color="bg-blue-500" label="픽업" />
-        <Legend color="bg-violet-500" label="배송" />
-        <Legend color="bg-orange-500" label="반납" />
+        <Legend color="bg-blue-500" label={t("dispatch.timeline.legendPickup")} />
+        <Legend
+          color="bg-violet-500"
+          label={t("dispatch.timeline.legendDelivery")}
+        />
+        <Legend
+          color="bg-orange-500"
+          label={t("dispatch.timeline.legendReturn")}
+        />
       </div>
     </div>
   );
@@ -187,6 +197,7 @@ function TimelineRow({
   fraction: (iso: string | null) => number | null;
   onClick: () => void;
 }) {
+  const { t } = useTranslation();
   const pf = fraction(d.pickupAppointment);
   const df = fraction(d.deliveryAppointment);
   const rf = fraction(d.returnAppointment);
@@ -201,7 +212,7 @@ function TimelineRow({
         <StatusBadge status={d.status} />
         <div className="flex flex-col">
           <span className="font-mono font-medium">
-            {d.containerNumber ?? "(미지정)"}
+            {d.containerNumber ?? t("dispatch.containerUnset")}
           </span>
           <span className="text-muted-foreground">{customerName}</span>
         </div>
@@ -240,13 +251,25 @@ function TimelineRow({
         )}
         {/* points */}
         {pf !== null && (
-          <Dot left={pf} color="bg-blue-500" title="픽업 약속" />
+          <Dot
+            left={pf}
+            color="bg-blue-500"
+            title={t("dispatch.timeline.tooltipPickup")}
+          />
         )}
         {df !== null && (
-          <Dot left={df} color="bg-violet-500" title="배송 약속" />
+          <Dot
+            left={df}
+            color="bg-violet-500"
+            title={t("dispatch.timeline.tooltipDelivery")}
+          />
         )}
         {rf !== null && (
-          <Dot left={rf} color="bg-orange-500" title="반납 약속" />
+          <Dot
+            left={rf}
+            color="bg-orange-500"
+            title={t("dispatch.timeline.tooltipReturn")}
+          />
         )}
       </div>
     </button>

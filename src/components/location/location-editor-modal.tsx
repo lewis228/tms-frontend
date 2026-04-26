@@ -1,6 +1,7 @@
 // Location 생성/수정 모달.
 // kind=CUSTOMER 일 때만 customerId select 활성화. 그 외에는 customerId=null.
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { fetchCustomer, fetchCustomers } from "@/api/customer";
@@ -48,6 +49,7 @@ export default function LocationEditorModal() {
 }
 
 function Body({ modal }: { modal: OpenModal }) {
+  const { t } = useTranslation();
   const [name, setName] = useState(
     modal.type === "CREATE" ? "" : modal.location.name,
   );
@@ -79,7 +81,7 @@ function Body({ modal }: { modal: OpenModal }) {
   const { mutate: createLocation, isPending: isCreatePending } =
     useCreateLocation({
       onSuccess: () => {
-        toast.success("장소가 생성되었습니다.", { position: "top-center" });
+        toast.success(t("toast.created"), { position: "top-center" });
         modal.actions.close();
       },
       onError: (err) =>
@@ -89,7 +91,7 @@ function Body({ modal }: { modal: OpenModal }) {
   const { mutate: updateLocation, isPending: isUpdatePending } =
     useUpdateLocation({
       onSuccess: () => {
-        toast.success("장소가 수정되었습니다.", { position: "top-center" });
+        toast.success(t("toast.updated"), { position: "top-center" });
         modal.actions.close();
       },
       onError: (err) =>
@@ -108,7 +110,7 @@ function Body({ modal }: { modal: OpenModal }) {
   const handleSave = () => {
     if (name.trim() === "") return;
     if (kind === "CUSTOMER" && !customerId) {
-      toast.error("CUSTOMER 종류는 customer 를 선택해야 합니다.", {
+      toast.error(t("location.validation.customerRequired"), {
         position: "top-center",
       });
       return;
@@ -133,11 +135,11 @@ function Body({ modal }: { modal: OpenModal }) {
     <>
       <DialogHeader>
         <DialogTitle className="font-sans">
-          {modal.type === "CREATE" ? "장소 생성" : "장소 수정"}
+          {t(modal.type === "CREATE" ? "location.createTitle" : "location.editTitle")}
         </DialogTitle>
       </DialogHeader>
       <div className="flex flex-col gap-3">
-        <Field label="이름" required>
+        <Field label={t("field.name")} required>
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -145,7 +147,7 @@ function Body({ modal }: { modal: OpenModal }) {
             placeholder="Acme Yard A"
           />
         </Field>
-        <Field label="종류" required>
+        <Field label={t("location.field.kind")} required>
           <select
             value={kind}
             onChange={(e) => handleKindChange(e.target.value as LocationKind)}
@@ -159,7 +161,7 @@ function Body({ modal }: { modal: OpenModal }) {
             ))}
           </select>
         </Field>
-        <Field label="고객사 (kind=CUSTOMER 인 경우 필수)">
+        <Field label={t("location.field.customerLabel")}>
           <SearchableSelect<CustomerEntity>
             value={customerId}
             onSelect={(id) => setCustomerId(id)}
@@ -169,12 +171,12 @@ function Body({ modal }: { modal: OpenModal }) {
             fetchById={(id) => fetchCustomer(id)}
             queryKeyBase={["customer", "search"]}
             getLabel={(c) => `${c.name}${c.code ? ` (${c.code})` : ""}`}
-            placeholder="— 선택 —"
-            emptyLabel="— 선택 안함 —"
+            placeholder={t("common.selectPlaceholder")}
+            emptyLabel={t("common.noSelection")}
             disabled={isPending || kind !== "CUSTOMER"}
           />
         </Field>
-        <Field label="주소">
+        <Field label={t("field.address")}>
           <Input
             value={address}
             onChange={(e) => setAddress(e.target.value)}
@@ -182,7 +184,7 @@ function Body({ modal }: { modal: OpenModal }) {
           />
         </Field>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="위도">
+          <Field label={t("location.field.latitude")}>
             <Input
               value={latitude}
               onChange={(e) => setLatitude(e.target.value)}
@@ -190,7 +192,7 @@ function Body({ modal }: { modal: OpenModal }) {
               inputMode="decimal"
             />
           </Field>
-          <Field label="경도">
+          <Field label={t("location.field.longitude")}>
             <Input
               value={longitude}
               onChange={(e) => setLongitude(e.target.value)}
@@ -199,7 +201,7 @@ function Body({ modal }: { modal: OpenModal }) {
             />
           </Field>
         </div>
-        <Field label="메모">
+        <Field label={t("field.note")}>
           <Input
             value={note}
             onChange={(e) => setNote(e.target.value)}
@@ -213,10 +215,10 @@ function Body({ modal }: { modal: OpenModal }) {
           onClick={() => modal.actions.close()}
           disabled={isPending}
         >
-          취소
+          {t("common.cancel")}
         </Button>
         <Button onClick={handleSave} disabled={isPending || !name.trim()}>
-          저장
+          {t("common.save")}
         </Button>
       </div>
     </>

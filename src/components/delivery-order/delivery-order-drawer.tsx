@@ -9,6 +9,7 @@
 // - 메타 (vessel/terminal/delivery_location/return_location/chassis)
 // - 메모 + Leg Timeline (P4-F)
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
 import {
@@ -23,6 +24,7 @@ import DeliveryOrderDetail from "@/components/delivery-order/delivery-order-deta
 import { useDeliveryOrderByIdData } from "@/hooks/queries/use-delivery-order-by-id-data";
 
 export default function DeliveryOrderDrawer() {
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const idStr = searchParams.get("do");
   const id = idStr ? Number(idStr) : null;
@@ -49,7 +51,9 @@ export default function DeliveryOrderDrawer() {
       <SheetContent className="!max-w-2xl !w-full overflow-y-auto sm:!max-w-2xl">
         <SheetHeader>
           <SheetTitle className="font-sans">
-            {data ? `D/O ${data.containerNumber ?? String(data.id).slice(0, 8)}` : "D/O"}
+            {data
+              ? `${t("deliveryOrder.drawer.title")} ${data.containerNumber ?? String(data.id).slice(0, 8)}`
+              : t("deliveryOrder.drawer.title")}
           </SheetTitle>
         </SheetHeader>
         <div className="px-4 pb-6">

@@ -17,6 +17,7 @@ import {
 } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
 import Loader from "@/components/loader";
@@ -30,6 +31,7 @@ import { generateErrorMessage } from "@/lib/error";
 import type { DeliveryOrderEntity, DeliveryStatus } from "@/types";
 
 export default function DispatchBoardView() {
+  const { t } = useTranslation();
   const [, setSearchParams] = useSearchParams();
   const { data, isPending, error } = useDeliveryOrdersData(1);
   const { data: customersData } = useCustomersData(1);
@@ -63,9 +65,12 @@ export default function DispatchBoardView() {
     if (!order) return;
     if (order.status === target) return;
     if (!ALLOWED_TRANSITIONS[order.status].includes(target)) {
-      toast.error(`${order.status} → ${target} 전이 불가`, {
-        position: "top-center",
-      });
+      toast.error(
+        t("dispatch.board.blocked", { from: order.status, to: target }),
+        {
+          position: "top-center",
+        },
+      );
       return;
     }
     transition({ id: orderId, target });
@@ -110,6 +115,7 @@ function BoardColumn({
   customerName: (id: number) => string;
   onCardClick: (id: number) => void;
 }) {
+  const { t } = useTranslation();
   const { setNodeRef, isOver, active } = useDroppable({ id: status });
   const activeStatus = (active?.data.current as { status?: DeliveryStatus } | undefined)
     ?.status;
@@ -135,7 +141,9 @@ function BoardColumn({
       </div>
       <div className="flex flex-col gap-2 overflow-y-auto p-2">
         {items.length === 0 ? (
-          <p className="text-center text-xs text-muted-foreground">비어있음</p>
+          <p className="text-center text-xs text-muted-foreground">
+            {t("dispatch.board.empty")}
+          </p>
         ) : (
           items.map((d) => (
             <BoardCard
@@ -160,6 +168,7 @@ function BoardCard({
   customerName: string;
   onClick: () => void;
 }) {
+  const { t } = useTranslation();
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({ id: order.id, data: { status: order.status } });
   const style = transform
@@ -183,7 +192,7 @@ function BoardCard({
       }
     >
       <div className="font-mono font-medium">
-        {order.containerNumber ?? "(컨테이너 미지정)"}
+        {order.containerNumber ?? t("dispatch.containerUnnamed")}
       </div>
       <div className="text-muted-foreground">
         {customerName} · {order.direction}

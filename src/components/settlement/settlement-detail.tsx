@@ -1,4 +1,6 @@
 // Settlement Drawer 내용 — 기본 정보 + 액션 버튼 + extras + audit logs.
+import { useTranslation } from "react-i18next";
+
 import SettlementStatusBadge from "@/components/settlement/settlement-status-badge";
 import { Button } from "@/components/ui/button";
 import { useSettlementAuditLogsData } from "@/hooks/queries/use-settlement-audit-logs-data";
@@ -19,6 +21,7 @@ export default function SettlementDetail({
 }: {
   settlement: SettlementEntity;
 }) {
+  const { t } = useTranslation();
   const role = useCurrentRole();
   const isAdmin = hasAccess(role, "ADMIN");
 
@@ -38,14 +41,18 @@ export default function SettlementDetail({
 
   return (
     <div className="flex flex-col gap-5 pt-4">
-      <Section title="상태">
+      <Section title={t("settlement.detail.status")}>
         <div className="flex items-center gap-2">
           <SettlementStatusBadge status={status} />
           {settlement.isSettled && (
-            <span className="text-xs text-green-700">(정산 완료)</span>
+            <span className="text-xs text-green-700">
+              {t("settlement.detail.settled")}
+            </span>
           )}
           {settlement.hasFlag && (
-            <span className="text-xs text-amber-600">⚠ Flagged</span>
+            <span className="text-xs text-amber-600">
+              ⚠ {t("settlement.detail.flagged")}
+            </span>
           )}
         </div>
         <div className="mt-2 flex flex-wrap gap-2">
@@ -55,7 +62,7 @@ export default function SettlementDetail({
               variant="outline"
               onClick={() => openCalculate(settlement.id)}
             >
-              Calculate
+              {t("settlement.detail.calculate")}
             </Button>
           )}
           {canAdjust && (
@@ -64,12 +71,12 @@ export default function SettlementDetail({
               variant="outline"
               onClick={() => openAdjust(settlement.id)}
             >
-              Adjust
+              {t("settlement.detail.adjust")}
             </Button>
           )}
           {canApprove && (
             <Button size="sm" onClick={() => openApprove(settlement.id)}>
-              Approve
+              {t("settlement.detail.approve")}
             </Button>
           )}
           {canUnapprove && (
@@ -79,26 +86,30 @@ export default function SettlementDetail({
               className="border-destructive text-destructive"
               onClick={() => openUnapprove(settlement.id)}
             >
-              Unapprove (ADMIN+)
+              {t("settlement.detail.unapprove")}
             </Button>
           )}
           {status === "APPROVED" && !isAdmin && (
             <span className="text-xs text-muted-foreground">
-              승인됨 — Unapprove 는 ADMIN+ 권한
+              {t("settlement.detail.approvedAdminOnly")}
             </span>
           )}
         </div>
       </Section>
 
-      <Section title="금액">
-        <Row label="System Total" value={settlement.systemTotal} mono />
+      <Section title={t("settlement.detail.amounts")}>
         <Row
-          label="Driver Reported"
+          label={t("settlement.detail.systemTotalLabel")}
+          value={settlement.systemTotal}
+          mono
+        />
+        <Row
+          label={t("settlement.detail.driverReportedLabel")}
           value={settlement.driverReportedAmount ?? "—"}
           mono
         />
         <Row
-          label="Discrepancy"
+          label={t("settlement.detail.discrepancyLabel")}
           value={settlement.discrepancy ?? "—"}
           mono
           tone={
@@ -108,16 +119,22 @@ export default function SettlementDetail({
           }
         />
         <Row
-          label="Final Amount"
+          label={t("settlement.detail.finalAmountLabel")}
           value={settlement.finalAmount ?? "—"}
           mono
           tone={settlement.isSettled ? "success" : undefined}
         />
       </Section>
 
-      <Section title={`Extra Charges (${extras?.length ?? 0})`}>
+      <Section
+        title={t("settlement.detail.extraCharges", {
+          count: extras?.length ?? 0,
+        })}
+      >
         {(extras ?? []).length === 0 ? (
-          <p className="text-xs text-muted-foreground">없음</p>
+          <p className="text-xs text-muted-foreground">
+            {t("settlement.detail.none")}
+          </p>
         ) : (
           <div className="flex flex-col gap-1 text-sm">
             {(extras ?? []).map((e) => (
@@ -138,9 +155,13 @@ export default function SettlementDetail({
         )}
       </Section>
 
-      <Section title={`Audit Log (${logs?.length ?? 0})`}>
+      <Section
+        title={t("settlement.detail.auditLog", { count: logs?.length ?? 0 })}
+      >
         {(logs ?? []).length === 0 ? (
-          <p className="text-xs text-muted-foreground">기록 없음</p>
+          <p className="text-xs text-muted-foreground">
+            {t("settlement.detail.noLogs")}
+          </p>
         ) : (
           <div className="flex flex-col gap-1">
             {(logs ?? []).map((l) => (
@@ -156,7 +177,7 @@ export default function SettlementDetail({
                 </div>
                 {l.reason && (
                   <span className="text-muted-foreground">
-                    이유: {l.reason}
+                    {t("settlement.detail.reasonLabel", { reason: l.reason })}
                   </span>
                 )}
               </div>
@@ -166,15 +187,15 @@ export default function SettlementDetail({
       </Section>
 
       {settlement.unapprovedReason && (
-        <Section title="이전 Unapprove">
+        <Section title={t("settlement.detail.previousUnapprove")}>
           <Row
-            label="Reason"
+            label={t("settlement.detail.reasonField")}
             value={settlement.unapprovedReason}
             tone="warning"
           />
           {settlement.unapprovedAt && (
             <Row
-              label="At"
+              label={t("settlement.detail.atField")}
               value={formatDateTime(settlement.unapprovedAt)}
             />
           )}
@@ -182,7 +203,7 @@ export default function SettlementDetail({
       )}
 
       {settlement.note && (
-        <Section title="Note">
+        <Section title={t("settlement.detail.noteField")}>
           <p className="whitespace-pre-wrap text-sm">{settlement.note}</p>
         </Section>
       )}

@@ -3,6 +3,7 @@
 // 백엔드 driver filter (`?driverId=`) 사용. driver 마다 useQuery 별도 (lazy).
 // driver 가 100명 이상이어도 캐시 키가 driver 별로 분리되어 무효화 효율적.
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import Loader from "@/components/loader";
 import Fallback from "@/components/fallback";
@@ -48,6 +49,7 @@ function useGanttRange() {
 }
 
 export default function DriverScheduleGantt() {
+  const { t } = useTranslation();
   const {
     data: driversData,
     isPending: driversPending,
@@ -65,7 +67,7 @@ export default function DriverScheduleGantt() {
     <div className="rounded-md border">
       <div className="grid grid-cols-[200px_1fr] border-b bg-muted/40">
         <div className="border-r px-3 py-2 text-xs font-semibold text-muted-foreground">
-          기사 ({activeDrivers.length})
+          {t("dispatch.gantt.driverHeader", { count: activeDrivers.length })}
         </div>
         <div className="grid grid-cols-7 text-center text-xs">
           {range.days.map((d, i) => (
@@ -84,7 +86,7 @@ export default function DriverScheduleGantt() {
 
       {activeDrivers.length === 0 ? (
         <div className="px-3 py-6 text-center text-sm text-muted-foreground">
-          활성 기사가 없습니다.
+          {t("dispatch.gantt.noActiveDrivers")}
         </div>
       ) : (
         activeDrivers.map((driver) => (
@@ -102,6 +104,7 @@ function DriverRow({
   driver: DriverEntity;
   range: ReturnType<typeof useGanttRange>;
 }) {
+  const { t } = useTranslation();
   const { data: legs, isPending } = useLegsByDriverData(driver.id);
   const openEdit = useOpenEditLegModal();
 
@@ -123,7 +126,9 @@ function DriverRow({
           <span className="font-medium">{driver.name}</span>
           <span className="text-muted-foreground">
             {driver.truckNumber ?? "—"} ·{" "}
-            {isPending ? "…" : `${items.length} legs`}
+            {isPending
+              ? "…"
+              : t("dispatch.gantt.legCount", { count: items.length })}
           </span>
         </div>
       </div>

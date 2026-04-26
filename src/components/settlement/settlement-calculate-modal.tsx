@@ -1,5 +1,6 @@
 // PENDING/CALCULATED → CALCULATED. system_total + extras 입력.
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,7 @@ type SettlementData = NonNullable<
 >;
 
 export default function SettlementCalculateModal() {
+  const { t } = useTranslation();
   const modal = useCalculateSettlementModal();
   const { data: settlement } = useSettlementByIdData(
     modal.isOpen ? modal.settlementId : null,
@@ -42,7 +44,9 @@ export default function SettlementCalculateModal() {
     >
       <DialogContent className="!max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="font-sans">Calculate Settlement</DialogTitle>
+          <DialogTitle className="font-sans">
+            {t("settlement.calculate.title")}
+          </DialogTitle>
         </DialogHeader>
         {ready ? (
           <Body
@@ -53,7 +57,7 @@ export default function SettlementCalculateModal() {
           />
         ) : modal.isOpen ? (
           <div className="py-8 text-center text-sm text-muted-foreground">
-            로딩 중...
+            {t("common.loading")}
           </div>
         ) : null}
       </DialogContent>
@@ -70,6 +74,7 @@ function Body({
   settlement: SettlementData;
   extras: ExtraChargeEntity[];
 }) {
+  const { t } = useTranslation();
   const [systemTotal, setSystemTotal] = useState(settlement.systemTotal ?? "0");
   const [rows, setRows] = useState<ExtraChargeInput[]>(
     extras.map((e) => ({
@@ -81,7 +86,7 @@ function Body({
 
   const { mutate, isPending } = useCalculateSettlement({
     onSuccess: () => {
-      toast.success("Settlement 가 계산되었습니다.", {
+      toast.success(t("settlement.calculate.success"), {
         position: "top-center",
       });
       modal.actions.close();
@@ -105,7 +110,8 @@ function Body({
     <div className="flex flex-col gap-3">
       <div className="flex flex-col gap-1">
         <label className="text-xs text-muted-foreground">
-          System Total <span className="text-destructive">*</span>
+          {t("settlement.detail.systemTotalLabel")}{" "}
+          <span className="text-destructive">*</span>
         </label>
         <Input
           type="number"
@@ -123,10 +129,12 @@ function Body({
           onClick={() => modal.actions.close()}
           disabled={isPending}
         >
-          취소
+          {t("common.cancel")}
         </Button>
         <Button onClick={handleSave} disabled={isPending}>
-          {isPending ? "계산중..." : "계산"}
+          {isPending
+            ? t("settlement.calculate.submitting")
+            : t("settlement.calculate.submit")}
         </Button>
       </div>
     </div>

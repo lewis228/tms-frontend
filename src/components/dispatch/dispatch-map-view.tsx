@@ -7,6 +7,7 @@
 //  - 마스터: 이름 + 그 위치를 사용 중인 진행 D/O 개수
 //  - D/O: 직접 drawer 열기 버튼
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 import {
   MapContainer,
@@ -51,6 +52,7 @@ const doIcon = L.divIcon({
 type Mode = "master" | "do";
 
 export default function DispatchMapView() {
+  const { t } = useTranslation();
   const [mode, setMode] = useState<Mode>("master");
   const { data: locationsData, isPending: locP, error: locE } = useLocationsData(1);
   const { data: terminalsData, isPending: tmP, error: tmE } = useTerminalsData(1);
@@ -74,7 +76,7 @@ export default function DispatchMapView() {
                 : "text-muted-foreground hover:bg-accent/50")
             }
           >
-            {m === "master" ? "마스터 위치" : "진행 D/O 위치"}
+            {m === "master" ? t("dispatch.map.modeMaster") : t("dispatch.map.modeDo")}
           </button>
         ))}
       </div>
@@ -123,6 +125,7 @@ function MasterLayer({
   terminals: TerminalEntity[];
   deliveryOrders: DeliveryOrderEntity[];
 }) {
+  const { t } = useTranslation();
   const usageByLocation = useMemo(() => {
     const m = new Map<number, number>();
     for (const d of deliveryOrders) {
@@ -157,33 +160,38 @@ function MasterLayer({
               <div className="flex flex-col gap-1 text-xs">
                 <strong>{l.name}</strong>
                 <span className="text-muted-foreground">
-                  Location · {l.kind}
+                  {t("dispatch.map.locationLabel", { kind: l.kind })}
                 </span>
                 {l.address && <span>{l.address}</span>}
                 <span className="text-muted-foreground">
-                  진행 D/O: {usageByLocation.get(l.id) ?? 0}
+                  {t("dispatch.map.activeDoCount", {
+                    count: usageByLocation.get(l.id) ?? 0,
+                  })}
                 </span>
               </div>
             </Popup>
           </Marker>
         ))}
       {terminals
-        .filter((t) => t.isActive && t.latitude && t.longitude)
-        .map((t) => (
+        .filter((tm) => tm.isActive && tm.latitude && tm.longitude)
+        .map((tm) => (
           <Marker
-            key={t.id}
-            position={[Number(t.latitude), Number(t.longitude)]}
+            key={tm.id}
+            position={[Number(tm.latitude), Number(tm.longitude)]}
             icon={masterIcon}
           >
             <Popup>
               <div className="flex flex-col gap-1 text-xs">
-                <strong>{t.name}</strong>
+                <strong>{tm.name}</strong>
                 <span className="text-muted-foreground">
-                  Terminal {t.code ? `· ${t.code}` : ""}
+                  {t("dispatch.map.terminalLabel")}
+                  {tm.code ? ` · ${tm.code}` : ""}
                 </span>
-                {t.address && <span>{t.address}</span>}
+                {tm.address && <span>{tm.address}</span>}
                 <span className="text-muted-foreground">
-                  진행 D/O: {usageByTerminal.get(t.id) ?? 0}
+                  {t("dispatch.map.activeDoCount", {
+                    count: usageByTerminal.get(tm.id) ?? 0,
+                  })}
                 </span>
               </div>
             </Popup>
@@ -200,6 +208,7 @@ function DOLayer({
   locations: LocationEntity[];
   deliveryOrders: DeliveryOrderEntity[];
 }) {
+  const { t } = useTranslation();
   const [, setSearchParams] = useSearchParams();
   const locById = useMemo(() => {
     const m = new Map<number, LocationEntity>();
@@ -242,10 +251,18 @@ function DOLayer({
         <Marker key={m.id} position={[m.lat, m.lng]} icon={doIcon}>
           <Popup>
             <div className="flex flex-col gap-1 text-xs">
-              <strong className="font-mono">{m.container ?? "(컨테이너 미지정)"}</strong>
-              <span className="text-muted-foreground">{m.name} · {m.status}</span>
-              <Button size="sm" onClick={() => openDrawer(m.id)} className="mt-1 h-6 text-[10px]">
-                Drawer 열기
+              <strong className="font-mono">
+                {m.container ?? t("dispatch.containerUnnamed")}
+              </strong>
+              <span className="text-muted-foreground">
+                {m.name} · {m.status}
+              </span>
+              <Button
+                size="sm"
+                onClick={() => openDrawer(m.id)}
+                className="mt-1 h-6 text-[10px]"
+              >
+                {t("dispatch.map.openDrawer")}
               </Button>
             </div>
           </Popup>

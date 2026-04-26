@@ -1,5 +1,6 @@
 // Vessel 목록 — 테이블 + 검색(클라 필터, 300ms debounce) + 페이지 네비.
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -25,13 +26,17 @@ import {
 import type { VesselEntity } from "@/types";
 
 export default function VesselList() {
+  const { t } = useTranslation();
   const [page, setPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    const t = setTimeout(() => setSearch(searchInput.trim().toLowerCase()), 300);
-    return () => clearTimeout(t);
+    const timeoutId = setTimeout(
+      () => setSearch(searchInput.trim().toLowerCase()),
+      300,
+    );
+    return () => clearTimeout(timeoutId);
   }, [searchInput]);
 
   const { data, isPending, error } = useVesselsData(page);
@@ -41,7 +46,7 @@ export default function VesselList() {
 
   const { mutate: deleteVessel } = useDeleteVessel({
     onSuccess: () =>
-      toast.success("선박이 삭제되었습니다.", { position: "top-center" }),
+      toast.success(t("toast.deleted"), { position: "top-center" }),
     onError: (err) =>
       toast.error(generateErrorMessage(err), { position: "top-center" }),
   });
@@ -62,8 +67,8 @@ export default function VesselList() {
 
   const handleDelete = (v: VesselEntity) => {
     openAlert({
-      title: "선박을 삭제하시겠습니까?",
-      description: `'${v.name}' 을(를) 삭제합니다. 복구할 수 없습니다.`,
+      title: t("vessel.deletePromptTitle", { name: v.name }),
+      description: t("vessel.deletePromptDesc"),
       onPositive: () => deleteVessel(v.id),
     });
   };
@@ -72,23 +77,23 @@ export default function VesselList() {
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between gap-2">
         <Input
-          placeholder="이름 / IMO / 선사 검색"
+          placeholder={t("vessel.searchPlaceholder")}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           className="max-w-sm"
         />
-        <Button onClick={() => openCreate()}>새 선박</Button>
+        <Button onClick={() => openCreate()}>{t("vessel.newButton")}</Button>
       </div>
 
       <div className="rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>이름</TableHead>
-              <TableHead>IMO</TableHead>
-              <TableHead>선사</TableHead>
-              <TableHead>활성</TableHead>
-              <TableHead className="text-right">동작</TableHead>
+              <TableHead>{t("field.name")}</TableHead>
+              <TableHead>{t("vessel.field.imoNumber")}</TableHead>
+              <TableHead>{t("vessel.field.line")}</TableHead>
+              <TableHead>{t("common.active")}</TableHead>
+              <TableHead className="text-right">{t("common.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -98,7 +103,7 @@ export default function VesselList() {
                   colSpan={5}
                   className="text-center text-muted-foreground"
                 >
-                  데이터가 없습니다.
+                  {t("common.noData")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -114,7 +119,7 @@ export default function VesselList() {
                       size="sm"
                       onClick={() => openEdit(v)}
                     >
-                      수정
+                      {t("common.edit")}
                     </Button>
                     <Button
                       variant="ghost"
@@ -122,7 +127,7 @@ export default function VesselList() {
                       className="ml-2 text-destructive"
                       onClick={() => handleDelete(v)}
                     >
-                      삭제
+                      {t("common.delete")}
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -134,7 +139,8 @@ export default function VesselList() {
 
       <div className="flex items-center justify-between text-sm">
         <span className="text-muted-foreground">
-          전체 {data.total}건 · {data.page}/{Math.max(1, data.pages)} 페이지
+          {t("common.totalCount", { count: data.total })} ·{" "}
+          {t("common.pageOf", { page: data.page, pages: Math.max(1, data.pages) })}
         </span>
         <div className="flex gap-2">
           <Button
@@ -143,7 +149,7 @@ export default function VesselList() {
             disabled={page <= 1}
             onClick={() => setPage((p) => Math.max(1, p - 1))}
           >
-            이전
+            {t("common.previous")}
           </Button>
           <Button
             variant="outline"
@@ -151,7 +157,7 @@ export default function VesselList() {
             disabled={page >= data.pages}
             onClick={() => setPage((p) => p + 1)}
           >
-            다음
+            {t("common.next")}
           </Button>
         </div>
       </div>

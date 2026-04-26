@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import Fallback from "@/components/fallback";
@@ -12,6 +13,7 @@ import { notificationLinkFor } from "@/lib/notification-link";
 
 import { formatDateTime } from "@/lib/format";
 export default function NotificationsPage() {
+  const { t } = useTranslation();
   const [page, setPage] = useState(1);
   const [unreadOnly, setUnreadOnly] = useState(false);
 
@@ -30,9 +32,11 @@ export default function NotificationsPage() {
     <div className="flex flex-col gap-4 p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold">알림 (Notifications)</h1>
+          <h1 className="text-2xl font-semibold">
+            {t("notification.pageTitle")}
+          </h1>
           <p className="text-xs text-muted-foreground">
-            서버 inbox. 도메인 이벤트 발생 시 본인 inbox 에 누적됨.
+            {t("notification.subtitle")}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -45,7 +49,7 @@ export default function NotificationsPage() {
                 setPage(1);
               }}
             />
-            미확인만
+            {t("notification.unreadOnly")}
           </label>
           <Button
             variant="outline"
@@ -53,7 +57,7 @@ export default function NotificationsPage() {
             disabled={unread === 0 || isMarkAllPending}
             onClick={() => markAll()}
           >
-            모두 읽음
+            {t("notification.markAllRead")}
           </Button>
         </div>
       </div>
@@ -64,7 +68,9 @@ export default function NotificationsPage() {
         <Loader />
       ) : data.items.length === 0 ? (
         <div className="rounded-md border bg-background p-12 text-center text-sm text-muted-foreground">
-          {unreadOnly ? "미확인 알림이 없습니다." : "알림이 없습니다."}
+          {unreadOnly
+            ? t("notification.unreadEmpty")
+            : t("notification.empty")}
         </div>
       ) : (
         <>
@@ -126,7 +132,11 @@ export default function NotificationsPage() {
 
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">
-              전체 {data.total}건 · {data.page}/{Math.max(1, data.pages)} 페이지
+              {t("common.totalCount", { count: data.total })} ·{" "}
+              {t("common.pageOf", {
+                page: data.page,
+                pages: Math.max(1, data.pages),
+              })}
             </span>
             <div className="flex gap-2">
               <Button
@@ -135,7 +145,7 @@ export default function NotificationsPage() {
                 disabled={page <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
               >
-                이전
+                {t("common.previous")}
               </Button>
               <Button
                 variant="outline"
@@ -143,7 +153,7 @@ export default function NotificationsPage() {
                 disabled={page >= data.pages}
                 onClick={() => setPage((p) => p + 1)}
               >
-                다음
+                {t("common.next")}
               </Button>
             </div>
           </div>

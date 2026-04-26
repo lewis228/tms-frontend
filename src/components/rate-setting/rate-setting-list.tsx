@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -25,13 +26,14 @@ import {
 import type { RateSettingEntity } from "@/types";
 
 export default function RateSettingList() {
+  const { t } = useTranslation();
   const [page, setPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    const t = setTimeout(() => setSearch(searchInput.trim().toLowerCase()), 300);
-    return () => clearTimeout(t);
+    const tm = setTimeout(() => setSearch(searchInput.trim().toLowerCase()), 300);
+    return () => clearTimeout(tm);
   }, [searchInput]);
 
   const { data, isPending, error } = useRateSettingsData(page);
@@ -41,7 +43,7 @@ export default function RateSettingList() {
 
   const { mutate: deleteRate } = useDeleteRateSetting({
     onSuccess: () =>
-      toast.success("Rate setting 이 삭제되었습니다.", {
+      toast.success(t("toast.deleted"), {
         position: "top-center",
       }),
     onError: (err) =>
@@ -50,7 +52,7 @@ export default function RateSettingList() {
 
   const { mutate: updateRate } = useUpdateRateSetting({
     onSuccess: () =>
-      toast.success("활성 상태가 변경되었습니다.", {
+      toast.success(t("rateSetting.activeToggled"), {
         position: "top-center",
       }),
     onError: (err) =>
@@ -73,8 +75,8 @@ export default function RateSettingList() {
 
   const handleDelete = (r: RateSettingEntity) => {
     openAlert({
-      title: "Rate setting 을 삭제하시겠습니까?",
-      description: `'${r.name}' 을(를) 삭제합니다. 복구할 수 없습니다.`,
+      title: t("rateSetting.deletePromptTitle"),
+      description: t("rateSetting.deletePromptDesc", { name: r.name }),
       onPositive: () => deleteRate(r.id),
     });
   };
@@ -90,25 +92,29 @@ export default function RateSettingList() {
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between gap-2">
         <Input
-          placeholder="이름 / 설명 / 타입 검색"
+          placeholder={t("rateSetting.searchPlaceholder")}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           className="max-w-sm"
         />
-        <Button onClick={() => openCreate()}>새 Rate</Button>
+        <Button onClick={() => openCreate()}>{t("rateSetting.newButton")}</Button>
       </div>
 
       <div className="rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>이름</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead className="text-right">금액</TableHead>
-              <TableHead>Effective</TableHead>
-              <TableHead>Active</TableHead>
-              <TableHead>설명</TableHead>
-              <TableHead className="text-right">동작</TableHead>
+              <TableHead>{t("rateSetting.field.name")}</TableHead>
+              <TableHead>{t("rateSetting.field.type")}</TableHead>
+              <TableHead className="text-right">
+                {t("rateSetting.field.amount")}
+              </TableHead>
+              <TableHead>{t("rateSetting.field.effective")}</TableHead>
+              <TableHead>{t("rateSetting.field.active")}</TableHead>
+              <TableHead>{t("rateSetting.field.description")}</TableHead>
+              <TableHead className="text-right">
+                {t("common.actions")}
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -118,7 +124,7 @@ export default function RateSettingList() {
                   colSpan={7}
                   className="text-center text-muted-foreground"
                 >
-                  데이터가 없습니다.
+                  {t("common.noData")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -148,7 +154,9 @@ export default function RateSettingList() {
                           : "bg-slate-100 text-slate-600")
                       }
                     >
-                      {r.isActive ? "✓ Active" : "Inactive"}
+                      {r.isActive
+                        ? t("rateSetting.field.activeOn")
+                        : t("rateSetting.field.inactive")}
                     </button>
                   </TableCell>
                   <TableCell className="max-w-xs truncate text-xs text-muted-foreground">
@@ -160,7 +168,7 @@ export default function RateSettingList() {
                       size="sm"
                       onClick={() => openEdit(r)}
                     >
-                      수정
+                      {t("common.edit")}
                     </Button>
                     <Button
                       variant="ghost"
@@ -168,7 +176,7 @@ export default function RateSettingList() {
                       className="ml-2 text-destructive"
                       onClick={() => handleDelete(r)}
                     >
-                      삭제
+                      {t("common.delete")}
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -180,7 +188,8 @@ export default function RateSettingList() {
 
       <div className="flex items-center justify-between text-sm">
         <span className="text-muted-foreground">
-          전체 {data.total}건 · {data.page}/{Math.max(1, data.pages)} 페이지
+          {t("common.totalCount", { count: data.total })} · {data.page}/
+          {Math.max(1, data.pages)}
         </span>
         <div className="flex gap-2">
           <Button
@@ -189,7 +198,7 @@ export default function RateSettingList() {
             disabled={page <= 1}
             onClick={() => setPage((p) => Math.max(1, p - 1))}
           >
-            이전
+            {t("common.previous")}
           </Button>
           <Button
             variant="outline"
@@ -197,7 +206,7 @@ export default function RateSettingList() {
             disabled={page >= data.pages}
             onClick={() => setPage((p) => p + 1)}
           >
-            다음
+            {t("common.next")}
           </Button>
         </div>
       </div>

@@ -5,6 +5,7 @@
 //
 // 백엔드 game: D/O PLANNING→DISPATCHED 게이트 충족하려면 first leg 가 driver_id + pickup_date 필요.
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { fetchDriver, fetchDrivers } from "@/api/driver";
@@ -67,6 +68,7 @@ export default function LegEditorModal() {
 }
 
 function Body({ modal }: { modal: OpenModal }) {
+  const { t } = useTranslation();
   const [step, setStep] = useState<DeliveryStatus>(
     modal.type === "CREATE" ? "DISPATCHED" : modal.leg.step,
   );
@@ -97,7 +99,7 @@ function Body({ modal }: { modal: OpenModal }) {
 
   const { mutate: createLeg, isPending: isCreatePending } = useCreateLeg({
     onSuccess: () => {
-      toast.success("Leg 가 생성되었습니다.", { position: "top-center" });
+      toast.success(t("leg.toast.created"), { position: "top-center" });
       modal.actions.close();
     },
     onError: (err) =>
@@ -106,7 +108,7 @@ function Body({ modal }: { modal: OpenModal }) {
 
   const { mutate: updateLeg, isPending: isUpdatePending } = useUpdateLeg({
     onSuccess: () => {
-      toast.success("Leg 가 수정되었습니다.", { position: "top-center" });
+      toast.success(t("leg.toast.updated"), { position: "top-center" });
       modal.actions.close();
     },
     onError: (err) =>
@@ -138,11 +140,13 @@ function Body({ modal }: { modal: OpenModal }) {
     <>
       <DialogHeader>
         <DialogTitle className="font-sans">
-          {modal.type === "CREATE" ? "Leg 생성" : "Leg 수정"}
+          {modal.type === "CREATE"
+            ? t("leg.createTitle")
+            : t("leg.editTitle")}
         </DialogTitle>
       </DialogHeader>
       <div className="grid grid-cols-2 gap-3">
-        <Field label="Step (D/O 단계)" required>
+        <Field label={t("leg.field.step")} required>
           <select
             value={step}
             onChange={(e) => setStep(e.target.value as DeliveryStatus)}
@@ -156,7 +160,7 @@ function Body({ modal }: { modal: OpenModal }) {
             ))}
           </select>
         </Field>
-        <Field label="Move Type" required>
+        <Field label={t("leg.field.moveType")} required>
           <select
             value={moveType}
             onChange={(e) => setMoveType(e.target.value as MoveType)}
@@ -170,7 +174,7 @@ function Body({ modal }: { modal: OpenModal }) {
             ))}
           </select>
         </Field>
-        <Field label="Service Type" required>
+        <Field label={t("leg.field.serviceType")} required>
           <select
             value={serviceType}
             onChange={(e) => setServiceType(e.target.value as ServiceType)}
@@ -184,7 +188,7 @@ function Body({ modal }: { modal: OpenModal }) {
             ))}
           </select>
         </Field>
-        <Field label="Driver">
+        <Field label={t("leg.field.driver")}>
           <SearchableSelect<DriverEntity>
             value={driverId}
             onSelect={(id) => setDriverId(id)}
@@ -196,12 +200,12 @@ function Body({ modal }: { modal: OpenModal }) {
             fetchById={(id) => fetchDriver(id)}
             queryKeyBase={["driver", "search"]}
             getLabel={(d) => `${d.name} (${d.email})`}
-            placeholder="— 미지정 —"
-            emptyLabel="— 미지정 —"
+            placeholder={t("leg.driverPlaceholder")}
+            emptyLabel={t("leg.driverPlaceholder")}
             disabled={isPending}
           />
         </Field>
-        <Field label="Pickup Location">
+        <Field label={t("leg.field.pickupLocation")}>
           <SearchableSelect<LocationEntity>
             value={pickupLocationId}
             onSelect={(id) => setPickupLocationId(id)}
@@ -211,12 +215,12 @@ function Body({ modal }: { modal: OpenModal }) {
             fetchById={(id) => fetchLocation(id)}
             queryKeyBase={["location", "search"]}
             getLabel={(l) => `${l.name} (${l.kind})`}
-            placeholder="—"
-            emptyLabel="— 선택 안함 —"
+            placeholder={t("leg.locationPlaceholder")}
+            emptyLabel={t("leg.locationEmpty")}
             disabled={isPending}
           />
         </Field>
-        <Field label="Pickup Date">
+        <Field label={t("leg.field.pickupDate")}>
           <Input
             type="datetime-local"
             value={pickupDate}
@@ -224,7 +228,7 @@ function Body({ modal }: { modal: OpenModal }) {
             disabled={isPending}
           />
         </Field>
-        <Field label="Delivery Location">
+        <Field label={t("leg.field.deliveryLocation")}>
           <SearchableSelect<LocationEntity>
             value={deliveryLocationId}
             onSelect={(id) => setDeliveryLocationId(id)}
@@ -234,12 +238,12 @@ function Body({ modal }: { modal: OpenModal }) {
             fetchById={(id) => fetchLocation(id)}
             queryKeyBase={["location", "search"]}
             getLabel={(l) => `${l.name} (${l.kind})`}
-            placeholder="—"
-            emptyLabel="— 선택 안함 —"
+            placeholder={t("leg.locationPlaceholder")}
+            emptyLabel={t("leg.locationEmpty")}
             disabled={isPending}
           />
         </Field>
-        <Field label="Delivery Date">
+        <Field label={t("leg.field.deliveryDate")}>
           <Input
             type="datetime-local"
             value={deliveryDate}
@@ -248,7 +252,7 @@ function Body({ modal }: { modal: OpenModal }) {
           />
         </Field>
         <div className="col-span-2">
-          <Field label="메모">
+          <Field label={t("leg.field.note")}>
             <Input
               value={note}
               onChange={(e) => setNote(e.target.value)}
@@ -263,10 +267,10 @@ function Body({ modal }: { modal: OpenModal }) {
           onClick={() => modal.actions.close()}
           disabled={isPending}
         >
-          취소
+          {t("common.cancel")}
         </Button>
         <Button onClick={handleSave} disabled={isPending}>
-          저장
+          {t("common.save")}
         </Button>
       </div>
     </>

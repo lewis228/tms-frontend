@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,7 @@ export default function CustomerEditorModal() {
 }
 
 function Body({ modal }: { modal: OpenModal }) {
+  const { t } = useTranslation();
   const [name, setName] = useState(
     modal.type === "CREATE" ? "" : modal.customer.name,
   );
@@ -64,7 +66,7 @@ function Body({ modal }: { modal: OpenModal }) {
   const { mutate: createCustomer, isPending: isCreatePending } =
     useCreateCustomer({
       onSuccess: () => {
-        toast.success("고객사가 생성되었습니다.", { position: "top-center" });
+        toast.success(t("toast.created"), { position: "top-center" });
         modal.actions.close();
       },
       onError: (err) =>
@@ -74,7 +76,7 @@ function Body({ modal }: { modal: OpenModal }) {
   const { mutate: updateCustomer, isPending: isUpdatePending } =
     useUpdateCustomer({
       onSuccess: () => {
-        toast.success("고객사가 수정되었습니다.", { position: "top-center" });
+        toast.success(t("toast.updated"), { position: "top-center" });
         modal.actions.close();
       },
       onError: (err) =>
@@ -105,11 +107,11 @@ function Body({ modal }: { modal: OpenModal }) {
     <>
       <DialogHeader>
         <DialogTitle className="font-sans">
-          {modal.type === "CREATE" ? "고객사 생성" : "고객사 수정"}
+          {t(modal.type === "CREATE" ? "customer.createTitle" : "customer.editTitle")}
         </DialogTitle>
       </DialogHeader>
       <div className="flex flex-col gap-3">
-        <Field label="이름" required>
+        <Field label={t("field.name")} required>
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -117,7 +119,7 @@ function Body({ modal }: { modal: OpenModal }) {
             placeholder="Acme Logistics"
           />
         </Field>
-        <Field label="코드">
+        <Field label={t("field.code")}>
           <Input
             value={code}
             onChange={(e) => setCode(e.target.value)}
@@ -126,7 +128,7 @@ function Body({ modal }: { modal: OpenModal }) {
             maxLength={64}
           />
         </Field>
-        <Field label="청구 주소">
+        <Field label={t("customer.field.billingAddress")}>
           <Input
             value={billingAddress}
             onChange={(e) => setBillingAddress(e.target.value)}
@@ -134,14 +136,14 @@ function Body({ modal }: { modal: OpenModal }) {
           />
         </Field>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="담당자 이름">
+          <Field label={t("customer.field.contactName")}>
             <Input
               value={contactName}
               onChange={(e) => setContactName(e.target.value)}
               disabled={isPending}
             />
           </Field>
-          <Field label="담당자 전화">
+          <Field label={t("customer.field.contactPhone")}>
             <Input
               value={contactPhone}
               onChange={(e) => setContactPhone(e.target.value)}
@@ -150,7 +152,7 @@ function Body({ modal }: { modal: OpenModal }) {
             />
           </Field>
         </div>
-        <Field label="담당자 이메일">
+        <Field label={t("customer.field.contactEmail")}>
           <Input
             type="email"
             value={contactEmail}
@@ -158,7 +160,7 @@ function Body({ modal }: { modal: OpenModal }) {
             disabled={isPending}
           />
         </Field>
-        <Field label="메모">
+        <Field label={t("field.note")}>
           <Input
             value={note}
             onChange={(e) => setNote(e.target.value)}
@@ -172,10 +174,10 @@ function Body({ modal }: { modal: OpenModal }) {
           onClick={() => modal.actions.close()}
           disabled={isPending}
         >
-          취소
+          {t("common.cancel")}
         </Button>
         <Button onClick={handleSave} disabled={isPending || !name.trim()}>
-          저장
+          {t("common.save")}
         </Button>
       </div>
     </>

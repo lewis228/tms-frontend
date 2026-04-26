@@ -1,5 +1,6 @@
 // CALCULATED/ADJUSTED → APPROVED. final_amount + note 옵션.
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,7 @@ type SettlementData = NonNullable<
 >;
 
 export default function SettlementApproveModal() {
+  const { t } = useTranslation();
   const modal = useApproveSettlementModal();
   const { data: settlement } = useSettlementByIdData(
     modal.isOpen ? modal.settlementId : null,
@@ -35,13 +37,15 @@ export default function SettlementApproveModal() {
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="font-sans">Approve Settlement</DialogTitle>
+          <DialogTitle className="font-sans">
+            {t("settlement.approve.title")}
+          </DialogTitle>
         </DialogHeader>
         {ready ? (
           <Body key={settlement.id} modal={modal} settlement={settlement} />
         ) : modal.isOpen ? (
           <div className="py-8 text-center text-sm text-muted-foreground">
-            로딩 중...
+            {t("common.loading")}
           </div>
         ) : null}
       </DialogContent>
@@ -56,6 +60,7 @@ function Body({
   modal: Modal;
   settlement: SettlementData;
 }) {
+  const { t } = useTranslation();
   const [finalAmount, setFinalAmount] = useState(
     settlement.finalAmount ?? settlement.systemTotal ?? "",
   );
@@ -63,7 +68,7 @@ function Body({
 
   const { mutate, isPending } = useApproveSettlement({
     onSuccess: () => {
-      toast.success("Settlement 가 승인되었습니다.", {
+      toast.success(t("settlement.approve.success"), {
         position: "top-center",
       });
       modal.actions.close();
@@ -85,11 +90,12 @@ function Body({
   return (
     <div className="flex flex-col gap-3">
       <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">
-        ⚠ 승인 후엔 모든 금액 필드가 잠깁니다 (Adjust 불가). Unapprove 는
-        ADMIN+ 권한 + 사유 필수.
+        {t("settlement.approve.warning")}
       </p>
       <div className="flex flex-col gap-1">
-        <label className="text-xs text-muted-foreground">Final Amount</label>
+        <label className="text-xs text-muted-foreground">
+          {t("settlement.detail.finalAmountLabel")}
+        </label>
         <Input
           type="number"
           step="0.01"
@@ -100,7 +106,9 @@ function Body({
         />
       </div>
       <div className="flex flex-col gap-1">
-        <label className="text-xs text-muted-foreground">Note</label>
+        <label className="text-xs text-muted-foreground">
+          {t("settlement.detail.noteField")}
+        </label>
         <Input
           value={note}
           onChange={(e) => setNote(e.target.value)}
@@ -113,10 +121,12 @@ function Body({
           onClick={() => modal.actions.close()}
           disabled={isPending}
         >
-          취소
+          {t("common.cancel")}
         </Button>
         <Button onClick={handleSave} disabled={isPending}>
-          {isPending ? "승인중..." : "승인"}
+          {isPending
+            ? t("settlement.approve.submitting")
+            : t("settlement.approve.submit")}
         </Button>
       </div>
     </div>

@@ -1,5 +1,7 @@
 // Leg Timeline — D/O 의 legs 를 가로 step bar 로 표시.
 // Phase 4 에서는 읽기만. driver assign / leg 생성은 Phase 5 (Dispatch Workspace).
+import { useTranslation } from "react-i18next";
+
 import Loader from "@/components/loader";
 import { formatDateTime } from "@/lib/format";
 import Fallback from "@/components/fallback";
@@ -18,6 +20,7 @@ export default function LegTimeline({
 }: {
   deliveryOrderId: number;
 }) {
+  const { t } = useTranslation();
   const { data, isPending, error } = useLegsByDoData(deliveryOrderId);
 
   if (error) return <Fallback />;
@@ -26,7 +29,7 @@ export default function LegTimeline({
   if (data.length === 0) {
     return (
       <p className="text-xs text-muted-foreground">
-        Leg 가 아직 없습니다. Phase 5 의 Dispatch Workspace 에서 생성합니다.
+        {t("leg.timeline.empty")}
       </p>
     );
   }
@@ -41,6 +44,7 @@ export default function LegTimeline({
 }
 
 function LegRow({ leg, index }: { leg: LegEntity; index: number }) {
+  const { t } = useTranslation();
   return (
     <div className="flex items-start gap-3 rounded-md border p-2 text-xs">
       <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium">
@@ -60,16 +64,20 @@ function LegRow({ leg, index }: { leg: LegEntity; index: number }) {
           </span>
         </div>
         <div className="text-muted-foreground">
-          {leg.driverId ? `Driver: ${String(leg.driverId).slice(0, 8)}…` : "Driver: —"}
+          {leg.driverId
+            ? `${t("leg.timeline.driverPrefix")} ${String(leg.driverId).slice(0, 8)}…`
+            : `${t("leg.timeline.driverPrefix")} ${t("common.none")}`}
           {leg.pickupDate
-            ? ` · 픽업 ${formatDateTime(leg.pickupDate)}`
+            ? ` · ${t("leg.timeline.pickupPrefix")} ${formatDateTime(leg.pickupDate)}`
             : ""}
           {leg.deliveryDate
-            ? ` · 배송 ${formatDateTime(leg.deliveryDate)}`
+            ? ` · ${t("leg.timeline.deliveryPrefix")} ${formatDateTime(leg.deliveryDate)}`
             : ""}
         </div>
         {leg.failureReason && (
-          <div className="text-red-600">실패: {leg.failureReason}</div>
+          <div className="text-red-600">
+            {t("leg.timeline.failurePrefix")} {leg.failureReason}
+          </div>
         )}
       </div>
     </div>

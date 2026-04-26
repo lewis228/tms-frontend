@@ -31,7 +31,8 @@
     "saving": "Saving...",
     "deleting": "Deleting...",
     "creating": "Creating...",
-    "loadFailed": "Failed to load."
+    "loadFailed": "Failed to load.",
+    "pageOf": "Page {{page}} / {{pages}}"
   },
   "toast": {
     "saved": "Saved.",
@@ -139,7 +140,8 @@
       "customerCode": "Code",
       "driverEmail": "Email",
       "driverName": "Name",
-      "driverPhone": "Phone"
+      "driverPhone": "Phone",
+      "driverNamePlaceholder": "Jane Doe"
     },
     "validation": {
       "companyNameRequired": "Company name is required.",
@@ -179,6 +181,7 @@
     "editTitle": "Edit customer",
     "deletePromptTitle": "Delete customer '{{name}}'?",
     "deletePromptDesc": "This cannot be undone.",
+    "searchPlaceholder": "Name / code / contact",
     "field": {
       "billingAddress": "Billing address",
       "contactName": "Contact name",
@@ -196,9 +199,12 @@
     "editTitle": "Edit terminal",
     "deletePromptTitle": "Delete terminal '{{name}}'?",
     "deletePromptDesc": "This cannot be undone.",
+    "searchPlaceholder": "Name / code / address",
     "field": {
       "latitude": "Latitude",
-      "longitude": "Longitude"
+      "longitude": "Longitude",
+      "codeLabel": "Code (UN/LOCODE etc.)",
+      "latLng": "Lat / Lng"
     },
     "validation": {
       "nameRequired": "Name is required."
@@ -211,6 +217,7 @@
     "editTitle": "Edit vessel",
     "deletePromptTitle": "Delete vessel '{{name}}'?",
     "deletePromptDesc": "This cannot be undone.",
+    "searchPlaceholder": "Name / IMO / line",
     "field": {
       "imoNumber": "IMO number",
       "line": "Line"
@@ -226,11 +233,14 @@
     "editTitle": "Edit location",
     "deletePromptTitle": "Delete location '{{name}}'?",
     "deletePromptDesc": "This cannot be undone.",
+    "searchPlaceholder": "Name / kind / address",
     "field": {
       "kind": "Kind",
       "latitude": "Latitude",
       "longitude": "Longitude",
-      "customer": "Customer"
+      "customer": "Customer",
+      "customerLabel": "Customer (required when kind=CUSTOMER)",
+      "latLng": "Lat / Lng"
     },
     "validation": {
       "nameRequired": "Name is required.",
@@ -244,6 +254,12 @@
     "editTitle": "Edit driver",
     "deletePromptTitle": "Delete driver '{{name}}'?",
     "deletePromptDesc": "This cannot be undone.",
+    "deleteUserDeactivateDesc": "Delete '{{name}}'. The user account will also be deactivated.",
+    "searchPlaceholder": "Name / email / license / truck",
+    "emailPlaceholder": "driver@example.com",
+    "namePlaceholder": "Jane Doe",
+    "phonePlaceholder": "+1 213 555 0100",
+    "tempPasswordWarning": "⚠️ A one-time temporary password will be issued. Save it before closing.",
     "field": {
       "licenseNumber": "License number",
       "licenseState": "License state",
@@ -253,7 +269,20 @@
       "title": "Driver registered",
       "description": "Share the temporary password with the driver. They'll change it on first sign-in.",
       "label": "Temporary password",
-      "copy": "Copy"
+      "copy": "Copy",
+      "copied": "Copied",
+      "modalTitle": "Temporary password (shown once)",
+      "warning": "⚠️ Once this dialog closes the password cannot be shown again. Share it with the driver via a secure channel and have them change it at first sign-in.",
+      "driverLabel": "Driver:",
+      "closeButton": "Saved, close",
+      "confirmCloseTitle": "Where did you save this password?",
+      "confirmCloseDesc": "Once you close this dialog the temporary password cannot be retrieved. Confirm only if you saved it somewhere safe.",
+      "copyToastSuccess": "Temporary password copied.",
+      "copyToastFail": "Failed to copy. Please select and copy manually."
+    },
+    "toast": {
+      "updated": "Driver updated.",
+      "deleted": "Driver deleted."
     },
     "validation": {
       "emailRequired": "Email is required.",
@@ -300,15 +329,27 @@
     "newButton": "New D/O",
     "aiCreateButton": "Create with AI",
     "createTitle": "New D/O",
+    "createTitleNew": "Create new D/O",
+    "creating": "Creating...",
+    "createSuccess": "D/O created.",
     "searchPlaceholder": "Container / B/L / Booking / Reference",
     "viewDetail": "Detail →",
     "backToList": "List",
+    "containerInvalidShort": "Invalid format.",
+    "containerPlaceholder": "MSCU1234567",
+    "containerTypePlaceholder": "DRY / RF / OT etc.",
+    "customerPlaceholder": "Select customer",
     "section": {
       "basic": "Basic",
       "container": "Container",
       "meta": "Meta",
       "schedule": "Schedule",
-      "gates": "Gates"
+      "gates": "Gates",
+      "status": "Status",
+      "basicInfo": "Basic info",
+      "gatesCondition": "Gate conditions",
+      "legTimeline": "Leg Timeline",
+      "note": "Note"
     },
     "field": {
       "direction": "Direction",
@@ -317,6 +358,7 @@
       "bookingNumber": "Booking",
       "reference": "Reference",
       "containerNumber": "Container number",
+      "containerNumberWithPattern": "Container number (^[A-Z]{4}\\d{7}$)",
       "containerSize": "Size",
       "containerType": "Type",
       "chassisNumber": "Chassis",
@@ -328,9 +370,18 @@
       "pickupAppointment": "Pickup",
       "deliveryAppointment": "Delivery",
       "returnAppointment": "Return",
+      "pickupAppointmentLong": "Pickup appointment",
+      "deliveryAppointmentLong": "Delivery appointment",
+      "returnAppointmentLong": "Return appointment",
       "demurrageLfd": "Demurrage LFD",
       "detentionLfd": "Detention LFD",
-      "internalNote": "Internal note"
+      "internalNote": "Internal note",
+      "booking": "Booking",
+      "container": "Container",
+      "containerSizeLong": "Container size",
+      "containerTypeLong": "Container type",
+      "emptyDate": "Empty date",
+      "loadedDate": "Loaded date"
     },
     "validation": {
       "customerRequired": "Please select a customer.",
@@ -347,6 +398,12 @@
     },
     "drawer": {
       "title": "D/O"
+    },
+    "directionPrefix": "Direction:",
+    "gates": {
+      "blReleased": "B/L Released",
+      "pierPassPaid": "Pier Pass Paid",
+      "customsCleared": "Customs Cleared"
     }
   },
   "leg": {
@@ -367,6 +424,42 @@
       "deliveryDate": "Delivery at",
       "note": "Note"
     },
+    "driverPlaceholder": "— Unassigned —",
+    "locationPlaceholder": "—",
+    "locationEmpty": "— None —",
+    "toast": {
+      "created": "Leg created.",
+      "updated": "Leg updated."
+    },
+    "timeline": {
+      "empty": "No legs yet. Create them in the Phase 5 Dispatch Workspace.",
+      "driverPrefix": "Driver:",
+      "pickupPrefix": "Pickup",
+      "deliveryPrefix": "Delivery",
+      "failurePrefix": "Failed:"
+    },
+    "statusMover": {
+      "terminalState": "Final state. No further transitions.",
+      "transitionedToast": "Status transitioned.",
+      "transitButton": "Transition",
+      "transitingButton": "Working...",
+      "serverNote": "You can attempt even when items are missing — the server makes the final check.",
+      "gate": {
+        "blReleased": "B/L Released",
+        "pierPassPaid": "Pier Pass Paid",
+        "customsCleared": "Customs Cleared",
+        "pickupAppointment": "Pickup appointment",
+        "deliveryAppointment": "Delivery appointment",
+        "firstLegDriver": "First Leg + driver/pickup_date (server)",
+        "firstLegCompleted": "First Leg COMPLETED (server)",
+        "returnLocation": "Return location",
+        "returnAppointment": "Return appointment",
+        "detentionLfd": "Detention LFD",
+        "emptyDate": "Empty date (IMPORT)",
+        "loadedDate": "Loaded date (EXPORT)",
+        "returnLegCompleted": "Return Leg COMPLETED (server)"
+      }
+    },
     "transition": {
       "failureReasonPrompt": "Enter the failure reason"
     }
@@ -382,7 +475,8 @@
       "systemTotal": "System",
       "driverReported": "Reported",
       "discrepancy": "Diff",
-      "finalAmount": "Final"
+      "finalAmount": "Final",
+      "flag": "Flag"
     },
     "filter": {
       "all": "All",
@@ -390,21 +484,36 @@
     },
     "calculate": {
       "title": "Calculate settlement",
-      "submit": "Calculate"
+      "submit": "Calculate",
+      "submitting": "Calculating...",
+      "success": "Settlement calculated."
     },
     "adjust": {
       "title": "Adjust settlement",
       "submit": "Adjust",
-      "noteRequired": "Note is required."
+      "submitting": "Adjusting...",
+      "noteRequired": "Note is required.",
+      "success": "Settlement adjusted.",
+      "systemTotalRef": "System Total (ref)",
+      "discrepancyAuto": "Discrepancy (auto)",
+      "flagRecommended": "(discrepancy ≠ 0 — auto-suggested)",
+      "notePlaceholder": "Adjustment reason"
     },
     "approve": {
       "title": "Approve settlement",
-      "submit": "Approve"
+      "submit": "Approve",
+      "submitting": "Approving...",
+      "success": "Settlement approved.",
+      "warning": "⚠ All amount fields are locked after approval (no adjust). Unapprove requires ADMIN+ and a reason."
     },
     "unapprove": {
       "title": "Unapprove",
       "reasonRequired": "Reason is required.",
-      "submit": "Unapprove"
+      "submit": "Unapprove",
+      "submitting": "Processing...",
+      "success": "Settlement unapproved.",
+      "warning": "⚠ Unapprove requires ADMIN+ and is logged in the AuditLog.",
+      "reasonPlaceholder": "Unapprove reason"
     },
     "field": {
       "systemTotal": "System total",
@@ -416,22 +525,76 @@
     },
     "extras": {
       "title": "Extra charges",
+      "titleWithSum": "Extra Charges ({{count}}) · Sum {{total}}",
       "addRow": "Add",
       "type": "Type",
       "amount": "Amount",
-      "description": "Description"
+      "description": "Description",
+      "empty": "No extra charges.",
+      "typePlaceholder": "Type (e.g. chassis)",
+      "amountPlaceholder": "Amount",
+      "descriptionPlaceholder": "Description"
+    },
+    "detail": {
+      "status": "Status",
+      "settled": "(settled)",
+      "flagged": "Flagged",
+      "approvedAdminOnly": "Approved — Unapprove requires ADMIN+",
+      "amounts": "Amounts",
+      "extraCharges": "Extra Charges ({{count}})",
+      "none": "None",
+      "auditLog": "Audit Log ({{count}})",
+      "noLogs": "No log entries",
+      "reasonLabel": "Reason: {{reason}}",
+      "previousUnapprove": "Previous Unapprove",
+      "reasonField": "Reason",
+      "atField": "At",
+      "noteField": "Note",
+      "calculate": "Calculate",
+      "adjust": "Adjust",
+      "approve": "Approve",
+      "unapprove": "Unapprove (ADMIN+)",
+      "systemTotalLabel": "System Total",
+      "driverReportedLabel": "Driver Reported",
+      "discrepancyLabel": "Discrepancy",
+      "finalAmountLabel": "Final Amount",
+      "loading": "Loading..."
     }
   },
   "rateSetting": {
     "domain": "Rate",
     "newButton": "New rate",
-    "createTitle": "New rate",
-    "editTitle": "Edit rate",
-    "deletePromptTitle": "Delete rate '{{name}}'?",
-    "deletePromptDesc": "This cannot be undone."
+    "createTitle": "New rate setting",
+    "editTitle": "Edit rate setting",
+    "deletePromptTitle": "Delete this rate setting?",
+    "deletePromptDesc": "This will delete '{{name}}'. This cannot be undone.",
+    "searchPlaceholder": "Name / description / type",
+    "namePlaceholder": "Base rate / night surcharge",
+    "typeImmutableHint": "(immutable after create — create a new row instead)",
+    "activeToggled": "Active state updated.",
+    "effectiveDateRequired": "Effective date is required.",
+    "flatAmountRequired": "Flat amount is required.",
+    "percentageRequired": "Percentage is required.",
+    "perMileRequired": "Per mile rate is required.",
+    "field": {
+      "name": "Name",
+      "type": "Type",
+      "amount": "Amount",
+      "effective": "Effective",
+      "active": "Active",
+      "inactive": "Inactive",
+      "activeOn": "✓ Active",
+      "description": "Description",
+      "rateType": "Rate Type",
+      "flatAmount": "Flat Amount",
+      "percentage": "Percentage",
+      "perMile": "Per Mile",
+      "effectiveDate": "Effective Date"
+    }
   },
   "dispatch": {
     "title": "Dispatch",
+    "workspace": "Dispatch Workspace",
     "view": {
       "list": "List",
       "board": "Board",
@@ -443,37 +606,138 @@
       "blocked": "{{from}} → {{to}} not allowed",
       "empty": "Empty"
     },
-    "containerUnnamed": "(no container)"
+    "containerUnnamed": "(no container)",
+    "containerUnset": "(unset)",
+    "list": {
+      "headerGate": "Gates"
+    },
+    "timeline": {
+      "outOfRange": "Out of range / unscheduled ({{count}})",
+      "headerDo": "D/O",
+      "noInRange": "No D/O has appointments in this range.",
+      "legendPickup": "Pickup",
+      "legendDelivery": "Delivery",
+      "legendReturn": "Return",
+      "tooltipPickup": "Pickup appt.",
+      "tooltipDelivery": "Delivery appt.",
+      "tooltipReturn": "Return appt."
+    },
+    "map": {
+      "modeMaster": "Master locations",
+      "modeDo": "Active D/O locations",
+      "openDrawer": "Open drawer",
+      "activeDoCount": "Active D/O: {{count}}",
+      "locationLabel": "Location · {{kind}}",
+      "terminalLabel": "Terminal"
+    },
+    "gantt": {
+      "driverHeader": "Drivers ({{count}})",
+      "legCount": "{{count}} legs",
+      "noActiveDrivers": "No active drivers."
+    }
   },
   "dashboard": {
     "title": "Dashboard",
     "urgent": {
       "title": "Urgent D/O",
-      "noUrgent": "No urgent items."
+      "noUrgent": "No urgent items.",
+      "header": "⚠ Urgent D/O ({{count}}) — demurrage / detention LFD within 3 days",
+      "daysOver": "{{count}} d over",
+      "daysToday": "Today",
+      "daysLeft": "{{count}} d left",
+      "demurrage": "Demurrage",
+      "detention": "Detention"
     },
     "donut": {
-      "title": "Status distribution"
+      "title": "Status distribution",
+      "tooltipUnit": "{{count}}"
+    },
+    "section": {
+      "statusDistribution": "D/O by status"
+    },
+    "kpi": {
+      "inProgress": "Active D/O",
+      "inProgressHint": "of {{count}} total",
+      "todayPDR": "Today P/D/R",
+      "todayPDRHint": "scheduled D/O count",
+      "pendingLegs": "Open Legs",
+      "pendingLegsHint": "PENDING + IN_TRANSIT",
+      "unsettled": "Unsettled",
+      "unsettledHint": "non-APPROVED settlements",
+      "activeDrivers": "Active drivers",
+      "activeDriversHint": "active / total"
     }
   },
   "notification": {
     "title": "Notifications",
+    "subtitle": "Server inbox. Domain events accumulate per-user.",
+    "pageTitle": "Notifications",
     "empty": "No notifications.",
+    "unreadEmpty": "No unread notifications.",
+    "unreadOnly": "Unread only",
+    "unreadCountTitle": "{{count}} unread",
+    "popoverEmpty": "No new notifications.",
     "markAllRead": "Mark all read",
-    "viewAll": "View all"
+    "viewAll": "View all →"
   },
   "auth": {
     "signIn": {
       "title": "Sign in",
       "subtitle": "TMS Pro",
+      "emailPlaceholder": "Email",
+      "passwordPlaceholder": "Password",
       "submit": "Sign in",
       "submitting": "Signing in...",
       "forgotHint": "Forgot your password?",
       "help": "Help"
     },
     "forbidden": {
-      "title": "Access denied",
+      "title": "403 — Forbidden",
       "description": "You don't have permission to access this page.",
       "back": "Go to dashboard"
+    }
+  },
+  "pages": {
+    "deliveryOrders": {
+      "title": "Delivery Orders"
+    },
+    "deliveryOrderDetail": {
+      "back": "List",
+      "heading": "D/O"
+    },
+    "accounting": {
+      "title": "Settlements"
+    },
+    "accountingRates": {
+      "title": "Rate Settings",
+      "hint": "ADMIN+ only. Use a single amount field per type (FLAT_RATE / PERCENTAGE / PER_MILE)."
+    },
+    "master": {
+      "customers": "Customers",
+      "terminals": "Terminals",
+      "vessels": "Vessels",
+      "locations": "Locations",
+      "drivers": "Drivers"
+    },
+    "system": {
+      "tenants": "Tenants",
+      "tenantsHint": "SUPER_ADMIN only. CRUD across all tenants. Deletes CASCADE to all related data — irreversible.",
+      "users": "System Users",
+      "usersHint": "SUPER_ADMIN only. Selecting a tenant shows users in that tenant (X-Tenant-Id header). SUPER_ADMIN cannot be created via API."
+    },
+    "driverSchedule": {
+      "title": "Driver Schedule",
+      "hint": "Click a bar → Leg edit modal. Colors: PENDING (gray) · IN_TRANSIT (blue) · COMPLETED (green) · FAILED (red)."
+    },
+    "maintenance": {
+      "title": "Under maintenance",
+      "alt": "Maintenance illustration",
+      "needSupport": "Need support?"
+    },
+    "notFound": {
+      "title": "404 — Not found",
+      "alt": "Error illustration",
+      "backHome": "Back to home"
     }
   }
 }

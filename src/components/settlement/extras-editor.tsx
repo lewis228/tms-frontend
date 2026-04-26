@@ -1,4 +1,6 @@
 // ExtraCharge 인라인 편집 — calculate/adjust 모달 안에서 사용.
+import { useTranslation } from "react-i18next";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { ExtraChargeInput } from "@/api/settlement";
@@ -12,6 +14,8 @@ export default function ExtrasEditor({
   setRows: (next: ExtraChargeInput[]) => void;
   disabled?: boolean;
 }) {
+  const { t } = useTranslation();
+
   const update = (i: number, patch: Partial<ExtraChargeInput>) => {
     setRows(rows.map((r, idx) => (idx === i ? { ...r, ...patch } : r)));
   };
@@ -29,7 +33,10 @@ export default function ExtrasEditor({
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between">
         <span className="text-xs text-muted-foreground">
-          Extra Charges ({rows.length}) · 합계 {total.toFixed(2)}
+          {t("settlement.extras.titleWithSum", {
+            count: rows.length,
+            total: total.toFixed(2),
+          })}
         </span>
         <Button
           type="button"
@@ -38,12 +45,12 @@ export default function ExtrasEditor({
           onClick={add}
           disabled={disabled}
         >
-          + 추가
+          + {t("settlement.extras.addRow")}
         </Button>
       </div>
       {rows.length === 0 ? (
         <p className="rounded-md border bg-muted/30 px-3 py-2 text-xs text-muted-foreground">
-          추가 비용이 없습니다.
+          {t("settlement.extras.empty")}
         </p>
       ) : (
         <div className="flex flex-col gap-1">
@@ -53,7 +60,7 @@ export default function ExtrasEditor({
               className="grid grid-cols-[1fr_120px_2fr_auto] items-center gap-2"
             >
               <Input
-                placeholder="유형 (chassis 등)"
+                placeholder={t("settlement.extras.typePlaceholder")}
                 value={r.type}
                 onChange={(e) => update(i, { type: e.target.value })}
                 disabled={disabled}
@@ -62,14 +69,14 @@ export default function ExtrasEditor({
               <Input
                 type="number"
                 step="0.01"
-                placeholder="금액"
+                placeholder={t("settlement.extras.amountPlaceholder")}
                 value={r.amount}
                 onChange={(e) => update(i, { amount: e.target.value })}
                 disabled={disabled}
                 className="text-right"
               />
               <Input
-                placeholder="설명"
+                placeholder={t("settlement.extras.descriptionPlaceholder")}
                 value={r.description ?? ""}
                 onChange={(e) =>
                   update(i, { description: e.target.value || null })
@@ -84,7 +91,7 @@ export default function ExtrasEditor({
                 disabled={disabled}
                 className="text-destructive"
               >
-                삭제
+                {t("common.delete")}
               </Button>
             </div>
           ))}

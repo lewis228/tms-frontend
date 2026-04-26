@@ -1,4 +1,6 @@
 // Drawer 내용 — 섹션 분리 + 스크롤. 인라인 수정은 Phase 5+. 지금은 읽기 + Status Mover.
+import { useTranslation } from "react-i18next";
+
 import StatusBadge from "@/components/delivery-order/status-badge";
 import StatusMover from "@/components/delivery-order/status-mover";
 import LegTimeline from "@/components/delivery-order/leg-timeline";
@@ -14,94 +16,97 @@ export default function DeliveryOrderDetail({
 }: {
   deliveryOrder: DeliveryOrderEntity;
 }) {
+  const { t } = useTranslation();
   // FK 라벨 lookup. 1페이지만 — 100건 이하 가정.
   const { data: customersData } = useCustomersData(1);
   const { data: terminalsData } = useTerminalsData(1);
   const { data: vesselsData } = useVesselsData(1);
   const { data: locationsData } = useLocationsData(1);
 
+  const dash = t("common.none");
+
   const customerName =
     customersData?.items.find((c) => c.id === deliveryOrder.customerId)?.name ??
-    "—";
+    dash;
   const terminalName = deliveryOrder.terminalId
-    ? (terminalsData?.items.find((t) => t.id === deliveryOrder.terminalId)
-        ?.name ?? "—")
-    : "—";
+    ? (terminalsData?.items.find((tt) => tt.id === deliveryOrder.terminalId)
+        ?.name ?? dash)
+    : dash;
   const vesselName = deliveryOrder.vesselId
     ? (vesselsData?.items.find((v) => v.id === deliveryOrder.vesselId)?.name ??
-      "—")
-    : "—";
+      dash)
+    : dash;
   const deliveryLocationName = deliveryOrder.deliveryLocationId
     ? (locationsData?.items.find(
         (l) => l.id === deliveryOrder.deliveryLocationId,
-      )?.name ?? "—")
-    : "—";
+      )?.name ?? dash)
+    : dash;
   const returnLocationName = deliveryOrder.returnLocationId
     ? (locationsData?.items.find((l) => l.id === deliveryOrder.returnLocationId)
-        ?.name ?? "—")
-    : "—";
+        ?.name ?? dash)
+    : dash;
 
   return (
     <div className="flex flex-col gap-5 pt-4">
-      <Section title="상태">
+      <Section title={t("deliveryOrder.section.status")}>
         <div className="flex items-center gap-2">
           <StatusBadge status={deliveryOrder.status} />
           <span className="text-xs text-muted-foreground">
-            방향: {deliveryOrder.direction}
+            {t("deliveryOrder.directionPrefix")} {deliveryOrder.direction}
           </span>
         </div>
         <StatusMover deliveryOrder={deliveryOrder} />
       </Section>
 
-      <Section title="기본 정보">
-        <Field label="B/L 번호" value={deliveryOrder.blNumber} />
-        <Field label="Booking" value={deliveryOrder.bookingNumber} />
-        <Field label="Reference" value={deliveryOrder.reference} />
+      <Section title={t("deliveryOrder.section.basicInfo")}>
+        <Field label={t("deliveryOrder.field.blNumber")} value={deliveryOrder.blNumber} />
+        <Field label={t("deliveryOrder.field.booking")} value={deliveryOrder.bookingNumber} />
+        <Field label={t("deliveryOrder.field.reference")} value={deliveryOrder.reference} />
         <Field
-          label="컨테이너"
+          label={t("deliveryOrder.field.container")}
           value={deliveryOrder.containerNumber}
           mono
         />
-        <Field label="컨테이너 사이즈" value={deliveryOrder.containerSize} />
-        <Field label="컨테이너 타입" value={deliveryOrder.containerType} />
-        <Field label="섀시" value={deliveryOrder.chassisNumber} />
-        <Field label="고객사" value={customerName} />
+        <Field label={t("deliveryOrder.field.containerSizeLong")} value={deliveryOrder.containerSize} />
+        <Field label={t("deliveryOrder.field.containerTypeLong")} value={deliveryOrder.containerType} />
+        <Field label={t("deliveryOrder.field.chassisNumber")} value={deliveryOrder.chassisNumber} />
+        <Field label={t("deliveryOrder.field.customer")} value={customerName} />
       </Section>
 
-      <Section title="일정">
-        <Field label="ETA" value={fmt(deliveryOrder.eta)} />
-        <Field label="픽업 약속" value={fmt(deliveryOrder.pickupAppointment)} />
+      <Section title={t("deliveryOrder.section.schedule")}>
+        <Field label={t("deliveryOrder.field.eta")} value={fmt(deliveryOrder.eta)} />
+        <Field label={t("deliveryOrder.field.pickupAppointmentLong")} value={fmt(deliveryOrder.pickupAppointment)} />
         <Field
-          label="배송 약속"
+          label={t("deliveryOrder.field.deliveryAppointmentLong")}
           value={fmt(deliveryOrder.deliveryAppointment)}
         />
-        <Field label="반납 약속" value={fmt(deliveryOrder.returnAppointment)} />
-        <Field label="Demurrage LFD" value={fmtDate(deliveryOrder.demurrageLfd)} />
-        <Field label="Detention LFD" value={fmtDate(deliveryOrder.detentionLfd)} />
-        <Field label="Empty 일자" value={fmtDate(deliveryOrder.emptyDate)} />
-        <Field label="Loaded 일자" value={fmtDate(deliveryOrder.loadedDate)} />
+        <Field label={t("deliveryOrder.field.returnAppointmentLong")} value={fmt(deliveryOrder.returnAppointment)} />
+        <Field label={t("deliveryOrder.field.demurrageLfd")} value={fmtDate(deliveryOrder.demurrageLfd)} />
+        <Field label={t("deliveryOrder.field.detentionLfd")} value={fmtDate(deliveryOrder.detentionLfd)} />
+        <Field label={t("deliveryOrder.field.emptyDate")} value={fmtDate(deliveryOrder.emptyDate)} />
+        <Field label={t("deliveryOrder.field.loadedDate")} value={fmtDate(deliveryOrder.loadedDate)} />
       </Section>
 
-      <Section title="게이트 조건">
-        <GateRow label="B/L Released" checked={deliveryOrder.blReleased} />
-        <GateRow label="Pier Pass Paid" checked={deliveryOrder.pierPassPaid} />
-        <GateRow label="Customs Cleared" checked={deliveryOrder.customsCleared} />
+      <Section title={t("deliveryOrder.section.gatesCondition")}>
+        <GateRow label={t("deliveryOrder.gates.blReleased")} checked={deliveryOrder.blReleased} dash={dash} />
+        <GateRow label={t("deliveryOrder.gates.pierPassPaid")} checked={deliveryOrder.pierPassPaid} dash={dash} />
+        <GateRow label={t("deliveryOrder.gates.customsCleared")} checked={deliveryOrder.customsCleared} dash={dash} />
       </Section>
 
-      <Section title="메타">
-        <Field label="터미널" value={terminalName} />
-        <Field label="본선" value={vesselName} />
-        <Field label="배송 장소" value={deliveryLocationName} />
-        <Field label="반납 장소" value={returnLocationName} />
+      <Section title={t("deliveryOrder.section.meta")}>
+        <Field label={t("deliveryOrder.field.terminal")} value={terminalName} />
+        <Field label={t("deliveryOrder.field.vessel")} value={vesselName} />
+        <Field label={t("deliveryOrder.field.deliveryLocation")} value={deliveryLocationName} />
+        <Field label={t("deliveryOrder.field.returnLocation")} value={returnLocationName} />
       </Section>
 
-      <Section title="Leg Timeline">
+      <Section title={t("deliveryOrder.section.legTimeline")}>
         <LegTimeline deliveryOrderId={deliveryOrder.id} />
       </Section>
 
-      <Section title="메모">
+      <Section title={t("deliveryOrder.section.note")}>
         <p className="whitespace-pre-wrap text-sm text-foreground/80">
-          {deliveryOrder.internalNote ?? "—"}
+          {deliveryOrder.internalNote ?? dash}
         </p>
       </Section>
     </div>
@@ -142,12 +147,20 @@ function Field({
   );
 }
 
-function GateRow({ label, checked }: { label: string; checked: boolean }) {
+function GateRow({
+  label,
+  checked,
+  dash,
+}: {
+  label: string;
+  checked: boolean;
+  dash: string;
+}) {
   return (
     <div className="flex items-center justify-between text-sm">
       <span>{label}</span>
       <span className={checked ? "text-green-600" : "text-muted-foreground"}>
-        {checked ? "✓" : "—"}
+        {checked ? "✓" : dash}
       </span>
     </div>
   );

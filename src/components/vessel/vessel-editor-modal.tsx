@@ -1,6 +1,7 @@
 // Vessel 생성 / 수정 모달.
 // modal.isOpen 이 true 일 때만 Body 마운트 + key 로 type/id 변경 시 자동 리셋.
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -41,6 +42,7 @@ export default function VesselEditorModal() {
 }
 
 function Body({ modal }: { modal: OpenModal }) {
+  const { t } = useTranslation();
   const [name, setName] = useState(
     modal.type === "CREATE" ? "" : modal.vessel.name,
   );
@@ -56,7 +58,7 @@ function Body({ modal }: { modal: OpenModal }) {
 
   const { mutate: createVessel, isPending: isCreatePending } = useCreateVessel({
     onSuccess: () => {
-      toast.success("선박이 생성되었습니다.", { position: "top-center" });
+      toast.success(t("toast.created"), { position: "top-center" });
       modal.actions.close();
     },
     onError: (err) =>
@@ -65,7 +67,7 @@ function Body({ modal }: { modal: OpenModal }) {
 
   const { mutate: updateVessel, isPending: isUpdatePending } = useUpdateVessel({
     onSuccess: () => {
-      toast.success("선박이 수정되었습니다.", { position: "top-center" });
+      toast.success(t("toast.updated"), { position: "top-center" });
       modal.actions.close();
     },
     onError: (err) =>
@@ -93,11 +95,11 @@ function Body({ modal }: { modal: OpenModal }) {
     <>
       <DialogHeader>
         <DialogTitle className="font-sans">
-          {modal.type === "CREATE" ? "선박 생성" : "선박 수정"}
+          {t(modal.type === "CREATE" ? "vessel.createTitle" : "vessel.editTitle")}
         </DialogTitle>
       </DialogHeader>
       <div className="flex flex-col gap-3">
-        <Field label="이름" required>
+        <Field label={t("field.name")} required>
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -105,7 +107,7 @@ function Body({ modal }: { modal: OpenModal }) {
             placeholder="OOCL Hong Kong"
           />
         </Field>
-        <Field label="IMO 번호">
+        <Field label={t("vessel.field.imoNumber")}>
           <Input
             value={imoNumber}
             onChange={(e) => setImoNumber(e.target.value)}
@@ -114,7 +116,7 @@ function Body({ modal }: { modal: OpenModal }) {
             maxLength={16}
           />
         </Field>
-        <Field label="선사">
+        <Field label={t("vessel.field.line")}>
           <Input
             value={line}
             onChange={(e) => setLine(e.target.value)}
@@ -122,7 +124,7 @@ function Body({ modal }: { modal: OpenModal }) {
             placeholder="OOCL"
           />
         </Field>
-        <Field label="메모">
+        <Field label={t("field.note")}>
           <Input
             value={note}
             onChange={(e) => setNote(e.target.value)}
@@ -136,10 +138,10 @@ function Body({ modal }: { modal: OpenModal }) {
           onClick={() => modal.actions.close()}
           disabled={isPending}
         >
-          취소
+          {t("common.cancel")}
         </Button>
         <Button onClick={handleSave} disabled={isPending || !name.trim()}>
-          저장
+          {t("common.save")}
         </Button>
       </div>
     </>

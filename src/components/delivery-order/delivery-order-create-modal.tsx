@@ -1,6 +1,7 @@
 // 새 D/O 생성 — 풀스크린 (max-w-3xl) 모달.
 // 필드 그룹 (기본/일정/게이트/메타/메모) + container_number 패턴 검증.
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { fetchCustomers } from "@/api/customer";
@@ -72,6 +73,7 @@ const dateToInput = (s: string | null | undefined): string =>
 const ALLOWED_SIZES: ContainerSize[] = ["20GP", "40GP", "40HC", "40OT", "45HC", "20RF", "40RF"];
 
 function Body({ modal }: { modal: Modal }) {
+  const { t } = useTranslation();
   // AI Intake prefill — modal.prefill 이 있으면 초기값으로 사용. 없으면 빈값.
   const p = modal.prefill ?? null;
   const initContainerSize = ((): ContainerSize | "" => {
@@ -111,7 +113,7 @@ function Body({ modal }: { modal: Modal }) {
 
   const { mutate: createDo, isPending } = useCreateDeliveryOrder({
     onSuccess: () => {
-      toast.success("D/O 가 생성되었습니다.", { position: "top-center" });
+      toast.success(t("deliveryOrder.createSuccess"), { position: "top-center" });
       modal.actions.close();
     },
     onError: (err) =>
@@ -128,14 +130,15 @@ function Body({ modal }: { modal: Modal }) {
 
   const handleSave = () => {
     if (!customerId) {
-      toast.error("고객사를 선택하세요.", { position: "top-center" });
+      toast.error(t("deliveryOrder.validation.customerRequired"), {
+        position: "top-center",
+      });
       return;
     }
     if (containerInvalid) {
-      toast.error(
-        "컨테이너 번호 형식이 올바르지 않습니다 (예: ABCD1234567).",
-        { position: "top-center" },
-      );
+      toast.error(t("deliveryOrder.validation.containerInvalid"), {
+        position: "top-center",
+      });
       return;
     }
     createDo({
@@ -165,12 +168,14 @@ function Body({ modal }: { modal: Modal }) {
   return (
     <>
       <DialogHeader>
-        <DialogTitle className="font-sans">새 D/O 생성</DialogTitle>
+        <DialogTitle className="font-sans">
+          {t("deliveryOrder.createTitleNew")}
+        </DialogTitle>
       </DialogHeader>
 
-      <Section title="기본">
+      <Section title={t("deliveryOrder.section.basic")}>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="방향" required>
+          <Field label={t("deliveryOrder.field.direction")} required>
             <select
               value={direction}
               onChange={(e) =>
@@ -183,7 +188,7 @@ function Body({ modal }: { modal: Modal }) {
               <option value="EXPORT">EXPORT</option>
             </select>
           </Field>
-          <Field label="고객사" required>
+          <Field label={t("deliveryOrder.field.customer")} required>
             <SearchableSelect<CustomerEntity>
               value={customerId}
               onSelect={(id) => setCustomerId(id)}
@@ -192,25 +197,25 @@ function Body({ modal }: { modal: Modal }) {
               }
               queryKeyBase={["customer", "search"]}
               getLabel={(c) => `${c.name}${c.code ? ` (${c.code})` : ""}`}
-              placeholder="고객사 선택"
+              placeholder={t("deliveryOrder.customerPlaceholder")}
               disabled={isPending}
             />
           </Field>
-          <Field label="B/L 번호">
+          <Field label={t("deliveryOrder.field.blNumber")}>
             <Input
               value={blNumber}
               onChange={(e) => setBlNumber(e.target.value)}
               disabled={isPending}
             />
           </Field>
-          <Field label="Booking 번호">
+          <Field label={t("deliveryOrder.field.bookingNumber")}>
             <Input
               value={bookingNumber}
               onChange={(e) => setBookingNumber(e.target.value)}
               disabled={isPending}
             />
           </Field>
-          <Field label="Reference">
+          <Field label={t("deliveryOrder.field.reference")}>
             <Input
               value={reference}
               onChange={(e) => setReference(e.target.value)}
@@ -220,23 +225,23 @@ function Body({ modal }: { modal: Modal }) {
         </div>
       </Section>
 
-      <Section title="컨테이너">
+      <Section title={t("deliveryOrder.section.container")}>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="컨테이너 번호 (^[A-Z]{4}\\d{7}$)">
+          <Field label={t("deliveryOrder.field.containerNumberWithPattern")}>
             <Input
               value={containerNumber}
               onChange={(e) => setContainerNumber(e.target.value)}
               disabled={isPending}
-              placeholder="MSCU1234567"
+              placeholder={t("deliveryOrder.containerPlaceholder")}
               className={containerInvalid ? "border-destructive" : undefined}
             />
             {containerInvalid && (
               <span className="text-xs text-destructive">
-                형식이 올바르지 않습니다.
+                {t("deliveryOrder.containerInvalidShort")}
               </span>
             )}
           </Field>
-          <Field label="사이즈">
+          <Field label={t("deliveryOrder.field.containerSize")}>
             <select
               value={containerSize}
               onChange={(e) =>
@@ -245,7 +250,7 @@ function Body({ modal }: { modal: Modal }) {
               disabled={isPending}
               className="rounded-md border bg-background px-3 py-2 text-sm"
             >
-              <option value="">—</option>
+              <option value="">{t("common.none")}</option>
               {SIZES.map((s) => (
                 <option key={s} value={s}>
                   {s}
@@ -253,15 +258,15 @@ function Body({ modal }: { modal: Modal }) {
               ))}
             </select>
           </Field>
-          <Field label="타입">
+          <Field label={t("deliveryOrder.field.containerType")}>
             <Input
               value={containerType}
               onChange={(e) => setContainerType(e.target.value)}
               disabled={isPending}
-              placeholder="DRY / RF / OT 등"
+              placeholder={t("deliveryOrder.containerTypePlaceholder")}
             />
           </Field>
-          <Field label="섀시">
+          <Field label={t("deliveryOrder.field.chassisNumber")}>
             <Input
               value={chassisNumber}
               onChange={(e) => setChassisNumber(e.target.value)}
@@ -271,9 +276,9 @@ function Body({ modal }: { modal: Modal }) {
         </div>
       </Section>
 
-      <Section title="메타">
+      <Section title={t("deliveryOrder.section.meta")}>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="터미널">
+          <Field label={t("deliveryOrder.field.terminal")}>
             <SearchableSelect<TerminalEntity>
               value={terminalId}
               onSelect={(id) => setTerminalId(id)}
@@ -281,13 +286,13 @@ function Body({ modal }: { modal: Modal }) {
                 fetchTerminals({ q, size: SEARCH_SIZE }).then((r) => r.items)
               }
               queryKeyBase={["terminal", "search"]}
-              getLabel={(t) => t.name}
-              placeholder="—"
-              emptyLabel="— 선택 안함 —"
+              getLabel={(term) => term.name}
+              placeholder={t("common.none")}
+              emptyLabel={t("common.noSelection")}
               disabled={isPending}
             />
           </Field>
-          <Field label="본선">
+          <Field label={t("deliveryOrder.field.vessel")}>
             <SearchableSelect<VesselEntity>
               value={vesselId}
               onSelect={(id) => setVesselId(id)}
@@ -296,12 +301,12 @@ function Body({ modal }: { modal: Modal }) {
               }
               queryKeyBase={["vessel", "search"]}
               getLabel={(v) => v.name}
-              placeholder="—"
-              emptyLabel="— 선택 안함 —"
+              placeholder={t("common.none")}
+              emptyLabel={t("common.noSelection")}
               disabled={isPending}
             />
           </Field>
-          <Field label="배송 장소">
+          <Field label={t("deliveryOrder.field.deliveryLocation")}>
             <SearchableSelect<LocationEntity>
               value={deliveryLocationId}
               onSelect={(id) => setDeliveryLocationId(id)}
@@ -310,12 +315,12 @@ function Body({ modal }: { modal: Modal }) {
               }
               queryKeyBase={["location", "search"]}
               getLabel={(l) => `${l.name} (${l.kind})`}
-              placeholder="—"
-              emptyLabel="— 선택 안함 —"
+              placeholder={t("common.none")}
+              emptyLabel={t("common.noSelection")}
               disabled={isPending}
             />
           </Field>
-          <Field label="반납 장소">
+          <Field label={t("deliveryOrder.field.returnLocation")}>
             <SearchableSelect<LocationEntity>
               value={returnLocationId}
               onSelect={(id) => setReturnLocationId(id)}
@@ -324,17 +329,17 @@ function Body({ modal }: { modal: Modal }) {
               }
               queryKeyBase={["location", "search"]}
               getLabel={(l) => `${l.name} (${l.kind})`}
-              placeholder="—"
-              emptyLabel="— 선택 안함 —"
+              placeholder={t("common.none")}
+              emptyLabel={t("common.noSelection")}
               disabled={isPending}
             />
           </Field>
         </div>
       </Section>
 
-      <Section title="일정">
+      <Section title={t("deliveryOrder.section.schedule")}>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="ETA">
+          <Field label={t("deliveryOrder.field.eta")}>
             <Input
               type="datetime-local"
               value={eta}
@@ -342,7 +347,7 @@ function Body({ modal }: { modal: Modal }) {
               disabled={isPending}
             />
           </Field>
-          <Field label="픽업 약속">
+          <Field label={t("deliveryOrder.field.pickupAppointmentLong")}>
             <Input
               type="datetime-local"
               value={pickupAppointment}
@@ -350,7 +355,7 @@ function Body({ modal }: { modal: Modal }) {
               disabled={isPending}
             />
           </Field>
-          <Field label="배송 약속">
+          <Field label={t("deliveryOrder.field.deliveryAppointmentLong")}>
             <Input
               type="datetime-local"
               value={deliveryAppointment}
@@ -358,7 +363,7 @@ function Body({ modal }: { modal: Modal }) {
               disabled={isPending}
             />
           </Field>
-          <Field label="반납 약속">
+          <Field label={t("deliveryOrder.field.returnAppointmentLong")}>
             <Input
               type="datetime-local"
               value={returnAppointment}
@@ -366,7 +371,7 @@ function Body({ modal }: { modal: Modal }) {
               disabled={isPending}
             />
           </Field>
-          <Field label="Demurrage LFD">
+          <Field label={t("deliveryOrder.field.demurrageLfd")}>
             <Input
               type="date"
               value={demurrageLfd}
@@ -374,7 +379,7 @@ function Body({ modal }: { modal: Modal }) {
               disabled={isPending}
             />
           </Field>
-          <Field label="Detention LFD">
+          <Field label={t("deliveryOrder.field.detentionLfd")}>
             <Input
               type="date"
               value={detentionLfd}
@@ -385,7 +390,7 @@ function Body({ modal }: { modal: Modal }) {
         </div>
       </Section>
 
-      <Section title="메모">
+      <Section title={t("field.note")}>
         <Input
           value={internalNote}
           onChange={(e) => setInternalNote(e.target.value)}
@@ -399,13 +404,13 @@ function Body({ modal }: { modal: Modal }) {
           onClick={() => modal.actions.close()}
           disabled={isPending}
         >
-          취소
+          {t("common.cancel")}
         </Button>
         <Button
           onClick={handleSave}
           disabled={isPending || !customerId || containerInvalid}
         >
-          {isPending ? "생성중..." : "생성"}
+          {isPending ? t("deliveryOrder.creating") : t("common.create")}
         </Button>
       </div>
     </>

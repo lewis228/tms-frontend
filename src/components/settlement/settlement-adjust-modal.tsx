@@ -1,5 +1,6 @@
 // CALCULATED/ADJUSTED → ADJUSTED. note 필수, has_flag 자동/수동, extras 재정의.
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,7 @@ type SettlementData = NonNullable<
 >;
 
 export default function SettlementAdjustModal() {
+  const { t } = useTranslation();
   const modal = useAdjustSettlementModal();
   const { data: settlement } = useSettlementByIdData(
     modal.isOpen ? modal.settlementId : null,
@@ -42,7 +44,9 @@ export default function SettlementAdjustModal() {
     >
       <DialogContent className="!max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="font-sans">Adjust Settlement</DialogTitle>
+          <DialogTitle className="font-sans">
+            {t("settlement.adjust.title")}
+          </DialogTitle>
         </DialogHeader>
         {ready ? (
           <Body
@@ -53,7 +57,7 @@ export default function SettlementAdjustModal() {
           />
         ) : modal.isOpen ? (
           <div className="py-8 text-center text-sm text-muted-foreground">
-            로딩 중...
+            {t("common.loading")}
           </div>
         ) : null}
       </DialogContent>
@@ -70,6 +74,7 @@ function Body({
   settlement: SettlementData;
   extras: ExtraChargeEntity[];
 }) {
+  const { t } = useTranslation();
   const [finalAmount, setFinalAmount] = useState(
     settlement.finalAmount ?? settlement.systemTotal ?? "",
   );
@@ -98,7 +103,7 @@ function Body({
 
   const { mutate, isPending } = useAdjustSettlement({
     onSuccess: () => {
-      toast.success("Settlement 가 조정되었습니다.", {
+      toast.success(t("settlement.adjust.success"), {
         position: "top-center",
       });
       modal.actions.close();
@@ -109,7 +114,7 @@ function Body({
 
   const handleSave = () => {
     if (!note.trim()) {
-      toast.error("조정 사유 (note) 를 입력하세요.", {
+      toast.error(t("settlement.adjust.noteRequired"), {
         position: "top-center",
       });
       return;
@@ -131,7 +136,7 @@ function Body({
       <div className="grid grid-cols-2 gap-3">
         <div className="flex flex-col gap-1">
           <label className="text-xs text-muted-foreground">
-            System Total (참조)
+            {t("settlement.adjust.systemTotalRef")}
           </label>
           <Input
             value={settlement.systemTotal ?? ""}
@@ -140,7 +145,9 @@ function Body({
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-xs text-muted-foreground">Final Amount</label>
+          <label className="text-xs text-muted-foreground">
+            {t("settlement.detail.finalAmountLabel")}
+          </label>
           <Input
             type="number"
             step="0.01"
@@ -152,7 +159,7 @@ function Body({
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-xs text-muted-foreground">
-            Driver Reported
+            {t("settlement.detail.driverReportedLabel")}
           </label>
           <Input
             type="number"
@@ -165,7 +172,7 @@ function Body({
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-xs text-muted-foreground">
-            Discrepancy (자동)
+            {t("settlement.adjust.discrepancyAuto")}
           </label>
           <Input
             value={discrepancy === null ? "" : discrepancy.toFixed(2)}
@@ -189,10 +196,10 @@ function Body({
           disabled={isPending}
         />
         <label htmlFor="hasFlag" className="flex-1">
-          Has Flag
+          {t("settlement.field.hasFlag")}
           {recommendedFlag && hasFlagOverride === null && (
             <span className="ml-2 text-xs text-amber-600">
-              (discrepancy ≠ 0 — 자동 추천됨)
+              {t("settlement.adjust.flagRecommended")}
             </span>
           )}
         </label>
@@ -200,13 +207,14 @@ function Body({
 
       <div className="flex flex-col gap-1">
         <label className="text-xs text-muted-foreground">
-          Note <span className="text-destructive">*</span>
+          {t("settlement.detail.noteField")}{" "}
+          <span className="text-destructive">*</span>
         </label>
         <Input
           value={note}
           onChange={(e) => setNote(e.target.value)}
           disabled={isPending}
-          placeholder="조정 사유"
+          placeholder={t("settlement.adjust.notePlaceholder")}
         />
       </div>
 
@@ -218,10 +226,12 @@ function Body({
           onClick={() => modal.actions.close()}
           disabled={isPending}
         >
-          취소
+          {t("common.cancel")}
         </Button>
         <Button onClick={handleSave} disabled={isPending || !note.trim()}>
-          {isPending ? "조정중..." : "조정"}
+          {isPending
+            ? t("settlement.adjust.submitting")
+            : t("settlement.adjust.submit")}
         </Button>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -25,13 +26,17 @@ import {
 import type { LocationEntity } from "@/types";
 
 export default function LocationList() {
+  const { t } = useTranslation();
   const [page, setPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    const t = setTimeout(() => setSearch(searchInput.trim().toLowerCase()), 300);
-    return () => clearTimeout(t);
+    const timeoutId = setTimeout(
+      () => setSearch(searchInput.trim().toLowerCase()),
+      300,
+    );
+    return () => clearTimeout(timeoutId);
   }, [searchInput]);
 
   const { data, isPending, error } = useLocationsData(page);
@@ -48,7 +53,7 @@ export default function LocationList() {
 
   const { mutate: deleteLocation } = useDeleteLocation({
     onSuccess: () =>
-      toast.success("장소가 삭제되었습니다.", { position: "top-center" }),
+      toast.success(t("toast.deleted"), { position: "top-center" }),
     onError: (err) =>
       toast.error(generateErrorMessage(err), { position: "top-center" }),
   });
@@ -69,8 +74,8 @@ export default function LocationList() {
 
   const handleDelete = (v: LocationEntity) => {
     openAlert({
-      title: "장소를 삭제하시겠습니까?",
-      description: `'${v.name}' 을(를) 삭제합니다. 복구할 수 없습니다.`,
+      title: t("location.deletePromptTitle", { name: v.name }),
+      description: t("location.deletePromptDesc"),
       onPositive: () => deleteLocation(v.id),
     });
   };
@@ -79,24 +84,24 @@ export default function LocationList() {
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between gap-2">
         <Input
-          placeholder="이름 / 종류 / 주소 검색"
+          placeholder={t("location.searchPlaceholder")}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           className="max-w-sm"
         />
-        <Button onClick={() => openCreate()}>새 장소</Button>
+        <Button onClick={() => openCreate()}>{t("location.newButton")}</Button>
       </div>
 
       <div className="rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>이름</TableHead>
-              <TableHead>종류</TableHead>
-              <TableHead>고객사</TableHead>
-              <TableHead>주소</TableHead>
-              <TableHead>위/경도</TableHead>
-              <TableHead className="text-right">동작</TableHead>
+              <TableHead>{t("field.name")}</TableHead>
+              <TableHead>{t("location.field.kind")}</TableHead>
+              <TableHead>{t("location.field.customer")}</TableHead>
+              <TableHead>{t("field.address")}</TableHead>
+              <TableHead>{t("location.field.latLng")}</TableHead>
+              <TableHead className="text-right">{t("common.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -106,7 +111,7 @@ export default function LocationList() {
                   colSpan={6}
                   className="text-center text-muted-foreground"
                 >
-                  데이터가 없습니다.
+                  {t("common.noData")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -133,7 +138,7 @@ export default function LocationList() {
                       size="sm"
                       onClick={() => openEdit(v)}
                     >
-                      수정
+                      {t("common.edit")}
                     </Button>
                     <Button
                       variant="ghost"
@@ -141,7 +146,7 @@ export default function LocationList() {
                       className="ml-2 text-destructive"
                       onClick={() => handleDelete(v)}
                     >
-                      삭제
+                      {t("common.delete")}
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -153,7 +158,8 @@ export default function LocationList() {
 
       <div className="flex items-center justify-between text-sm">
         <span className="text-muted-foreground">
-          전체 {data.total}건 · {data.page}/{Math.max(1, data.pages)} 페이지
+          {t("common.totalCount", { count: data.total })} ·{" "}
+          {t("common.pageOf", { page: data.page, pages: Math.max(1, data.pages) })}
         </span>
         <div className="flex gap-2">
           <Button
@@ -162,7 +168,7 @@ export default function LocationList() {
             disabled={page <= 1}
             onClick={() => setPage((p) => Math.max(1, p - 1))}
           >
-            이전
+            {t("common.previous")}
           </Button>
           <Button
             variant="outline"
@@ -170,7 +176,7 @@ export default function LocationList() {
             disabled={page >= data.pages}
             onClick={() => setPage((p) => p + 1)}
           >
-            다음
+            {t("common.next")}
           </Button>
         </div>
       </div>

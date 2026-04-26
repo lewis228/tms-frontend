@@ -3,6 +3,7 @@
 //       성공 시 임시비번 모달 띄움.
 // 수정: email 은 readonly (User 와 분리). name/phone/license/truck/note 만.
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -44,6 +45,7 @@ export default function DriverEditorModal() {
 }
 
 function Body({ modal }: { modal: OpenModal }) {
+  const { t } = useTranslation();
   const openTempPwModal = useOpenDriverTempPasswordModal();
 
   const [email, setEmail] = useState(
@@ -84,7 +86,7 @@ function Body({ modal }: { modal: OpenModal }) {
 
   const { mutate: updateDriver, isPending: isUpdatePending } = useUpdateDriver({
     onSuccess: () => {
-      toast.success("기사 정보가 수정되었습니다.", { position: "top-center" });
+      toast.success(t("driver.toast.updated"), { position: "top-center" });
       modal.actions.close();
     },
     onError: (err) =>
@@ -125,44 +127,46 @@ function Body({ modal }: { modal: OpenModal }) {
     <>
       <DialogHeader>
         <DialogTitle className="font-sans">
-          {modal.type === "CREATE" ? "기사 생성" : "기사 수정"}
+          {modal.type === "CREATE"
+            ? t("driver.createTitle")
+            : t("driver.editTitle")}
         </DialogTitle>
       </DialogHeader>
       <div className="flex flex-col gap-3">
-        <Field label="이메일" required>
+        <Field label={t("field.email")} required>
           <Input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={isPending || modal.type === "EDIT"}
-            placeholder="driver@example.com"
+            placeholder={t("driver.emailPlaceholder")}
           />
         </Field>
-        <Field label="이름" required>
+        <Field label={t("field.name")} required>
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
             disabled={isPending}
-            placeholder="홍길동"
+            placeholder={t("driver.namePlaceholder")}
           />
         </Field>
-        <Field label="전화">
+        <Field label={t("field.phone")}>
           <Input
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             disabled={isPending}
-            placeholder="+1 213 555 0100"
+            placeholder={t("driver.phonePlaceholder")}
           />
         </Field>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="면허 번호">
+          <Field label={t("driver.field.licenseNumber")}>
             <Input
               value={licenseNumber}
               onChange={(e) => setLicenseNumber(e.target.value)}
               disabled={isPending}
             />
           </Field>
-          <Field label="면허 주">
+          <Field label={t("driver.field.licenseState")}>
             <Input
               value={licenseState}
               onChange={(e) => setLicenseState(e.target.value)}
@@ -172,14 +176,14 @@ function Body({ modal }: { modal: OpenModal }) {
             />
           </Field>
         </div>
-        <Field label="차량 번호">
+        <Field label={t("driver.field.truckNumber")}>
           <Input
             value={truckNumber}
             onChange={(e) => setTruckNumber(e.target.value)}
             disabled={isPending}
           />
         </Field>
-        <Field label="메모">
+        <Field label={t("field.note")}>
           <Input
             value={note}
             onChange={(e) => setNote(e.target.value)}
@@ -190,8 +194,7 @@ function Body({ modal }: { modal: OpenModal }) {
 
       {modal.type === "CREATE" && (
         <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">
-          ⚠️ 생성 후 1회만 노출되는 <b>임시 비밀번호</b>가 발급됩니다. 닫기 전에
-          반드시 안전하게 저장하세요.
+          {t("driver.tempPasswordWarning")}
         </div>
       )}
 
@@ -201,7 +204,7 @@ function Body({ modal }: { modal: OpenModal }) {
           onClick={() => modal.actions.close()}
           disabled={isPending}
         >
-          취소
+          {t("common.cancel")}
         </Button>
         <Button
           onClick={handleSave}
@@ -211,7 +214,7 @@ function Body({ modal }: { modal: OpenModal }) {
             (modal.type === "CREATE" && !email.trim())
           }
         >
-          저장
+          {t("common.save")}
         </Button>
       </div>
     </>

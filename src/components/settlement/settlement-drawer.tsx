@@ -1,4 +1,5 @@
 // Settlement Right Drawer — URL ?settlement=:id 동기화.
+import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
 import {
@@ -13,6 +14,7 @@ import SettlementDetail from "@/components/settlement/settlement-detail";
 import { useSettlementByIdData } from "@/hooks/queries/use-settlement-by-id-data";
 
 export default function SettlementDrawer() {
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const idStr = searchParams.get("settlement");
   const id = idStr ? Number(idStr) : null;
@@ -32,7 +34,9 @@ export default function SettlementDrawer() {
       <SheetContent className="!max-w-2xl !w-full overflow-y-auto sm:!max-w-2xl">
         <SheetHeader>
           <SheetTitle className="font-sans">
-            {data ? `Settlement ${String(data.id).slice(0, 8)}` : "Settlement"}
+            {data
+              ? `${t("settlement.drawer.title")} ${String(data.id).slice(0, 8)}`
+              : t("settlement.drawer.title")}
           </SheetTitle>
         </SheetHeader>
         <div className="px-4 pb-6">

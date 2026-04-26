@@ -31,7 +31,8 @@
     "saving": "저장 중...",
     "deleting": "삭제 중...",
     "creating": "생성 중...",
-    "loadFailed": "데이터를 불러오지 못했습니다."
+    "loadFailed": "데이터를 불러오지 못했습니다.",
+    "pageOf": "{{page}}/{{pages}} 페이지"
   },
   "toast": {
     "saved": "저장되었습니다.",
@@ -139,7 +140,8 @@
       "customerCode": "코드",
       "driverEmail": "이메일",
       "driverName": "이름",
-      "driverPhone": "전화"
+      "driverPhone": "전화",
+      "driverNamePlaceholder": "홍길동"
     },
     "validation": {
       "companyNameRequired": "회사명을 입력하세요.",
@@ -179,6 +181,7 @@
     "editTitle": "고객사 수정",
     "deletePromptTitle": "'{{name}}' 고객사를 삭제하시겠습니까?",
     "deletePromptDesc": "복구할 수 없습니다.",
+    "searchPlaceholder": "이름 / 코드 / 담당자 검색",
     "field": {
       "billingAddress": "청구 주소",
       "contactName": "담당자",
@@ -196,9 +199,12 @@
     "editTitle": "터미널 수정",
     "deletePromptTitle": "'{{name}}' 터미널을 삭제하시겠습니까?",
     "deletePromptDesc": "복구할 수 없습니다.",
+    "searchPlaceholder": "이름 / 코드 / 주소 검색",
     "field": {
       "latitude": "위도",
-      "longitude": "경도"
+      "longitude": "경도",
+      "codeLabel": "코드 (UN/LOCODE 등)",
+      "latLng": "위/경도"
     },
     "validation": {
       "nameRequired": "이름을 입력하세요."
@@ -211,6 +217,7 @@
     "editTitle": "본선 수정",
     "deletePromptTitle": "'{{name}}' 본선을 삭제하시겠습니까?",
     "deletePromptDesc": "복구할 수 없습니다.",
+    "searchPlaceholder": "이름 / IMO / 선사 검색",
     "field": {
       "imoNumber": "IMO 번호",
       "line": "선사"
@@ -226,11 +233,14 @@
     "editTitle": "장소 수정",
     "deletePromptTitle": "'{{name}}' 장소를 삭제하시겠습니까?",
     "deletePromptDesc": "복구할 수 없습니다.",
+    "searchPlaceholder": "이름 / 종류 / 주소 검색",
     "field": {
       "kind": "종류",
       "latitude": "위도",
       "longitude": "경도",
-      "customer": "고객사"
+      "customer": "고객사",
+      "customerLabel": "고객사 (kind=CUSTOMER 인 경우 필수)",
+      "latLng": "위/경도"
     },
     "validation": {
       "nameRequired": "이름을 입력하세요.",
@@ -244,6 +254,12 @@
     "editTitle": "기사 수정",
     "deletePromptTitle": "'{{name}}' 기사를 삭제하시겠습니까?",
     "deletePromptDesc": "복구할 수 없습니다.",
+    "deleteUserDeactivateDesc": "'{{name}}' 을(를) 삭제합니다. User 계정도 함께 비활성화됩니다.",
+    "searchPlaceholder": "이름 / 이메일 / 면허 / 차량 검색",
+    "emailPlaceholder": "driver@example.com",
+    "namePlaceholder": "홍길동",
+    "phonePlaceholder": "+1 213 555 0100",
+    "tempPasswordWarning": "⚠️ 생성 후 1회만 노출되는 임시 비밀번호가 발급됩니다. 닫기 전에 반드시 안전하게 저장하세요.",
     "field": {
       "licenseNumber": "면허 번호",
       "licenseState": "면허 주",
@@ -253,7 +269,20 @@
       "title": "기사 가입 완료",
       "description": "임시 비밀번호를 기사에게 전달하세요. 첫 로그인 시 변경하게 됩니다.",
       "label": "임시 비밀번호",
-      "copy": "복사"
+      "copy": "복사",
+      "copied": "복사됨",
+      "modalTitle": "임시 비밀번호 발급 (1회 노출)",
+      "warning": "⚠️ 이 화면을 닫으면 다시 볼 수 없습니다. 기사에게 안전한 채널로 전달하고 첫 로그인 시 변경하도록 안내하세요.",
+      "driverLabel": "기사:",
+      "closeButton": "저장 완료, 닫기",
+      "confirmCloseTitle": "이 비밀번호를 어디에 저장하셨습니까?",
+      "confirmCloseDesc": "이 창을 닫으면 임시 비밀번호를 다시 볼 수 없습니다. 안전한 곳에 저장하셨다면 확인을 누르세요.",
+      "copyToastSuccess": "임시 비밀번호가 복사되었습니다.",
+      "copyToastFail": "복사에 실패했습니다. 수동으로 선택해 복사해 주세요."
+    },
+    "toast": {
+      "updated": "기사 정보가 수정되었습니다.",
+      "deleted": "기사가 삭제되었습니다."
     },
     "validation": {
       "emailRequired": "이메일을 입력하세요.",
@@ -300,15 +329,27 @@
     "newButton": "새 D/O",
     "aiCreateButton": "AI 로 등록",
     "createTitle": "D/O 생성",
+    "createTitleNew": "새 D/O 생성",
+    "creating": "생성중...",
+    "createSuccess": "D/O 가 생성되었습니다.",
     "searchPlaceholder": "컨테이너 / B/L / Booking / Reference",
     "viewDetail": "상세 →",
     "backToList": "목록",
+    "containerInvalidShort": "형식이 올바르지 않습니다.",
+    "containerPlaceholder": "MSCU1234567",
+    "containerTypePlaceholder": "DRY / RF / OT 등",
+    "customerPlaceholder": "고객사 선택",
     "section": {
       "basic": "기본",
       "container": "컨테이너",
       "meta": "메타",
       "schedule": "일정",
-      "gates": "게이트"
+      "gates": "게이트",
+      "status": "상태",
+      "basicInfo": "기본 정보",
+      "gatesCondition": "게이트 조건",
+      "legTimeline": "Leg Timeline",
+      "note": "메모"
     },
     "field": {
       "direction": "방향",
@@ -317,6 +358,7 @@
       "bookingNumber": "Booking 번호",
       "reference": "Reference",
       "containerNumber": "컨테이너 번호",
+      "containerNumberWithPattern": "컨테이너 번호 (^[A-Z]{4}\\d{7}$)",
       "containerSize": "사이즈",
       "containerType": "타입",
       "chassisNumber": "섀시",
@@ -328,9 +370,18 @@
       "pickupAppointment": "Pickup",
       "deliveryAppointment": "Delivery",
       "returnAppointment": "Return",
+      "pickupAppointmentLong": "픽업 약속",
+      "deliveryAppointmentLong": "배송 약속",
+      "returnAppointmentLong": "반납 약속",
       "demurrageLfd": "Demurrage LFD",
       "detentionLfd": "Detention LFD",
-      "internalNote": "내부 메모"
+      "internalNote": "내부 메모",
+      "booking": "Booking",
+      "container": "컨테이너",
+      "containerSizeLong": "컨테이너 사이즈",
+      "containerTypeLong": "컨테이너 타입",
+      "emptyDate": "Empty 일자",
+      "loadedDate": "Loaded 일자"
     },
     "validation": {
       "customerRequired": "고객사를 선택하세요.",
@@ -347,6 +398,12 @@
     },
     "drawer": {
       "title": "D/O"
+    },
+    "directionPrefix": "방향:",
+    "gates": {
+      "blReleased": "B/L Released",
+      "pierPassPaid": "Pier Pass Paid",
+      "customsCleared": "Customs Cleared"
     }
   },
   "leg": {
@@ -367,6 +424,42 @@
       "deliveryDate": "배송 시각",
       "note": "메모"
     },
+    "driverPlaceholder": "— 미지정 —",
+    "locationPlaceholder": "—",
+    "locationEmpty": "— 선택 안함 —",
+    "toast": {
+      "created": "Leg 가 생성되었습니다.",
+      "updated": "Leg 가 수정되었습니다."
+    },
+    "timeline": {
+      "empty": "Leg 가 아직 없습니다. Phase 5 의 Dispatch Workspace 에서 생성합니다.",
+      "driverPrefix": "Driver:",
+      "pickupPrefix": "픽업",
+      "deliveryPrefix": "배송",
+      "failurePrefix": "실패:"
+    },
+    "statusMover": {
+      "terminalState": "최종 상태입니다. 추가 전이가 없습니다.",
+      "transitionedToast": "상태가 전이되었습니다.",
+      "transitButton": "전이",
+      "transitingButton": "처리중...",
+      "serverNote": "누락 항목이 있어도 시도 가능 — 서버가 최종 검증합니다.",
+      "gate": {
+        "blReleased": "B/L Released",
+        "pierPassPaid": "Pier Pass Paid",
+        "customsCleared": "Customs Cleared",
+        "pickupAppointment": "픽업 약속",
+        "deliveryAppointment": "배송 약속",
+        "firstLegDriver": "First Leg + driver/pickup_date (서버)",
+        "firstLegCompleted": "First Leg COMPLETED (서버)",
+        "returnLocation": "반납 장소",
+        "returnAppointment": "반납 약속",
+        "detentionLfd": "Detention LFD",
+        "emptyDate": "Empty 일자 (IMPORT)",
+        "loadedDate": "Loaded 일자 (EXPORT)",
+        "returnLegCompleted": "반납 Leg COMPLETED (서버)"
+      }
+    },
     "transition": {
       "failureReasonPrompt": "실패 사유를 입력하세요"
     }
@@ -382,7 +475,8 @@
       "systemTotal": "시스템",
       "driverReported": "기사 보고",
       "discrepancy": "차이",
-      "finalAmount": "최종"
+      "finalAmount": "최종",
+      "flag": "Flag"
     },
     "filter": {
       "all": "전체",
@@ -390,21 +484,36 @@
     },
     "calculate": {
       "title": "정산 계산",
-      "submit": "계산"
+      "submit": "계산",
+      "submitting": "계산중...",
+      "success": "Settlement 가 계산되었습니다."
     },
     "adjust": {
       "title": "정산 조정",
       "submit": "조정",
-      "noteRequired": "메모를 입력하세요."
+      "submitting": "조정중...",
+      "noteRequired": "메모를 입력하세요.",
+      "success": "Settlement 가 조정되었습니다.",
+      "systemTotalRef": "System Total (참조)",
+      "discrepancyAuto": "Discrepancy (자동)",
+      "flagRecommended": "(discrepancy ≠ 0 — 자동 추천됨)",
+      "notePlaceholder": "조정 사유"
     },
     "approve": {
       "title": "정산 승인",
-      "submit": "승인"
+      "submit": "승인",
+      "submitting": "승인중...",
+      "success": "Settlement 가 승인되었습니다.",
+      "warning": "⚠ 승인 후엔 모든 금액 필드가 잠깁니다 (Adjust 불가). Unapprove 는 ADMIN+ 권한 + 사유 필수."
     },
     "unapprove": {
       "title": "승인 취소",
       "reasonRequired": "사유를 입력하세요.",
-      "submit": "승인 취소"
+      "submit": "승인 취소",
+      "submitting": "처리중...",
+      "success": "Settlement 가 승인 취소되었습니다.",
+      "warning": "⚠ 승인 취소는 ADMIN+ 권한이 필요하며 AuditLog 에 기록됩니다.",
+      "reasonPlaceholder": "승인 취소 사유"
     },
     "field": {
       "systemTotal": "시스템 합계",
@@ -416,22 +525,76 @@
     },
     "extras": {
       "title": "부가 청구",
+      "titleWithSum": "Extra Charges ({{count}}) · 합계 {{total}}",
       "addRow": "추가",
       "type": "유형",
       "amount": "금액",
-      "description": "설명"
+      "description": "설명",
+      "empty": "추가 비용이 없습니다.",
+      "typePlaceholder": "유형 (chassis 등)",
+      "amountPlaceholder": "금액",
+      "descriptionPlaceholder": "설명"
+    },
+    "detail": {
+      "status": "상태",
+      "settled": "(정산 완료)",
+      "flagged": "Flagged",
+      "approvedAdminOnly": "승인됨 — Unapprove 는 ADMIN+ 권한",
+      "amounts": "금액",
+      "extraCharges": "Extra Charges ({{count}})",
+      "none": "없음",
+      "auditLog": "Audit Log ({{count}})",
+      "noLogs": "기록 없음",
+      "reasonLabel": "이유: {{reason}}",
+      "previousUnapprove": "이전 Unapprove",
+      "reasonField": "Reason",
+      "atField": "At",
+      "noteField": "Note",
+      "calculate": "Calculate",
+      "adjust": "Adjust",
+      "approve": "Approve",
+      "unapprove": "Unapprove (ADMIN+)",
+      "systemTotalLabel": "System Total",
+      "driverReportedLabel": "Driver Reported",
+      "discrepancyLabel": "Discrepancy",
+      "finalAmountLabel": "Final Amount",
+      "loading": "로딩 중..."
     }
   },
   "rateSetting": {
     "domain": "단가",
-    "newButton": "새 단가",
-    "createTitle": "단가 생성",
-    "editTitle": "단가 수정",
-    "deletePromptTitle": "'{{name}}' 단가를 삭제하시겠습니까?",
-    "deletePromptDesc": "복구할 수 없습니다."
+    "newButton": "새 Rate",
+    "createTitle": "Rate Setting 생성",
+    "editTitle": "Rate Setting 수정",
+    "deletePromptTitle": "Rate setting 을 삭제하시겠습니까?",
+    "deletePromptDesc": "'{{name}}' 을(를) 삭제합니다. 복구할 수 없습니다.",
+    "searchPlaceholder": "이름 / 설명 / 타입 검색",
+    "namePlaceholder": "기본 요율 / 야간 할증 등",
+    "typeImmutableHint": "(생성 후 변경 불가 — 새 row 만들기 권장)",
+    "activeToggled": "활성 상태가 변경되었습니다.",
+    "effectiveDateRequired": "Effective Date 를 입력하세요.",
+    "flatAmountRequired": "Flat Amount 를 입력하세요.",
+    "percentageRequired": "Percentage 를 입력하세요.",
+    "perMileRequired": "Per Mile rate 를 입력하세요.",
+    "field": {
+      "name": "이름",
+      "type": "Type",
+      "amount": "금액",
+      "effective": "Effective",
+      "active": "Active",
+      "inactive": "Inactive",
+      "activeOn": "✓ Active",
+      "description": "설명",
+      "rateType": "Rate Type",
+      "flatAmount": "Flat Amount",
+      "percentage": "Percentage",
+      "perMile": "Per Mile",
+      "effectiveDate": "Effective Date"
+    }
   },
   "dispatch": {
     "title": "디스패치",
+    "workspace": "Dispatch Workspace",
     "view": {
       "list": "목록",
       "board": "보드",
@@ -443,37 +606,138 @@
       "blocked": "{{from}} → {{to}} 전이 불가",
       "empty": "비어있음"
     },
-    "containerUnnamed": "(컨테이너 미지정)"
+    "containerUnnamed": "(컨테이너 미지정)",
+    "containerUnset": "(미지정)",
+    "list": {
+      "headerGate": "게이트"
+    },
+    "timeline": {
+      "outOfRange": "범위 밖 / 약속 미정 ({{count}})",
+      "headerDo": "D/O",
+      "noInRange": "범위 안에 약속이 있는 D/O 가 없습니다.",
+      "legendPickup": "픽업",
+      "legendDelivery": "배송",
+      "legendReturn": "반납",
+      "tooltipPickup": "픽업 약속",
+      "tooltipDelivery": "배송 약속",
+      "tooltipReturn": "반납 약속"
+    },
+    "map": {
+      "modeMaster": "마스터 위치",
+      "modeDo": "진행 D/O 위치",
+      "openDrawer": "Drawer 열기",
+      "activeDoCount": "진행 D/O: {{count}}",
+      "locationLabel": "Location · {{kind}}",
+      "terminalLabel": "Terminal"
+    },
+    "gantt": {
+      "driverHeader": "기사 ({{count}})",
+      "legCount": "{{count}} legs",
+      "noActiveDrivers": "활성 기사가 없습니다."
+    }
   },
   "dashboard": {
-    "title": "대시보드",
+    "title": "Dashboard",
     "urgent": {
       "title": "임박 D/O",
-      "noUrgent": "임박 항목이 없습니다."
+      "noUrgent": "임박 항목이 없습니다.",
+      "header": "⚠ 임박 D/O ({{count}}) — demurrage / detention LFD 3일 이내",
+      "daysOver": "{{count}}일 경과",
+      "daysToday": "오늘",
+      "daysLeft": "{{count}}일 남음",
+      "demurrage": "Demurrage",
+      "detention": "Detention"
     },
     "donut": {
-      "title": "상태 분포"
+      "title": "상태 분포",
+      "tooltipUnit": "{{count}} 건"
+    },
+    "section": {
+      "statusDistribution": "상태별 D/O 분포"
+    },
+    "kpi": {
+      "inProgress": "진행 중 D/O",
+      "inProgressHint": "전체 {{count}}건 중",
+      "todayPDR": "오늘 픽업/배송/반납",
+      "todayPDRHint": "약속된 D/O 건수",
+      "pendingLegs": "미완료 Leg",
+      "pendingLegsHint": "PENDING + IN_TRANSIT",
+      "unsettled": "미정산",
+      "unsettledHint": "APPROVED 외 settlement",
+      "activeDrivers": "활성 기사",
+      "activeDriversHint": "활성 / 전체"
     }
   },
   "notification": {
     "title": "알림",
+    "subtitle": "서버 inbox. 도메인 이벤트 발생 시 본인 inbox 에 누적됨.",
+    "pageTitle": "알림 (Notifications)",
     "empty": "알림이 없습니다.",
+    "unreadEmpty": "미확인 알림이 없습니다.",
+    "unreadOnly": "미확인만",
+    "unreadCountTitle": "{{count}} 건 미확인",
+    "popoverEmpty": "새 알림이 없습니다.",
     "markAllRead": "모두 읽음",
-    "viewAll": "전체 보기"
+    "viewAll": "전체 보기 →"
   },
   "auth": {
     "signIn": {
       "title": "Sign in",
       "subtitle": "TMS Pro",
+      "emailPlaceholder": "Email",
+      "passwordPlaceholder": "Password",
       "submit": "Sign in",
       "submitting": "Signing in...",
       "forgotHint": "비밀번호를 잊으셨나요?",
       "help": "도움말"
     },
     "forbidden": {
-      "title": "접근 권한이 없습니다",
-      "description": "이 페이지에 접근할 수 있는 권한이 없습니다.",
-      "back": "대시보드로"
+      "title": "403 — Forbidden",
+      "description": "해당 페이지에 접근할 권한이 없습니다.",
+      "back": "Dashboard 로 이동"
+    }
+  },
+  "pages": {
+    "deliveryOrders": {
+      "title": "배차 (Delivery Orders)"
+    },
+    "deliveryOrderDetail": {
+      "back": "목록",
+      "heading": "D/O"
+    },
+    "accounting": {
+      "title": "정산 (Settlements)"
+    },
+    "accountingRates": {
+      "title": "요율 설정 (Rate Settings)",
+      "hint": "ADMIN+ 만 접근 가능. FLAT_RATE / PERCENTAGE / PER_MILE 중 type 별로 한 가지 amount 필드만 사용."
+    },
+    "master": {
+      "customers": "고객사 (Customers)",
+      "terminals": "터미널 (Terminals)",
+      "vessels": "선박 (Vessels)",
+      "locations": "장소 (Locations)",
+      "drivers": "기사 (Drivers)"
+    },
+    "system": {
+      "tenants": "테넌트 (Tenants)",
+      "tenantsHint": "SUPER_ADMIN 전용. 모든 tenant 의 CRUD. 삭제는 CASCADE 로 연관 데이터까지 영구 삭제됨.",
+      "users": "시스템 사용자 (System Users)",
+      "usersHint": "SUPER_ADMIN 전용. tenant 를 선택하면 그 tenant 의 사용자만 표시됨 (X-Tenant-Id 헤더 사용). SUPER_ADMIN 은 API 로 생성 불가."
+    },
+    "driverSchedule": {
+      "title": "기사 스케줄 (Driver Schedule)",
+      "hint": "bar 클릭 → Leg 수정 모달. 색상: PENDING(회색) · IN_TRANSIT(파랑) · COMPLETED(초록) · FAILED(빨강)."
+    },
+    "maintenance": {
+      "title": "점검 중",
+      "alt": "점검 중 일러스트",
+      "needSupport": "도움이 필요하신가요?"
+    },
+    "notFound": {
+      "title": "404 — 찾을 수 없음",
+      "alt": "에러 일러스트",
+      "backHome": "홈으로 돌아가기"
     }
   }
 }

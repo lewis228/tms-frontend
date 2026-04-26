@@ -17,6 +17,7 @@
 //     emptyLabel="— 선택 안함 —"
 //   />
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 
 import Loader from "@/components/loader";
@@ -51,11 +52,13 @@ export default function SearchableSelect<T extends Item>({
   fetchById,
   queryKeyBase,
   getLabel,
-  placeholder = "선택하세요",
+  placeholder,
   emptyLabel,
   disabled,
   className,
 }: Props<T>) {
+  const { t } = useTranslation();
+  const placeholderText = placeholder ?? t("common.selectPlaceholder");
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [debounced, setDebounced] = useState("");
@@ -95,7 +98,7 @@ export default function SearchableSelect<T extends Item>({
           }
         >
           <span className={display ? "" : "text-muted-foreground"}>
-            {display || placeholder}
+            {display || placeholderText}
           </span>
           <span className="ml-2 text-xs text-muted-foreground" aria-hidden>
             ▾
@@ -108,7 +111,7 @@ export default function SearchableSelect<T extends Item>({
             autoFocus
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="검색..."
+            placeholder={t("common.search")}
             className="h-8"
           />
         </div>
@@ -138,7 +141,7 @@ export default function SearchableSelect<T extends Item>({
               )}
               {items.length === 0 ? (
                 <li className="px-3 py-4 text-center text-xs text-muted-foreground">
-                  결과가 없습니다.
+                  {t("common.noData")}
                 </li>
               ) : (
                 items.map((it) => (

@@ -1,5 +1,6 @@
 // /app/delivery-orders/:id — deep-link 가능한 풀페이지 detail.
 // 같은 데이터 (DeliveryOrderDetail) 를 drawer 가 아니라 풀페이지로.
+import { useTranslation } from "react-i18next";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 
@@ -10,6 +11,7 @@ import DeliveryOrderDetail from "@/components/delivery-order/delivery-order-deta
 import { useDeliveryOrderByIdData } from "@/hooks/queries/use-delivery-order-by-id-data";
 
 export default function DeliveryOrderDetailPage() {
+  const { t } = useTranslation();
   const params = useParams();
   const navigate = useNavigate();
   const idStr = params.id;
@@ -29,10 +31,10 @@ export default function DeliveryOrderDetailPage() {
           variant="ghost"
           onClick={() => navigate("/app/delivery-orders")}
         >
-          <ChevronLeft className="h-4 w-4" /> 목록
+          <ChevronLeft className="h-4 w-4" /> {t("deliveryOrder.backToList")}
         </Button>
         <h1 className="text-xl font-semibold">
-          D/O {data ? `#${data.id}` : ""}
+          {t("pages.deliveryOrderDetail.heading")} {data ? `#${data.id}` : ""}
         </h1>
       </div>
 

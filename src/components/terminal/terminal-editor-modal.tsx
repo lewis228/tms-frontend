@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,7 @@ export default function TerminalEditorModal() {
 }
 
 function Body({ modal }: { modal: OpenModal }) {
+  const { t } = useTranslation();
   const [name, setName] = useState(
     modal.type === "CREATE" ? "" : modal.terminal.name,
   );
@@ -61,7 +63,7 @@ function Body({ modal }: { modal: OpenModal }) {
   const { mutate: createTerminal, isPending: isCreatePending } =
     useCreateTerminal({
       onSuccess: () => {
-        toast.success("터미널이 생성되었습니다.", { position: "top-center" });
+        toast.success(t("toast.created"), { position: "top-center" });
         modal.actions.close();
       },
       onError: (err) =>
@@ -71,7 +73,7 @@ function Body({ modal }: { modal: OpenModal }) {
   const { mutate: updateTerminal, isPending: isUpdatePending } =
     useUpdateTerminal({
       onSuccess: () => {
-        toast.success("터미널이 수정되었습니다.", { position: "top-center" });
+        toast.success(t("toast.updated"), { position: "top-center" });
         modal.actions.close();
       },
       onError: (err) =>
@@ -108,11 +110,11 @@ function Body({ modal }: { modal: OpenModal }) {
     <>
       <DialogHeader>
         <DialogTitle className="font-sans">
-          {modal.type === "CREATE" ? "터미널 생성" : "터미널 수정"}
+          {t(modal.type === "CREATE" ? "terminal.createTitle" : "terminal.editTitle")}
         </DialogTitle>
       </DialogHeader>
       <div className="flex flex-col gap-3">
-        <Field label="이름" required>
+        <Field label={t("field.name")} required>
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -120,7 +122,7 @@ function Body({ modal }: { modal: OpenModal }) {
             placeholder="LBCT"
           />
         </Field>
-        <Field label="코드 (UN/LOCODE 등)">
+        <Field label={t("terminal.field.codeLabel")}>
           <Input
             value={code}
             onChange={(e) => setCode(e.target.value)}
@@ -129,7 +131,7 @@ function Body({ modal }: { modal: OpenModal }) {
             maxLength={32}
           />
         </Field>
-        <Field label="주소">
+        <Field label={t("field.address")}>
           <Input
             value={address}
             onChange={(e) => setAddress(e.target.value)}
@@ -137,7 +139,7 @@ function Body({ modal }: { modal: OpenModal }) {
           />
         </Field>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="위도">
+          <Field label={t("terminal.field.latitude")}>
             <Input
               value={latitude}
               onChange={(e) => setLatitude(e.target.value)}
@@ -146,7 +148,7 @@ function Body({ modal }: { modal: OpenModal }) {
               inputMode="decimal"
             />
           </Field>
-          <Field label="경도">
+          <Field label={t("terminal.field.longitude")}>
             <Input
               value={longitude}
               onChange={(e) => setLongitude(e.target.value)}
@@ -156,7 +158,7 @@ function Body({ modal }: { modal: OpenModal }) {
             />
           </Field>
         </div>
-        <Field label="메모">
+        <Field label={t("field.note")}>
           <Input
             value={note}
             onChange={(e) => setNote(e.target.value)}
@@ -170,10 +172,10 @@ function Body({ modal }: { modal: OpenModal }) {
           onClick={() => modal.actions.close()}
           disabled={isPending}
         >
-          취소
+          {t("common.cancel")}
         </Button>
         <Button onClick={handleSave} disabled={isPending || !name.trim()}>
-          저장
+          {t("common.save")}
         </Button>
       </div>
     </>

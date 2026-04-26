@@ -1,5 +1,6 @@
 // RateSetting 생성/수정. rate_type 셀렉트 + 선택된 type 의 amount 필드만 활성화.
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -48,6 +49,7 @@ export default function RateSettingEditorModal() {
 }
 
 function Body({ modal }: { modal: OpenModal }) {
+  const { t } = useTranslation();
   const [name, setName] = useState(
     modal.type === "CREATE" ? "" : modal.rateSetting.name,
   );
@@ -73,7 +75,7 @@ function Body({ modal }: { modal: OpenModal }) {
   const { mutate: createRate, isPending: isCreatePending } =
     useCreateRateSetting({
       onSuccess: () => {
-        toast.success("Rate setting 이 생성되었습니다.", {
+        toast.success(t("toast.created"), {
           position: "top-center",
         });
         modal.actions.close();
@@ -85,7 +87,7 @@ function Body({ modal }: { modal: OpenModal }) {
   const { mutate: updateRate, isPending: isUpdatePending } =
     useUpdateRateSetting({
       onSuccess: () => {
-        toast.success("Rate setting 이 수정되었습니다.", {
+        toast.success(t("toast.updated"), {
           position: "top-center",
         });
         modal.actions.close();
@@ -99,7 +101,9 @@ function Body({ modal }: { modal: OpenModal }) {
   const handleSave = () => {
     if (!name.trim()) return;
     if (!effectiveDate) {
-      toast.error("Effective Date 를 입력하세요.", { position: "top-center" });
+      toast.error(t("rateSetting.effectiveDateRequired"), {
+        position: "top-center",
+      });
       return;
     }
     // 선택된 type 의 amount 만 보냄. 다른 필드는 null.
@@ -109,15 +113,21 @@ function Body({ modal }: { modal: OpenModal }) {
       rateType === "PER_MILE" ? ratePerMile.trim() || null : null;
 
     if (rateType === "FLAT_RATE" && !flat) {
-      toast.error("Flat Amount 를 입력하세요.", { position: "top-center" });
+      toast.error(t("rateSetting.flatAmountRequired"), {
+        position: "top-center",
+      });
       return;
     }
     if (rateType === "PERCENTAGE" && !pct) {
-      toast.error("Percentage 를 입력하세요.", { position: "top-center" });
+      toast.error(t("rateSetting.percentageRequired"), {
+        position: "top-center",
+      });
       return;
     }
     if (rateType === "PER_MILE" && !perMile) {
-      toast.error("Per Mile rate 를 입력하세요.", { position: "top-center" });
+      toast.error(t("rateSetting.perMileRequired"), {
+        position: "top-center",
+      });
       return;
     }
 
@@ -151,40 +161,40 @@ function Body({ modal }: { modal: OpenModal }) {
       <DialogHeader>
         <DialogTitle className="font-sans">
           {modal.type === "CREATE"
-            ? "Rate Setting 생성"
-            : "Rate Setting 수정"}
+            ? t("rateSetting.createTitle")
+            : t("rateSetting.editTitle")}
         </DialogTitle>
       </DialogHeader>
       <div className="flex flex-col gap-3">
-        <Field label="이름" required>
+        <Field label={t("rateSetting.field.name")} required>
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
             disabled={isPending}
-            placeholder="기본 요율 / 야간 할증 등"
+            placeholder={t("rateSetting.namePlaceholder")}
           />
         </Field>
-        <Field label="Rate Type" required>
+        <Field label={t("rateSetting.field.rateType")} required>
           <select
             value={rateType}
             onChange={(e) => setRateType(e.target.value as RateType)}
             disabled={isPending || modal.type === "EDIT"}
             className="rounded-md border bg-background px-3 py-2 text-sm disabled:opacity-50"
           >
-            {RATE_TYPES.map((t) => (
-              <option key={t} value={t}>
-                {t}
+            {RATE_TYPES.map((rt) => (
+              <option key={rt} value={rt}>
+                {rt}
               </option>
             ))}
           </select>
           {modal.type === "EDIT" && (
             <span className="text-xs text-muted-foreground">
-              (생성 후 변경 불가 — 새 row 만들기 권장)
+              {t("rateSetting.typeImmutableHint")}
             </span>
           )}
         </Field>
         <div className="grid grid-cols-3 gap-3">
-          <Field label="Flat Amount">
+          <Field label={t("rateSetting.field.flatAmount")}>
             <Input
               type="number"
               step="0.01"
@@ -196,7 +206,7 @@ function Body({ modal }: { modal: OpenModal }) {
               }
             />
           </Field>
-          <Field label="Percentage">
+          <Field label={t("rateSetting.field.percentage")}>
             <Input
               type="number"
               step="0.001"
@@ -209,7 +219,7 @@ function Body({ modal }: { modal: OpenModal }) {
               }
             />
           </Field>
-          <Field label="Per Mile">
+          <Field label={t("rateSetting.field.perMile")}>
             <Input
               type="number"
               step="0.0001"
@@ -222,7 +232,7 @@ function Body({ modal }: { modal: OpenModal }) {
             />
           </Field>
         </div>
-        <Field label="Effective Date" required>
+        <Field label={t("rateSetting.field.effectiveDate")} required>
           <Input
             type="date"
             value={effectiveDate}
@@ -230,7 +240,7 @@ function Body({ modal }: { modal: OpenModal }) {
             disabled={isPending}
           />
         </Field>
-        <Field label="설명">
+        <Field label={t("rateSetting.field.description")}>
           <Input
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -244,10 +254,10 @@ function Body({ modal }: { modal: OpenModal }) {
           onClick={() => modal.actions.close()}
           disabled={isPending}
         >
-          취소
+          {t("common.cancel")}
         </Button>
         <Button onClick={handleSave} disabled={isPending || !name.trim()}>
-          저장
+          {t("common.save")}
         </Button>
       </div>
     </>

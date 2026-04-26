@@ -1,5 +1,6 @@
 // 로그인 페이지 — 백엔드 /api/v1/auth/login 연동.
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -12,6 +13,7 @@ import { setBootstrappedSession, setTokensModule } from "@/store/auth";
 import { generateErrorMessage } from "@/lib/error";
 
 export default function SignInPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const [email, setEmail] = useState("");
@@ -47,8 +49,10 @@ export default function SignInPage() {
   return (
     <AuthLayout>
       <div className="flex flex-col items-center">
-        <h1 className="mb-1 text-2xl font-semibold text-black">Sign in</h1>
-        <p className="mb-6 text-sm text-black/55">TMS Pro</p>
+        <h1 className="mb-1 text-2xl font-semibold text-black">
+          {t("auth.signIn.title")}
+        </h1>
+        <p className="mb-6 text-sm text-black/55">{t("auth.signIn.subtitle")}</p>
 
         <form
           onSubmit={handleSubmit}
@@ -56,7 +60,7 @@ export default function SignInPage() {
         >
           <Input
             type="email"
-            placeholder="Email"
+            placeholder={t("auth.signIn.emailPlaceholder")}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={isPending}
@@ -65,7 +69,7 @@ export default function SignInPage() {
           />
           <Input
             type="password"
-            placeholder="Password"
+            placeholder={t("auth.signIn.passwordPlaceholder")}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             disabled={isPending}
@@ -77,14 +81,14 @@ export default function SignInPage() {
             disabled={isPending}
             className="w-full rounded-2xl bg-black py-3 text-sm font-medium text-white hover:bg-black/80"
           >
-            {isPending ? "Signing in..." : "Sign in"}
+            {isPending ? t("auth.signIn.submitting") : t("auth.signIn.submit")}
           </Button>
         </form>
 
         <p className="text-sm text-black/55">
-          비밀번호를 잊으셨나요?{" "}
+          {t("auth.signIn.forgotHint")}{" "}
           <Link to="/forget-password" className="hover:underline">
-            도움말
+            {t("auth.signIn.help")}
           </Link>
         </p>
       </div>

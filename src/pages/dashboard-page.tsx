@@ -3,6 +3,7 @@
 // 데이터 fetch 전략: 클라 측 집계. 백엔드 dashboard endpoint 없음.
 // list endpoint (page size 100~200) 합쳐서 KPI / 차트 / urgent 모두 같은 캐시 재활용.
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import KpiCard from "@/components/dashboard/kpi-card";
 import StatusDonut from "@/components/dashboard/status-donut";
@@ -32,6 +33,7 @@ function isToday(iso: string | null | undefined): boolean {
 }
 
 export default function DashboardPage() {
+  const { t } = useTranslation();
   const user = useCurrentUser();
 
   const { data: doData, isPending: doPending, error: doError } =
@@ -103,7 +105,7 @@ export default function DashboardPage() {
   return (
     <div className="flex flex-col gap-6 p-6">
       <div>
-        <h1 className="text-2xl font-semibold">Dashboard</h1>
+        <h1 className="text-2xl font-semibold">{t("dashboard.title")}</h1>
         <p className="text-sm text-muted-foreground">
           {user?.email ?? "—"} · {user?.role ?? "—"}
         </p>
@@ -111,27 +113,29 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         <KpiCard
-          label="진행 중 D/O"
+          label={t("dashboard.kpi.inProgress")}
           value={stats.inProgress}
-          hint={`전체 ${stats.orders.length}건 중`}
+          hint={t("dashboard.kpi.inProgressHint", {
+            count: stats.orders.length,
+          })}
           to="/app/dispatch?view=board"
         />
         <KpiCard
-          label="오늘 픽업/배송/반납"
+          label={t("dashboard.kpi.todayPDR")}
           value={`${stats.todayPickup}/${stats.todayDelivery}/${stats.todayReturn}`}
-          hint="약속된 D/O 건수"
+          hint={t("dashboard.kpi.todayPDRHint")}
           to="/app/dispatch?view=timeline"
         />
         <KpiCard
-          label="미완료 Leg"
+          label={t("dashboard.kpi.pendingLegs")}
           value={stats.pendingLegs}
-          hint="PENDING + IN_TRANSIT"
+          hint={t("dashboard.kpi.pendingLegsHint")}
           to="/app/dispatch/drivers"
         />
         <KpiCard
-          label="미정산"
+          label={t("dashboard.kpi.unsettled")}
           value={stats.unsettled}
-          hint="APPROVED 외 settlement"
+          hint={t("dashboard.kpi.unsettledHint")}
           tone={stats.unsettled > 0 ? "warning" : "default"}
         />
       </div>
@@ -139,7 +143,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <section className="rounded-md border bg-background p-4">
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-            상태별 D/O 분포
+            {t("dashboard.section.statusDistribution")}
           </h2>
           <StatusDonut data={stats.donut} />
         </section>
@@ -147,9 +151,9 @@ export default function DashboardPage() {
         <section className="flex flex-col gap-3">
           <UrgentList rows={urgent} customers={customersData?.items ?? []} />
           <KpiCard
-            label="활성 기사"
+            label={t("dashboard.kpi.activeDrivers")}
             value={`${stats.activeDrivers} / ${stats.totalDrivers}`}
-            hint="활성 / 전체"
+            hint={t("dashboard.kpi.activeDriversHint")}
           />
         </section>
       </div>

@@ -3,6 +3,7 @@
 // 서버 inbox 사용 (api/v1/notifications). WS event 가 도착하면 캐시 invalidate.
 // 성능 최적화: list 쿼리는 popover 가 열렸을 때만 fetch (lazy). 미확인 카운트만 상시 폴.
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import Loader from "@/components/loader";
@@ -22,6 +23,7 @@ import { formatDateTime } from "@/lib/format";
 const PREVIEW_LIMIT = 8;
 
 export default function NotificationsBell() {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const { data: page, isPending: isListPending } = useNotificationsData(
     1,
@@ -42,7 +44,11 @@ export default function NotificationsBell() {
         <button
           type="button"
           className="relative rounded-md px-2 py-1 text-sm hover:bg-accent"
-          title={unread > 0 ? `${unread} 건 미확인` : "알림"}
+          title={
+            unread > 0
+              ? t("notification.unreadCountTitle", { count: unread })
+              : t("notification.title")
+          }
         >
           <span aria-hidden>🔔</span>
           {unread > 0 && (
@@ -54,7 +60,9 @@ export default function NotificationsBell() {
       </PopoverTrigger>
       <PopoverContent align="end" className="w-80 p-0">
         <div className="flex items-center justify-between border-b px-3 py-2">
-          <span className="text-sm font-semibold">알림</span>
+          <span className="text-sm font-semibold">
+            {t("notification.title")}
+          </span>
           <Button
             variant="ghost"
             size="sm"
@@ -62,7 +70,7 @@ export default function NotificationsBell() {
             onClick={() => markAll()}
             className="h-auto px-2 py-1 text-xs"
           >
-            모두 읽음
+            {t("notification.markAllRead")}
           </Button>
         </div>
 
@@ -72,7 +80,7 @@ export default function NotificationsBell() {
           </div>
         ) : preview.length === 0 ? (
           <div className="px-3 py-6 text-center text-xs text-muted-foreground">
-            새 알림이 없습니다.
+            {t("notification.popoverEmpty")}
           </div>
         ) : (
           <ul className="max-h-80 overflow-y-auto py-1">
@@ -134,7 +142,7 @@ export default function NotificationsBell() {
             to="/app/notifications"
             className="text-xs text-primary hover:underline"
           >
-            전체 보기 →
+            {t("notification.viewAll")}
           </Link>
         </div>
       </PopoverContent>

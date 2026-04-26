@@ -1,5 +1,6 @@
 // Settlement 목록 — status 필터 + 검색 (legId, note) + 행 클릭 drawer.
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,7 @@ const STATUS_OPTIONS: ("ALL" | SettlementStatus)[] = [
 ];
 
 export default function SettlementList() {
+  const { t } = useTranslation();
   const [page, setPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
@@ -38,8 +40,8 @@ export default function SettlementList() {
   const activeId = searchParams.get("settlement");
 
   useEffect(() => {
-    const t = setTimeout(() => setSearch(searchInput.trim().toLowerCase()), 300);
-    return () => clearTimeout(t);
+    const tm = setTimeout(() => setSearch(searchInput.trim().toLowerCase()), 300);
+    return () => clearTimeout(tm);
   }, [searchInput]);
 
   const { data, isPending, error } = useSettlementsData(page, 100);
@@ -70,7 +72,7 @@ export default function SettlementList() {
     <div className="flex flex-col gap-3">
       <div className="flex flex-wrap items-center gap-2">
         <Input
-          placeholder="Leg ID / Note 검색"
+          placeholder={t("settlement.filter.search")}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           className="w-72"
@@ -84,7 +86,7 @@ export default function SettlementList() {
         >
           {STATUS_OPTIONS.map((s) => (
             <option key={s} value={s}>
-              {s === "ALL" ? "전체" : s}
+              {s === "ALL" ? t("settlement.filter.all") : s}
             </option>
           ))}
         </select>
@@ -94,13 +96,21 @@ export default function SettlementList() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>상태</TableHead>
-              <TableHead>Leg</TableHead>
-              <TableHead className="text-right">System Total</TableHead>
-              <TableHead className="text-right">Driver Reported</TableHead>
-              <TableHead className="text-right">Discrepancy</TableHead>
-              <TableHead className="text-right">Final</TableHead>
-              <TableHead>Flag</TableHead>
+              <TableHead>{t("settlement.table.status")}</TableHead>
+              <TableHead>{t("settlement.table.leg")}</TableHead>
+              <TableHead className="text-right">
+                {t("settlement.detail.systemTotalLabel")}
+              </TableHead>
+              <TableHead className="text-right">
+                {t("settlement.detail.driverReportedLabel")}
+              </TableHead>
+              <TableHead className="text-right">
+                {t("settlement.detail.discrepancyLabel")}
+              </TableHead>
+              <TableHead className="text-right">
+                {t("settlement.table.finalAmount")}
+              </TableHead>
+              <TableHead>{t("settlement.table.flag")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -110,7 +120,7 @@ export default function SettlementList() {
                   colSpan={7}
                   className="text-center text-muted-foreground"
                 >
-                  데이터가 없습니다.
+                  {t("common.noData")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -161,7 +171,8 @@ export default function SettlementList() {
 
       <div className="flex items-center justify-between text-sm">
         <span className="text-muted-foreground">
-          전체 {data.total}건 · {data.page}/{Math.max(1, data.pages)} 페이지
+          {t("common.totalCount", { count: data.total })} · {data.page}/
+          {Math.max(1, data.pages)}
         </span>
         <div className="flex gap-2">
           <Button
@@ -170,7 +181,7 @@ export default function SettlementList() {
             disabled={page <= 1}
             onClick={() => setPage((p) => Math.max(1, p - 1))}
           >
-            이전
+            {t("common.previous")}
           </Button>
           <Button
             variant="outline"
@@ -178,7 +189,7 @@ export default function SettlementList() {
             disabled={page >= data.pages}
             onClick={() => setPage((p) => p + 1)}
           >
-            다음
+            {t("common.next")}
           </Button>
         </div>
       </div>

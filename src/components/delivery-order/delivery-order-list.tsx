@@ -4,6 +4,7 @@
 // - 행 클릭 → URL ?do=:id (Drawer 가 open)
 // - 새 D/O 버튼 → 풀스크린 모달
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useSearchParams } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
@@ -33,6 +34,7 @@ const STATUS_FILTER_OPTIONS: ("ALL" | DeliveryStatus)[] = [
 ];
 
 export default function DeliveryOrderList() {
+  const { t } = useTranslation();
   const [page, setPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
@@ -43,8 +45,11 @@ export default function DeliveryOrderList() {
   const activeId = searchParams.get("do");
 
   useEffect(() => {
-    const t = setTimeout(() => setSearch(searchInput.trim().toLowerCase()), 300);
-    return () => clearTimeout(t);
+    const timer = setTimeout(
+      () => setSearch(searchInput.trim().toLowerCase()),
+      300,
+    );
+    return () => clearTimeout(timer);
   }, [searchInput]);
 
   const { data, isPending, error } = useDeliveryOrdersData(page);
@@ -86,7 +91,7 @@ export default function DeliveryOrderList() {
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <Input
-            placeholder="컨테이너 / B/L / Booking / Reference"
+            placeholder={t("deliveryOrder.searchPlaceholder")}
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             className="w-72"
@@ -100,28 +105,30 @@ export default function DeliveryOrderList() {
           >
             {STATUS_FILTER_OPTIONS.map((s) => (
               <option key={s} value={s}>
-                {s === "ALL" ? "전체" : s}
+                {s === "ALL" ? t("common.all") : s}
               </option>
             ))}
           </select>
         </div>
         <Button variant="outline" onClick={() => openAIIntake()}>
-          AI 로 등록
+          {t("deliveryOrder.aiCreateButton")}
         </Button>
-        <Button onClick={() => openCreate()}>새 D/O</Button>
+        <Button onClick={() => openCreate()}>
+          {t("deliveryOrder.newButton")}
+        </Button>
       </div>
 
       <div className="rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>상태</TableHead>
-              <TableHead>방향</TableHead>
-              <TableHead>컨테이너</TableHead>
-              <TableHead>고객사</TableHead>
-              <TableHead>B/L</TableHead>
-              <TableHead>픽업</TableHead>
-              <TableHead>배송</TableHead>
+              <TableHead>{t("deliveryOrder.table.status")}</TableHead>
+              <TableHead>{t("deliveryOrder.table.direction")}</TableHead>
+              <TableHead>{t("deliveryOrder.table.container")}</TableHead>
+              <TableHead>{t("deliveryOrder.table.customer")}</TableHead>
+              <TableHead>{t("deliveryOrder.table.bl")}</TableHead>
+              <TableHead>{t("deliveryOrder.table.pickup")}</TableHead>
+              <TableHead>{t("deliveryOrder.table.delivery")}</TableHead>
               <TableHead className="w-16 text-right"></TableHead>
             </TableRow>
           </TableHeader>
@@ -132,7 +139,7 @@ export default function DeliveryOrderList() {
                   colSpan={8}
                   className="text-center text-muted-foreground"
                 >
-                  데이터가 없습니다.
+                  {t("common.noData")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -149,21 +156,21 @@ export default function DeliveryOrderList() {
                     {d.direction}
                   </TableCell>
                   <TableCell className="font-mono">
-                    {d.containerNumber ?? "—"}
+                    {d.containerNumber ?? t("common.none")}
                   </TableCell>
                   <TableCell>
-                    {customerNameById.get(d.customerId) ?? "—"}
+                    {customerNameById.get(d.customerId) ?? t("common.none")}
                   </TableCell>
-                  <TableCell>{d.blNumber ?? "—"}</TableCell>
+                  <TableCell>{d.blNumber ?? t("common.none")}</TableCell>
                   <TableCell>
                     {d.pickupAppointment
                       ? formatDateTime(d.pickupAppointment)
-                      : "—"}
+                      : t("common.none")}
                   </TableCell>
                   <TableCell>
                     {d.deliveryAppointment
                       ? formatDateTime(d.deliveryAppointment)
-                      : "—"}
+                      : t("common.none")}
                   </TableCell>
                   <TableCell className="text-right">
                     <Link
@@ -171,7 +178,7 @@ export default function DeliveryOrderList() {
                       onClick={(e) => e.stopPropagation()}
                       className="text-xs text-muted-foreground hover:text-foreground hover:underline"
                     >
-                      상세 →
+                      {t("deliveryOrder.viewDetail")}
                     </Link>
                   </TableCell>
                 </TableRow>
@@ -183,7 +190,8 @@ export default function DeliveryOrderList() {
 
       <div className="flex items-center justify-between text-sm">
         <span className="text-muted-foreground">
-          전체 {data.total}건 · {data.page}/{Math.max(1, data.pages)} 페이지
+          {t("common.totalCount", { count: data.total })} ·{" "}
+          {t("common.pageOf", { page: data.page, pages: Math.max(1, data.pages) })}
         </span>
         <div className="flex gap-2">
           <Button
@@ -192,7 +200,7 @@ export default function DeliveryOrderList() {
             disabled={page <= 1}
             onClick={() => setPage((p) => Math.max(1, p - 1))}
           >
-            이전
+            {t("common.previous")}
           </Button>
           <Button
             variant="outline"
@@ -200,7 +208,7 @@ export default function DeliveryOrderList() {
             disabled={page >= data.pages}
             onClick={() => setPage((p) => p + 1)}
           >
-            다음
+            {t("common.next")}
           </Button>
         </div>
       </div>

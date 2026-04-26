@@ -1,6 +1,7 @@
 // 임박 D/O 표:
 // 행 클릭 → /app/delivery-orders?do=:id navigate.
 // pickUrgent / UrgentRow 는 ./urgent 로 분리.
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import StatusBadge from "@/components/delivery-order/status-badge";
@@ -15,13 +16,14 @@ export default function UrgentList({
   rows: UrgentRow[];
   customers: CustomerEntity[];
 }) {
+  const { t } = useTranslation();
   const customerName = (id: number) =>
     customers.find((c) => c.id === id)?.name ?? "—";
 
   if (rows.length === 0) {
     return (
       <div className="rounded-md border bg-background p-6 text-center text-sm text-muted-foreground">
-        임박 D/O 가 없습니다.
+        {t("dashboard.urgent.noUrgent")}
       </div>
     );
   }
@@ -29,7 +31,7 @@ export default function UrgentList({
   return (
     <div className="rounded-md border bg-background">
       <div className="border-b bg-muted/40 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-        ⚠ 임박 D/O ({rows.length}) — demurrage / detention LFD 3일 이내
+        {t("dashboard.urgent.header", { count: rows.length })}
       </div>
       <div className="divide-y">
         {rows.map((row) => (
@@ -40,7 +42,7 @@ export default function UrgentList({
           >
             <StatusBadge status={row.do.status} />
             <span className="font-mono text-xs">
-              {row.do.containerNumber ?? "(미지정)"}
+              {row.do.containerNumber ?? t("dispatch.containerUnset")}
             </span>
             <span className="text-muted-foreground">
               {customerName(row.do.customerId)}
@@ -58,13 +60,17 @@ export default function UrgentList({
                 }
               >
                 {row.daysLeft < 0
-                  ? `${Math.abs(row.daysLeft)}일 경과`
+                  ? t("dashboard.urgent.daysOver", {
+                      count: Math.abs(row.daysLeft),
+                    })
                   : row.daysLeft === 0
-                    ? "오늘"
-                    : `${row.daysLeft}일 남음`}
+                    ? t("dashboard.urgent.daysToday")
+                    : t("dashboard.urgent.daysLeft", { count: row.daysLeft })}
               </span>
               <span className="text-muted-foreground">
-                {row.type === "demurrage" ? "Demurrage" : "Detention"}{" "}
+                {row.type === "demurrage"
+                  ? t("dashboard.urgent.demurrage")
+                  : t("dashboard.urgent.detention")}{" "}
                 {formatDate(row.date)}
               </span>
             </span>

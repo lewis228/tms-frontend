@@ -1,6 +1,7 @@
 // 임시 비밀번호 1회 노출 모달.
 // 닫기 시도 시 AlertModal 로 한 번 더 confirm — 닫으면 영구히 못 봄.
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,7 @@ import { useOpenAlertModal } from "@/store/alert-modal";
 import { useDriverTempPasswordModal } from "@/store/driver-temp-password-modal";
 
 export default function DriverTempPasswordModal() {
+  const { t } = useTranslation();
   const modal = useDriverTempPasswordModal();
   const openAlert = useOpenAlertModal();
   const [copied, setCopied] = useState(false);
@@ -26,12 +28,12 @@ export default function DriverTempPasswordModal() {
     try {
       await navigator.clipboard.writeText(modal.tempPassword);
       setCopied(true);
-      toast.success("임시 비밀번호가 복사되었습니다.", {
+      toast.success(t("driver.tempPassword.copyToastSuccess"), {
         position: "top-center",
       });
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      toast.error("복사에 실패했습니다. 수동으로 선택해 복사해 주세요.", {
+      toast.error(t("driver.tempPassword.copyToastFail"), {
         position: "top-center",
       });
     }
@@ -39,9 +41,8 @@ export default function DriverTempPasswordModal() {
 
   const tryClose = () => {
     openAlert({
-      title: "이 비밀번호를 어디에 저장하셨습니까?",
-      description:
-        "이 창을 닫으면 임시 비밀번호를 다시 볼 수 없습니다. 안전한 곳에 저장하셨다면 확인을 누르세요.",
+      title: t("driver.tempPassword.confirmCloseTitle"),
+      description: t("driver.tempPassword.confirmCloseDesc"),
       onPositive: () => modal.actions.close(),
     });
   };
@@ -51,16 +52,17 @@ export default function DriverTempPasswordModal() {
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="font-sans">
-            임시 비밀번호 발급 (1회 노출)
+            {t("driver.tempPassword.modalTitle")}
           </DialogTitle>
         </DialogHeader>
         <div className="flex flex-col gap-3 text-sm">
           <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">
-            ⚠️ <b>이 화면을 닫으면 다시 볼 수 없습니다.</b> 기사에게 안전한 채널로
-            전달하고 첫 로그인 시 변경하도록 안내하세요.
+            {t("driver.tempPassword.warning")}
           </div>
           <div>
-            <span className="text-muted-foreground">기사:</span>{" "}
+            <span className="text-muted-foreground">
+              {t("driver.tempPassword.driverLabel")}
+            </span>{" "}
             <b>{modal.driverName}</b>{" "}
             <span className="text-muted-foreground">({modal.email})</span>
           </div>
@@ -69,12 +71,16 @@ export default function DriverTempPasswordModal() {
               {modal.tempPassword}
             </code>
             <Button onClick={handleCopy} variant="outline">
-              {copied ? "복사됨" : "복사"}
+              {copied
+                ? t("driver.tempPassword.copied")
+                : t("driver.tempPassword.copy")}
             </Button>
           </div>
         </div>
         <div className="flex justify-end pt-2">
-          <Button onClick={tryClose}>저장 완료, 닫기</Button>
+          <Button onClick={tryClose}>
+            {t("driver.tempPassword.closeButton")}
+          </Button>
         </div>
       </DialogContent>
     </Dialog>

@@ -1,4 +1,5 @@
 // status 별 D/O 분포 도넛 (recharts).
+import { useTranslation } from "react-i18next";
 import {
   Cell,
   Pie,
@@ -23,13 +24,14 @@ export default function StatusDonut({
 }: {
   data: { status: DeliveryStatus; count: number }[];
 }) {
+  const { t } = useTranslation();
   const total = data.reduce((acc, d) => acc + d.count, 0);
   const filtered = data.filter((d) => d.count > 0);
 
   if (total === 0) {
     return (
       <div className="flex h-64 items-center justify-center text-sm text-muted-foreground">
-        데이터가 없습니다.
+        {t("common.noData")}
       </div>
     );
   }
@@ -52,7 +54,10 @@ export default function StatusDonut({
               ))}
             </Pie>
             <Tooltip
-              formatter={(value, name) => [`${Number(value)} 건`, String(name)]}
+              formatter={(value, name) => [
+                t("dashboard.donut.tooltipUnit", { count: Number(value) }),
+                String(name),
+              ]}
               contentStyle={{ fontSize: 12 }}
             />
           </PieChart>

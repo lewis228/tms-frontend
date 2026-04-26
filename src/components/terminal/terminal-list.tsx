@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -24,13 +25,17 @@ import {
 import type { TerminalEntity } from "@/types";
 
 export default function TerminalList() {
+  const { t } = useTranslation();
   const [page, setPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    const t = setTimeout(() => setSearch(searchInput.trim().toLowerCase()), 300);
-    return () => clearTimeout(t);
+    const timeoutId = setTimeout(
+      () => setSearch(searchInput.trim().toLowerCase()),
+      300,
+    );
+    return () => clearTimeout(timeoutId);
   }, [searchInput]);
 
   const { data, isPending, error } = useTerminalsData(page);
@@ -40,7 +45,7 @@ export default function TerminalList() {
 
   const { mutate: deleteTerminal } = useDeleteTerminal({
     onSuccess: () =>
-      toast.success("터미널이 삭제되었습니다.", { position: "top-center" }),
+      toast.success(t("toast.deleted"), { position: "top-center" }),
     onError: (err) =>
       toast.error(generateErrorMessage(err), { position: "top-center" }),
   });
@@ -61,8 +66,8 @@ export default function TerminalList() {
 
   const handleDelete = (v: TerminalEntity) => {
     openAlert({
-      title: "터미널을 삭제하시겠습니까?",
-      description: `'${v.name}' 을(를) 삭제합니다. 복구할 수 없습니다.`,
+      title: t("terminal.deletePromptTitle", { name: v.name }),
+      description: t("terminal.deletePromptDesc"),
       onPositive: () => deleteTerminal(v.id),
     });
   };
@@ -71,24 +76,24 @@ export default function TerminalList() {
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between gap-2">
         <Input
-          placeholder="이름 / 코드 / 주소 검색"
+          placeholder={t("terminal.searchPlaceholder")}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           className="max-w-sm"
         />
-        <Button onClick={() => openCreate()}>새 터미널</Button>
+        <Button onClick={() => openCreate()}>{t("terminal.newButton")}</Button>
       </div>
 
       <div className="rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>이름</TableHead>
-              <TableHead>코드</TableHead>
-              <TableHead>주소</TableHead>
-              <TableHead>위/경도</TableHead>
-              <TableHead>활성</TableHead>
-              <TableHead className="text-right">동작</TableHead>
+              <TableHead>{t("field.name")}</TableHead>
+              <TableHead>{t("field.code")}</TableHead>
+              <TableHead>{t("field.address")}</TableHead>
+              <TableHead>{t("terminal.field.latLng")}</TableHead>
+              <TableHead>{t("common.active")}</TableHead>
+              <TableHead className="text-right">{t("common.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -98,7 +103,7 @@ export default function TerminalList() {
                   colSpan={6}
                   className="text-center text-muted-foreground"
                 >
-                  데이터가 없습니다.
+                  {t("common.noData")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -121,7 +126,7 @@ export default function TerminalList() {
                       size="sm"
                       onClick={() => openEdit(v)}
                     >
-                      수정
+                      {t("common.edit")}
                     </Button>
                     <Button
                       variant="ghost"
@@ -129,7 +134,7 @@ export default function TerminalList() {
                       className="ml-2 text-destructive"
                       onClick={() => handleDelete(v)}
                     >
-                      삭제
+                      {t("common.delete")}
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -141,7 +146,8 @@ export default function TerminalList() {
 
       <div className="flex items-center justify-between text-sm">
         <span className="text-muted-foreground">
-          전체 {data.total}건 · {data.page}/{Math.max(1, data.pages)} 페이지
+          {t("common.totalCount", { count: data.total })} ·{" "}
+          {t("common.pageOf", { page: data.page, pages: Math.max(1, data.pages) })}
         </span>
         <div className="flex gap-2">
           <Button
@@ -150,7 +156,7 @@ export default function TerminalList() {
             disabled={page <= 1}
             onClick={() => setPage((p) => Math.max(1, p - 1))}
           >
-            이전
+            {t("common.previous")}
           </Button>
           <Button
             variant="outline"
@@ -158,7 +164,7 @@ export default function TerminalList() {
             disabled={page >= data.pages}
             onClick={() => setPage((p) => p + 1)}
           >
-            다음
+            {t("common.next")}
           </Button>
         </div>
       </div>

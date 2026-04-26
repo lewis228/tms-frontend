@@ -13,6 +13,7 @@
 //     + (IMPORT 면 empty_date / EXPORT 면 loaded_date)
 //
 // Phase 4 에서는 D/O 자체 필드만 클라 검증 (leg 검증은 백엔드에 위임). leg 관련 게이트는 hint 만.
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -26,17 +27,18 @@ type GateCheck = { ok: boolean; label: string };
 function checkGates(
   d: DeliveryOrderEntity,
   target: DeliveryStatus,
+  t: (k: string) => string,
 ): GateCheck[] {
   const checks: GateCheck[] = [];
   if (d.status === "PLANNING" && target === "DISPATCHED") {
-    checks.push({ ok: d.blReleased, label: "B/L Released" });
-    checks.push({ ok: d.pierPassPaid, label: "Pier Pass Paid" });
-    checks.push({ ok: d.customsCleared, label: "Customs Cleared" });
+    checks.push({ ok: d.blReleased, label: t("leg.statusMover.gate.blReleased") });
+    checks.push({ ok: d.pierPassPaid, label: t("leg.statusMover.gate.pierPassPaid") });
+    checks.push({ ok: d.customsCleared, label: t("leg.statusMover.gate.customsCleared") });
     checks.push({
       ok: !!d.pickupAppointment,
-      label: "픽업 약속",
+      label: t("leg.statusMover.gate.pickupAppointment"),
     });
-    checks.push({ ok: true, label: "First Leg + driver/pickup_date (서버)" });
+    checks.push({ ok: true, label: t("leg.statusMover.gate.firstLegDriver") });
   }
   if (
     (d.status === "DISPATCHED" || d.status === "YARD_STAGED") &&
@@ -44,20 +46,20 @@ function checkGates(
   ) {
     checks.push({
       ok: !!d.deliveryAppointment,
-      label: "배송 약속",
+      label: t("leg.statusMover.gate.deliveryAppointment"),
     });
-    checks.push({ ok: true, label: "First Leg COMPLETED (서버)" });
+    checks.push({ ok: true, label: t("leg.statusMover.gate.firstLegCompleted") });
   }
   if (target === "COMPLETED") {
-    checks.push({ ok: !!d.returnLocationId, label: "반납 장소" });
-    checks.push({ ok: !!d.returnAppointment, label: "반납 약속" });
-    checks.push({ ok: !!d.detentionLfd, label: "Detention LFD" });
+    checks.push({ ok: !!d.returnLocationId, label: t("leg.statusMover.gate.returnLocation") });
+    checks.push({ ok: !!d.returnAppointment, label: t("leg.statusMover.gate.returnAppointment") });
+    checks.push({ ok: !!d.detentionLfd, label: t("leg.statusMover.gate.detentionLfd") });
     if (d.direction === "IMPORT") {
-      checks.push({ ok: !!d.emptyDate, label: "Empty 일자 (IMPORT)" });
+      checks.push({ ok: !!d.emptyDate, label: t("leg.statusMover.gate.emptyDate") });
     } else {
-      checks.push({ ok: !!d.loadedDate, label: "Loaded 일자 (EXPORT)" });
+      checks.push({ ok: !!d.loadedDate, label: t("leg.statusMover.gate.loadedDate") });
     }
-    checks.push({ ok: true, label: "반납 Leg COMPLETED (서버)" });
+    checks.push({ ok: true, label: t("leg.statusMover.gate.returnLegCompleted") });
   }
   return checks;
 }
@@ -67,10 +69,13 @@ export default function StatusMover({
 }: {
   deliveryOrder: DeliveryOrderEntity;
 }) {
+  const { t } = useTranslation();
   const targets = ALLOWED_TRANSITIONS[deliveryOrder.status];
   const { mutate: transition, isPending } = useTransitionDeliveryOrder({
     onSuccess: () =>
-      toast.success("상태가 전이되었습니다.", { position: "top-center" }),
+      toast.success(t("leg.statusMover.transitionedToast"), {
+        position: "top-center",
+      }),
     onError: (err) =>
       toast.error(generateErrorMessage(err), { position: "top-center" }),
   });
@@ -78,7 +83,7 @@ export default function StatusMover({
   if (targets.length === 0) {
     return (
       <p className="text-xs text-muted-foreground">
-        최종 상태입니다. 추가 전이가 없습니다.
+        {t("leg.statusMover.terminalState")}
       </p>
     );
   }
@@ -86,7 +91,7 @@ export default function StatusMover({
   return (
     <div className="flex flex-col gap-2">
       {targets.map((target) => {
-        const checks = checkGates(deliveryOrder, target);
+        const checks = checkGates(deliveryOrder, target, t);
         const clientOk = checks.every((c) => c.ok);
         return (
           <div
@@ -100,7 +105,9 @@ export default function StatusMover({
                 disabled={isPending}
                 onClick={() => transition({ id: deliveryOrder.id, target })}
               >
-                {isPending ? "처리중..." : "전이"}
+                {isPending
+                  ? t("leg.statusMover.transitingButton")
+                  : t("leg.statusMover.transitButton")}
               </Button>
             </div>
             {checks.length > 0 && (
@@ -115,7 +122,7 @@ export default function StatusMover({
                 ))}
                 {!clientOk && (
                   <li className="text-xs text-muted-foreground">
-                    누락 항목이 있어도 시도 가능 — 서버가 최종 검증합니다.
+                    {t("leg.statusMover.serverNote")}
                   </li>
                 )}
               </ul>

@@ -308,7 +308,7 @@ function Step3({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
         <Input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="홍길동"
+          placeholder={t("onboarding.field.driverNamePlaceholder")}
           disabled={isPending || tempPassword !== null}
         />
       </Field>
