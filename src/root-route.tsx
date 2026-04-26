@@ -28,6 +28,7 @@ const MasterCustomersPage = lazy(() => import("@/pages/master-customers-page"));
 const MasterDriversPage = lazy(() => import("@/pages/master-drivers-page"));
 const DeliveryOrdersPage = lazy(() => import("@/pages/delivery-orders-page"));
 const DeliveryOrderDetailPage = lazy(() => import("@/pages/delivery-order-detail-page"));
+const OnboardingPage = lazy(() => import("@/pages/onboarding-page"));
 const DispatchPage = lazy(() => import("@/pages/dispatch-page"));
 const DriverSchedulePage = lazy(() => import("@/pages/driver-schedule-page"));
 const AccountingPage = lazy(() => import("@/pages/accounting-page"));
@@ -67,6 +68,7 @@ export default function RootRoute() {
             <Route index element={<Navigate to="/app/dashboard" replace />} />
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="notifications" element={<NotificationsPage />} />
+            <Route path="onboarding" element={<OnboardingPage />} />
 
             <Route element={<ProtectedRoute require="DISPATCHER" />}>
               <Route path="dispatch" element={<DispatchPage />} />

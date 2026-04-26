@@ -88,6 +88,11 @@ export type UserTenantMembership = {
   tenantId: number;
   tenantName: string | null;
   permissionGroupId: number | null;
+  // 온보딩 진행 상태 — wizard 표시 여부 결정
+  onboardingCompleted: boolean;
+  onboardingStep1Done: boolean;
+  onboardingStep2Done: boolean;
+  onboardingStep3Done: boolean;
 };
 
 // 백엔드 UserResponseSchema (camelCase 변환 후) 와 1:1.

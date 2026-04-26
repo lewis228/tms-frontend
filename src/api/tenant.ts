@@ -44,3 +44,23 @@ export async function updateTenant(
 export async function deleteTenant(id: number): Promise<void> {
   await api.delete(`/tenants/${id}`);
 }
+
+// ── 온보딩 ─────────────────────────────────────────────────
+// PATCH /tenants/{id}/onboarding — 단계별 플래그 토글 / 완료 처리.
+export type OnboardingPatch = {
+  step1Done?: boolean;
+  step2Done?: boolean;
+  step3Done?: boolean;
+  completed?: boolean;
+};
+
+export async function updateOnboarding(
+  tenantId: number,
+  payload: OnboardingPatch,
+): Promise<{ ok: boolean }> {
+  const { data } = await api.patch<{ ok: boolean }>(
+    `/tenants/${tenantId}/onboarding`,
+    payload,
+  );
+  return data;
+}
