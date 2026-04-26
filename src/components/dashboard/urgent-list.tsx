@@ -4,6 +4,7 @@
 import { Link } from "react-router-dom";
 
 import StatusBadge from "@/components/delivery-order/status-badge";
+import { formatDate } from "@/lib/format";
 import type { UrgentRow } from "@/components/dashboard/urgent";
 import type { CustomerEntity } from "@/types";
 
@@ -64,7 +65,7 @@ export default function UrgentList({
               </span>
               <span className="text-muted-foreground">
                 {row.type === "demurrage" ? "Demurrage" : "Detention"}{" "}
-                {new Date(row.date).toLocaleDateString("ko-KR")}
+                {formatDate(row.date)}
               </span>
             </span>
           </Link>

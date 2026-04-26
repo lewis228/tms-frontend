@@ -16,6 +16,7 @@ import Fallback from "@/components/fallback";
 import StatusBadge from "@/components/delivery-order/status-badge";
 import { useCustomersData } from "@/hooks/queries/use-customers-data";
 import { useDeliveryOrdersData } from "@/hooks/queries/use-delivery-orders-data";
+import { formatShortDate } from "@/lib/format";
 import type { DeliveryOrderEntity } from "@/types";
 
 const DAYS_BEFORE = 3;
@@ -133,11 +134,7 @@ export default function DispatchTimelineView() {
                     (isToday ? "bg-blue-50 font-medium" : "")
                   }
                 >
-                  {d.toLocaleDateString("ko-KR", {
-                    month: "short",
-                    day: "numeric",
-                    weekday: "short",
-                  })}
+                  {formatShortDate(d)}
                 </div>
               );
             })}

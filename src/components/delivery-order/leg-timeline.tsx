@@ -1,6 +1,7 @@
 // Leg Timeline — D/O 의 legs 를 가로 step bar 로 표시.
 // Phase 4 에서는 읽기만. driver assign / leg 생성은 Phase 5 (Dispatch Workspace).
 import Loader from "@/components/loader";
+import { formatDateTime } from "@/lib/format";
 import Fallback from "@/components/fallback";
 import { useLegsByDoData } from "@/hooks/queries/use-legs-by-do-data";
 import type { LegEntity, LegStatus } from "@/types";
@@ -61,10 +62,10 @@ function LegRow({ leg, index }: { leg: LegEntity; index: number }) {
         <div className="text-muted-foreground">
           {leg.driverId ? `Driver: ${String(leg.driverId).slice(0, 8)}…` : "Driver: —"}
           {leg.pickupDate
-            ? ` · 픽업 ${new Date(leg.pickupDate).toLocaleString("ko-KR", { dateStyle: "short", timeStyle: "short" })}`
+            ? ` · 픽업 ${formatDateTime(leg.pickupDate)}`
             : ""}
           {leg.deliveryDate
-            ? ` · 배송 ${new Date(leg.deliveryDate).toLocaleString("ko-KR", { dateStyle: "short", timeStyle: "short" })}`
+            ? ` · 배송 ${formatDateTime(leg.deliveryDate)}`
             : ""}
         </div>
         {leg.failureReason && (

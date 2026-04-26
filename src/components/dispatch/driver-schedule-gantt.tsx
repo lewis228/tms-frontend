@@ -9,6 +9,7 @@ import Fallback from "@/components/fallback";
 import { useDriversData } from "@/hooks/queries/use-drivers-data";
 import { useLegsByDriverData } from "@/hooks/queries/use-legs-by-driver-data";
 import { useOpenEditLegModal } from "@/store/leg-editor-modal";
+import { formatShortDate } from "@/lib/format";
 import type { DriverEntity, LegStatus } from "@/types";
 
 const DAYS_BEFORE = 3;
@@ -75,11 +76,7 @@ export default function DriverScheduleGantt() {
                 (i === DAYS_BEFORE ? "bg-blue-50 font-medium" : "")
               }
             >
-              {d.toLocaleDateString("ko-KR", {
-                month: "short",
-                day: "numeric",
-                weekday: "short",
-              })}
+              {formatShortDate(d)}
             </div>
           ))}
         </div>

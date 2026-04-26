@@ -18,6 +18,7 @@ import { useNotificationsData } from "@/hooks/queries/use-notifications-data";
 import { useUnreadNotificationCountData } from "@/hooks/queries/use-unread-notification-count-data";
 import { notificationLinkFor } from "@/lib/notification-link";
 
+import { formatDateTime } from "@/lib/format";
 const PREVIEW_LIMIT = 8;
 
 export default function NotificationsBell() {
@@ -91,10 +92,7 @@ export default function NotificationsBell() {
                     </span>
                   )}
                   <span className="text-[10px] text-muted-foreground">
-                    {new Date(n.createdAt).toLocaleString("ko-KR", {
-                      dateStyle: "short",
-                      timeStyle: "short",
-                    })}
+                    {formatDateTime(n.createdAt)}
                   </span>
                 </div>
               );

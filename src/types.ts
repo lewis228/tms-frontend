@@ -298,6 +298,27 @@ export type NotificationEntity = {
 };
 
 // Phase 8: Settlement / ExtraCharge / AuditLog / RateSetting
+export type SettlementEntity = {
+  id: number;
+  tenantId: number;
+  legId: number;
+  systemTotal: string;
+  driverReportedAmount: string | null;
+  discrepancy: string | null;
+  hasFlag: boolean;
+  finalAmount: string | null;
+  settlementStatus: SettlementStatus;
+  isSettled: boolean;
+  approvedAt: string | null;
+  approvedBy: string | null;
+  unapprovedAt: string | null;
+  unapprovedBy: string | null;
+  unapprovedReason: string | null;
+  note: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type ExtraChargeEntity = {
   id: number;
   settlementId: number;

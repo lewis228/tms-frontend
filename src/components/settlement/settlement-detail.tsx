@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useSettlementAuditLogsData } from "@/hooks/queries/use-settlement-audit-logs-data";
 import { useSettlementExtrasData } from "@/hooks/queries/use-settlement-extras-data";
 import { hasAccess } from "@/lib/nav-config";
+import { formatDateTime } from "@/lib/format";
 import { useCurrentRole } from "@/store/auth";
 import {
   useOpenAdjustSettlement,
@@ -150,10 +151,7 @@ export default function SettlementDetail({
                 <div className="flex items-center gap-2">
                   <span className="font-medium">{l.action}</span>
                   <span className="ml-auto text-muted-foreground">
-                    {new Date(l.createdAt).toLocaleString("ko-KR", {
-                      dateStyle: "short",
-                      timeStyle: "short",
-                    })}
+                    {formatDateTime(l.createdAt)}
                   </span>
                 </div>
                 {l.reason && (
@@ -177,7 +175,7 @@ export default function SettlementDetail({
           {settlement.unapprovedAt && (
             <Row
               label="At"
-              value={new Date(settlement.unapprovedAt).toLocaleString("ko-KR")}
+              value={formatDateTime(settlement.unapprovedAt)}
             />
           )}
         </Section>

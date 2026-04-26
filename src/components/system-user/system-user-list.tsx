@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/table";
 import Loader from "@/components/loader";
 import Fallback from "@/components/fallback";
+import { formatDate } from "@/lib/format";
 import { useDeleteUser } from "@/hooks/mutations/user/use-delete-user";
 import { useUsersData } from "@/hooks/queries/use-users-data";
 import { useTenantsData } from "@/hooks/queries/use-tenants-data";
@@ -162,11 +163,7 @@ export default function SystemUserList() {
                         )}
                       </TableCell>
                       <TableCell className="text-xs">
-                        {u.createdAt
-                          ? new Date(u.createdAt).toLocaleDateString("ko-KR", {
-                              dateStyle: "short",
-                            })
-                          : "—"}
+                        {formatDate(u.createdAt)}
                       </TableCell>
                       <TableCell className="text-right">
                         <Button

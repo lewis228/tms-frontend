@@ -2,34 +2,17 @@
 //
 // 라이프사이클 PENDING → CALCULATED → ADJUSTED → APPROVED. Unapprove 는 ADMIN+.
 // 모든 상태 전이는 백엔드 가 SettlementAuditLog 1행씩 자동 기록.
+//
+// SettlementEntity 는 다른 도메인과 일관성 위해 types.ts 에서 정의 + 여기서 re-export.
 import api from "@/lib/axios";
 import type {
   ExtraChargeEntity,
   PagedResponse,
   SettlementAuditLog,
-  SettlementStatus,
+  SettlementEntity,
 } from "@/types";
 
-export type SettlementEntity = {
-  id: number;
-  tenantId: number;
-  legId: number;
-  systemTotal: string;
-  driverReportedAmount: string | null;
-  discrepancy: string | null;
-  hasFlag: boolean;
-  finalAmount: string | null;
-  settlementStatus: SettlementStatus;
-  isSettled: boolean;
-  approvedAt: string | null;
-  approvedBy: string | null;
-  unapprovedAt: string | null;
-  unapprovedBy: string | null;
-  unapprovedReason: string | null;
-  note: string | null;
-  createdAt: string;
-  updatedAt: string;
-};
+export type { SettlementEntity } from "@/types";
 
 export type ExtraChargeInput = {
   type: string;

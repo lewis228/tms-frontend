@@ -6,6 +6,7 @@ import { useCustomersData } from "@/hooks/queries/use-customers-data";
 import { useTerminalsData } from "@/hooks/queries/use-terminals-data";
 import { useVesselsData } from "@/hooks/queries/use-vessels-data";
 import { useLocationsData } from "@/hooks/queries/use-locations-data";
+import { formatDate, formatDateTime } from "@/lib/format";
 import type { DeliveryOrderEntity } from "@/types";
 
 export default function DeliveryOrderDetail({
@@ -154,17 +155,10 @@ function GateRow({ label, checked }: { label: string; checked: boolean }) {
 
 function fmt(iso: string | null | undefined): string {
   if (!iso) return "";
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return iso;
-  return d.toLocaleString("ko-KR", {
-    dateStyle: "short",
-    timeStyle: "short",
-  });
+  return formatDateTime(iso, iso);
 }
 
 function fmtDate(iso: string | null | undefined): string {
   if (!iso) return "";
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return iso;
-  return d.toLocaleDateString("ko-KR");
+  return formatDate(iso, iso);
 }

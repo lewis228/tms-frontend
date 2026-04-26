@@ -10,6 +10,7 @@ import { useNotificationsData } from "@/hooks/queries/use-notifications-data";
 import { useUnreadNotificationCountData } from "@/hooks/queries/use-unread-notification-count-data";
 import { notificationLinkFor } from "@/lib/notification-link";
 
+import { formatDateTime } from "@/lib/format";
 export default function NotificationsPage() {
   const [page, setPage] = useState(1);
   const [unreadOnly, setUnreadOnly] = useState(false);
@@ -87,10 +88,7 @@ export default function NotificationsPage() {
                     </span>
                   )}
                   <span className="text-xs text-muted-foreground">
-                    {new Date(n.createdAt).toLocaleString("ko-KR", {
-                      dateStyle: "short",
-                      timeStyle: "short",
-                    })}
+                    {formatDateTime(n.createdAt)}
                   </span>
                 </div>
               );

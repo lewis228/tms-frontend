@@ -21,6 +21,7 @@ import { useDeliveryOrdersData } from "@/hooks/queries/use-delivery-orders-data"
 import { useDriversData } from "@/hooks/queries/use-drivers-data";
 import { useOpenCreateDeliveryOrderModal } from "@/store/delivery-order-create-modal";
 import { STATUS_ORDER } from "@/lib/delivery-order";
+import { formatDateTime } from "@/lib/format";
 import type { DeliveryOrderEntity, DeliveryStatus } from "@/types";
 
 const STATUS_FILTER_OPTIONS: ("ALL" | DeliveryStatus)[] = [
@@ -159,18 +160,12 @@ export default function DispatchListView() {
                     <TableCell>{d.blNumber ?? "—"}</TableCell>
                     <TableCell className="text-xs">
                       {d.pickupAppointment
-                        ? new Date(d.pickupAppointment).toLocaleString("ko-KR", {
-                            dateStyle: "short",
-                            timeStyle: "short",
-                          })
+                        ? formatDateTime(d.pickupAppointment)
                         : "—"}
                     </TableCell>
                     <TableCell className="text-xs">
                       {d.deliveryAppointment
-                        ? new Date(d.deliveryAppointment).toLocaleString(
-                            "ko-KR",
-                            { dateStyle: "short", timeStyle: "short" },
-                          )
+                        ? formatDateTime(d.deliveryAppointment)
                         : "—"}
                     </TableCell>
                     <TableCell className="text-xs">

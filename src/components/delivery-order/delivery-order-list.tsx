@@ -24,6 +24,7 @@ import { useDeliveryOrdersData } from "@/hooks/queries/use-delivery-orders-data"
 import { useOpenCreateDeliveryOrderModal } from "@/store/delivery-order-create-modal";
 import { useOpenAIIntakeModal } from "@/store/ai-intake-modal";
 import { STATUS_ORDER } from "@/lib/delivery-order";
+import { formatDateTime } from "@/lib/format";
 import type { DeliveryOrderEntity, DeliveryStatus } from "@/types";
 
 const STATUS_FILTER_OPTIONS: ("ALL" | DeliveryStatus)[] = [
@@ -156,18 +157,12 @@ export default function DeliveryOrderList() {
                   <TableCell>{d.blNumber ?? "—"}</TableCell>
                   <TableCell>
                     {d.pickupAppointment
-                      ? new Date(d.pickupAppointment).toLocaleString("ko-KR", {
-                          dateStyle: "short",
-                          timeStyle: "short",
-                        })
+                      ? formatDateTime(d.pickupAppointment)
                       : "—"}
                   </TableCell>
                   <TableCell>
                     {d.deliveryAppointment
-                      ? new Date(d.deliveryAppointment).toLocaleString(
-                          "ko-KR",
-                          { dateStyle: "short", timeStyle: "short" },
-                        )
+                      ? formatDateTime(d.deliveryAppointment)
                       : "—"}
                   </TableCell>
                   <TableCell className="text-right">
