@@ -4,7 +4,7 @@ import { transitionDeliveryOrder } from "@/api/delivery-order";
 import { QUERY_KEYS } from "@/lib/constants";
 import type { DeliveryStatus, UseMutationCallback } from "@/types";
 
-type Vars = { id: string; target: DeliveryStatus };
+type Vars = { id: number; target: DeliveryStatus };
 
 export function useTransitionDeliveryOrder(callbacks?: UseMutationCallback) {
   const qc = useQueryClient();

@@ -11,7 +11,7 @@ export async function fetchTerminals(
   return data;
 }
 
-export async function fetchTerminal(id: string): Promise<TerminalEntity> {
+export async function fetchTerminal(id: number): Promise<TerminalEntity> {
   const { data } = await api.get<TerminalEntity>(`/terminals/${id}`);
   return data;
 }
@@ -29,7 +29,7 @@ export async function createTerminal(payload: {
 }
 
 export async function updateTerminal(
-  id: string,
+  id: number,
   payload: Partial<{
     name: string;
     code: string | null;
@@ -44,6 +44,6 @@ export async function updateTerminal(
   return data;
 }
 
-export async function deleteTerminal(id: string): Promise<void> {
+export async function deleteTerminal(id: number): Promise<void> {
   await api.delete(`/terminals/${id}`);
 }

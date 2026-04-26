@@ -4,7 +4,7 @@ import { type LegUpdatePayload, updateLeg } from "@/api/leg";
 import { QUERY_KEYS } from "@/lib/constants";
 import type { UseMutationCallback } from "@/types";
 
-type Vars = { id: string; payload: LegUpdatePayload };
+type Vars = { id: number; payload: LegUpdatePayload };
 
 export function useUpdateLeg(callbacks?: UseMutationCallback) {
   const qc = useQueryClient();

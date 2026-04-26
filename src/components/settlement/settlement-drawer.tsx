@@ -14,7 +14,8 @@ import { useSettlementByIdData } from "@/hooks/queries/use-settlement-by-id-data
 
 export default function SettlementDrawer() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const id = searchParams.get("settlement");
+  const idStr = searchParams.get("settlement");
+  const id = idStr ? Number(idStr) : null;
 
   const { data, isPending, error } = useSettlementByIdData(id);
 
@@ -31,7 +32,7 @@ export default function SettlementDrawer() {
       <SheetContent className="!max-w-2xl !w-full overflow-y-auto sm:!max-w-2xl">
         <SheetHeader>
           <SheetTitle className="font-sans">
-            {data ? `Settlement ${data.id.slice(0, 8)}` : "Settlement"}
+            {data ? `Settlement ${String(data.id).slice(0, 8)}` : "Settlement"}
           </SheetTitle>
         </SheetHeader>
         <div className="px-4 pb-6">

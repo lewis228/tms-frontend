@@ -99,7 +99,7 @@ export function clearAuth(): void {
 export function getCurrentUser(): UserEntity | null {
   return useAuthStore.getState().user;
 }
-export function getCurrentTenantIdModule(): string | null {
+export function getCurrentTenantIdModule(): number | null {
   return useAuthStore.getState().user?.tenantId ?? null;
 }
 export function getCurrentRoleModule(): UserRole | null {

@@ -1,5 +1,8 @@
 // TMS 전역 도메인 타입.
 // 백엔드 86 엔드포인트와 1:1 매핑되는 Entity 타입. 응답 키는 camelCase.
+//
+// ID 정책: 백엔드(SQLAlchemy) 가 int autoincrement 를 사용하므로 모든 entity id
+// 및 FK (`xxxId`) 는 `number`. URL 에 들어갈 땐 호출부에서 자동 직렬화됨.
 
 export type UserRole = "SUPER_ADMIN" | "ADMIN" | "DISPATCHER" | "DRIVER";
 
@@ -42,14 +45,14 @@ export type TokenPair = {
 };
 
 export type LoginResponse = TokenPair & {
-  userId: string;
-  tenantId: string | null;
+  userId: number;
+  tenantId: number | null;
   role: UserRole;
   mustChangePassword: boolean;
 };
 
 export type TenantEntity = {
-  id: string;
+  id: number;
   name: string;
   slug: string;
   planTier: string;
@@ -62,8 +65,8 @@ export type TenantEntity = {
 };
 
 export type UserEntity = {
-  id: string;
-  tenantId: string | null;
+  id: number;
+  tenantId: number | null;
   email: string;
   name: string;
   role: UserRole;
@@ -76,9 +79,9 @@ export type UserEntity = {
 };
 
 export type DriverEntity = {
-  id: string;
-  tenantId: string;
-  userId: string;
+  id: number;
+  tenantId: number;
+  userId: number;
   email: string;
   name: string;
   phone: string | null;
@@ -92,8 +95,8 @@ export type DriverEntity = {
 };
 
 export type CustomerEntity = {
-  id: string;
-  tenantId: string;
+  id: number;
+  tenantId: number;
   name: string;
   code: string | null;
   billingAddress: string | null;
@@ -107,8 +110,8 @@ export type CustomerEntity = {
 };
 
 export type TerminalEntity = {
-  id: string;
-  tenantId: string;
+  id: number;
+  tenantId: number;
   name: string;
   code: string | null;
   address: string | null;
@@ -121,8 +124,8 @@ export type TerminalEntity = {
 };
 
 export type VesselEntity = {
-  id: string;
-  tenantId: string;
+  id: number;
+  tenantId: number;
   name: string;
   imoNumber: string | null;
   line: string | null;
@@ -133,14 +136,14 @@ export type VesselEntity = {
 };
 
 export type LocationEntity = {
-  id: string;
-  tenantId: string;
+  id: number;
+  tenantId: number;
   name: string;
   kind: LocationKind;
   address: string | null;
   latitude: string | null;
   longitude: string | null;
-  customerId: string | null;
+  customerId: number | null;
   isActive: boolean;
   note: string | null;
   createdAt: string;
@@ -151,18 +154,18 @@ export type LocationEntity = {
 export type DriverCreatedResponse = DriverEntity & { tempPassword: string };
 
 export type DeliveryOrderEntity = {
-  id: string;
-  tenantId: string;
+  id: number;
+  tenantId: number;
   status: DeliveryStatus;
   direction: ShipmentDirection;
   blNumber: string | null;
   bookingNumber: string | null;
   reference: string | null;
-  customerId: string;
-  terminalId: string | null;
-  vesselId: string | null;
-  deliveryLocationId: string | null;
-  returnLocationId: string | null;
+  customerId: number;
+  terminalId: number | null;
+  vesselId: number | null;
+  deliveryLocationId: number | null;
+  returnLocationId: number | null;
   containerNumber: string | null;
   containerSize: ContainerSize | null;
   containerType: string | null;
@@ -184,17 +187,17 @@ export type DeliveryOrderEntity = {
 };
 
 export type LegEntity = {
-  id: string;
-  tenantId: string;
-  deliveryOrderId: string;
+  id: number;
+  tenantId: number;
+  deliveryOrderId: number;
   step: DeliveryStatus;
   moveType: MoveType;
   serviceType: ServiceType;
   status: LegStatus;
-  driverId: string | null;
-  pickupLocationId: string | null;
+  driverId: number | null;
+  pickupLocationId: number | null;
   pickupDate: string | null;
-  deliveryLocationId: string | null;
+  deliveryLocationId: number | null;
   deliveryDate: string | null;
   startedAt: string | null;
   arrivedAt: string | null;
@@ -202,7 +205,7 @@ export type LegEntity = {
   failureReason: string | null;
   storageDays: number;
   isSettled: boolean;
-  settlementId: string | null;
+  settlementId: number | null;
   note: string | null;
   createdAt: string;
   updatedAt: string;
@@ -232,8 +235,8 @@ export type UseMutationCallback = {
 // WebSocket envelope (백엔드 RealtimeEvent).
 export type RealtimeEvent = {
   type: string;
-  tenantId: string;
-  actorId: string | null;
+  tenantId: number;
+  actorId: number | null;
   payload: Record<string, unknown> | null;
   occurredAt: string;
 };
@@ -241,9 +244,9 @@ export type RealtimeEvent = {
 // 백엔드 Notification entity (서버 fan-out 결과).
 // channel/status 는 string 으로 받음 (ENUM 변경 시 프론트 immutable).
 export type NotificationEntity = {
-  id: string;
-  tenantId: string;
-  userId: string | null;
+  id: number;
+  tenantId: number;
+  userId: number | null;
   channel: string;
   status: string;
   eventType: string;
@@ -259,8 +262,8 @@ export type NotificationEntity = {
 
 // Phase 8: Settlement / ExtraCharge / AuditLog / RateSetting
 export type ExtraChargeEntity = {
-  id: string;
-  settlementId: string;
+  id: number;
+  settlementId: number;
   type: string;
   amount: string;
   description: string | null;
@@ -268,10 +271,10 @@ export type ExtraChargeEntity = {
 };
 
 export type SettlementAuditLog = {
-  id: string;
-  settlementId: string;
+  id: number;
+  settlementId: number;
   action: string;
-  actorId: string | null;
+  actorId: number | null;
   before: Record<string, unknown> | null;
   after: Record<string, unknown> | null;
   reason: string | null;
@@ -279,8 +282,8 @@ export type SettlementAuditLog = {
 };
 
 export type RateSettingEntity = {
-  id: string;
-  tenantId: string;
+  id: number;
+  tenantId: number;
   name: string;
   rateType: RateType;
   flatAmount: string | null;

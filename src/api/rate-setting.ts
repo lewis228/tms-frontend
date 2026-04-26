@@ -32,7 +32,7 @@ export async function fetchRateSettings(
   return data;
 }
 
-export async function fetchRateSetting(id: string): Promise<RateSettingEntity> {
+export async function fetchRateSetting(id: number): Promise<RateSettingEntity> {
   const { data } = await api.get<RateSettingEntity>(`/rate-settings/${id}`);
   return data;
 }
@@ -48,7 +48,7 @@ export async function createRateSetting(
 }
 
 export async function updateRateSetting(
-  id: string,
+  id: number,
   payload: RateSettingUpdatePayload,
 ): Promise<RateSettingEntity> {
   const { data } = await api.patch<RateSettingEntity>(
@@ -58,6 +58,6 @@ export async function updateRateSetting(
   return data;
 }
 
-export async function deleteRateSetting(id: string): Promise<void> {
+export async function deleteRateSetting(id: number): Promise<void> {
   await api.delete(`/rate-settings/${id}`);
 }

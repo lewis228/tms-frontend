@@ -74,7 +74,7 @@ function Body({
 
   const handleSave = () => {
     mutate({
-      id: modal.settlementId,
+      id: modal.settlementId!,
       payload: {
         finalAmount: finalAmount.trim() || null,
         note: note.trim() || null,

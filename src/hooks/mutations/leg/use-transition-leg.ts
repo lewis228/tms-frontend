@@ -4,7 +4,7 @@ import { transitionLeg } from "@/api/leg";
 import { QUERY_KEYS } from "@/lib/constants";
 import type { LegStatus, UseMutationCallback } from "@/types";
 
-type Vars = { id: string; target: LegStatus; failureReason?: string };
+type Vars = { id: number; target: LegStatus; failureReason?: string };
 
 export function useTransitionLeg(callbacks?: UseMutationCallback) {
   const qc = useQueryClient();

@@ -12,7 +12,7 @@ export async function listTenants(): Promise<TenantEntity[]> {
   return data;
 }
 
-export async function fetchTenant(id: string): Promise<TenantEntity> {
+export async function fetchTenant(id: number): Promise<TenantEntity> {
   const { data } = await api.get<TenantEntity>(`/tenants/${id}`);
   return data;
 }
@@ -30,7 +30,7 @@ export async function createTenant(payload: {
 }
 
 export async function updateTenant(
-  id: string,
+  id: number,
   payload: Partial<{
     name: string;
     planTier: string;
@@ -44,6 +44,6 @@ export async function updateTenant(
   return data;
 }
 
-export async function deleteTenant(id: string): Promise<void> {
+export async function deleteTenant(id: number): Promise<void> {
   await api.delete(`/tenants/${id}`);
 }

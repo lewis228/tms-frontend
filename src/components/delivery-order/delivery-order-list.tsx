@@ -50,7 +50,7 @@ export default function DeliveryOrderList() {
   const openCreate = useOpenCreateDeliveryOrderModal();
 
   const customerNameById = useMemo(() => {
-    const m = new Map<string, string>();
+    const m = new Map<number, string>();
     for (const c of customersData?.items ?? []) m.set(c.id, c.name);
     return m;
   }, [customersData]);
@@ -69,9 +69,9 @@ export default function DeliveryOrderList() {
     });
   }, [data, search, statusFilter]);
 
-  const handleRowClick = (id: string) => {
+  const handleRowClick = (id: number) => {
     const next = new URLSearchParams(searchParams);
-    next.set("do", id);
+    next.set("do", String(id));
     setSearchParams(next, { replace: true });
   };
 
@@ -133,7 +133,7 @@ export default function DeliveryOrderList() {
                 <TableRow
                   key={d.id}
                   onClick={() => handleRowClick(d.id)}
-                  className={`cursor-pointer ${activeId === d.id ? "bg-accent/40" : ""}`}
+                  className={`cursor-pointer ${activeId === String(d.id) ? "bg-accent/40" : ""}`}
                 >
                   <TableCell>
                     <StatusBadge status={d.status} />

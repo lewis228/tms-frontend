@@ -124,7 +124,7 @@ function MasterLayer({
   deliveryOrders: DeliveryOrderEntity[];
 }) {
   const usageByLocation = useMemo(() => {
-    const m = new Map<string, number>();
+    const m = new Map<number, number>();
     for (const d of deliveryOrders) {
       if (d.status === "COMPLETED") continue;
       if (d.deliveryLocationId)
@@ -135,7 +135,7 @@ function MasterLayer({
     return m;
   }, [deliveryOrders]);
   const usageByTerminal = useMemo(() => {
-    const m = new Map<string, number>();
+    const m = new Map<number, number>();
     for (const d of deliveryOrders) {
       if (d.status === "COMPLETED") continue;
       if (d.terminalId) m.set(d.terminalId, (m.get(d.terminalId) ?? 0) + 1);
@@ -202,14 +202,14 @@ function DOLayer({
 }) {
   const [, setSearchParams] = useSearchParams();
   const locById = useMemo(() => {
-    const m = new Map<string, LocationEntity>();
+    const m = new Map<number, LocationEntity>();
     for (const l of locations) m.set(l.id, l);
     return m;
   }, [locations]);
 
   // D/O 별로 delivery_location 마커 1개 (없으면 return_location).
   const markers = useMemo(() => {
-    const out: { id: string; name: string; lat: number; lng: number; status: string; container: string | null }[] = [];
+    const out: { id: number; name: string; lat: number; lng: number; status: string; container: string | null }[] = [];
     for (const d of deliveryOrders) {
       if (d.status === "COMPLETED") continue;
       const locId = d.deliveryLocationId ?? d.returnLocationId;
@@ -228,10 +228,10 @@ function DOLayer({
     return out;
   }, [deliveryOrders, locById]);
 
-  const openDrawer = (id: string) => {
+  const openDrawer = (id: number) => {
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
-      next.set("do", id);
+      next.set("do", String(id));
       return next;
     }, { replace: true });
   };

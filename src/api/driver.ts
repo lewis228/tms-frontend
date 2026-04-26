@@ -23,7 +23,7 @@ export async function fetchDrivers(
   return data;
 }
 
-export async function fetchDriver(id: string): Promise<DriverEntity> {
+export async function fetchDriver(id: number): Promise<DriverEntity> {
   const { data } = await api.get<DriverEntity>(`/drivers/${id}`);
   return data;
 }
@@ -43,7 +43,7 @@ export async function createDriver(payload: {
 }
 
 export async function updateDriver(
-  id: string,
+  id: number,
   payload: Partial<{
     name: string;
     phone: string | null;
@@ -58,6 +58,6 @@ export async function updateDriver(
   return data;
 }
 
-export async function deleteDriver(id: string): Promise<void> {
+export async function deleteDriver(id: number): Promise<void> {
   await api.delete(`/drivers/${id}`);
 }

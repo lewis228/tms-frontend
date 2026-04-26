@@ -51,15 +51,15 @@ export default function SettlementList() {
         return false;
       if (!search) return true;
       return (
-        s.legId.toLowerCase().includes(search) ||
+        String(s.legId).includes(search) ||
         (s.note ?? "").toLowerCase().includes(search)
       );
     });
   }, [data, search, statusFilter]);
 
-  const handleRowClick = (id: string) => {
+  const handleRowClick = (id: number) => {
     const next = new URLSearchParams(searchParams);
-    next.set("settlement", id);
+    next.set("settlement", String(id));
     setSearchParams(next, { replace: true });
   };
 
@@ -118,13 +118,13 @@ export default function SettlementList() {
                 <TableRow
                   key={s.id}
                   onClick={() => handleRowClick(s.id)}
-                  className={`cursor-pointer ${activeId === s.id ? "bg-accent/40" : ""}`}
+                  className={`cursor-pointer ${activeId === String(s.id) ? "bg-accent/40" : ""}`}
                 >
                   <TableCell>
                     <SettlementStatusBadge status={s.settlementStatus} />
                   </TableCell>
                   <TableCell className="font-mono text-xs">
-                    {s.legId.slice(0, 8)}…
+                    {String(s.legId).slice(0, 8)}…
                   </TableCell>
                   <TableCell className="text-right font-mono">
                     {s.systemTotal}

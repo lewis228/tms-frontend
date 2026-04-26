@@ -52,7 +52,7 @@ export default function DispatchTimelineView() {
   if (error) return <Fallback />;
   if (isPending) return <Loader />;
 
-  const customerName = (id: string) =>
+  const customerName = (id: number) =>
     customersData?.items.find((c) => c.id === id)?.name ?? "—";
 
   // 분류: 범위 안 (any 약속이 범위 안) / 범위 밖 또는 미정.
@@ -73,9 +73,9 @@ export default function DispatchTimelineView() {
     else outRange.push(d);
   }
 
-  const handleRowClick = (id: string) => {
+  const handleRowClick = (id: number) => {
     const next = new URLSearchParams(searchParams);
-    next.set("do", id);
+    next.set("do", String(id));
     setSearchParams(next, { replace: true });
   };
 

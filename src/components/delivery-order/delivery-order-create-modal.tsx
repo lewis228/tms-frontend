@@ -59,7 +59,7 @@ export default function DeliveryOrderCreateModal() {
 
 function Body({ modal }: { modal: Modal }) {
   const [direction, setDirection] = useState<ShipmentDirection>("IMPORT");
-  const [customerId, setCustomerId] = useState("");
+  const [customerId, setCustomerId] = useState<number | null>(null);
   const [blNumber, setBlNumber] = useState("");
   const [bookingNumber, setBookingNumber] = useState("");
   const [reference, setReference] = useState("");
@@ -67,10 +67,10 @@ function Body({ modal }: { modal: Modal }) {
   const [containerSize, setContainerSize] = useState<ContainerSize | "">("");
   const [containerType, setContainerType] = useState("");
   const [chassisNumber, setChassisNumber] = useState("");
-  const [terminalId, setTerminalId] = useState("");
-  const [vesselId, setVesselId] = useState("");
-  const [deliveryLocationId, setDeliveryLocationId] = useState("");
-  const [returnLocationId, setReturnLocationId] = useState("");
+  const [terminalId, setTerminalId] = useState<number | null>(null);
+  const [vesselId, setVesselId] = useState<number | null>(null);
+  const [deliveryLocationId, setDeliveryLocationId] = useState<number | null>(null);
+  const [returnLocationId, setReturnLocationId] = useState<number | null>(null);
   const [eta, setEta] = useState("");
   const [pickupAppointment, setPickupAppointment] = useState("");
   const [deliveryAppointment, setDeliveryAppointment] = useState("");
@@ -127,10 +127,10 @@ function Body({ modal }: { modal: Modal }) {
       containerSize: containerSize || null,
       containerType: containerType.trim() || null,
       chassisNumber: chassisNumber.trim() || null,
-      terminalId: terminalId || null,
-      vesselId: vesselId || null,
-      deliveryLocationId: deliveryLocationId || null,
-      returnLocationId: returnLocationId || null,
+      terminalId,
+      vesselId,
+      deliveryLocationId,
+      returnLocationId,
       eta: toIsoOrNull(eta),
       pickupAppointment: toIsoOrNull(pickupAppointment),
       deliveryAppointment: toIsoOrNull(deliveryAppointment),

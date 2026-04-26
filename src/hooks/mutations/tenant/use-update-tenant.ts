@@ -5,7 +5,7 @@ import { QUERY_KEYS } from "@/lib/constants";
 import type { UseMutationCallback } from "@/types";
 
 type Vars = {
-  id: string;
+  id: number;
   payload: Partial<{
     name: string;
     planTier: string;

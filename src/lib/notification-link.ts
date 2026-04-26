@@ -6,19 +6,22 @@ import type { NotificationEntity } from "@/types";
 
 export function notificationLinkFor(n: NotificationEntity): string | null {
   const p = n.payload ?? {};
-  const ref = (k: string): string | null =>
-    typeof p[k] === "string" ? (p[k] as string) : null;
+  // payload 값은 백엔드 직렬화에 따라 number (entity FK) 또는 string 모두 가능.
+  const ref = (k: string): string | number | null => {
+    const v = p[k];
+    return typeof v === "string" || typeof v === "number" ? v : null;
+  };
 
   const deliveryOrderId = ref("deliveryOrderId");
   const settlementId = ref("settlementId");
 
   if (n.eventType.startsWith("settlement.")) {
-    return settlementId
+    return settlementId != null
       ? `/app/accounting?settlement=${settlementId}`
       : "/app/accounting";
   }
   if (n.eventType.startsWith("do.") || n.eventType.startsWith("leg.")) {
-    return deliveryOrderId
+    return deliveryOrderId != null
       ? `/app/delivery-orders?do=${deliveryOrderId}`
       : null;
   }

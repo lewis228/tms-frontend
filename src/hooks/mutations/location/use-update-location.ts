@@ -5,14 +5,14 @@ import { QUERY_KEYS } from "@/lib/constants";
 import type { LocationKind, UseMutationCallback } from "@/types";
 
 type Vars = {
-  id: string;
+  id: number;
   payload: Partial<{
     name: string;
     kind: LocationKind;
     address: string | null;
     latitude: number | null;
     longitude: number | null;
-    customerId: string | null;
+    customerId: number | null;
     isActive: boolean;
     note: string | null;
   }>;

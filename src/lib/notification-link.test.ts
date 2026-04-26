@@ -5,9 +5,9 @@ import type { NotificationEntity } from "@/types";
 
 function n(partial: Partial<NotificationEntity>): NotificationEntity {
   return {
-    id: "id",
-    tenantId: "t",
-    userId: "u",
+    id: 1,
+    tenantId: 1,
+    userId: 1,
     channel: "PUSH",
     status: "PENDING",
     eventType: "do.created",
@@ -75,14 +75,14 @@ describe("notificationLinkFor", () => {
     ).toBe("/app/accounting");
   });
 
-  it("ignores non-string payload values for ids", () => {
+  it("accepts number payload values for ids", () => {
     expect(
       notificationLinkFor(
         n({
           eventType: "do.created",
-          payload: { deliveryOrderId: 123 as unknown as string },
+          payload: { deliveryOrderId: 123 },
         }),
       ),
-    ).toBeNull();
+    ).toBe("/app/delivery-orders?do=123");
   });
 });

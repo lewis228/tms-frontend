@@ -34,22 +34,24 @@ export default function WebSocketProvider({
       realtimeWs.disconnect();
       return;
     }
-    realtimeWs.connect(tenantId);
+    realtimeWs.connect(String(tenantId));
 
     const off = realtimeWs.addListener((evt: ServerEvent) => {
       const payload = (evt.payload ?? {}) as Record<string, unknown>;
-      const deliveryOrderId =
-        typeof payload.deliveryOrderId === "string"
-          ? payload.deliveryOrderId
-          : null;
-      const legId =
-        typeof payload.legId === "string" ? payload.legId : null;
-      const driverId =
-        typeof payload.driverId === "string" ? payload.driverId : null;
-      const settlementId =
-        typeof payload.settlementId === "string"
-          ? payload.settlementId
-          : null;
+      // 백엔드 entity FK 는 number — payload 에선 직렬화에 따라 number/string 모두 가능.
+      const idFrom = (k: string): number | null => {
+        const v = payload[k];
+        if (typeof v === "number") return v;
+        if (typeof v === "string" && v !== "") {
+          const n = Number(v);
+          return Number.isFinite(n) ? n : null;
+        }
+        return null;
+      };
+      const deliveryOrderId = idFrom("deliveryOrderId");
+      const legId = idFrom("legId");
+      const driverId = idFrom("driverId");
+      const settlementId = idFrom("settlementId");
 
       // 모든 inbox 대상 이벤트 → 알림 캐시 무효화 (서버 fan-out 후 다음 fetch 에서 보임).
       const inboxTypes = new Set([

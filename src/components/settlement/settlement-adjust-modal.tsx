@@ -115,7 +115,7 @@ function Body({
       return;
     }
     mutate({
-      id: modal.settlementId,
+      id: modal.settlementId!,
       payload: {
         finalAmount: finalAmount.trim() || null,
         driverReportedAmount: driverReported.trim() || null,

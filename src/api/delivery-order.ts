@@ -10,7 +10,7 @@ import type {
 
 export type DeliveryOrderCreatePayload = {
   direction: ShipmentDirection;
-  customerId: string;
+  customerId: number;
   blNumber?: string | null;
   bookingNumber?: string | null;
   reference?: string | null;
@@ -18,10 +18,10 @@ export type DeliveryOrderCreatePayload = {
   containerSize?: ContainerSize | null;
   containerType?: string | null;
   chassisNumber?: string | null;
-  terminalId?: string | null;
-  vesselId?: string | null;
-  deliveryLocationId?: string | null;
-  returnLocationId?: string | null;
+  terminalId?: number | null;
+  vesselId?: number | null;
+  deliveryLocationId?: number | null;
+  returnLocationId?: number | null;
   eta?: string | null;
   pickupAppointment?: string | null;
   deliveryAppointment?: string | null;
@@ -51,7 +51,7 @@ export async function fetchDeliveryOrders(
 }
 
 export async function fetchDeliveryOrder(
-  id: string,
+  id: number,
 ): Promise<DeliveryOrderEntity> {
   const { data } = await api.get<DeliveryOrderEntity>(`/delivery-orders/${id}`);
   return data;
@@ -68,7 +68,7 @@ export async function createDeliveryOrder(
 }
 
 export async function updateDeliveryOrder(
-  id: string,
+  id: number,
   payload: DeliveryOrderUpdatePayload,
 ): Promise<DeliveryOrderEntity> {
   const { data } = await api.patch<DeliveryOrderEntity>(
@@ -79,7 +79,7 @@ export async function updateDeliveryOrder(
 }
 
 export async function transitionDeliveryOrder(
-  id: string,
+  id: number,
   target: DeliveryStatus,
 ): Promise<DeliveryOrderEntity> {
   const { data } = await api.post<DeliveryOrderEntity>(
@@ -89,6 +89,6 @@ export async function transitionDeliveryOrder(
   return data;
 }
 
-export async function deleteDeliveryOrder(id: string): Promise<void> {
+export async function deleteDeliveryOrder(id: number): Promise<void> {
   await api.delete(`/delivery-orders/${id}`);
 }

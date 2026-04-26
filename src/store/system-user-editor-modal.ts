@@ -3,11 +3,11 @@ import { combine, devtools } from "zustand/middleware";
 
 import type { UserEntity } from "@/types";
 
-type OpenCreate = { isOpen: true; type: "CREATE"; tenantId: string };
+type OpenCreate = { isOpen: true; type: "CREATE"; tenantId: number };
 type OpenEdit = {
   isOpen: true;
   type: "EDIT";
-  tenantId: string;
+  tenantId: number;
   user: UserEntity;
 };
 type CloseState = { isOpen: false };
@@ -19,9 +19,9 @@ const useSystemUserEditorModalStore = create(
   devtools(
     combine(initialState, (set) => ({
       actions: {
-        openCreate: (tenantId: string) =>
+        openCreate: (tenantId: number) =>
           set({ isOpen: true, type: "CREATE", tenantId }),
-        openEdit: (tenantId: string, user: UserEntity) =>
+        openEdit: (tenantId: number, user: UserEntity) =>
           set({ isOpen: true, type: "EDIT", tenantId, user }),
         close: () => set({ isOpen: false }),
       },

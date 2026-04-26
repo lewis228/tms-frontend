@@ -5,7 +5,7 @@ import { QUERY_KEYS } from "@/lib/constants";
 import type { UseMutationCallback } from "@/types";
 
 // deliveryOrderId 도 같이 받아 byDeliveryOrder 캐시까지 무효화.
-type Vars = { id: string; deliveryOrderId: string };
+type Vars = { id: number; deliveryOrderId: number };
 
 export function useDeleteLeg(callbacks?: UseMutationCallback) {
   const qc = useQueryClient();

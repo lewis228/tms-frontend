@@ -63,8 +63,8 @@ function Body({ modal }: { modal: OpenModal }) {
   const [longitude, setLongitude] = useState(
     modal.type === "CREATE" ? "" : (modal.location.longitude ?? ""),
   );
-  const [customerId, setCustomerId] = useState<string>(
-    modal.type === "CREATE" ? "" : (modal.location.customerId ?? ""),
+  const [customerId, setCustomerId] = useState<number | null>(
+    modal.type === "CREATE" ? null : (modal.location.customerId ?? null),
   );
   const [note, setNote] = useState(
     modal.type === "CREATE" ? "" : (modal.location.note ?? ""),
@@ -73,7 +73,7 @@ function Body({ modal }: { modal: OpenModal }) {
   const handleKindChange = (next: LocationKind) => {
     setKind(next);
     // kind 가 CUSTOMER 가 아니면 customerId 자동 제거. user 액션에 따른 명시적 동기화.
-    if (next !== "CUSTOMER") setCustomerId("");
+    if (next !== "CUSTOMER") setCustomerId(null);
   };
 
   const { mutate: createLocation, isPending: isCreatePending } =
@@ -119,7 +119,7 @@ function Body({ modal }: { modal: OpenModal }) {
       address: address.trim() || null,
       latitude: parseLatLng(latitude),
       longitude: parseLatLng(longitude),
-      customerId: kind === "CUSTOMER" ? customerId : null,
+      customerId: kind === "CUSTOMER" ? (customerId ?? null) : null,
       note: note.trim() || null,
     };
     if (modal.type === "CREATE") {

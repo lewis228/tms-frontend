@@ -15,7 +15,7 @@ const LEG_STATUS_COLOR: Record<LegStatus, string> = {
 export default function LegTimeline({
   deliveryOrderId,
 }: {
-  deliveryOrderId: string;
+  deliveryOrderId: number;
 }) {
   const { data, isPending, error } = useLegsByDoData(deliveryOrderId);
 
@@ -59,7 +59,7 @@ function LegRow({ leg, index }: { leg: LegEntity; index: number }) {
           </span>
         </div>
         <div className="text-muted-foreground">
-          {leg.driverId ? `Driver: ${leg.driverId.slice(0, 8)}…` : "Driver: —"}
+          {leg.driverId ? `Driver: ${String(leg.driverId).slice(0, 8)}…` : "Driver: —"}
           {leg.pickupDate
             ? ` · 픽업 ${new Date(leg.pickupDate).toLocaleString("ko-KR", { dateStyle: "short", timeStyle: "short" })}`
             : ""}

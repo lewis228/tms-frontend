@@ -28,7 +28,7 @@ export async function fetchUnreadCount(): Promise<number> {
 }
 
 export async function markNotificationRead(
-  id: string,
+  id: number,
 ): Promise<NotificationEntity> {
   const { data } = await api.post<NotificationEntity>(
     `/notifications/${id}/read`,

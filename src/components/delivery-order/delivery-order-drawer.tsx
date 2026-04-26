@@ -24,7 +24,8 @@ import { useDeliveryOrderByIdData } from "@/hooks/queries/use-delivery-order-by-
 
 export default function DeliveryOrderDrawer() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const id = searchParams.get("do");
+  const idStr = searchParams.get("do");
+  const id = idStr ? Number(idStr) : null;
 
   const { data, isPending, error } = useDeliveryOrderByIdData(id);
 
@@ -48,7 +49,7 @@ export default function DeliveryOrderDrawer() {
       <SheetContent className="!max-w-2xl !w-full overflow-y-auto sm:!max-w-2xl">
         <SheetHeader>
           <SheetTitle className="font-sans">
-            {data ? `D/O ${data.containerNumber ?? data.id.slice(0, 8)}` : "D/O"}
+            {data ? `D/O ${data.containerNumber ?? String(data.id).slice(0, 8)}` : "D/O"}
           </SheetTitle>
         </SheetHeader>
         <div className="px-4 pb-6">

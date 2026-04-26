@@ -11,7 +11,7 @@ export async function fetchVessels(
   return data;
 }
 
-export async function fetchVessel(id: string): Promise<VesselEntity> {
+export async function fetchVessel(id: number): Promise<VesselEntity> {
   const { data } = await api.get<VesselEntity>(`/vessels/${id}`);
   return data;
 }
@@ -27,7 +27,7 @@ export async function createVessel(payload: {
 }
 
 export async function updateVessel(
-  id: string,
+  id: number,
   payload: Partial<{
     name: string;
     imoNumber: string | null;
@@ -40,6 +40,6 @@ export async function updateVessel(
   return data;
 }
 
-export async function deleteVessel(id: string): Promise<void> {
+export async function deleteVessel(id: number): Promise<void> {
   await api.delete(`/vessels/${id}`);
 }

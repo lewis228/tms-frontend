@@ -10,14 +10,14 @@ import type {
 } from "@/types";
 
 export type LegCreatePayload = {
-  deliveryOrderId: string;
+  deliveryOrderId: number;
   step: DeliveryStatus;
   moveType: MoveType;
   serviceType: ServiceType;
-  driverId?: string | null;
-  pickupLocationId?: string | null;
+  driverId?: number | null;
+  pickupLocationId?: number | null;
   pickupDate?: string | null;
-  deliveryLocationId?: string | null;
+  deliveryLocationId?: number | null;
   deliveryDate?: string | null;
   note?: string | null;
 };
@@ -34,7 +34,7 @@ export async function fetchLegs(
 }
 
 export async function fetchLegsByDeliveryOrder(
-  deliveryOrderId: string,
+  deliveryOrderId: number,
 ): Promise<LegEntity[]> {
   const { data } = await api.get<PagedResponse<LegEntity>>("/legs", {
     params: { deliveryOrderId, page: 1, size: 100 },
@@ -43,7 +43,7 @@ export async function fetchLegsByDeliveryOrder(
 }
 
 export async function fetchLegsByDriver(
-  driverId: string,
+  driverId: number,
 ): Promise<LegEntity[]> {
   const { data } = await api.get<PagedResponse<LegEntity>>("/legs", {
     params: { driverId, page: 1, size: 100 },
@@ -51,7 +51,7 @@ export async function fetchLegsByDriver(
   return data.items;
 }
 
-export async function fetchLeg(id: string): Promise<LegEntity> {
+export async function fetchLeg(id: number): Promise<LegEntity> {
   const { data } = await api.get<LegEntity>(`/legs/${id}`);
   return data;
 }
@@ -64,7 +64,7 @@ export async function createLeg(
 }
 
 export async function updateLeg(
-  id: string,
+  id: number,
   payload: LegUpdatePayload,
 ): Promise<LegEntity> {
   const { data } = await api.patch<LegEntity>(`/legs/${id}`, payload);
@@ -72,7 +72,7 @@ export async function updateLeg(
 }
 
 export async function transitionLeg(
-  id: string,
+  id: number,
   target: LegStatus,
   failureReason?: string | null,
 ): Promise<LegEntity> {
@@ -83,6 +83,6 @@ export async function transitionLeg(
   return data;
 }
 
-export async function deleteLeg(id: string): Promise<void> {
+export async function deleteLeg(id: number): Promise<void> {
   await api.delete(`/legs/${id}`);
 }

@@ -76,17 +76,17 @@ function Body({ modal }: { modal: OpenModal }) {
   const [serviceType, setServiceType] = useState<ServiceType>(
     modal.type === "CREATE" ? "DROP" : modal.leg.serviceType,
   );
-  const [driverId, setDriverId] = useState(
-    modal.type === "CREATE" ? "" : (modal.leg.driverId ?? ""),
+  const [driverId, setDriverId] = useState<number | null>(
+    modal.type === "CREATE" ? null : (modal.leg.driverId ?? null),
   );
-  const [pickupLocationId, setPickupLocationId] = useState(
-    modal.type === "CREATE" ? "" : (modal.leg.pickupLocationId ?? ""),
+  const [pickupLocationId, setPickupLocationId] = useState<number | null>(
+    modal.type === "CREATE" ? null : (modal.leg.pickupLocationId ?? null),
   );
   const [pickupDate, setPickupDate] = useState(
     modal.type === "CREATE" ? "" : toLocalInput(modal.leg.pickupDate),
   );
-  const [deliveryLocationId, setDeliveryLocationId] = useState(
-    modal.type === "CREATE" ? "" : (modal.leg.deliveryLocationId ?? ""),
+  const [deliveryLocationId, setDeliveryLocationId] = useState<number | null>(
+    modal.type === "CREATE" ? null : (modal.leg.deliveryLocationId ?? null),
   );
   const [deliveryDate, setDeliveryDate] = useState(
     modal.type === "CREATE" ? "" : toLocalInput(modal.leg.deliveryDate),
@@ -120,10 +120,10 @@ function Body({ modal }: { modal: OpenModal }) {
       step,
       moveType,
       serviceType,
-      driverId: driverId || null,
-      pickupLocationId: pickupLocationId || null,
+      driverId,
+      pickupLocationId,
       pickupDate: toIsoOrNull(pickupDate),
-      deliveryLocationId: deliveryLocationId || null,
+      deliveryLocationId,
       deliveryDate: toIsoOrNull(deliveryDate),
       note: note.trim() || null,
     };

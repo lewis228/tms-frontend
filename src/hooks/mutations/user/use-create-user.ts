@@ -5,7 +5,7 @@ import { QUERY_KEYS } from "@/lib/constants";
 import type { UserRole, UseMutationCallback } from "@/types";
 
 type Vars = {
-  tenantId: string;
+  tenantId: number;
   payload: {
     email: string;
     name: string;

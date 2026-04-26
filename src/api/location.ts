@@ -11,7 +11,7 @@ export async function fetchLocations(
   return data;
 }
 
-export async function fetchLocation(id: string): Promise<LocationEntity> {
+export async function fetchLocation(id: number): Promise<LocationEntity> {
   const { data } = await api.get<LocationEntity>(`/locations/${id}`);
   return data;
 }
@@ -22,7 +22,7 @@ export async function createLocation(payload: {
   address?: string | null;
   latitude?: number | null;
   longitude?: number | null;
-  customerId?: string | null;
+  customerId?: number | null;
   note?: string | null;
 }): Promise<LocationEntity> {
   const { data } = await api.post<LocationEntity>("/locations", payload);
@@ -30,14 +30,14 @@ export async function createLocation(payload: {
 }
 
 export async function updateLocation(
-  id: string,
+  id: number,
   payload: Partial<{
     name: string;
     kind: LocationKind;
     address: string | null;
     latitude: number | null;
     longitude: number | null;
-    customerId: string | null;
+    customerId: number | null;
     isActive: boolean;
     note: string | null;
   }>,
@@ -46,6 +46,6 @@ export async function updateLocation(
   return data;
 }
 
-export async function deleteLocation(id: string): Promise<void> {
+export async function deleteLocation(id: number): Promise<void> {
   await api.delete(`/locations/${id}`);
 }

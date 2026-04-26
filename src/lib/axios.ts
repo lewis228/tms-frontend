@@ -47,7 +47,7 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const role = getCurrentRoleModule();
   const tenantId = getCurrentTenantIdModule();
   if (role === "SUPER_ADMIN" && tenantId && !config.url?.startsWith("/auth/")) {
-    headers["X-Tenant-Id"] = tenantId;
+    headers["X-Tenant-Id"] = String(tenantId);
   }
 
   if (!headers["X-Request-ID"]) {

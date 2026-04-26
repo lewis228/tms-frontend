@@ -3,18 +3,18 @@
 import { create } from "zustand";
 import { combine, devtools } from "zustand/middleware";
 
-type State = { isOpen: boolean; settlementId: string };
+type State = { isOpen: boolean; settlementId: number | null };
 
-const initial: State = { isOpen: false, settlementId: "" };
+const initial: State = { isOpen: false, settlementId: null };
 
 function makeStore(name: string) {
   return create(
     devtools(
       combine(initial, (set) => ({
         actions: {
-          open: (settlementId: string) =>
+          open: (settlementId: number) =>
             set({ isOpen: true, settlementId }),
-          close: () => set({ isOpen: false, settlementId: "" }),
+          close: () => set({ isOpen: false, settlementId: null }),
         },
       })),
       { name },

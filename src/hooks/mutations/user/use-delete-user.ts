@@ -4,7 +4,7 @@ import { deleteUser } from "@/api/user";
 import { QUERY_KEYS } from "@/lib/constants";
 import type { UseMutationCallback } from "@/types";
 
-type Vars = { id: string; tenantId: string };
+type Vars = { id: number; tenantId: number };
 
 export function useDeleteUser(callbacks?: UseMutationCallback) {
   const qc = useQueryClient();

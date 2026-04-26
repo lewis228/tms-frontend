@@ -11,9 +11,9 @@ import type {
 } from "@/types";
 
 export type SettlementEntity = {
-  id: string;
-  tenantId: string;
-  legId: string;
+  id: number;
+  tenantId: number;
+  legId: number;
   systemTotal: string;
   driverReportedAmount: string | null;
   discrepancy: string | null;
@@ -69,13 +69,13 @@ export async function fetchSettlements(
   return data;
 }
 
-export async function fetchSettlement(id: string): Promise<SettlementEntity> {
+export async function fetchSettlement(id: number): Promise<SettlementEntity> {
   const { data } = await api.get<SettlementEntity>(`/settlements/${id}`);
   return data;
 }
 
 export async function fetchSettlementExtras(
-  id: string,
+  id: number,
 ): Promise<ExtraChargeEntity[]> {
   const { data } = await api.get<ExtraChargeEntity[]>(
     `/settlements/${id}/extras`,
@@ -84,7 +84,7 @@ export async function fetchSettlementExtras(
 }
 
 export async function fetchSettlementAuditLogs(
-  id: string,
+  id: number,
 ): Promise<SettlementAuditLog[]> {
   const { data } = await api.get<SettlementAuditLog[]>(
     `/settlements/${id}/audit-logs`,
@@ -93,7 +93,7 @@ export async function fetchSettlementAuditLogs(
 }
 
 export async function calculateSettlement(
-  id: string,
+  id: number,
   payload: SettlementCalculatePayload,
 ): Promise<SettlementEntity> {
   const { data } = await api.post<SettlementEntity>(
@@ -104,7 +104,7 @@ export async function calculateSettlement(
 }
 
 export async function adjustSettlement(
-  id: string,
+  id: number,
   payload: SettlementAdjustPayload,
 ): Promise<SettlementEntity> {
   const { data } = await api.post<SettlementEntity>(
@@ -115,7 +115,7 @@ export async function adjustSettlement(
 }
 
 export async function approveSettlement(
-  id: string,
+  id: number,
   payload: SettlementApprovePayload,
 ): Promise<SettlementEntity> {
   const { data } = await api.post<SettlementEntity>(
@@ -126,7 +126,7 @@ export async function approveSettlement(
 }
 
 export async function unapproveSettlement(
-  id: string,
+  id: number,
   payload: SettlementUnapprovePayload,
 ): Promise<SettlementEntity> {
   const { data } = await api.post<SettlementEntity>(

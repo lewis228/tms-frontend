@@ -14,7 +14,7 @@ export default function UrgentList({
   rows: UrgentRow[];
   customers: CustomerEntity[];
 }) {
-  const customerName = (id: string) =>
+  const customerName = (id: number) =>
     customers.find((c) => c.id === id)?.name ?? "—";
 
   if (rows.length === 0) {

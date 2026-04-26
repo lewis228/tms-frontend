@@ -5,8 +5,8 @@ import { QUERY_KEYS } from "@/lib/constants";
 import type { UserRole, UseMutationCallback } from "@/types";
 
 type Vars = {
-  id: string;
-  tenantId: string;
+  id: number;
+  tenantId: number;
   payload: Partial<{
     name: string;
     phone: string | null;

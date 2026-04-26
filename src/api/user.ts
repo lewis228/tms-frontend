@@ -6,7 +6,7 @@
 import api from "@/lib/axios";
 import type { PagedResponse, UserEntity, UserRole } from "@/types";
 
-function tenantHeaders(tenantId?: string) {
+function tenantHeaders(tenantId?: number) {
   return tenantId ? { "X-Tenant-Id": tenantId } : undefined;
 }
 
@@ -25,7 +25,7 @@ export async function changeMyPassword(payload: {
 
 export async function listUsers(
   params: { page?: number; size?: number } = {},
-  tenantId?: string,
+  tenantId?: number,
 ): Promise<PagedResponse<UserEntity>> {
   const { data } = await api.get<PagedResponse<UserEntity>>("/users", {
     params,
@@ -34,7 +34,7 @@ export async function listUsers(
   return data;
 }
 
-export async function fetchUser(id: string): Promise<UserEntity> {
+export async function fetchUser(id: number): Promise<UserEntity> {
   const { data } = await api.get<UserEntity>(`/users/${id}`);
   return data;
 }
@@ -46,9 +46,9 @@ export async function createUser(
     password: string;
     role: UserRole;
     phone?: string | null;
-    tenantId?: string | null;
+    tenantId?: number | null;
   },
-  tenantId?: string,
+  tenantId?: number,
 ): Promise<UserEntity> {
   const { data } = await api.post<UserEntity>("/users", payload, {
     headers: tenantHeaders(tenantId),
@@ -57,14 +57,14 @@ export async function createUser(
 }
 
 export async function updateUser(
-  id: string,
+  id: number,
   payload: Partial<{
     name: string;
     phone: string | null;
     isActive: boolean;
     role: UserRole;
   }>,
-  tenantId?: string,
+  tenantId?: number,
 ): Promise<UserEntity> {
   const { data } = await api.patch<UserEntity>(`/users/${id}`, payload, {
     headers: tenantHeaders(tenantId),
@@ -72,7 +72,7 @@ export async function updateUser(
   return data;
 }
 
-export async function deleteUser(id: string, tenantId?: string): Promise<void> {
+export async function deleteUser(id: number, tenantId?: number): Promise<void> {
   await api.delete(`/users/${id}`, {
     headers: tenantHeaders(tenantId),
   });

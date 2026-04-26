@@ -51,13 +51,13 @@ export default function DispatchBoardView() {
   for (const s of STATUS_ORDER) grouped.set(s, []);
   for (const d of data.items) grouped.get(d.status)?.push(d);
 
-  const customerName = (id: string) =>
+  const customerName = (id: number) =>
     customersData?.items.find((c) => c.id === id)?.name ?? "—";
 
   const handleDragEnd = (e: DragEndEvent) => {
     const { active, over } = e;
     if (!over) return;
-    const orderId = String(active.id);
+    const orderId = Number(active.id);
     const target = String(over.id) as DeliveryStatus;
     const order = data.items.find((d) => d.id === orderId);
     if (!order) return;
@@ -71,10 +71,10 @@ export default function DispatchBoardView() {
     transition({ id: orderId, target });
   };
 
-  const openDrawer = (id: string) => {
+  const openDrawer = (id: number) => {
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
-      next.set("do", id);
+      next.set("do", String(id));
       return next;
     }, { replace: true });
   };
@@ -107,8 +107,8 @@ function BoardColumn({
 }: {
   status: DeliveryStatus;
   items: DeliveryOrderEntity[];
-  customerName: (id: string) => string;
-  onCardClick: (id: string) => void;
+  customerName: (id: number) => string;
+  onCardClick: (id: number) => void;
 }) {
   const { setNodeRef, isOver, active } = useDroppable({ id: status });
   const activeStatus = (active?.data.current as { status?: DeliveryStatus } | undefined)

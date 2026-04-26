@@ -11,7 +11,7 @@ export async function fetchCustomers(
   return data;
 }
 
-export async function fetchCustomer(id: string): Promise<CustomerEntity> {
+export async function fetchCustomer(id: number): Promise<CustomerEntity> {
   const { data } = await api.get<CustomerEntity>(`/customers/${id}`);
   return data;
 }
@@ -30,7 +30,7 @@ export async function createCustomer(payload: {
 }
 
 export async function updateCustomer(
-  id: string,
+  id: number,
   payload: Partial<{
     name: string;
     code: string | null;
@@ -46,6 +46,6 @@ export async function updateCustomer(
   return data;
 }
 
-export async function deleteCustomer(id: string): Promise<void> {
+export async function deleteCustomer(id: number): Promise<void> {
   await api.delete(`/customers/${id}`);
 }

@@ -25,7 +25,7 @@ import {
 import type { UserEntity } from "@/types";
 
 export default function SystemUserList() {
-  const [selectedTenantId, setSelectedTenantId] = useState<string | null>(null);
+  const [selectedTenantId, setSelectedTenantId] = useState<number | null>(null);
   const [page, setPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
@@ -90,7 +90,7 @@ export default function SystemUserList() {
         <select
           value={tenantId ?? ""}
           onChange={(e) => {
-            setSelectedTenantId(e.target.value || null);
+            setSelectedTenantId(e.target.value ? Number(e.target.value) : null);
             setPage(1);
           }}
           className="rounded-md border bg-background px-3 py-2 text-sm"

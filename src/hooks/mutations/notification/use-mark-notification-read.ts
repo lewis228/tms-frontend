@@ -21,7 +21,7 @@ type Ctx = {
 
 export function useMarkNotificationRead(callbacks?: UseMutationCallback) {
   const qc = useQueryClient();
-  return useMutation<NotificationEntity, Error, string, Ctx>({
+  return useMutation<NotificationEntity, Error, number, Ctx>({
     mutationFn: (id) => markNotificationRead(id),
     onMutate: async (id) => {
       await qc.cancelQueries({ queryKey: QUERY_KEYS.notification.all });

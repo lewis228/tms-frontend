@@ -93,7 +93,7 @@ function Body({
   const handleSave = () => {
     if (!systemTotal.trim()) return;
     mutate({
-      id: modal.settlementId,
+      id: modal.settlementId!,
       payload: {
         systemTotal: systemTotal.trim(),
         extraCharges: rows.filter((r) => r.type.trim() !== ""),

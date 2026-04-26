@@ -41,7 +41,7 @@ export default function LocationList() {
   const openAlert = useOpenAlertModal();
 
   const customerNameById = useMemo(() => {
-    const m = new Map<string, string>();
+    const m = new Map<number, string>();
     for (const c of customersData?.items ?? []) m.set(c.id, c.name);
     return m;
   }, [customersData]);

@@ -49,13 +49,13 @@ export default function DispatchListView() {
   const openCreate = useOpenCreateDeliveryOrderModal();
 
   const customerNameById = useMemo(() => {
-    const m = new Map<string, string>();
+    const m = new Map<number, string>();
     for (const c of customersData?.items ?? []) m.set(c.id, c.name);
     return m;
   }, [customersData]);
 
   const driverNameById = useMemo(() => {
-    const m = new Map<string, string>();
+    const m = new Map<number, string>();
     for (const d of driversData?.items ?? []) m.set(d.id, d.name);
     return m;
   }, [driversData]);
@@ -74,9 +74,9 @@ export default function DispatchListView() {
     });
   }, [data, search, statusFilter]);
 
-  const handleRowClick = (id: string) => {
+  const handleRowClick = (id: number) => {
     const next = new URLSearchParams(searchParams);
-    next.set("do", id);
+    next.set("do", String(id));
     setSearchParams(next, { replace: true });
   };
 
@@ -142,7 +142,7 @@ export default function DispatchListView() {
                   <TableRow
                     key={d.id}
                     onClick={() => handleRowClick(d.id)}
-                    className={`cursor-pointer ${activeId === d.id ? "bg-accent/40" : ""}`}
+                    className={`cursor-pointer ${activeId === String(d.id) ? "bg-accent/40" : ""}`}
                   >
                     <TableCell>
                       <StatusBadge status={d.status} />

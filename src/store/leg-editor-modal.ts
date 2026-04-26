@@ -3,7 +3,7 @@ import { combine, devtools } from "zustand/middleware";
 
 import type { LegEntity } from "@/types";
 
-type OpenCreate = { isOpen: true; type: "CREATE"; deliveryOrderId: string };
+type OpenCreate = { isOpen: true; type: "CREATE"; deliveryOrderId: number };
 type OpenEdit = { isOpen: true; type: "EDIT"; leg: LegEntity };
 type CloseState = { isOpen: false };
 type State = CloseState | OpenCreate | OpenEdit;
@@ -14,7 +14,7 @@ const useLegEditorModalStore = create(
   devtools(
     combine(initialState, (set) => ({
       actions: {
-        openCreate: (deliveryOrderId: string) =>
+        openCreate: (deliveryOrderId: number) =>
           set({ isOpen: true, type: "CREATE", deliveryOrderId }),
         openEdit: (leg: LegEntity) =>
           set({ isOpen: true, type: "EDIT", leg }),

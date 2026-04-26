@@ -50,7 +50,7 @@ function Body({ modal }: { modal: Modal }) {
   const handleSave = () => {
     if (!reason.trim()) return;
     mutate({
-      id: modal.settlementId,
+      id: modal.settlementId!,
       payload: { reason: reason.trim() },
     });
   };

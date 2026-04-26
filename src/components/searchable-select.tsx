@@ -27,15 +27,15 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-type Item = { id: string };
+type Item = { id: number };
 
 type Props<T extends Item> = {
-  value: string;
-  onSelect: (id: string, item: T | null) => void;
+  value: number | null;
+  onSelect: (id: number | null, item: T | null) => void;
   fetchList: (q: string | undefined) => Promise<T[]>;
   /** EDIT 시 미리 선택된 id 의 entity 를 lazy hydrate. 없으면 button 라벨이
    *  fetchList 첫 결과에서 찾아질 때까지 placeholder 로 보임. */
-  fetchById?: (id: string) => Promise<T>;
+  fetchById?: (id: number) => Promise<T>;
   queryKeyBase: readonly unknown[];
   getLabel: (item: T) => string;
   placeholder?: string;
@@ -74,8 +74,8 @@ export default function SearchableSelect<T extends Item>({
   // EDIT hydration — value 있으면 byId 로 미리 채워둠
   const { data: hydrated } = useQuery({
     queryKey: [...queryKeyBase, "byId", value],
-    queryFn: () => fetchById!(value),
-    enabled: !!value && !!fetchById,
+    queryFn: () => fetchById!(value!),
+    enabled: value != null && !!fetchById,
   });
 
   // 선택 id 가 fetched 에 있으면 그걸, 없으면 hydrated, 없으면 null
@@ -124,12 +124,12 @@ export default function SearchableSelect<T extends Item>({
                   <button
                     type="button"
                     onClick={() => {
-                      onSelect("", null);
+                      onSelect(null, null);
                       setOpen(false);
                     }}
                     className={
                       "block w-full px-3 py-2 text-left text-sm hover:bg-accent/50 " +
-                      (value === "" ? "bg-accent/30 font-medium" : "")
+                      (value === null ? "bg-accent/30 font-medium" : "")
                     }
                   >
                     {emptyLabel}

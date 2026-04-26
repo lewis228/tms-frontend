@@ -7,7 +7,7 @@ import {
 import { QUERY_KEYS } from "@/lib/constants";
 import type { UseMutationCallback } from "@/types";
 
-type Vars = { id: string; payload: RateSettingUpdatePayload };
+type Vars = { id: number; payload: RateSettingUpdatePayload };
 
 export function useUpdateRateSetting(callbacks?: UseMutationCallback) {
   const qc = useQueryClient();
