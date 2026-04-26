@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,7 @@ import {
 import type { UserEntity } from "@/types";
 
 export default function SystemUserList() {
+  const { t } = useTranslation();
   const [selectedTenantId, setSelectedTenantId] = useState<number | null>(null);
   const [page, setPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
@@ -49,7 +51,7 @@ export default function SystemUserList() {
 
   const { mutate: deleteU } = useDeleteUser({
     onSuccess: () =>
-      toast.success("사용자가 삭제되었습니다.", { position: "top-center" }),
+      toast.success(t("toast.deleted"), { position: "top-center" }),
     onError: (err) =>
       toast.error(generateErrorMessage(err), { position: "top-center" }),
   });
@@ -71,7 +73,7 @@ export default function SystemUserList() {
   if (!tenants || tenants.length === 0) {
     return (
       <p className="rounded-md border bg-background p-6 text-center text-sm text-muted-foreground">
-        Tenant 가 없습니다. /app/system/tenants 에서 먼저 생성하세요.
+        {t("systemUser.noTenants")}
       </p>
     );
   }
@@ -79,8 +81,8 @@ export default function SystemUserList() {
   const handleDelete = (u: UserEntity) => {
     if (!tenantId) return;
     openAlert({
-      title: `'${u.name}' 사용자를 삭제하시겠습니까?`,
-      description: "복구할 수 없습니다.",
+      title: t("systemUser.deletePromptTitle", { name: u.name ?? "" }),
+      description: t("systemUser.deletePromptDesc"),
       onPositive: () => deleteU({ id: u.id, tenantId }),
     });
   };
@@ -96,15 +98,15 @@ export default function SystemUserList() {
           }}
           className="rounded-md border bg-background px-3 py-2 text-sm"
         >
-          {tenants.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.name}
-              {t.companyName ? ` · ${t.companyName}` : ""}
+          {tenants.map((tt) => (
+            <option key={tt.id} value={tt.id}>
+              {tt.name}
+              {tt.companyName ? ` · ${tt.companyName}` : ""}
             </option>
           ))}
         </select>
         <Input
-          placeholder="이메일 / 이름 / role 검색"
+          placeholder={t("systemUser.searchPlaceholder")}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           className="w-72"
@@ -113,7 +115,7 @@ export default function SystemUserList() {
           onClick={() => tenantId && openCreate(tenantId)}
           disabled={!tenantId}
         >
-          새 사용자
+          {t("systemUser.newButton")}
         </Button>
       </div>
 
@@ -127,13 +129,13 @@ export default function SystemUserList() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>이메일</TableHead>
-                  <TableHead>이름</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>전화</TableHead>
-                  <TableHead>Active</TableHead>
-                  <TableHead>가입일</TableHead>
-                  <TableHead className="text-right">동작</TableHead>
+                  <TableHead>{t("field.email")}</TableHead>
+                  <TableHead>{t("field.name")}</TableHead>
+                  <TableHead>{t("field.role")}</TableHead>
+                  <TableHead>{t("field.phone")}</TableHead>
+                  <TableHead>{t("common.active")}</TableHead>
+                  <TableHead>{t("field.joinedAt")}</TableHead>
+                  <TableHead className="text-right">{t("common.actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -143,7 +145,7 @@ export default function SystemUserList() {
                       colSpan={7}
                       className="text-center text-muted-foreground"
                     >
-                      데이터가 없습니다.
+                      {t("common.noData")}
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -172,7 +174,7 @@ export default function SystemUserList() {
                           onClick={() => tenantId && openEdit(tenantId, u)}
                           disabled={u.role === "SUPER_ADMIN"}
                         >
-                          수정
+                          {t("common.edit")}
                         </Button>
                         <Button
                           variant="ghost"
@@ -181,7 +183,7 @@ export default function SystemUserList() {
                           onClick={() => handleDelete(u)}
                           disabled={u.role === "SUPER_ADMIN"}
                         >
-                          삭제
+                          {t("common.delete")}
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -193,7 +195,7 @@ export default function SystemUserList() {
 
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">
-              전체 {data.total}건 · {data.page}/{Math.max(1, data.pages)} 페이지
+              {t("common.totalCount", { count: data.total })} · {data.page}/{Math.max(1, data.pages)}
             </span>
             <div className="flex gap-2">
               <Button
@@ -202,7 +204,7 @@ export default function SystemUserList() {
                 disabled={page <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
               >
-                이전
+                {t("common.previous")}
               </Button>
               <Button
                 variant="outline"
@@ -210,7 +212,7 @@ export default function SystemUserList() {
                 disabled={page >= data.pages}
                 onClick={() => setPage((p) => p + 1)}
               >
-                다음
+                {t("common.next")}
               </Button>
             </div>
           </div>

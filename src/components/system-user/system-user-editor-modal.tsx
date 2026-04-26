@@ -3,6 +3,7 @@
 // CREATE: email/name/password/role/phone. SUPER_ADMIN 은 셀렉트 비활성.
 // EDIT: name/phone/isActive/role. email/password 는 별도 (User 셀프 변경).
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -46,6 +47,7 @@ export default function SystemUserEditorModal() {
 }
 
 function Body({ modal }: { modal: OpenModal }) {
+  const { t } = useTranslation();
   const [email, setEmail] = useState(
     modal.type === "CREATE" ? "" : (modal.user.email ?? ""),
   );
@@ -65,7 +67,7 @@ function Body({ modal }: { modal: OpenModal }) {
 
   const { mutate: createU, isPending: isCreatePending } = useCreateUser({
     onSuccess: () => {
-      toast.success("사용자가 생성되었습니다.", { position: "top-center" });
+      toast.success(t("toast.created"), { position: "top-center" });
       modal.actions.close();
     },
     onError: (err) =>
@@ -74,7 +76,7 @@ function Body({ modal }: { modal: OpenModal }) {
 
   const { mutate: updateU, isPending: isUpdatePending } = useUpdateUser({
     onSuccess: () => {
-      toast.success("사용자가 수정되었습니다.", { position: "top-center" });
+      toast.success(t("toast.updated"), { position: "top-center" });
       modal.actions.close();
     },
     onError: (err) =>
@@ -87,13 +89,15 @@ function Body({ modal }: { modal: OpenModal }) {
     if (!name.trim()) return;
     if (modal.type === "CREATE") {
       if (!email.trim() || !password.trim()) {
-        toast.error("이메일과 비밀번호를 입력하세요.", {
+        toast.error(t("systemUser.validation.fieldsRequired"), {
           position: "top-center",
         });
         return;
       }
       if (password.length < 8) {
-        toast.error("비밀번호는 8자 이상.", { position: "top-center" });
+        toast.error(t("systemUser.validation.passwordTooShort"), {
+          position: "top-center",
+        });
         return;
       }
       createU({
@@ -124,11 +128,11 @@ function Body({ modal }: { modal: OpenModal }) {
     <>
       <DialogHeader>
         <DialogTitle className="font-sans">
-          {modal.type === "CREATE" ? "사용자 생성" : "사용자 수정"}
+          {t(modal.type === "CREATE" ? "systemUser.createTitle" : "systemUser.editTitle")}
         </DialogTitle>
       </DialogHeader>
       <div className="flex flex-col gap-3">
-        <Field label="이메일" required>
+        <Field label={t("field.email")} required>
           <Input
             type="email"
             value={email}
@@ -136,7 +140,7 @@ function Body({ modal }: { modal: OpenModal }) {
             disabled={isPending || modal.type === "EDIT"}
           />
         </Field>
-        <Field label="이름" required>
+        <Field label={t("field.name")} required>
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -145,7 +149,7 @@ function Body({ modal }: { modal: OpenModal }) {
           />
         </Field>
         {modal.type === "CREATE" && (
-          <Field label="비밀번호 (최소 8자)" required>
+          <Field label={t("systemUser.field.passwordMin")} required>
             <Input
               type="password"
               value={password}
@@ -155,14 +159,14 @@ function Body({ modal }: { modal: OpenModal }) {
             />
           </Field>
         )}
-        <Field label="전화">
+        <Field label={t("field.phone")}>
           <Input
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             disabled={isPending}
           />
         </Field>
-        <Field label="Role" required>
+        <Field label={t("field.role")} required>
           <select
             value={role}
             onChange={(e) => setRole(e.target.value as UserRole)}
@@ -172,16 +176,9 @@ function Body({ modal }: { modal: OpenModal }) {
             {ROLES.map((r) => (
               <option key={r} value={r} disabled={r === "SUPER_ADMIN"}>
                 {r}
-                {r === "SUPER_ADMIN" ? " (API 생성 불가)" : ""}
               </option>
             ))}
           </select>
-          {role === "DRIVER" && (
-            <span className="text-xs text-amber-600">
-              ⚠ Driver 메타(license/truck)까지 입력하려면 /app/master/drivers
-              에서 생성하세요.
-            </span>
-          )}
         </Field>
         {modal.type === "EDIT" && (
           <div className="flex items-center gap-2 rounded-md border bg-muted/30 px-3 py-2 text-sm">
@@ -192,7 +189,7 @@ function Body({ modal }: { modal: OpenModal }) {
               onChange={(e) => setIsActive(e.target.checked)}
               disabled={isPending}
             />
-            <label htmlFor="isActive">Active</label>
+            <label htmlFor="isActive">{t("common.active")}</label>
           </div>
         )}
       </div>
@@ -202,7 +199,7 @@ function Body({ modal }: { modal: OpenModal }) {
           onClick={() => modal.actions.close()}
           disabled={isPending}
         >
-          취소
+          {t("common.cancel")}
         </Button>
         <Button
           onClick={handleSave}
@@ -212,7 +209,7 @@ function Body({ modal }: { modal: OpenModal }) {
             (modal.type === "CREATE" && (!email.trim() || password.length < 8))
           }
         >
-          저장
+          {t("common.save")}
         </Button>
       </div>
     </>
