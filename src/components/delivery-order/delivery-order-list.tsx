@@ -4,7 +4,7 @@
 // - 행 클릭 → URL ?do=:id (Drawer 가 open)
 // - 새 D/O 버튼 → 풀스크린 모달
 import { useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -121,13 +121,14 @@ export default function DeliveryOrderList() {
               <TableHead>B/L</TableHead>
               <TableHead>픽업</TableHead>
               <TableHead>배송</TableHead>
+              <TableHead className="w-16 text-right"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filtered.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={7}
+                  colSpan={8}
                   className="text-center text-muted-foreground"
                 >
                   데이터가 없습니다.
@@ -168,6 +169,15 @@ export default function DeliveryOrderList() {
                           { dateStyle: "short", timeStyle: "short" },
                         )
                       : "—"}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Link
+                      to={`/app/delivery-orders/${d.id}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-xs text-muted-foreground hover:text-foreground hover:underline"
+                    >
+                      상세 →
+                    </Link>
                   </TableCell>
                 </TableRow>
               ))
