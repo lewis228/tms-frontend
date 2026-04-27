@@ -28,14 +28,19 @@ export type NavIconName =
   | "ShieldCheck"
   | "Palette"
   | "Receipt"
-  | "BadgeDollarSign";
+  | "BadgeDollarSign"
+  | "Tag"
+  | "Plug"
+  | "CreditCard";
 
 export type NavLeaf = {
   type: "leaf";
-  label: string; // 한국어 라벨 (i18n 도입 시 키로 전환).
+  label: string;
   iconName: NavIconName;
   path: string;
   requiredRole?: UserRole;
+  /** Hidden from the sidebar but still used for breadcrumb / favorites. */
+  hidden?: boolean;
 };
 
 export type NavSection = {
@@ -51,33 +56,33 @@ export type NavNode = NavLeaf | NavSection;
 export const NAV_CONFIG: NavNode[] = [
   {
     type: "leaf",
-    label: "Dashboard",
+    label: "nav.dashboard",
     iconName: "LayoutDashboard",
     path: "dashboard",
   },
   {
     type: "section",
-    label: "Operations",
+    label: "nav.operations",
     iconName: "Truck",
     requiredRole: "DISPATCHER",
     children: [
       {
         type: "leaf",
-        label: "Dispatch",
+        label: "nav.dispatch",
         iconName: "Truck",
         path: "dispatch",
         requiredRole: "DISPATCHER",
       },
       {
         type: "leaf",
-        label: "Driver Schedule",
+        label: "nav.driverSchedule",
         iconName: "Map",
         path: "dispatch/drivers",
         requiredRole: "DISPATCHER",
       },
       {
         type: "leaf",
-        label: "Delivery Orders",
+        label: "nav.deliveryOrders",
         iconName: "Container",
         path: "delivery-orders",
         requiredRole: "DISPATCHER",
@@ -86,20 +91,20 @@ export const NAV_CONFIG: NavNode[] = [
   },
   {
     type: "section",
-    label: "Accounting",
+    label: "nav.accounting",
     iconName: "Wallet",
     requiredRole: "DISPATCHER",
     children: [
       {
         type: "leaf",
-        label: "Settlements",
+        label: "nav.settlements",
         iconName: "Receipt",
         path: "accounting",
         requiredRole: "DISPATCHER",
       },
       {
         type: "leaf",
-        label: "Rate Settings",
+        label: "nav.rateSettings",
         iconName: "BadgeDollarSign",
         path: "accounting/rates",
         requiredRole: "ADMIN",
@@ -108,36 +113,36 @@ export const NAV_CONFIG: NavNode[] = [
   },
   {
     type: "section",
-    label: "Master Data",
+    label: "nav.masterData",
     iconName: "Folder",
     children: [
       {
         type: "leaf",
-        label: "Customers",
+        label: "nav.customers",
         iconName: "Building2",
         path: "master/customers",
       },
       {
         type: "leaf",
-        label: "Drivers",
+        label: "nav.drivers",
         iconName: "User",
         path: "master/drivers",
       },
       {
         type: "leaf",
-        label: "Terminals",
+        label: "nav.terminals",
         iconName: "Anchor",
         path: "master/terminals",
       },
       {
         type: "leaf",
-        label: "Vessels",
+        label: "nav.vessels",
         iconName: "Ship",
         path: "master/vessels",
       },
       {
         type: "leaf",
-        label: "Locations",
+        label: "nav.locations",
         iconName: "MapPin",
         path: "master/locations",
       },
@@ -145,20 +150,20 @@ export const NAV_CONFIG: NavNode[] = [
   },
   {
     type: "section",
-    label: "System",
+    label: "nav.system",
     iconName: "Server",
     requiredRole: "SUPER_ADMIN",
     children: [
       {
         type: "leaf",
-        label: "Tenants",
+        label: "nav.tenants",
         iconName: "Building2",
         path: "system/tenants",
         requiredRole: "SUPER_ADMIN",
       },
       {
         type: "leaf",
-        label: "System Users",
+        label: "nav.systemUsers",
         iconName: "Users",
         path: "system/users",
         requiredRole: "SUPER_ADMIN",
@@ -167,40 +172,58 @@ export const NAV_CONFIG: NavNode[] = [
   },
   {
     type: "section",
-    label: "Settings",
+    label: "nav.settings",
     iconName: "Settings",
     children: [
       {
         type: "leaf",
-        label: "Tenant",
+        label: "nav.settingsTenant",
         iconName: "Building2",
         path: "settings/tenant",
         requiredRole: "ADMIN",
       },
       {
         type: "leaf",
-        label: "Members",
+        label: "nav.settingsMembers",
         iconName: "Users",
         path: "settings/members",
         requiredRole: "ADMIN",
       },
       {
         type: "leaf",
-        label: "Theme",
+        label: "nav.settingsTheme",
         iconName: "Palette",
         path: "settings/theme",
       },
       {
         type: "leaf",
-        label: "Notifications",
+        label: "nav.settingsNotifications",
         iconName: "Bell",
         path: "settings/notifications",
       },
       {
         type: "leaf",
-        label: "Privacy",
+        label: "nav.settingsPrivacy",
         iconName: "ShieldCheck",
         path: "settings/privacy",
+      },
+      {
+        type: "leaf",
+        label: "nav.settingsTags",
+        iconName: "Tag",
+        path: "settings/tags",
+      },
+      {
+        type: "leaf",
+        label: "nav.settingsPlugins",
+        iconName: "Plug",
+        path: "settings/plugins",
+      },
+      {
+        type: "leaf",
+        label: "nav.settingsPayment",
+        iconName: "CreditCard",
+        path: "settings/payment",
       },
     ],
   },
@@ -254,7 +277,7 @@ function matches(pathname: string, target: string): boolean {
 
 /** /app/:tenantId/foo/bar → "foo/bar" (또는 매치 안 되면 null). */
 export function relativizeAppPath(pathname: string): string | null {
-  const m = pathname.match(/^\/app\/\d+\/(.*)$/);
+  const m = pathname.match(/^\/app\/\d+\/?(.*)$/);
   return m ? m[1] : null;
 }
 

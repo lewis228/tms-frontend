@@ -32,7 +32,9 @@
     "deleting": "Deleting...",
     "creating": "Creating...",
     "loadFailed": "Failed to load.",
-    "pageOf": "Page {{page}} / {{pages}}"
+    "pageOf": "Page {{page}} / {{pages}}",
+    "signOut": "Sign Out",
+    "soon": "Soon"
   },
   "toast": {
     "saved": "Saved.",
@@ -846,5 +848,345 @@
   },
   "oauth": {
     "processing": "Processing authentication…"
+  },
+  "nav": {
+    "favorites": "Favorites",
+    "removeFavorite": "Remove '{{title}}' from favorites",
+    "dashboard": "Dashboard",
+    "operations": "Operations",
+    "dispatch": "Dispatch",
+    "driverSchedule": "Driver Schedule",
+    "deliveryOrders": "Delivery Orders",
+    "accounting": "Accounting",
+    "settlements": "Settlements",
+    "rateSettings": "Rate Settings",
+    "masterData": "Master Data",
+    "customers": "Customers",
+    "drivers": "Drivers",
+    "terminals": "Terminals",
+    "vessels": "Vessels",
+    "locations": "Locations",
+    "system": "System",
+    "tenants": "Tenants",
+    "systemUsers": "System Users",
+    "settings": "Settings",
+    "settingsTenant": "Tenant",
+    "settingsMembers": "Members",
+    "settingsTheme": "Theme",
+    "settingsNotifications": "Notifications",
+    "settingsPrivacy": "Privacy",
+    "settingsTags": "Tags",
+    "settingsPlugins": "Plugins",
+    "settingsPayment": "Payment"
+  },
+  "header": {
+    "toggleSidebar": "Toggle sidebar",
+    "favoriteThisPage": "Add this page to favorites",
+    "unfavoriteThisPage": "Remove this page from favorites",
+    "searchPlaceholder": "Search…",
+    "theme": "Theme",
+    "rightPanel": "Right panel"
+  },
+  "rightPanel": {
+    "notifications": "Announcements"
+  },
+  "announcements": {
+    "title": "Announcements",
+    "empty": "No announcements yet.",
+    "items": {
+      "mobileTab": "Mobile driver app — beta",
+      "fileAttachment": "File attachments on D/O",
+      "customDocs": "Custom documents per tenant",
+      "labelPrint": "Label printing",
+      "labelDesign": "Customisable label design",
+      "customReport": "Custom reports",
+      "priceTemplate": "Pricing templates"
+    }
+  },
+  "chat": {
+    "searchPlaceholder": "Search",
+    "newChat": "New chat",
+    "settings": "Settings",
+    "typeMessage": "Type message",
+    "send": "Send",
+    "call": "Call",
+    "videoCall": "Video call",
+    "more": "More",
+    "reply": "Reply",
+    "reaction": "React",
+    "emptyState": "Select a conversation",
+    "unreadBadge": "{{count}} unread",
+    "comingSoonHint": "Chat is coming soon.",
+    "placeholderRoomName": "Team chat",
+    "placeholderRoomSubtitle": "Backend wiring pending",
+    "composerPlaceholder": "Send a message…"
+  },
+  "profile": {
+    "title": "Profile",
+    "signOut": "Sign out",
+    "accountSecurity": "Account security",
+    "support": "Support",
+    "name": "Name",
+    "nameDescription": "The name shown on your profile and in tenant lists.",
+    "email": "Email",
+    "password": "Password",
+    "passwordDescription": "Set a permanent password to login to your account.",
+    "twoStep": "2-step verification",
+    "twoStepDescription": "Add an additional layer of security to your account during sign in.",
+    "twoStepOff": "Off",
+    "eventNotifications": "Event notifications",
+    "eventNotificationsDescription": "Receive email and push alerts when transport events occur. You can turn these off anytime.",
+    "logoutAllDevices": "Log out of all devices",
+    "logoutAllDevicesDescription": "Log out of all other active sessions on other devices besides this one.",
+    "deleteAccount": "Delete my account",
+    "deleteAccountDescription": "Permanently delete the account and remove access from all devices.",
+    "language": "Language",
+    "languageDescription": "Pick the UI language. Defaults to your browser setting.",
+    "lang": {
+      "system": "Browser default",
+      "ko": "한국어",
+      "en": "English"
+    },
+    "signOutConfirmTitle": "Sign out?",
+    "signOutConfirmDescription": "You'll need your email and password to sign back in.",
+    "changeName": {
+      "title": "Change name",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "toastStub": "Name update is coming soon."
+    },
+    "changePassword": {
+      "title": "Change password",
+      "current": "Current password",
+      "new": "New password",
+      "repeat": "Repeat password",
+      "mismatch": "Passwords do not match.",
+      "toastStub": "Password change is coming soon."
+    },
+    "logoutAll": {
+      "title": "Log out of all devices",
+      "body": "This signs you out of every session except this device.",
+      "success": "All other devices have been signed out."
+    },
+    "delete": {
+      "title": "Delete my account",
+      "warning": "This operation will permanently delete the account",
+      "warningDetail": "This is irreversible — proceed with care.",
+      "emailPrompt": "Type your current email to confirm.",
+      "action": "Delete",
+      "confirmTitle": "Really delete this account?",
+      "confirmDescription": "Your account and all related data will be permanently deleted. This cannot be undone.",
+      "received": "Your account deletion request has been received."
+    }
+  },
+  "tenant": {
+    "untitled": "Tenant #{{id}}",
+    "createSuccess": "Tenant created.",
+    "newNamePlaceholder": "New tenant name",
+    "createTenant": "Create tenant"
+  },
+  "appHome": {
+    "title": "TMS Pro",
+    "noTenants": "You're not in any tenant. Ask an administrator to invite you.",
+    "pickTenant": "Pick a tenant to enter",
+    "enterTenant": "Enter →",
+    "createSuccess": "Tenant created.",
+    "createSubmit": "Create",
+    "createNewTenant": "Create a new tenant",
+    "tenantPlaceholder": "Tenant name"
+  },
+  "settings": {
+    "tenant": {
+      "title": "Tenant",
+      "description": "Manage tenant info and display preferences.",
+      "info": {
+        "title": "Tenant info",
+        "description": "Name, memo, and timezone.",
+        "nameLabel": "Tenant name",
+        "namePlaceholder": "e.g. Acme Logistics",
+        "nameRequired": "Tenant name is required.",
+        "memoLabel": "Memo",
+        "memoPlaceholder": "Internal notes (visible to admins).",
+        "timezoneLabel": "Timezone (IANA)"
+      },
+      "display": {
+        "title": "Display preferences",
+        "description": "Currency, date / time format, units. Local to your browser.",
+        "currencyLabel": "Currency",
+        "decimalLabel": "Decimal places",
+        "dateFormatLabel": "Date format",
+        "timeFormatLabel": "Time format",
+        "timeFormat24": "24h",
+        "timeFormat12": "12h",
+        "unitsLabel": "Unit system",
+        "metric": "Metric (kg, m³)",
+        "imperial": "Imperial (lb, ft³)"
+      },
+      "danger": {
+        "title": "Danger zone",
+        "description": "Irreversible actions.",
+        "leaveTitle": "Leave tenant",
+        "leaveDescription": "Remove yourself from this tenant.",
+        "leaveAction": "Leave",
+        "deleteTitle": "Delete tenant",
+        "deleteDescription": "Permanently delete the tenant and all related data.",
+        "deleteAction": "Delete",
+        "deleteConfirmTitle": "Delete '{{name}}'?",
+        "deleteConfirmDescription": "This action is irreversible.",
+        "deleteSuccess": "Tenant deleted."
+      }
+    },
+    "members": {
+      "title": "Members",
+      "listView": "List view",
+      "gridView": "Grid view",
+      "addMember": "Add member",
+      "filter": "Filter",
+      "sort": "Sort",
+      "inviteComingSoon": "Member invite is coming soon.",
+      "noResults": "No members matching '{{query}}'",
+      "emptyTitle": "No members yet",
+      "emptyDescription": "Invite teammates to collaborate.",
+      "copyEmail": "Copy email",
+      "moreActions": "More actions",
+      "colSerial": "Serial",
+      "colUser": "User",
+      "colJoined": "Joined"
+    },
+    "theme": {
+      "title": "Theme",
+      "description": "Pick the appearance for the app.",
+      "modeLabel": "Mode",
+      "fontSizeLabel": "Font size",
+      "fontSizeAria": "Font size step {{index}}",
+      "accentLabel": "Accent color",
+      "accentAria": "Accent color {{color}}",
+      "footerNote": "Theme preferences are saved per browser.",
+      "mode": {
+        "system": "System",
+        "light": "Light",
+        "dark": "Dark"
+      }
+    },
+    "notifications": {
+      "title": "Notifications",
+      "description": "Choose what gets through to you.",
+      "sectionEmail": "Email",
+      "sectionInApp": "In-app",
+      "sectionExternal": "External",
+      "eventEmailLabel": "Event email",
+      "eventEmailDescription": "Receive an email for each event.",
+      "digestLabel": "Daily digest",
+      "digestDescription": "One summary at the start of the day.",
+      "pushLabel": "Push",
+      "pushDescription": "Browser push notifications.",
+      "slackLabel": "Slack",
+      "slackDescription": "Forward important events to a channel.",
+      "slackValue": "Connect",
+      "webhookLabel": "Webhook",
+      "webhookDescription": "POST events to your endpoint.",
+      "webhookValue": "Configure"
+    },
+    "privacy": {
+      "title": "Privacy",
+      "description": "Cookies, history, and data export.",
+      "footerNote": "Privacy settings are saved per browser.",
+      "cookie": {
+        "title": "Cookies",
+        "description": "Choose which cookies to allow.",
+        "customize": "Customize",
+        "strictTitle": "Strictly necessary",
+        "strictDescription": "Required for the app to function.",
+        "functionalTitle": "Functional",
+        "functionalDescription": "Remember preferences (theme, language).",
+        "analyticsTitle": "Analytics",
+        "analyticsDescription": "Anonymous usage statistics.",
+        "marketingTitle": "Marketing",
+        "marketingDescription": "Personalised marketing content."
+      },
+      "history": {
+        "title": "Sign-in history",
+        "description": "Recent sign-ins by device.",
+        "value": "View"
+      },
+      "export": {
+        "title": "Data export",
+        "description": "Download a copy of your data.",
+        "value": "Request"
+      },
+      "deleteWorkspace": {
+        "title": "Delete workspace",
+        "description": "Permanently delete this workspace and its data.",
+        "value": "Delete"
+      }
+    },
+    "tags": {
+      "title": "Tags",
+      "description": "Organise records with re-usable labels.",
+      "createButton": "Create tag",
+      "searchPlaceholder": "Search tags",
+      "tagsCount": "{{count}} tags",
+      "tagsCountFiltered": "{{filtered}} of {{total}}",
+      "newTagPlaceholder": "Tag name",
+      "duplicate": "Already exists",
+      "addTag": "Add",
+      "cancel": "Cancel",
+      "columnName": "Name",
+      "columnFirstAdded": "First added",
+      "columnLastUsed": "Last used",
+      "columnActions": "",
+      "heroEmptyTitle": "No tags yet",
+      "heroEmptyDescription": "Create your first tag to start grouping records.",
+      "emptyTitle": "No tags",
+      "emptyTitleFiltered": "No matches",
+      "emptyHint": "Create one to get started.",
+      "emptyHintFiltered": "Try a different query.",
+      "editAria": "Edit '{{name}}'",
+      "deleteAria": "Delete '{{name}}'",
+      "sort": {
+        "nameAsc": "Name A → Z",
+        "nameDesc": "Name Z → A",
+        "recentDesc": "Recently updated"
+      }
+    },
+    "plugins": {
+      "title": "Plugins",
+      "description": "Connect external tools.",
+      "active": "{{active}} of {{total}} active",
+      "moreOptions": "More options",
+      "footerNote": "Plugin connections are coming soon.",
+      "items": {
+        "slack": {
+          "name": "Slack",
+          "description": "Send notifications to Slack."
+        },
+        "googleSheets": {
+          "name": "Google Sheets",
+          "description": "Sync data with a Google Sheet."
+        },
+        "figma": {
+          "name": "Figma",
+          "description": "Embed designs into pages."
+        },
+        "zapier": {
+          "name": "Zapier",
+          "description": "Trigger zaps from events."
+        },
+        "webhooks": {
+          "name": "Webhooks",
+          "description": "Inbound and outbound webhooks."
+        }
+      }
+    },
+    "payment": {
+      "title": "Payment",
+      "description": "Manage cards and payout details.",
+      "addMethod": "Add a payment method",
+      "defaultBadge": "Default",
+      "payoutTitle": "Payout details",
+      "payoutHint": "Where to send your payouts.",
+      "payoutPlaceholder": "Bank, account number, etc.",
+      "footerNote": "Payment processing is handled securely."
+    }
   }
 }

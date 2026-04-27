@@ -64,15 +64,16 @@ const AccountingRatesPage = lazy(
 const SystemTenantsPage = lazy(() => import("@/pages/system-tenants-page"));
 const SystemUsersPage = lazy(() => import("@/pages/system-users-page"));
 const NotificationsPage = lazy(() => import("@/pages/notifications-page"));
-
-function Placeholder({ name }: { name: string }) {
-  return (
-    <div className="flex flex-col gap-2 p-6">
-      <h1 className="text-2xl font-semibold">{name}</h1>
-      <p className="text-sm text-muted-foreground">Phase 3+ 에서 구현.</p>
-    </div>
-  );
-}
+const SettingsTenantPage = lazy(() => import("@/pages/settings-tenant-page"));
+const SettingsMembersPage = lazy(() => import("@/pages/settings-members-page"));
+const SettingsThemePage = lazy(() => import("@/pages/settings-theme-page"));
+const SettingsNotificationsPage = lazy(
+  () => import("@/pages/settings-notifications-page"),
+);
+const SettingsPrivacyPage = lazy(() => import("@/pages/settings-privacy-page"));
+const SettingsTagsPage = lazy(() => import("@/pages/settings-tags-page"));
+const SettingsPluginsPage = lazy(() => import("@/pages/settings-plugins-page"));
+const SettingsPaymentPage = lazy(() => import("@/pages/settings-payment-page"));
 
 export default function RootRoute() {
   return (
@@ -158,27 +159,24 @@ export default function RootRoute() {
             </Route>
 
             <Route element={<ProtectedRoute require="ADMIN" />}>
-              <Route
-                path="settings/tenant"
-                element={<Placeholder name="Settings / Tenant" />}
-              />
+              <Route path="settings/tenant" element={<SettingsTenantPage />} />
               <Route
                 path="settings/members"
-                element={<Placeholder name="Settings / Members" />}
+                element={<SettingsMembersPage />}
               />
             </Route>
-            <Route
-              path="settings/theme"
-              element={<Placeholder name="Settings / Theme" />}
-            />
+            <Route path="settings/theme" element={<SettingsThemePage />} />
             <Route
               path="settings/notifications"
-              element={<Placeholder name="Settings / Notifications" />}
+              element={<SettingsNotificationsPage />}
             />
             <Route
               path="settings/privacy"
-              element={<Placeholder name="Settings / Privacy" />}
+              element={<SettingsPrivacyPage />}
             />
+            <Route path="settings/tags" element={<SettingsTagsPage />} />
+            <Route path="settings/plugins" element={<SettingsPluginsPage />} />
+            <Route path="settings/payment" element={<SettingsPaymentPage />} />
           </Route>
         </Route>
 
