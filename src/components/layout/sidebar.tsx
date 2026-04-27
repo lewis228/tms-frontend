@@ -42,7 +42,8 @@ import TenantSwitcher from "@/components/layout/tenant-switcher";
 import { useOpenAlertModal } from "@/store/alert-modal";
 import { useIsSidebarCollapsed } from "@/store/sidebar";
 import { useFavorites, useRemoveFavorite } from "@/store/favorites";
-import { clearAuth, useCurrentRole, useCurrentUser } from "@/store/auth";
+import { useCurrentRole, useCurrentUser } from "@/store/auth";
+import { useSignOut } from "@/hooks/mutations/auth/use-sign-out";
 import { useOpenProfileModal } from "@/store/profile-modal";
 import type { UserEntity } from "@/types";
 import {
@@ -104,14 +105,22 @@ export default function Sidebar() {
   const { t } = useTranslation();
   const tenantId = params.tenantId;
 
+  // useSignOut hook 이 백엔드 /auth/logout 호출 → clearAuth → announceLogout (다른 탭).
+  // onSuccess/onError 둘 다 sign-in 으로 hard reload (axios refreshPromise 등 정리).
+  const { mutate: signOut } = useSignOut({
+    onSuccess: () => {
+      window.location.href = "/sign-in";
+    },
+    onError: () => {
+      window.location.href = "/sign-in";
+    },
+  });
+
   const handleSignOutClick = () => {
     openAlertModal({
       title: t("profile.signOutConfirmTitle"),
       description: t("profile.signOutConfirmDescription"),
-      onPositive: () => {
-        clearAuth();
-        window.location.href = "/sign-in";
-      },
+      onPositive: () => signOut(),
     });
   };
 

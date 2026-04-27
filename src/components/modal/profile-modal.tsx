@@ -18,8 +18,9 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { useProfileModal } from "@/store/profile-modal";
-import { clearAuth, useCurrentUser } from "@/store/auth";
+import { useCurrentUser } from "@/store/auth";
 import { useOpenAlertModal } from "@/store/alert-modal";
+import { useSignOut } from "@/hooks/mutations/auth/use-sign-out";
 import {
   useLanguagePreference,
   useSetLanguagePreference,
@@ -128,6 +129,15 @@ function ProfileBody({
   const initial = pickInitial(user);
   const email = user.email ?? "";
 
+  const { mutate: signOut } = useSignOut({
+    onSuccess: () => {
+      window.location.href = "/sign-in";
+    },
+    onError: () => {
+      window.location.href = "/sign-in";
+    },
+  });
+
   const handleSignOutClick = () => {
     openAlertModal({
       title: t("profile.signOutConfirmTitle"),
@@ -136,8 +146,7 @@ function ProfileBody({
         // Close the modal before the auth store clears — otherwise the
         // dialog shell can linger on the sign-in page.
         profileModal.actions.close();
-        clearAuth();
-        window.location.href = "/sign-in";
+        signOut();
       },
     });
   };
@@ -536,13 +545,20 @@ function LogOutAllDialog({
 }) {
   const { t } = useTranslation();
 
-  // TODO: wire to a real `useSignOutAll` mutation. For now, the local
-  // sign-out path mirrors the sidebar (clear auth + redirect).
+  // TODO: wire to a real `useSignOutAll` mutation (서버에서 u:{uid}:sids 의
+  // 모든 sid 일괄 무효화). 지금은 useSignOut 으로 현재 세션만 종료.
+  const { mutate: signOut } = useSignOut({
+    onSuccess: () => {
+      window.location.href = "/sign-in";
+    },
+    onError: () => {
+      window.location.href = "/sign-in";
+    },
+  });
   const handleConfirm = () => {
     toast.success(t("profile.logoutAll.success"), { position: "top-center" });
     onOpenChange(false);
-    clearAuth();
-    window.location.href = "/sign-in";
+    signOut();
   };
 
   return (
