@@ -1,7 +1,10 @@
 // 사이드바 + breadcrumb + favorites 의 단일 진실.
 // 데이터로 표현 — 컴포넌트 안에 if (role >= ADMIN) 산재 금지.
 //
-// `path` 는 절대 경로 (`/app/...`). favorite store 는 path 그대로 키로 사용.
+// `path` 는 `/app/:tenantId` 하위의 **상대 경로** ("dashboard", "delivery-orders" 등).
+// 사이드바가 현재 URL 의 :tenantId 를 prefix 로 붙여 최종 URL 을 만든다.
+// favorite store 도 같은 상대 경로를 키로 사용 → tenant 전환 시 즐겨찾기가 따라옴.
+//
 // `requiredRole` 이 명시되면 ProtectedRoute / Sidebar 에서 ROLE_RANK 비교로 게이트.
 import type { UserRole } from "@/types";
 import { ROLE_RANK } from "@/types";
@@ -50,7 +53,7 @@ export const NAV_CONFIG: NavNode[] = [
     type: "leaf",
     label: "Dashboard",
     iconName: "LayoutDashboard",
-    path: "/app/dashboard",
+    path: "dashboard",
   },
   {
     type: "section",
@@ -62,21 +65,21 @@ export const NAV_CONFIG: NavNode[] = [
         type: "leaf",
         label: "Dispatch",
         iconName: "Truck",
-        path: "/app/dispatch",
+        path: "dispatch",
         requiredRole: "DISPATCHER",
       },
       {
         type: "leaf",
         label: "Driver Schedule",
         iconName: "Map",
-        path: "/app/dispatch/drivers",
+        path: "dispatch/drivers",
         requiredRole: "DISPATCHER",
       },
       {
         type: "leaf",
         label: "Delivery Orders",
         iconName: "Container",
-        path: "/app/delivery-orders",
+        path: "delivery-orders",
         requiredRole: "DISPATCHER",
       },
     ],
@@ -91,14 +94,14 @@ export const NAV_CONFIG: NavNode[] = [
         type: "leaf",
         label: "Settlements",
         iconName: "Receipt",
-        path: "/app/accounting",
+        path: "accounting",
         requiredRole: "DISPATCHER",
       },
       {
         type: "leaf",
         label: "Rate Settings",
         iconName: "BadgeDollarSign",
-        path: "/app/accounting/rates",
+        path: "accounting/rates",
         requiredRole: "ADMIN",
       },
     ],
@@ -112,31 +115,31 @@ export const NAV_CONFIG: NavNode[] = [
         type: "leaf",
         label: "Customers",
         iconName: "Building2",
-        path: "/app/master/customers",
+        path: "master/customers",
       },
       {
         type: "leaf",
         label: "Drivers",
         iconName: "User",
-        path: "/app/master/drivers",
+        path: "master/drivers",
       },
       {
         type: "leaf",
         label: "Terminals",
         iconName: "Anchor",
-        path: "/app/master/terminals",
+        path: "master/terminals",
       },
       {
         type: "leaf",
         label: "Vessels",
         iconName: "Ship",
-        path: "/app/master/vessels",
+        path: "master/vessels",
       },
       {
         type: "leaf",
         label: "Locations",
         iconName: "MapPin",
-        path: "/app/master/locations",
+        path: "master/locations",
       },
     ],
   },
@@ -150,14 +153,14 @@ export const NAV_CONFIG: NavNode[] = [
         type: "leaf",
         label: "Tenants",
         iconName: "Building2",
-        path: "/app/system/tenants",
+        path: "system/tenants",
         requiredRole: "SUPER_ADMIN",
       },
       {
         type: "leaf",
         label: "System Users",
         iconName: "Users",
-        path: "/app/system/users",
+        path: "system/users",
         requiredRole: "SUPER_ADMIN",
       },
     ],
@@ -171,33 +174,33 @@ export const NAV_CONFIG: NavNode[] = [
         type: "leaf",
         label: "Tenant",
         iconName: "Building2",
-        path: "/app/settings/tenant",
+        path: "settings/tenant",
         requiredRole: "ADMIN",
       },
       {
         type: "leaf",
         label: "Members",
         iconName: "Users",
-        path: "/app/settings/members",
+        path: "settings/members",
         requiredRole: "ADMIN",
       },
       {
         type: "leaf",
         label: "Theme",
         iconName: "Palette",
-        path: "/app/settings/theme",
+        path: "settings/theme",
       },
       {
         type: "leaf",
         label: "Notifications",
         iconName: "Bell",
-        path: "/app/settings/notifications",
+        path: "settings/notifications",
       },
       {
         type: "leaf",
         label: "Privacy",
         iconName: "ShieldCheck",
-        path: "/app/settings/privacy",
+        path: "settings/privacy",
       },
     ],
   },
@@ -231,13 +234,13 @@ export type NavMatch = {
   leaf: NavLeaf;
 };
 
-export function resolveNavMatch(pathname: string): NavMatch | null {
+export function resolveNavMatch(relativePath: string): NavMatch | null {
   for (const node of NAV_CONFIG) {
     if (node.type === "leaf") {
-      if (matches(pathname, node.path)) return { leaf: node };
+      if (matches(relativePath, node.path)) return { leaf: node };
     } else {
       for (const child of node.children) {
-        if (matches(pathname, child.path)) return { section: node, leaf: child };
+        if (matches(relativePath, child.path)) return { section: node, leaf: child };
       }
     }
   }
@@ -247,6 +250,12 @@ export function resolveNavMatch(pathname: string): NavMatch | null {
 function matches(pathname: string, target: string): boolean {
   if (pathname === target) return true;
   return pathname.startsWith(target + "/");
+}
+
+/** /app/:tenantId/foo/bar → "foo/bar" (또는 매치 안 되면 null). */
+export function relativizeAppPath(pathname: string): string | null {
+  const m = pathname.match(/^\/app\/\d+\/(.*)$/);
+  return m ? m[1] : null;
 }
 
 export function resolveFavoriteMeta(

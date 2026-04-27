@@ -9,7 +9,7 @@ export default function ForbiddenPage() {
       <h1 className="text-2xl font-semibold">{t("auth.forbidden.title")}</h1>
       <p className="text-muted-foreground">{t("auth.forbidden.description")}</p>
       <Link
-        to="/app/dashboard"
+        to="/app"
         className="text-sm underline underline-offset-4"
       >
         {t("auth.forbidden.back")}

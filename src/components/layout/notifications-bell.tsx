@@ -139,7 +139,7 @@ export default function NotificationsBell() {
 
         <div className="border-t px-3 py-2 text-right">
           <Link
-            to="/app/notifications"
+            to="notifications"
             className="text-xs text-primary hover:underline"
           >
             {t("notification.viewAll")}

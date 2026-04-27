@@ -174,7 +174,7 @@ export default function DeliveryOrderList() {
                   </TableCell>
                   <TableCell className="text-right">
                     <Link
-                      to={`/app/delivery-orders/${d.id}`}
+                      to={`${d.id}`}
                       onClick={(e) => e.stopPropagation()}
                       className="text-xs text-muted-foreground hover:text-foreground hover:underline"
                     >

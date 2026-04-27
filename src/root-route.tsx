@@ -1,26 +1,52 @@
-// 라우트 트리.
+// 라우트 트리 — ste 패턴.
 //
 // 영역:
-// - Public: /, /forbidden, /maintenance (가드 없음)
-// - Guest: /sign-in (로그인 상태면 /app/dashboard 로 redirect)
-// - Member: /app/* (ProtectedRoute + AppLayout — 비로그인 → /sign-in, role 부족 → /forbidden)
+// - Public: /forbidden, /maintenance (가드 없음)
+// - Marketing: / (LandingLayout — 비로그인/로그인 모두 접근)
+// - Guest: /sign-in (로그인 상태면 /app 으로 redirect)
+// - Member: /app/* (ProtectedRoute)
+//   - /app             → AppHomePage (tenant picker / auto-redirect)
+//   - /app/:tenantId/* → TenantScopedLayout (사이드바 + 헤더 셸 + 멤버십 가드)
 //
-// 페이지 자체는 Phase 2 placeholder. Phase 3+ 에서 실제 컨텐츠 추가.
+// 모든 페이지 lazy. 단일 Suspense 가 전 페이지 로딩을 GlobalLoader 로 가린다.
 import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import GlobalLoader from "@/components/global-loader";
 import GuestOnlyLayout from "@/components/layout/guest-only-layout";
-import AppLayout from "@/components/layout/app-layout";
 import ProtectedRoute from "@/components/layout/protected-route";
+import TenantScopedLayout from "@/components/layout/tenant-scoped-layout";
 
 const SignInPage = lazy(() => import("@/pages/sign-in-page"));
+const SignUpPage = lazy(() => import("@/pages/sign-up-page"));
+const ForgetPasswordPage = lazy(() => import("@/pages/forget-password-page"));
+const ResetPasswordPage = lazy(() => import("@/pages/reset-password-page"));
+const TwoStepVerificationPage = lazy(
+  () => import("@/pages/two-step-verification-page"),
+);
+const ChooseAccountTypePage = lazy(
+  () => import("@/pages/choose-account-type-page"),
+);
+const AccountInfoPage = lazy(() => import("@/pages/account-info-page"));
+const BillingDetailsPage = lazy(() => import("@/pages/billing-details-page"));
+const BillingCardPage = lazy(() => import("@/pages/billing-card-page"));
+const OAuthCallbackPage = lazy(() => import("@/pages/oauth-callback-page"));
+const AppHomePage = lazy(() => import("@/pages/app-home-page"));
 const DashboardPage = lazy(() => import("@/pages/dashboard-page"));
 const NotFoundPage = lazy(() => import("@/pages/not-found-page"));
 const ForbiddenPage = lazy(() => import("@/pages/forbidden-page"));
 const MaintenancePage = lazy(() => import("@/pages/maintenance-page"));
 const LandingLayout = lazy(() => import("@/pages/landing/landing-layout"));
 const LandingPage = lazy(() => import("@/pages/landing/landing-page"));
+const PricingPage = lazy(() => import("@/pages/landing/pricing-page"));
+const AboutPage = lazy(() => import("@/pages/landing/about-page"));
+const CareersPage = lazy(() => import("@/pages/landing/careers-page"));
+const BlogPage = lazy(() => import("@/pages/landing/blog-page"));
+const CustomersPage = lazy(() => import("@/pages/landing/customers-page"));
+const ComingSoonPage = lazy(() => import("@/pages/coming-soon-page"));
+const MobileComingSoonPage = lazy(
+  () => import("@/pages/mobile-coming-soon-page"),
+);
 const MasterVesselsPage = lazy(() => import("@/pages/master-vessels-page"));
 const MasterTerminalsPage = lazy(() => import("@/pages/master-terminals-page"));
 const MasterLocationsPage = lazy(() => import("@/pages/master-locations-page"));
@@ -52,30 +78,60 @@ export default function RootRoute() {
   return (
     <Suspense fallback={<GlobalLoader />}>
       <Routes>
+        {/* Public — 가드 없음. */}
         <Route path="/forbidden" element={<ForbiddenPage />} />
         <Route path="/maintenance" element={<MaintenancePage />} />
+        <Route path="/oauth/callback" element={<OAuthCallbackPage />} />
+        <Route path="/coming-soon" element={<ComingSoonPage />} />
+        <Route
+          path="/mobile-coming-soon"
+          element={<MobileComingSoonPage />}
+        />
 
+        {/* Marketing — 랜딩. */}
         <Route element={<LandingLayout />}>
           <Route index element={<LandingPage />} />
+          <Route path="/pricing" element={<PricingPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/careers" element={<CareersPage />} />
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/customers" element={<CustomersPage />} />
         </Route>
 
+        {/* Guest — 로그인 상태면 /app 으로. */}
         <Route element={<GuestOnlyLayout />}>
           <Route path="/sign-in" element={<SignInPage />} />
+          <Route path="/sign-up" element={<SignUpPage />} />
+          <Route path="/forget-password" element={<ForgetPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route
+            path="/two-step-verification"
+            element={<TwoStepVerificationPage />}
+          />
+          <Route
+            path="/choose-account-type"
+            element={<ChooseAccountTypePage />}
+          />
+          <Route path="/account-info" element={<AccountInfoPage />} />
+          <Route path="/billing-details" element={<BillingDetailsPage />} />
+          <Route path="/billing-card" element={<BillingCardPage />} />
         </Route>
 
+        {/* Member — 인증 필수. */}
         <Route path="/app" element={<ProtectedRoute />}>
-          <Route element={<AppLayout />}>
-            <Route index element={<Navigate to="/app/dashboard" replace />} />
+          {/* /app — tenant picker / 자동 redirect */}
+          <Route index element={<AppHomePage />} />
+
+          {/* /app/:tenantId/* — 셸 + tenant 가드 */}
+          <Route path=":tenantId" element={<TenantScopedLayout />}>
+            <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="notifications" element={<NotificationsPage />} />
             <Route path="onboarding" element={<OnboardingPage />} />
 
             <Route element={<ProtectedRoute require="DISPATCHER" />}>
               <Route path="dispatch" element={<DispatchPage />} />
-              <Route
-                path="dispatch/drivers"
-                element={<DriverSchedulePage />}
-              />
+              <Route path="dispatch/drivers" element={<DriverSchedulePage />} />
               <Route path="delivery-orders" element={<DeliveryOrdersPage />} />
               <Route
                 path="delivery-orders/:id"
@@ -87,10 +143,7 @@ export default function RootRoute() {
               <Route path="accounting" element={<AccountingPage />} />
             </Route>
             <Route element={<ProtectedRoute require="ADMIN" />}>
-              <Route
-                path="accounting/rates"
-                element={<AccountingRatesPage />}
-              />
+              <Route path="accounting/rates" element={<AccountingRatesPage />} />
             </Route>
 
             <Route path="master/customers" element={<MasterCustomersPage />} />
@@ -100,14 +153,8 @@ export default function RootRoute() {
             <Route path="master/locations" element={<MasterLocationsPage />} />
 
             <Route element={<ProtectedRoute require="SUPER_ADMIN" />}>
-              <Route
-                path="system/tenants"
-                element={<SystemTenantsPage />}
-              />
-              <Route
-                path="system/users"
-                element={<SystemUsersPage />}
-              />
+              <Route path="system/tenants" element={<SystemTenantsPage />} />
+              <Route path="system/users" element={<SystemUsersPage />} />
             </Route>
 
             <Route element={<ProtectedRoute require="ADMIN" />}>

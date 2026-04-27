@@ -79,7 +79,27 @@
     "NETWORK": "Network error.",
     "RATE_LIMITED": "Too many requests. Please retry shortly.",
     "INTERNAL_SERVER_ERROR": "An internal server error occurred.",
-    "UNKNOWN": "An unknown error occurred."
+    "UNKNOWN": "An unknown error occurred.",
+    "INVALID_CREDENTIALS": "Incorrect email or password.",
+    "USER_NOT_FOUND": "User not found.",
+    "EMAIL_ALREADY_EXISTS": "This email is already registered.",
+    "INVALID_EMAIL_CODE": "The verification code is invalid.",
+    "EXPIRED_EMAIL_CODE": "The verification code has expired.",
+    "PASSWORD_TOO_WEAK": "Password is too weak.",
+    "NOT_TEAM_MEMBER": "You've been removed from the team. Redirecting to the team picker.",
+    "TEAM_NOT_FOUND": "Team not found.",
+    "TEAM_SCOPE_REQUIRED": "Please choose a team first.",
+    "TEAM_REQUIRED": "Please choose a team first.",
+    "ALREADY_EXISTS": "This item already exists in the current team.",
+    "FK_IN_USE": "Cannot delete — another record still references this item.",
+    "FK_REFERENCE_NOT_FOUND": "The referenced item no longer exists.",
+    "RATE_LIMIT_EXCEEDED": "Daily API quota reached. Please try again tomorrow.",
+    "BROWSER_ID_MISMATCH": "Your session was invalidated. Please sign in again.",
+    "ACCOUNT_SWITCHED": "A different account was detected. Please sign in again.",
+    "POPUP_BLOCKED": "The popup was blocked. Please check your browser settings.",
+    "OAUTH_FAILED": "OAuth sign-in failed.",
+    "OAUTH_WINDOW_CLOSED": "The OAuth window was closed.",
+    "GENERIC_FALLBACK": "Something went wrong. Please try again shortly."
   },
   "time": {
     "justNow": "just now",
@@ -689,12 +709,96 @@
       "submit": "Sign in",
       "submitting": "Signing in...",
       "forgotHint": "Forgot your password?",
-      "help": "Help"
+      "help": "Help",
+      "forgot": "Forgot Password?",
+      "notMember": "Not a Member yet?",
+      "signUpLink": "Sign Up"
     },
     "forbidden": {
       "title": "403 — Forbidden",
       "description": "You don't have permission to access this page.",
       "back": "Go to dashboard"
+    },
+    "appleButton": "Sign in with Apple",
+    "googleButton": "Sign in with Google",
+    "orWithEmail": "Or with Email",
+    "emailPlaceholder": "Email",
+    "passwordPlaceholder": "Password",
+    "hidePassword": "Hide password",
+    "showPassword": "Show password",
+    "signUp": {
+      "title": "Sign Up",
+      "subtitle": "Your Social Campaigns",
+      "passwordHint": "Use 8 or more characters with a mix of letters, numbers & symbols.",
+      "passwordTooShort": "Password must be at least 8 characters.",
+      "passwordMismatch": "Passwords do not match.",
+      "agreeRequired": "Please accept the terms.",
+      "repeatPlaceholder": "Repeat Password",
+      "acceptTerms": "I Accept the",
+      "terms": "Terms",
+      "submit": "Sign Up",
+      "already": "Already have an Account?",
+      "signInLink": "Sign in",
+      "codeSent": "A verification email has been sent."
+    },
+    "forgetPassword": {
+      "title": "Forgot Password?",
+      "subtitle": "Enter your email to reset your password.",
+      "emailPlaceholder": "Please enter your email address",
+      "submit": "Submit",
+      "back": "Back",
+      "codeSent": "We sent a reset code to your email."
+    },
+    "resetPassword": {
+      "title": "Setup New Password",
+      "codeSentTo": "Verification code sent to",
+      "sixDigitLabel": "6-digit code",
+      "sixDigitRequired": "Please enter the 6-digit code.",
+      "newPassword": "New password",
+      "repeatPassword": "Repeat password",
+      "submit": "Submit",
+      "remembered": "Remembered?",
+      "signInLink": "Sign in",
+      "success": "Password has been reset."
+    },
+    "twoStep": {
+      "title": "Two Step Verification",
+      "sentTo": "Enter the verification code we sent to",
+      "instruction": "Type your 6 digit security code",
+      "submit": "Submit",
+      "sixDigitRequired": "Please enter the 6-digit code.",
+      "noCode": "Didn't get the code?",
+      "resend": "Resend",
+      "or": "or",
+      "callUs": "Call Us",
+      "success": "Sign-up complete."
+    },
+    "accountType": {
+      "title": "Choose Account Type",
+      "subtitle": "If you need more info, please check out",
+      "helpLink": "Help Page",
+      "personalTitle": "Personal Account",
+      "personalDescription": "If you need more info, please check it out.",
+      "corporateTitle": "Corporate Account",
+      "corporateDescription": "Create corporate account to many users.",
+      "continue": "Continue"
+    },
+    "accountInfo": {
+      "title": "Account Info",
+      "subtitle": "If you need more info, please check out",
+      "helpLink": "Help Page",
+      "teamSize": "Specify Team Size",
+      "teamSizeHint": "Customers will see this shortened version of your statement descriptor.",
+      "teamName": "Team Account Name",
+      "planHeading": "Select Account Plan",
+      "companyLabel": "Company Account",
+      "companyDescription": "Use images to enhance your post flow.",
+      "developerLabel": "Developer Account",
+      "developerDescription": "Use images to your post time.",
+      "testingLabel": "Testing Account",
+      "testingDescription": "Use images to enhance time travel rivers.",
+      "previous": "Previous",
+      "continue": "Continue"
     }
   },
   "pages": {
@@ -739,5 +843,8 @@
       "alt": "Error illustration",
       "backHome": "Back to home"
     }
+  },
+  "oauth": {
+    "processing": "Processing authentication…"
   }
 }

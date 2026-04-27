@@ -33,7 +33,7 @@ export const API_BASE_URL =
 // 따라서 프론트 baseURL 도 /api/v1 까지 포함.
 export const API_V1_URL = `${API_BASE_URL}/api/v1`;
 
-const api = axios.create({ baseURL: API_V1_URL });
+const api = axios.create({ baseURL: API_V1_URL, withCredentials: true });
 
 api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   config.headers = config.headers ?? {};

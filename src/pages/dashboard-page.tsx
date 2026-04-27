@@ -118,19 +118,19 @@ export default function DashboardPage() {
           hint={t("dashboard.kpi.inProgressHint", {
             count: stats.orders.length,
           })}
-          to="/app/dispatch?view=board"
+          to="dispatch?view=board"
         />
         <KpiCard
           label={t("dashboard.kpi.todayPDR")}
           value={`${stats.todayPickup}/${stats.todayDelivery}/${stats.todayReturn}`}
           hint={t("dashboard.kpi.todayPDRHint")}
-          to="/app/dispatch?view=timeline"
+          to="dispatch?view=timeline"
         />
         <KpiCard
           label={t("dashboard.kpi.pendingLegs")}
           value={stats.pendingLegs}
           hint={t("dashboard.kpi.pendingLegsHint")}
-          to="/app/dispatch/drivers"
+          to="dispatch/drivers"
         />
         <KpiCard
           label={t("dashboard.kpi.unsettled")}

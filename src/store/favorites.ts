@@ -27,15 +27,16 @@ type State = {
 // the tenant-scoped routes) and the title/iconName keys mirror it so the
 // sidebar renderer picks up the exact same label + icon.
 const DEFAULT_FAVORITES: FavoriteItem[] = [
-  { path: "", title: "nav.dashboard", iconName: "LayoutDashboard" },
+  { path: "dashboard", title: "nav.dashboard", iconName: "LayoutDashboard" },
 ];
 
 const initialState: State = { items: DEFAULT_FAVORITES };
 
-// Strip `/app/{tenantId}` prefix so favorites are tenant-agnostic — a pinned
-// page follows the user across tenant switches instead of pinning them back
-// to the tenant where they first clicked the star.
-const stripTenantPrefix = (path: string) => path.replace(/^\/app\/\d+/, "");
+// Strip `/app/{tenantId}/` prefix and any leading `/` so favorites are
+// tenant-agnostic AND match the relative-path convention of nav-config
+// (e.g. "dashboard", "delivery-orders").
+const normalisePath = (path: string) =>
+  path.replace(/^\/app\/\d+\/?/, "").replace(/^\//, "");
 
 const useFavoritesStore = create(
   devtools(
@@ -47,7 +48,7 @@ const useFavoritesStore = create(
           // Path is normalised so re-toggling from a different tenant still
           // finds the existing row.
           toggle: (item: FavoriteItem) => {
-            const normalised = { ...item, path: stripTenantPrefix(item.path) };
+            const normalised = { ...item, path: normalisePath(item.path) };
             const { items } = get();
             const existing = items.find((i) => i.path === normalised.path);
             if (existing) {
@@ -59,7 +60,7 @@ const useFavoritesStore = create(
             }
           },
           remove: (path: string) => {
-            const normalised = stripTenantPrefix(path);
+            const normalised = normalisePath(path);
             set((s) => ({
               items: s.items.filter((i) => i.path !== normalised),
             }));
@@ -76,17 +77,17 @@ const useFavoritesStore = create(
         // for anyone whose saved list is empty — respects customised lists
         // (keep as-is), just fills the void for fresh installs that already
         // persisted an empty `items: []` before this change.
-        version: 3,
+        version: 4,
         migrate: (persisted, version) => {
           const state = persisted as { items?: FavoriteItem[] } | undefined;
           let items = state?.items ?? [];
-          if (version < 2) {
-            items = items.map((i) => ({
-              ...i,
-              path: stripTenantPrefix(i.path),
-            }));
+          // v4: relative-path convention — strip /app/{tenantId}/ AND leading /.
+          if (version < 4) {
+            items = items
+              .map((i) => ({ ...i, path: normalisePath(i.path) }))
+              .filter((i) => i.path.length > 0);
           }
-          if (version < 3 && items.length === 0) {
+          if (items.length === 0) {
             items = DEFAULT_FAVORITES;
           }
           return { items };
@@ -103,7 +104,7 @@ const useFavoritesStore = create(
 export const useFavorites = () => useFavoritesStore((s) => s.items);
 
 export const useIsFavorited = (path: string) => {
-  const normalised = path.replace(/^\/app\/\d+/, "");
+  const normalised = normalisePath(path);
   return useFavoritesStore((s) =>
     s.items.some((i) => i.path === normalised),
   );

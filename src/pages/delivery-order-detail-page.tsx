@@ -21,7 +21,7 @@ export default function DeliveryOrderDetailPage() {
   // hook 은 항상 같은 순서로 호출. 잘못된 id 면 enabled=false 유지.
   const { data, isPending, error } = useDeliveryOrderByIdData(valid ? idNum : null);
 
-  if (!valid) return <Navigate to="/app/delivery-orders" replace />;
+  if (!valid) return <Navigate to=".." relative="path" replace />;
 
   return (
     <div className="flex flex-col gap-4 p-6">
@@ -29,7 +29,7 @@ export default function DeliveryOrderDetailPage() {
         <Button
           size="sm"
           variant="ghost"
-          onClick={() => navigate("/app/delivery-orders")}
+          onClick={() => navigate("..", { relative: "path" })}
         >
           <ChevronLeft className="h-4 w-4" /> {t("deliveryOrder.backToList")}
         </Button>

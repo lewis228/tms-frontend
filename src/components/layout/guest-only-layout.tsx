@@ -8,6 +8,6 @@ export default function GuestOnlyLayout() {
   const isBootstrapped = useIsBootstrapped();
   const user = useCurrentUser();
   if (!isBootstrapped) return <GlobalLoader />;
-  if (user) return <Navigate to="/app/dashboard" replace />;
+  if (user) return <Navigate to="/app" replace />;
   return <Outlet />;
 }

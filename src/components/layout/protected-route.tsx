@@ -24,8 +24,6 @@ import type { UserRole } from "@/types";
 
 type Props = { require?: UserRole };
 
-const ONBOARDING_PATH = "/app/onboarding";
-
 export default function ProtectedRoute({ require }: Props) {
   const isBootstrapped = useIsBootstrapped();
   const user = useCurrentUser();
@@ -47,11 +45,11 @@ export default function ProtectedRoute({ require }: Props) {
     tenantId &&
     user.role !== "SUPER_ADMIN" &&
     user.role !== "DRIVER" &&
-    location.pathname !== ONBOARDING_PATH
+    !location.pathname.endsWith("/onboarding")
   ) {
     const membership = user.tenants.find((t) => t.tenantId === tenantId);
     if (membership && !membership.onboardingCompleted) {
-      return <Navigate to={ONBOARDING_PATH} replace />;
+      return <Navigate to={`/app/${tenantId}/onboarding`} replace />;
     }
   }
 

@@ -37,7 +37,7 @@ export default function UrgentList({
         {rows.map((row) => (
           <Link
             key={`${row.do.id}-${row.type}`}
-            to={`/app/delivery-orders?do=${row.do.id}`}
+            to={`delivery-orders?do=${row.do.id}`}
             className="flex items-center gap-3 px-3 py-2 text-sm hover:bg-accent/40"
           >
             <StatusBadge status={row.do.status} />

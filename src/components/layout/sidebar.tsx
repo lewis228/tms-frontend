@@ -1,11 +1,17 @@
 // 사이드바 — nav-config + favorites.
 //
-// FAVORITES 섹션은 사이드바 상단. 사용자가 nav-leaf 우측 별표 클릭으로 토글.
-// favorites store 가 path/title/iconName 을 영구 저장 (localStorage).
-import { Link, useLocation } from "react-router-dom";
+// 패턴 변경 (ste pattern):
+//  - nav-config 의 path 는 /app/:tenantId 하위의 상대 경로 ("dashboard" 등).
+//  - 현재 URL 의 :tenantId 를 prefix 로 붙여 최종 Link href 를 만든다.
+//  - favorite store 의 path 도 같은 상대 경로 (tenant 전환 시 즐겨찾기 유지).
+import { Link, useLocation, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-import { type NavIconName, visibleNavFor } from "@/lib/nav-config";
+import {
+  type NavIconName,
+  relativizeAppPath,
+  visibleNavFor,
+} from "@/lib/nav-config";
 import { clearAuth, useCurrentRole, useCurrentUser } from "@/store/auth";
 import {
   type FavoriteItem,
@@ -18,9 +24,12 @@ export default function Sidebar() {
   const role = useCurrentRole();
   const user = useCurrentUser();
   const location = useLocation();
+  const params = useParams();
+  const tenantId = params.tenantId ? Number(params.tenantId) : null;
 
   const nodes = visibleNavFor(role);
   const favorites = useFavorites();
+  const currentRelative = relativizeAppPath(location.pathname);
 
   return (
     <aside className="flex w-64 shrink-0 flex-col border-r bg-background">
@@ -40,7 +49,8 @@ export default function Sidebar() {
                 <FavoriteLeafLink
                   key={fav.path}
                   fav={fav}
-                  active={location.pathname === fav.path}
+                  tenantId={tenantId}
+                  active={currentRelative === fav.path}
                 />
               ))}
             </div>
@@ -54,8 +64,9 @@ export default function Sidebar() {
                 key={node.path}
                 label={node.label}
                 path={node.path}
+                tenantId={tenantId}
                 iconName={node.iconName}
-                active={location.pathname === node.path}
+                active={currentRelative === node.path}
               />
             );
           }
@@ -70,10 +81,12 @@ export default function Sidebar() {
                     key={leaf.path}
                     label={leaf.label}
                     path={leaf.path}
+                    tenantId={tenantId}
                     iconName={leaf.iconName}
                     active={
-                      location.pathname === leaf.path ||
-                      location.pathname.startsWith(leaf.path + "/")
+                      currentRelative === leaf.path ||
+                      (currentRelative != null &&
+                        currentRelative.startsWith(leaf.path + "/"))
                     }
                   />
                 ))}
@@ -102,11 +115,13 @@ export default function Sidebar() {
 function NavLeafLink({
   label,
   path,
+  tenantId,
   iconName,
   active,
 }: {
   label: string;
   path: string;
+  tenantId: number | null;
   iconName: NavIconName;
   active: boolean;
 }) {
@@ -120,9 +135,12 @@ function NavLeafLink({
     toggle({ path, title: label, iconName });
   };
 
+  // tenantId 가 없을 일은 (TenantScopedLayout 하위) 사실상 없지만 방어적으로 빈 href.
+  const href = tenantId != null ? `/app/${tenantId}/${path}` : "#";
+
   return (
     <Link
-      to={path}
+      to={href}
       className={
         "group flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors " +
         (active
@@ -151,9 +169,11 @@ function NavLeafLink({
 
 function FavoriteLeafLink({
   fav,
+  tenantId,
   active,
 }: {
   fav: FavoriteItem;
+  tenantId: number | null;
   active: boolean;
 }) {
   const { t } = useTranslation();
@@ -165,9 +185,11 @@ function FavoriteLeafLink({
     toggle({ path: fav.path, title: fav.title, iconName: fav.iconName });
   };
 
+  const href = tenantId != null ? `/app/${tenantId}/${fav.path}` : "#";
+
   return (
     <Link
-      to={fav.path}
+      to={href}
       className={
         "group flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors " +
         (active
