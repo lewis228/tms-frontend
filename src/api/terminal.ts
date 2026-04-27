@@ -1,14 +1,15 @@
 // /api/v1/terminals/* 매핑.
 import api from "@/lib/axios";
 import type { PagedResponse, TerminalEntity } from "@/types";
+import { adaptCursorToPaged, type CursorResponse } from "@/lib/pagination";
 
 export async function fetchTerminals(
   params: { page?: number; size?: number; q?: string } = {},
 ): Promise<PagedResponse<TerminalEntity>> {
-  const { data } = await api.get<PagedResponse<TerminalEntity>>("/terminals", {
+  const { data } = await api.get<CursorResponse<TerminalEntity>>("/terminals", {
     params,
   });
-  return data;
+  return adaptCursorToPaged(data, params?.page, params?.size);
 }
 
 export async function fetchTerminal(id: number): Promise<TerminalEntity> {

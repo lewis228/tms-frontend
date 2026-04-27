@@ -8,6 +8,7 @@ import type {
   DriverEntity,
   PagedResponse,
 } from "@/types";
+import { adaptCursorToPaged, type CursorResponse } from "@/lib/pagination";
 
 export async function fetchDrivers(
   params: {
@@ -17,10 +18,10 @@ export async function fetchDrivers(
     q?: string;
   } = {},
 ): Promise<PagedResponse<DriverEntity>> {
-  const { data } = await api.get<PagedResponse<DriverEntity>>("/drivers", {
+  const { data } = await api.get<CursorResponse<DriverEntity>>("/drivers", {
     params,
   });
-  return data;
+  return adaptCursorToPaged(data, params.page, params.size);
 }
 
 export async function fetchDriver(id: number): Promise<DriverEntity> {

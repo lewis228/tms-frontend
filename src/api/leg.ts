@@ -8,6 +8,7 @@ import type {
   PagedResponse,
   ServiceType,
 } from "@/types";
+import { adaptCursorToPaged, type CursorResponse } from "@/lib/pagination";
 
 export type LegCreatePayload = {
   deliveryOrderId: number;
@@ -27,28 +28,28 @@ export type LegUpdatePayload = Partial<Omit<LegCreatePayload, "deliveryOrderId">
 export async function fetchLegs(
   params: { page?: number; size?: number } = {},
 ): Promise<PagedResponse<LegEntity>> {
-  const { data } = await api.get<PagedResponse<LegEntity>>("/legs", {
+  const { data } = await api.get<CursorResponse<LegEntity>>("/legs", {
     params,
   });
-  return data;
+  return adaptCursorToPaged(data, params.page, params.size);
 }
 
 export async function fetchLegsByDeliveryOrder(
   deliveryOrderId: number,
 ): Promise<LegEntity[]> {
-  const { data } = await api.get<PagedResponse<LegEntity>>("/legs", {
+  const { data } = await api.get<CursorResponse<LegEntity>>("/legs", {
     params: { deliveryOrderId, page: 1, size: 100 },
   });
-  return data.items;
+  return adaptCursorToPaged(data, 1, 100).items;
 }
 
 export async function fetchLegsByDriver(
   driverId: number,
 ): Promise<LegEntity[]> {
-  const { data } = await api.get<PagedResponse<LegEntity>>("/legs", {
+  const { data } = await api.get<CursorResponse<LegEntity>>("/legs", {
     params: { driverId, page: 1, size: 100 },
   });
-  return data.items;
+  return adaptCursorToPaged(data, 1, 100).items;
 }
 
 export async function fetchLeg(id: number): Promise<LegEntity> {

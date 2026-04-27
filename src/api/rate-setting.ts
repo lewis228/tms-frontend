@@ -1,6 +1,7 @@
 // /api/v1/rate-settings/* 매핑 (ADMIN+).
 import api from "@/lib/axios";
 import type { PagedResponse, RateSettingEntity, RateType } from "@/types";
+import { adaptCursorToPaged, type CursorResponse } from "@/lib/pagination";
 
 export type RateSettingCreatePayload = {
   name: string;
@@ -25,11 +26,11 @@ export type RateSettingUpdatePayload = Partial<{
 export async function fetchRateSettings(
   params: { page?: number; size?: number } = {},
 ): Promise<PagedResponse<RateSettingEntity>> {
-  const { data } = await api.get<PagedResponse<RateSettingEntity>>(
+  const { data } = await api.get<CursorResponse<RateSettingEntity>>(
     "/rate-settings",
     { params },
   );
-  return data;
+  return adaptCursorToPaged(data, params?.page, params?.size);
 }
 
 export async function fetchRateSetting(id: number): Promise<RateSettingEntity> {

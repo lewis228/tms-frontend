@@ -1,14 +1,15 @@
 // /api/v1/locations/* 매핑.
 import api from "@/lib/axios";
 import type { LocationEntity, LocationKind, PagedResponse } from "@/types";
+import { adaptCursorToPaged, type CursorResponse } from "@/lib/pagination";
 
 export async function fetchLocations(
   params: { page?: number; size?: number; q?: string } = {},
 ): Promise<PagedResponse<LocationEntity>> {
-  const { data } = await api.get<PagedResponse<LocationEntity>>("/locations", {
+  const { data } = await api.get<CursorResponse<LocationEntity>>("/locations", {
     params,
   });
-  return data;
+  return adaptCursorToPaged(data, params?.page, params?.size);
 }
 
 export async function fetchLocation(id: number): Promise<LocationEntity> {

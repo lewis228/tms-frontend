@@ -1,14 +1,15 @@
 // /api/v1/vessels/* 매핑.
 import api from "@/lib/axios";
 import type { PagedResponse, VesselEntity } from "@/types";
+import { adaptCursorToPaged, type CursorResponse } from "@/lib/pagination";
 
 export async function fetchVessels(
   params: { page?: number; size?: number; q?: string } = {},
 ): Promise<PagedResponse<VesselEntity>> {
-  const { data } = await api.get<PagedResponse<VesselEntity>>("/vessels", {
+  const { data } = await api.get<CursorResponse<VesselEntity>>("/vessels", {
     params,
   });
-  return data;
+  return adaptCursorToPaged(data, params?.page, params?.size);
 }
 
 export async function fetchVessel(id: number): Promise<VesselEntity> {

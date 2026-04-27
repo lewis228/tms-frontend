@@ -5,6 +5,7 @@
 //
 // SettlementEntity 는 다른 도메인과 일관성 위해 types.ts 에서 정의 + 여기서 re-export.
 import api from "@/lib/axios";
+import { adaptCursorToPaged, type CursorResponse } from "@/lib/pagination";
 import type {
   ExtraChargeEntity,
   PagedResponse,
@@ -45,11 +46,11 @@ export type SettlementUnapprovePayload = {
 export async function fetchSettlements(
   params: { page?: number; size?: number } = {},
 ): Promise<PagedResponse<SettlementEntity>> {
-  const { data } = await api.get<PagedResponse<SettlementEntity>>(
+  const { data } = await api.get<CursorResponse<SettlementEntity>>(
     "/settlements",
     { params },
   );
-  return data;
+  return adaptCursorToPaged(data, params?.page, params?.size);
 }
 
 export async function fetchSettlement(id: number): Promise<SettlementEntity> {

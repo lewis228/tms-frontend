@@ -1,6 +1,7 @@
 // /api/v1/notifications/* 매핑.
 import api from "@/lib/axios";
 import type { NotificationEntity, PagedResponse } from "@/types";
+import { adaptCursorToPaged, type CursorResponse } from "@/lib/pagination";
 
 export async function listNotifications(params: {
   page?: number;
@@ -13,11 +14,11 @@ export async function listNotifications(params: {
   if (params.page !== undefined) queryParams.page = params.page;
   if (params.size !== undefined) queryParams.size = params.size;
   if (params.unreadOnly) queryParams.unreadOnly = "true";
-  const { data } = await api.get<PagedResponse<NotificationEntity>>(
+  const { data } = await api.get<CursorResponse<NotificationEntity>>(
     "/notifications",
     { params: queryParams },
   );
-  return data;
+  return adaptCursorToPaged(data, params?.page, params?.size);
 }
 
 export async function fetchUnreadCount(): Promise<number> {

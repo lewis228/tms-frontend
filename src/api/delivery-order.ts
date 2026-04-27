@@ -1,5 +1,6 @@
 // /api/v1/delivery-orders/* 매핑.
 import api from "@/lib/axios";
+import { adaptCursorToPaged, type CursorResponse } from "@/lib/pagination";
 import type {
   ContainerSize,
   DeliveryOrderEntity,
@@ -43,11 +44,11 @@ export type DeliveryOrderUpdatePayload = Partial<
 export async function fetchDeliveryOrders(
   params: { page?: number; size?: number } = {},
 ): Promise<PagedResponse<DeliveryOrderEntity>> {
-  const { data } = await api.get<PagedResponse<DeliveryOrderEntity>>(
+  const { data } = await api.get<CursorResponse<DeliveryOrderEntity>>(
     "/delivery-orders",
     { params },
   );
-  return data;
+  return adaptCursorToPaged(data, params?.page, params?.size);
 }
 
 export async function fetchDeliveryOrder(

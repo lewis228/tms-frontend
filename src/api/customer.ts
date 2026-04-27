@@ -1,14 +1,15 @@
 // /api/v1/customers/* 매핑.
 import api from "@/lib/axios";
 import type { CustomerEntity, PagedResponse } from "@/types";
+import { adaptCursorToPaged, type CursorResponse } from "@/lib/pagination";
 
 export async function fetchCustomers(
   params: { page?: number; size?: number; q?: string } = {},
 ): Promise<PagedResponse<CustomerEntity>> {
-  const { data } = await api.get<PagedResponse<CustomerEntity>>("/customers", {
+  const { data } = await api.get<CursorResponse<CustomerEntity>>("/customers", {
     params,
   });
-  return data;
+  return adaptCursorToPaged(data, params?.page, params?.size);
 }
 
 export async function fetchCustomer(id: number): Promise<CustomerEntity> {

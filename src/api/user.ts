@@ -5,6 +5,7 @@
 // 일반 유저(ADMIN/DISPATCHER)는 teamId 생략 → 자동으로 자기 team.
 import api from "@/lib/axios";
 import type { PagedResponse, UserEntity, UserRole } from "@/types";
+import { adaptCursorToPaged, type CursorResponse } from "@/lib/pagination";
 
 function teamHeaders(teamId?: number) {
   return teamId ? { "X-Team-Id": teamId } : undefined;
@@ -27,11 +28,11 @@ export async function listUsers(
   params: { page?: number; size?: number } = {},
   teamId?: number,
 ): Promise<PagedResponse<UserEntity>> {
-  const { data } = await api.get<PagedResponse<UserEntity>>("/users", {
+  const { data } = await api.get<CursorResponse<UserEntity>>("/users", {
     params,
     headers: teamHeaders(teamId),
   });
-  return data;
+  return adaptCursorToPaged(data, params?.page, params?.size);
 }
 
 export async function fetchUser(id: number): Promise<UserEntity> {
