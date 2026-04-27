@@ -2,8 +2,13 @@
 //
 // 인터셉터:
 // 1. Request — Authorization: Bearer <access>, X-Tenant-Id (SUPER_ADMIN 만), X-Request-ID.
-// 2. Response 401 — refresh token 으로 /api/v1/auth/refresh 호출, 성공 시 원 요청 1회 재시도.
-//                    refresh 도 실패하면 store clear + /sign-in.
+// 2. Response 401 — POST /auth/token/access (refresh 쿠키로 새 access 받음) → 원 요청 1회 재시도.
+//                    실패하면 store clear + /sign-in.
+//
+// 토큰 모델 (web):
+//  - access  : 메모리(zustand) 만 보관 — XSS 노출 시간 최소화.
+//  - refresh : 백엔드가 HttpOnly 쿠키로 관리 (JS 접근 불가). withCredentials:true 로 자동 송신.
+//  - 따라서 refresh 를 localStorage 에서 읽지 않는다 — 항상 쿠키에 의존.
 //
 // 동시성:
 // - refresh in-flight 인 동안 다른 401 들이 오면 같은 promise 를 await (단일 호출 보장).
@@ -17,12 +22,10 @@ import {
   authStore,
   clearAuth,
   getAccessToken,
-  getRefreshToken,
-  setTokensModule,
+  setAccessTokenModule,
   getCurrentTenantIdModule,
 } from "@/store/auth";
 import { generateRequestId } from "@/lib/request-id";
-import type { TokenPair } from "@/types";
 
 const APP_VERSION = import.meta.env.VITE_APP_VERSION ?? "0.1.0";
 
@@ -64,17 +67,23 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 
 let refreshPromise: Promise<string> | null = null;
 
+// 새 access 토큰 발급. 백엔드 /auth/token/access 가:
+//  - 웹: 쿠키의 refresh 를 읽어 access 만 body 로 반환 (refresh 쿠키는 그대로 유지).
+//  - 모바일: Authorization: Bearer <refresh> 헤더 사용 (이 프론트는 웹 only).
+// 따라서 body 는 비우고 withCredentials 만 켜서 호출한다.
 export async function refreshAccessToken(): Promise<string> {
   if (refreshPromise) return refreshPromise;
   refreshPromise = (async () => {
     try {
-      const refresh = getRefreshToken();
-      if (!refresh) throw new Error("no refresh token");
-      const resp = await axios.post<TokenPair>(
-        `${API_V1_URL}/auth/token/refresh`,
-        { refreshToken: refresh },
+      const resp = await axios.post<{ accessToken: string }>(
+        `${API_V1_URL}/auth/token/access`,
+        {},
+        {
+          withCredentials: true,
+          headers: { "X-Client-Type": "web" },
+        },
       );
-      setTokensModule(resp.data.accessToken, resp.data.refreshToken);
+      setAccessTokenModule(resp.data.accessToken);
       return resp.data.accessToken;
     } finally {
       refreshPromise = null;
@@ -111,6 +120,7 @@ api.interceptors.response.use(
       !original ||
       error.response?.status !== 401 ||
       original._retry ||
+      original.url?.includes("/auth/token/access") ||
       original.url?.includes("/auth/token/refresh") ||
       original.url?.includes("/auth/login")
     ) {
@@ -134,9 +144,9 @@ api.interceptors.response.use(
   },
 );
 
-// store 가 clear 되면 in-flight refresh 도 무효화.
+// store 가 clear (= access 토큰 사라짐) 되면 in-flight refresh 도 무효화.
 authStore.subscribe((state, prev) => {
-  if (prev.refreshToken && !state.refreshToken) {
+  if (prev.accessToken && !state.accessToken) {
     refreshPromise = null;
   }
 });

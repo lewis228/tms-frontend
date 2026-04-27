@@ -1,16 +1,17 @@
 // 부트스트랩 — 앱 시작 시 1회 실행.
 //
-// 동작:
-// - refresh token 이 localStorage 에 없으면 즉시 markBootstrapped (비인증 상태).
-// - refresh 있으면 /api/v1/auth/refresh → 새 access token 받고 /api/v1/users/me 호출.
-// - 어느 단계든 실패하면 clear() + markBootstrapped (sign-in 으로 가게 됨).
+// 동작 (web):
+// - 항상 /auth/token/access 시도 — refresh 토큰은 HttpOnly 쿠키에 있으므로
+//   JS 가 읽어 분기할 수 없다. 쿠키가 없으면 401, 있으면 새 access 발급.
+// - 성공 → /users/me → setUser.
+// - 실패 → clearAuth (비인증 상태로 sign-in 으로 가게 됨).
+// - 어느 경우든 markBootstrapped 로 가드들이 동작 가능하게.
 import { useEffect } from "react";
 
 import { fetchMe } from "@/api/user";
 import { refreshAccessToken } from "@/lib/axios";
 import {
   clearAuth,
-  getRefreshToken,
   markBootstrapped,
   setUser,
   useIsBootstrapped,
@@ -23,11 +24,6 @@ export default function AuthBootstrap({ children }: { children: React.ReactNode 
     if (isBootstrapped) return;
     let cancelled = false;
     (async () => {
-      const refresh = getRefreshToken();
-      if (!refresh) {
-        markBootstrapped();
-        return;
-      }
       try {
         await refreshAccessToken();
         const me = await fetchMe();

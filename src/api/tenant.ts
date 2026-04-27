@@ -64,3 +64,25 @@ export async function updateOnboarding(
   );
   return data;
 }
+
+// ── 멤버 초대 ─────────────────────────────────────────────────
+// POST /tenants/{tenantId}/members — 백엔드는 user_id 를 받는다 (이미 가입된 계정만 초대).
+// 응답: TeamMemberInviteResponseSchema { tenantId, userId, object, invited, permissionGroupId }
+export type TeamMemberInviteResponse = {
+  tenantId: number;
+  userId: number;
+  object: "team_member";
+  invited: boolean;
+  permissionGroupId: number | null;
+};
+
+export async function inviteMember(
+  tenantId: number,
+  payload: { userId: number; permissionGroupId?: number | null },
+): Promise<TeamMemberInviteResponse> {
+  const { data } = await api.post<TeamMemberInviteResponse>(
+    `/tenants/${tenantId}/members`,
+    payload,
+  );
+  return data;
+}

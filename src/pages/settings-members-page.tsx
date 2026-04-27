@@ -39,6 +39,7 @@ import { listUsers } from "@/api/user";
 import { QUERY_KEYS } from "@/lib/constants";
 import { formatDateTime } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { useOpenMemberInviteModal } from "@/store/member-invite-modal";
 import type { UserEntity } from "@/types";
 
 const ITEMS_PER_PAGE = 10;
@@ -56,6 +57,7 @@ export default function SettingsMembersPage() {
   const params = useParams();
   const tenantId = params.tenantId ? Number(params.tenantId) : undefined;
   const { t } = useTranslation();
+  const openMemberInviteModal = useOpenMemberInviteModal();
 
   const { data, error, isPending } = useQuery({
     queryKey: QUERY_KEYS.user.list({ tenantId, page: 1, size: 100 }),
@@ -164,11 +166,7 @@ export default function SettingsMembersPage() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() =>
-                      toast.info(t("settings.members.inviteComingSoon"), {
-                        position: "top-center",
-                      })
-                    }
+                    onClick={() => openMemberInviteModal()}
                     disabled={!tenantId}
                     aria-label={t("settings.members.addMember")}
                   >

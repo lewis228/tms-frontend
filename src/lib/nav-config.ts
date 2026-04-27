@@ -31,7 +31,8 @@ export type NavIconName =
   | "BadgeDollarSign"
   | "Tag"
   | "Plug"
-  | "CreditCard";
+  | "CreditCard"
+  | "Key";
 
 export type NavLeaf = {
   type: "leaf";
@@ -187,6 +188,13 @@ export const NAV_CONFIG: NavNode[] = [
         label: "nav.settingsMembers",
         iconName: "Users",
         path: "settings/members",
+        requiredRole: "ADMIN",
+      },
+      {
+        type: "leaf",
+        label: "nav.settingsApiKeys",
+        iconName: "Key",
+        path: "settings/api-keys",
         requiredRole: "ADMIN",
       },
       {

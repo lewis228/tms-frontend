@@ -297,6 +297,25 @@ export type NotificationEntity = {
   updatedAt: string;
 };
 
+// API Keys — TMS 백엔드의 /api/v1/api-keys 엔드포인트와 1:1.
+// 응답은 ResponseSchema 의 alias_generator=to_camel 로 camelCase 변환됨.
+// 전체 키 문자열은 createApiKey 응답에서만 한 번 노출 (ApiKeyCreated.key).
+export type ApiKeyEntity = {
+  id: number;
+  tenantId: number;
+  name: string;
+  description: string | null;
+  prefix: string;
+  expiresAt: string | null;
+  lastUsedAt: string | null;
+  isActive: boolean;
+  createdAt: string | null;
+  updatedAt: string | null;
+  createdByUserId: number | null;
+};
+
+export type ApiKeyCreated = ApiKeyEntity & { key: string };
+
 // Phase 8: Settlement / ExtraCharge / AuditLog / RateSetting
 export type SettlementEntity = {
   id: number;

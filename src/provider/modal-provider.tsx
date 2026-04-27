@@ -5,6 +5,9 @@ import { createPortal } from "react-dom";
 
 import AlertModal from "@/components/modal/alert-modal";
 import ProfileModal from "@/components/modal/profile-modal";
+import MemberInviteModal from "@/components/modal/member-invite-modal";
+import ApiKeyCreateModal from "@/components/modal/api-key-create-modal";
+import ApiKeyCreatedModal from "@/components/modal/api-key-created-modal";
 import AIIntakeModal from "@/components/modal/ai-intake-modal";
 import CustomerEditorModal from "@/components/customer/customer-editor-modal";
 import DeliveryOrderCreateModal from "@/components/delivery-order/delivery-order-create-modal";
@@ -30,6 +33,9 @@ export default function ModalProvider({ children }: { children: ReactNode }) {
           {/* 시스템 */}
           <AlertModal />
           <ProfileModal />
+          <MemberInviteModal />
+          <ApiKeyCreateModal />
+          <ApiKeyCreatedModal />
           {/* Master Data */}
           <VesselEditorModal />
           <TerminalEditorModal />

@@ -877,7 +877,8 @@
     "settingsPrivacy": "Privacy",
     "settingsTags": "Tags",
     "settingsPlugins": "Plugins",
-    "settingsPayment": "Payment"
+    "settingsPayment": "Payment",
+    "settingsApiKeys": "API Keys"
   },
   "header": {
     "toggleSidebar": "Toggle sidebar",
@@ -1188,5 +1189,70 @@
       "payoutPlaceholder": "Bank, account number, etc.",
       "footerNote": "Payment processing is handled securely."
     }
+  },
+  "modal": {
+    "memberInvite": {
+      "title": "Add team member",
+      "note": "Enter the email of an existing TMS account to add. Email invitation links are coming soon.",
+      "emailLabel": "Email",
+      "submit": "Add member",
+      "submitting": "Adding…",
+      "successToast": "Member has been added.",
+      "notFound": "No user with that email was found in this tenant."
+    },
+    "apiKeyCreate": {
+      "title": "Create new API key",
+      "nameLabel": "Name",
+      "namePlaceholder": "e.g. Production, CI/CD, Mobile App",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Note why this key exists so it's easy to manage later.",
+      "expiry": "Validity",
+      "days7": "7 days",
+      "days30": "30 days",
+      "days90": "90 days",
+      "year1": "1 year",
+      "never": "No expiry",
+      "expiryHint": "Expired keys are disabled automatically. 'No expiry' stays active until you revoke it.",
+      "submit": "Create API key",
+      "submitting": "Creating…",
+      "draftTitle": "You have unsaved changes",
+      "draftDescription": "Leaving now will discard the draft."
+    },
+    "apiKeyCreated": {
+      "title": "API key created",
+      "copyNow": "Copy it now",
+      "copyNowDetail": "This is the only time the full key is shown. Save it in a password manager before closing this window.",
+      "copyButton": "Copy",
+      "copiedButton": "Copied",
+      "saved": "I've saved it",
+      "clipboardSuccess": "Copied to clipboard.",
+      "clipboardDenied": "Could not access the clipboard. Please copy it manually."
+    }
+  },
+  "apiKey": {
+    "title": "API Keys",
+    "description": "Issue and manage the keys external systems use to access the TMS API.",
+    "newKey": "New API key",
+    "empty": "No API keys issued yet",
+    "emptyHint": "Click the button above to issue your first key.",
+    "col": {
+      "name": "Name",
+      "key": "Key",
+      "lastUsed": "Last used",
+      "expires": "Expires",
+      "status": "Status"
+    },
+    "status": {
+      "active": "Active",
+      "expired": "Expired",
+      "revoked": "Revoked"
+    },
+    "never": "No expiry",
+    "expiredAt": "Expired ({{ago}})",
+    "neverUsed": "Never used",
+    "revokeButton": "Revoke",
+    "revokeSuccess": "API key revoked.",
+    "revokeConfirmTitle": "Revoke '{{name}}'?",
+    "revokeConfirmDescription": "Revoked keys can no longer access the API. This is irreversible."
   }
 }

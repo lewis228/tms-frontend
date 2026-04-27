@@ -10,6 +10,7 @@ import {
   Container,
   CreditCard,
   Folder,
+  Key,
   LayoutDashboard,
   LogOut,
   Map,
@@ -79,6 +80,7 @@ const ICON_MAP: Record<NavIconName, LucideIcon> = {
   Tag,
   Plug,
   CreditCard,
+  Key,
 };
 
 // Build an absolute `/app/:tenantId/...` URL from a nav leaf's relative path.

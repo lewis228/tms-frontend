@@ -79,6 +79,11 @@ export const QUERY_KEYS = {
       ["notification", "list", params] as const,
     unreadCount: ["notification", "unreadCount"] as const,
   },
+  apiKey: {
+    all: ["api-key"] as const,
+    list: ["api-key", "list"] as const,
+    byId: (id: number) => ["api-key", "byId", id] as const,
+  },
 };
 
 export const PAGE_SIZE = 20;

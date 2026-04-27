@@ -74,6 +74,7 @@ const SettingsPrivacyPage = lazy(() => import("@/pages/settings-privacy-page"));
 const SettingsTagsPage = lazy(() => import("@/pages/settings-tags-page"));
 const SettingsPluginsPage = lazy(() => import("@/pages/settings-plugins-page"));
 const SettingsPaymentPage = lazy(() => import("@/pages/settings-payment-page"));
+const ApiKeysPage = lazy(() => import("@/pages/api-keys-page"));
 
 export default function RootRoute() {
   return (
@@ -164,6 +165,7 @@ export default function RootRoute() {
                 path="settings/members"
                 element={<SettingsMembersPage />}
               />
+              <Route path="settings/api-keys" element={<ApiKeysPage />} />
             </Route>
             <Route path="settings/theme" element={<SettingsThemePage />} />
             <Route

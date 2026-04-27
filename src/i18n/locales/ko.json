@@ -877,7 +877,8 @@
     "settingsPrivacy": "개인정보",
     "settingsTags": "태그",
     "settingsPlugins": "플러그인",
-    "settingsPayment": "결제"
+    "settingsPayment": "결제",
+    "settingsApiKeys": "API 키"
   },
   "header": {
     "toggleSidebar": "사이드바 토글",
@@ -1188,5 +1189,70 @@
       "payoutPlaceholder": "은행, 계좌번호 등",
       "footerNote": "결제는 안전하게 처리됩니다."
     }
+  },
+  "modal": {
+    "memberInvite": {
+      "title": "팀 멤버 추가",
+      "note": "추가할 사용자의 이메일을 입력해주세요. 이미 TMS 에 가입된 계정만 추가할 수 있습니다. 이메일 초대장 전송 기능은 곧 지원될 예정입니다.",
+      "emailLabel": "이메일",
+      "submit": "멤버 추가",
+      "submitting": "추가 중…",
+      "successToast": "멤버가 추가되었습니다.",
+      "notFound": "해당 이메일의 사용자를 이 테넌트에서 찾을 수 없습니다."
+    },
+    "apiKeyCreate": {
+      "title": "새 API 키 생성",
+      "nameLabel": "이름",
+      "namePlaceholder": "예: Production, CI/CD, Mobile App",
+      "descriptionLabel": "설명",
+      "descriptionPlaceholder": "이 키의 사용 목적을 적어두면 나중에 관리가 쉬워집니다.",
+      "expiry": "유효기간",
+      "days7": "7일",
+      "days30": "30일",
+      "days90": "90일",
+      "year1": "1년",
+      "never": "무기한",
+      "expiryHint": "만료된 키는 자동으로 비활성화됩니다. 무기한을 선택하면 직접 폐기할 때까지 유효합니다.",
+      "submit": "API 키 생성",
+      "submitting": "생성 중…",
+      "draftTitle": "작성 중이던 내용이 있습니다",
+      "draftDescription": "이 화면에서 나가면 작성중이던 내용이 사라집니다."
+    },
+    "apiKeyCreated": {
+      "title": "API 키가 생성되었습니다",
+      "copyNow": "지금 복사하세요",
+      "copyNowDetail": "이 키는 이 화면에서만 전체 값을 볼 수 있습니다. 창을 닫으면 다시 확인할 수 없으니 비밀번호 관리자 등에 저장해주세요.",
+      "copyButton": "복사",
+      "copiedButton": "복사됨",
+      "saved": "저장했습니다",
+      "clipboardSuccess": "클립보드에 복사되었습니다.",
+      "clipboardDenied": "클립보드에 접근할 수 없습니다. 직접 복사해주세요."
+    }
+  },
+  "apiKey": {
+    "title": "API 키",
+    "description": "외부 시스템에서 TMS API 에 접근할 때 사용하는 키를 발급하고 관리합니다.",
+    "newKey": "새 API 키",
+    "empty": "아직 발급된 API 키가 없습니다",
+    "emptyHint": "위 버튼을 눌러 첫 키를 발급해보세요.",
+    "col": {
+      "name": "이름",
+      "key": "키",
+      "lastUsed": "마지막 사용",
+      "expires": "만료",
+      "status": "상태"
+    },
+    "status": {
+      "active": "활성",
+      "expired": "만료",
+      "revoked": "폐기됨"
+    },
+    "never": "무기한",
+    "expiredAt": "만료됨 ({{ago}})",
+    "neverUsed": "사용된 적 없음",
+    "revokeButton": "폐기",
+    "revokeSuccess": "API 키가 폐기되었습니다.",
+    "revokeConfirmTitle": "'{{name}}' 키를 폐기할까요?",
+    "revokeConfirmDescription": "폐기된 키로는 더 이상 API 에 접근할 수 없습니다. 이 작업은 되돌릴 수 없습니다."
   }
 }
