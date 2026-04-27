@@ -5,7 +5,7 @@ import { QUERY_KEYS } from "@/lib/constants";
 import type { UserRole, UseMutationCallback } from "@/types";
 
 type Vars = {
-  tenantId: number;
+  teamId: number;
   payload: {
     email: string;
     name: string;
@@ -18,8 +18,8 @@ type Vars = {
 export function useCreateUser(callbacks?: UseMutationCallback) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ tenantId, payload }: Vars) =>
-      createUser({ ...payload, tenantId }, tenantId),
+    mutationFn: ({ teamId, payload }: Vars) =>
+      createUser({ ...payload, teamId }, teamId),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: QUERY_KEYS.user.all });
       callbacks?.onSuccess?.();

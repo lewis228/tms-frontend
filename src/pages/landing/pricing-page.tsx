@@ -42,7 +42,7 @@ const PLANS = [
     name: "Enterprise",
     price: "Custom",
     period: "",
-    desc: "For large fleets and multi-tenant 3PLs.",
+    desc: "For large fleets and multi-team 3PLs.",
     features: [
       "Unlimited delivery orders",
       "Dedicated dispatch infrastructure",

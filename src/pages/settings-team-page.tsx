@@ -1,6 +1,6 @@
-// Settings > Tenant — multi-section configuration page. Mirrors ste's
-// settings-team-page layout (Tenant info / Display preferences / Danger
-// zone) but wired to TMS's tenant API + auth store.
+// Settings > Team — multi-section configuration page. Mirrors ste's
+// settings-team-page layout (Team info / Display preferences / Danger
+// zone) but wired to TMS's team API + auth store.
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -12,11 +12,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  deleteTenant,
-  fetchTenant,
-  updateTenant,
-  type TenantWritePayload,
-} from "@/api/tenant";
+  deleteTeam,
+  fetchTeam,
+  updateTeam,
+  type TeamWritePayload,
+} from "@/api/team";
 import { useOpenAlertModal } from "@/store/alert-modal";
 import {
   useTeamPreferences,
@@ -30,21 +30,21 @@ import {
 import { QUERY_KEYS } from "@/lib/constants";
 import { generateErrorMessage } from "@/lib/error";
 import { cn } from "@/lib/utils";
-import type { TenantEntity } from "@/types";
+import type { TeamEntity } from "@/types";
 
-export default function SettingsTenantPage() {
+export default function SettingsTeamPage() {
   const params = useParams();
-  const tenantId = params.tenantId ? Number(params.tenantId) : undefined;
+  const teamId = params.teamId ? Number(params.teamId) : undefined;
   const { t } = useTranslation();
 
   const {
-    data: tenant,
+    data: team,
     error,
     isPending,
   } = useQuery({
-    queryKey: tenantId ? QUERY_KEYS.tenant.byId(tenantId) : QUERY_KEYS.tenant.all,
-    queryFn: () => fetchTenant(tenantId!),
-    enabled: typeof tenantId === "number" && Number.isFinite(tenantId),
+    queryKey: teamId ? QUERY_KEYS.team.byId(teamId) : QUERY_KEYS.team.all,
+    queryFn: () => fetchTeam(teamId!),
+    enabled: typeof teamId === "number" && Number.isFinite(teamId),
   });
 
   if (error) {
@@ -53,7 +53,7 @@ export default function SettingsTenantPage() {
   if (isPending) {
     return <div className="p-7 text-sm text-black/55">{t("common.loading")}</div>;
   }
-  if (!tenant) {
+  if (!team) {
     return <div className="p-7 text-sm text-black/55">{t("common.noData")}</div>;
   }
 
@@ -61,14 +61,14 @@ export default function SettingsTenantPage() {
     <div className="flex flex-col gap-6 p-7">
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-semibold text-black">
-          {t("settings.tenant.title")}
+          {t("settings.team.title")}
         </h1>
-        <p className="text-sm text-black/55">{t("settings.tenant.description")}</p>
+        <p className="text-sm text-black/55">{t("settings.team.description")}</p>
       </div>
 
-      <TenantInfoSection tenant={tenant} />
+      <TeamInfoSection team={team} />
       <DisplaySettingsSection />
-      <DangerZoneSection tenant={tenant} />
+      <DangerZoneSection team={team} />
     </div>
   );
 }
@@ -172,27 +172,27 @@ function CancelButton({
 }
 
 // ---------------------------------------------------------------------------
-// Tenant info — wired to PATCH /tenants/:id
+// Team info — wired to PATCH /teams/:id
 // ---------------------------------------------------------------------------
-function TenantInfoSection({ tenant }: { tenant: TenantEntity }) {
-  // Re-mount when tenant.id changes so the form state resets to fresh defaults
-  // instead of carrying old draft values across tenant switches.
-  return <TenantInfoSectionInner key={tenant.id} tenant={tenant} />;
+function TeamInfoSection({ team }: { team: TeamEntity }) {
+  // Re-mount when team.id changes so the form state resets to fresh defaults
+  // instead of carrying old draft values across team switches.
+  return <TeamInfoSectionInner key={team.id} team={team} />;
 }
 
-function TenantInfoSectionInner({ tenant }: { tenant: TenantEntity }) {
+function TeamInfoSectionInner({ team }: { team: TeamEntity }) {
   const queryClient = useQueryClient();
   const { t } = useTranslation();
 
-  const [name, setName] = useState(tenant.name);
-  const [memo, setMemo] = useState(tenant.memo ?? "");
-  const [timezone, setTimezone] = useState(tenant.timezone ?? "Asia/Seoul");
+  const [name, setName] = useState(team.name);
+  const [memo, setMemo] = useState(team.memo ?? "");
+  const [timezone, setTimezone] = useState(team.timezone ?? "Asia/Seoul");
 
   const { mutate: update, isPending: isUpdatePending } = useMutation({
-    mutationFn: (payload: Partial<TenantWritePayload & { isActive: boolean }>) =>
-      updateTenant(tenant.id, payload),
+    mutationFn: (payload: Partial<TeamWritePayload & { isActive: boolean }>) =>
+      updateTeam(team.id, payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.tenant.all });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.team.all });
       toast.success(t("toast.saved"), { position: "top-center" });
     },
     onError: (error) => {
@@ -201,28 +201,28 @@ function TenantInfoSectionInner({ tenant }: { tenant: TenantEntity }) {
   });
 
   const isDirty =
-    name.trim() !== tenant.name ||
-    (memo.trim() === "" ? null : memo.trim()) !== (tenant.memo ?? null) ||
-    timezone !== (tenant.timezone ?? "Asia/Seoul");
+    name.trim() !== team.name ||
+    (memo.trim() === "" ? null : memo.trim()) !== (team.memo ?? null) ||
+    timezone !== (team.timezone ?? "Asia/Seoul");
 
   const handleCancel = () => {
-    setName(tenant.name);
-    setMemo(tenant.memo ?? "");
-    setTimezone(tenant.timezone ?? "Asia/Seoul");
+    setName(team.name);
+    setMemo(team.memo ?? "");
+    setTimezone(team.timezone ?? "Asia/Seoul");
   };
 
   const handleSave = () => {
     if (name.trim() === "") {
-      toast.error(t("settings.tenant.info.nameRequired"), {
+      toast.error(t("settings.team.info.nameRequired"), {
         position: "top-center",
       });
       return;
     }
-    const payload: Partial<TenantWritePayload> = {};
-    if (name.trim() !== tenant.name) payload.name = name.trim();
+    const payload: Partial<TeamWritePayload> = {};
+    if (name.trim() !== team.name) payload.name = name.trim();
     const nextMemo = memo.trim() === "" ? null : memo.trim();
-    if (nextMemo !== (tenant.memo ?? null)) payload.memo = nextMemo;
-    if (timezone !== (tenant.timezone ?? "Asia/Seoul")) {
+    if (nextMemo !== (team.memo ?? null)) payload.memo = nextMemo;
+    if (timezone !== (team.timezone ?? "Asia/Seoul")) {
       payload.timezone = timezone;
     }
     if (Object.keys(payload).length === 0) {
@@ -234,8 +234,8 @@ function TenantInfoSectionInner({ tenant }: { tenant: TenantEntity }) {
 
   return (
     <Section
-      title={t("settings.tenant.info.title")}
-      description={t("settings.tenant.info.description")}
+      title={t("settings.team.info.title")}
+      description={t("settings.team.info.description")}
       footer={
         <>
           <CancelButton onClick={handleCancel} disabled={!isDirty || isUpdatePending} />
@@ -248,18 +248,18 @@ function TenantInfoSectionInner({ tenant }: { tenant: TenantEntity }) {
       }
     >
       <FieldGrid>
-        <Field label={t("settings.tenant.info.nameLabel")}>
+        <Field label={t("settings.team.info.nameLabel")}>
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
             disabled={isUpdatePending}
-            placeholder={t("settings.tenant.info.namePlaceholder")}
+            placeholder={t("settings.team.info.namePlaceholder")}
             maxLength={80}
             className="rounded-xl border-black/10 text-sm"
           />
         </Field>
 
-        <Field label={t("settings.tenant.info.timezoneLabel")}>
+        <Field label={t("settings.team.info.timezoneLabel")}>
           <Input
             value={timezone}
             onChange={(e) => setTimezone(e.target.value)}
@@ -270,14 +270,14 @@ function TenantInfoSectionInner({ tenant }: { tenant: TenantEntity }) {
         </Field>
 
         <Field
-          label={t("settings.tenant.info.memoLabel")}
+          label={t("settings.team.info.memoLabel")}
           className="md:col-span-2"
         >
           <Textarea
             value={memo}
             onChange={(e) => setMemo(e.target.value)}
             disabled={isUpdatePending}
-            placeholder={t("settings.tenant.info.memoPlaceholder")}
+            placeholder={t("settings.team.info.memoPlaceholder")}
             maxLength={3000}
             className="min-h-24 resize-none rounded-xl border-black/10 text-sm"
           />
@@ -358,8 +358,8 @@ function DisplaySettingsSectionInner({
 
   return (
     <Section
-      title={t("settings.tenant.display.title")}
-      description={t("settings.tenant.display.description")}
+      title={t("settings.team.display.title")}
+      description={t("settings.team.display.description")}
       footer={
         <>
           <CancelButton onClick={handleCancel} disabled={!isDirty} />
@@ -368,7 +368,7 @@ function DisplaySettingsSectionInner({
       }
     >
       <FieldGrid>
-        <Field label={t("settings.tenant.display.currencyLabel")}>
+        <Field label={t("settings.team.display.currencyLabel")}>
           <NativeSelect
             value={draft.currency}
             onChange={(v) =>
@@ -381,7 +381,7 @@ function DisplaySettingsSectionInner({
           />
         </Field>
 
-        <Field label={t("settings.tenant.display.decimalLabel")}>
+        <Field label={t("settings.team.display.decimalLabel")}>
           <NativeSelect
             value={String(draft.decimalPlaces)}
             onChange={(v) =>
@@ -397,7 +397,7 @@ function DisplaySettingsSectionInner({
           />
         </Field>
 
-        <Field label={t("settings.tenant.display.dateFormatLabel")}>
+        <Field label={t("settings.team.display.dateFormatLabel")}>
           <NativeSelect
             value={draft.dateFormat}
             onChange={(v) =>
@@ -410,21 +410,21 @@ function DisplaySettingsSectionInner({
           />
         </Field>
 
-        <Field label={t("settings.tenant.display.timeFormatLabel")}>
+        <Field label={t("settings.team.display.timeFormatLabel")}>
           <ToggleGroup
             value={draft.timeFormat}
             onChange={(v) =>
               setDraft((prev) => ({ ...prev, timeFormat: v as TimeFormat }))
             }
             options={[
-              { value: "24h", label: t("settings.tenant.display.timeFormat24") },
-              { value: "12h", label: t("settings.tenant.display.timeFormat12") },
+              { value: "24h", label: t("settings.team.display.timeFormat24") },
+              { value: "12h", label: t("settings.team.display.timeFormat12") },
             ]}
           />
         </Field>
 
         <Field
-          label={t("settings.tenant.display.unitsLabel")}
+          label={t("settings.team.display.unitsLabel")}
           className="md:col-span-2"
         >
           <ToggleGroup
@@ -433,10 +433,10 @@ function DisplaySettingsSectionInner({
               setDraft((prev) => ({ ...prev, unitSystem: v as UnitSystem }))
             }
             options={[
-              { value: "metric", label: t("settings.tenant.display.metric") },
+              { value: "metric", label: t("settings.team.display.metric") },
               {
                 value: "imperial",
-                label: t("settings.tenant.display.imperial"),
+                label: t("settings.team.display.imperial"),
               },
             ]}
           />
@@ -506,16 +506,16 @@ function ToggleGroup({
 // ---------------------------------------------------------------------------
 // Danger zone
 // ---------------------------------------------------------------------------
-function DangerZoneSection({ tenant }: { tenant: TenantEntity }) {
+function DangerZoneSection({ team }: { team: TeamEntity }) {
   const openAlertModal = useOpenAlertModal();
   const queryClient = useQueryClient();
   const { t } = useTranslation();
 
   const { mutate: del, isPending: isDeletePending } = useMutation({
-    mutationFn: () => deleteTenant(tenant.id),
+    mutationFn: () => deleteTeam(team.id),
     onSuccess: () => {
       queryClient.clear();
-      toast.success(t("settings.tenant.danger.deleteSuccess"), {
+      toast.success(t("settings.team.danger.deleteSuccess"), {
         position: "top-center",
       });
       window.location.href = "/app";
@@ -527,32 +527,32 @@ function DangerZoneSection({ tenant }: { tenant: TenantEntity }) {
 
   const handleDeleteClick = () => {
     openAlertModal({
-      title: t("settings.tenant.danger.deleteConfirmTitle", { name: tenant.name }),
-      description: t("settings.tenant.danger.deleteConfirmDescription"),
+      title: t("settings.team.danger.deleteConfirmTitle", { name: team.name }),
+      description: t("settings.team.danger.deleteConfirmDescription"),
       onPositive: () => del(),
     });
   };
 
   return (
     <Section
-      title={t("settings.tenant.danger.title")}
-      description={t("settings.tenant.danger.description")}
+      title={t("settings.team.danger.title")}
+      description={t("settings.team.danger.description")}
     >
       <div className="flex flex-col gap-3">
         <DangerRow
-          label={t("settings.tenant.danger.leaveTitle")}
-          description={t("settings.tenant.danger.leaveDescription")}
-          actionLabel={t("settings.tenant.danger.leaveAction")}
+          label={t("settings.team.danger.leaveTitle")}
+          description={t("settings.team.danger.leaveDescription")}
+          actionLabel={t("settings.team.danger.leaveAction")}
           onClick={() => {
-            // TODO(TMS): wire to leave-tenant mutation when available.
+            // TODO(TMS): wire to leave-team mutation when available.
             toast.info(t("common.noData"), { position: "top-center" });
           }}
           icon={<LogOut className="h-3.5 w-3.5" />}
         />
         <DangerRow
-          label={t("settings.tenant.danger.deleteTitle")}
-          description={t("settings.tenant.danger.deleteDescription")}
-          actionLabel={t("settings.tenant.danger.deleteAction")}
+          label={t("settings.team.danger.deleteTitle")}
+          description={t("settings.team.danger.deleteDescription")}
+          actionLabel={t("settings.team.danger.deleteAction")}
           onClick={handleDeleteClick}
           disabled={isDeletePending}
           icon={<Trash2 className="h-3.5 w-3.5" />}

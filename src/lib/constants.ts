@@ -8,11 +8,11 @@ export const QUERY_KEYS = {
       ["user", "list", params] as const,
     byId: (id: number) => ["user", "byId", id] as const,
   },
-  tenant: {
-    all: ["tenant"] as const,
-    me: ["tenant", "me"] as const,
-    list: ["tenant", "list"] as const,
-    byId: (id: number) => ["tenant", "byId", id] as const,
+  team: {
+    all: ["team"] as const,
+    me: ["team", "me"] as const,
+    list: ["team", "list"] as const,
+    byId: (id: number) => ["team", "byId", id] as const,
   },
   customer: {
     all: ["customer"] as const,

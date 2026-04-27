@@ -8,7 +8,7 @@
 // - 부트스트랩 미완 → GlobalLoader 표시.
 // - user 없음 → /sign-in 리다이렉트 (state: 원래 경로).
 // - role 부족 → /forbidden 리다이렉트.
-// - 현재 tenant 의 onboarding_completed=false → /app/onboarding 으로 redirect
+// - 현재 team 의 onboarding_completed=false → /app/onboarding 으로 redirect
 //   (단 이미 /app/onboarding 인 경우는 통과)
 // - 통과 → <Outlet />.
 import { Navigate, Outlet, useLocation } from "react-router-dom";
@@ -16,7 +16,7 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 import GlobalLoader from "@/components/global-loader";
 import { hasAccess } from "@/lib/nav-config";
 import {
-  useCurrentTenantId,
+  useCurrentTeamId,
   useCurrentUser,
   useIsBootstrapped,
 } from "@/store/auth";
@@ -27,7 +27,7 @@ type Props = { require?: UserRole };
 export default function ProtectedRoute({ require }: Props) {
   const isBootstrapped = useIsBootstrapped();
   const user = useCurrentUser();
-  const tenantId = useCurrentTenantId();
+  const teamId = useCurrentTeamId();
   const location = useLocation();
 
   if (!isBootstrapped) return <GlobalLoader />;
@@ -42,14 +42,14 @@ export default function ProtectedRoute({ require }: Props) {
 
   // 온보딩 미완 → wizard 로. SUPER_ADMIN 은 멤버십 없으니 제외, DRIVER 도 데스크톱 미사용.
   if (
-    tenantId &&
+    teamId &&
     user.role !== "SUPER_ADMIN" &&
     user.role !== "DRIVER" &&
     !location.pathname.endsWith("/onboarding")
   ) {
-    const membership = user.tenants.find((t) => t.tenantId === tenantId);
+    const membership = user.teams.find((t) => t.teamId === teamId);
     if (membership && !membership.onboardingCompleted) {
-      return <Navigate to={`/app/${tenantId}/onboarding`} replace />;
+      return <Navigate to={`/app/${teamId}/onboarding`} replace />;
     }
   }
 

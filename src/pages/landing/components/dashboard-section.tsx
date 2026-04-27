@@ -46,7 +46,7 @@ export default function DashboardSection() {
         <FadeIn delay={0.15}>
           <p className="mx-auto mt-5 max-w-xl text-center text-base leading-relaxed text-resend-muted">
             Every MBL, container, and vessel in one console. Live fleet map,
-            detailed scrape logs, and per-tenant API keys — without the friction.
+            detailed scrape logs, and per-team API keys — without the friction.
           </p>
         </FadeIn>
 

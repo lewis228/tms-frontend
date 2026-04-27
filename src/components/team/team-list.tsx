@@ -14,18 +14,18 @@ import {
 } from "@/components/ui/table";
 import Loader from "@/components/loader";
 import Fallback from "@/components/fallback";
-import { useDeleteTenant } from "@/hooks/mutations/tenant/use-delete-tenant";
-import { useUpdateTenant } from "@/hooks/mutations/tenant/use-update-tenant";
-import { useTenantsData } from "@/hooks/queries/use-tenants-data";
+import { useDeleteTeam } from "@/hooks/mutations/team/use-delete-team";
+import { useUpdateTeam } from "@/hooks/mutations/team/use-update-team";
+import { useTeamsData } from "@/hooks/queries/use-teams-data";
 import { generateErrorMessage } from "@/lib/error";
 import { useOpenAlertModal } from "@/store/alert-modal";
 import {
-  useOpenCreateTenantModal,
-  useOpenEditTenantModal,
-} from "@/store/tenant-editor-modal";
-import type { TenantEntity } from "@/types";
+  useOpenCreateTeamModal,
+  useOpenEditTeamModal,
+} from "@/store/team-editor-modal";
+import type { TeamEntity } from "@/types";
 
-export default function TenantList() {
+export default function TeamList() {
   const { t: tt } = useTranslation();
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
@@ -35,26 +35,26 @@ export default function TenantList() {
     return () => clearTimeout(id);
   }, [searchInput]);
 
-  const { data, isPending, error } = useTenantsData();
-  const openCreate = useOpenCreateTenantModal();
-  const openEdit = useOpenEditTenantModal();
+  const { data, isPending, error } = useTeamsData();
+  const openCreate = useOpenCreateTeamModal();
+  const openEdit = useOpenEditTeamModal();
   const openAlert = useOpenAlertModal();
 
-  const { mutate: deleteT } = useDeleteTenant({
+  const { mutate: deleteT } = useDeleteTeam({
     onSuccess: () =>
       toast.success(tt("toast.deleted"), { position: "top-center" }),
     onError: (err) =>
       toast.error(generateErrorMessage(err), { position: "top-center" }),
   });
 
-  const { mutate: updateT } = useUpdateTenant({
+  const { mutate: updateT } = useUpdateTeam({
     onSuccess: () =>
       toast.success(tt("toast.updated"), { position: "top-center" }),
     onError: (err) =>
       toast.error(generateErrorMessage(err), { position: "top-center" }),
   });
 
-  const filtered = useMemo<TenantEntity[]>(() => {
+  const filtered = useMemo<TeamEntity[]>(() => {
     if (!data) return [];
     if (!search) return data;
     return data.filter(
@@ -67,10 +67,10 @@ export default function TenantList() {
   if (error) return <Fallback />;
   if (isPending) return <Loader />;
 
-  const handleDelete = (t: TenantEntity) => {
+  const handleDelete = (t: TeamEntity) => {
     openAlert({
-      title: tt("tenant.deletePromptTitle", { name: t.name }),
-      description: tt("tenant.deletePromptDesc"),
+      title: tt("team.deletePromptTitle", { name: t.name }),
+      description: tt("team.deletePromptDesc"),
       onPositive: () => deleteT(t.id),
     });
   };
@@ -79,22 +79,22 @@ export default function TenantList() {
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between gap-2">
         <Input
-          placeholder={tt("tenant.searchPlaceholder")}
+          placeholder={tt("team.searchPlaceholder")}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           className="max-w-sm"
         />
-        <Button onClick={() => openCreate()}>{tt("tenant.newButton")}</Button>
+        <Button onClick={() => openCreate()}>{tt("team.newButton")}</Button>
       </div>
 
       <div className="rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>{tt("tenant.field.name")}</TableHead>
-              <TableHead>{tt("tenant.field.companyName")}</TableHead>
-              <TableHead>{tt("tenant.field.timezone")}</TableHead>
-              <TableHead>{tt("tenant.field.phone")}</TableHead>
+              <TableHead>{tt("team.field.name")}</TableHead>
+              <TableHead>{tt("team.field.companyName")}</TableHead>
+              <TableHead>{tt("team.field.timezone")}</TableHead>
+              <TableHead>{tt("team.field.phone")}</TableHead>
               <TableHead>{tt("common.active")}</TableHead>
               <TableHead className="text-right">{tt("common.actions")}</TableHead>
             </TableRow>

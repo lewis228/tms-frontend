@@ -5,8 +5,8 @@
 // - Marketing: / (LandingLayout — 비로그인/로그인 모두 접근)
 // - Guest: /sign-in (로그인 상태면 /app 으로 redirect)
 // - Member: /app/* (ProtectedRoute)
-//   - /app             → AppHomePage (tenant picker / auto-redirect)
-//   - /app/:tenantId/* → TenantScopedLayout (사이드바 + 헤더 셸 + 멤버십 가드)
+//   - /app             → AppHomePage (team picker / auto-redirect)
+//   - /app/:teamId/* → TeamScopedLayout (사이드바 + 헤더 셸 + 멤버십 가드)
 //
 // 모든 페이지 lazy. 단일 Suspense 가 전 페이지 로딩을 GlobalLoader 로 가린다.
 import { lazy, Suspense } from "react";
@@ -15,7 +15,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import GlobalLoader from "@/components/global-loader";
 import GuestOnlyLayout from "@/components/layout/guest-only-layout";
 import ProtectedRoute from "@/components/layout/protected-route";
-import TenantScopedLayout from "@/components/layout/tenant-scoped-layout";
+import TeamScopedLayout from "@/components/layout/team-scoped-layout";
 
 const SignInPage = lazy(() => import("@/pages/sign-in-page"));
 const SignUpPage = lazy(() => import("@/pages/sign-up-page"));
@@ -61,10 +61,10 @@ const AccountingPage = lazy(() => import("@/pages/accounting-page"));
 const AccountingRatesPage = lazy(
   () => import("@/pages/accounting-rates-page"),
 );
-const SystemTenantsPage = lazy(() => import("@/pages/system-tenants-page"));
+const SystemTeamsPage = lazy(() => import("@/pages/system-teams-page"));
 const SystemUsersPage = lazy(() => import("@/pages/system-users-page"));
 const NotificationsPage = lazy(() => import("@/pages/notifications-page"));
-const SettingsTenantPage = lazy(() => import("@/pages/settings-tenant-page"));
+const SettingsTeamPage = lazy(() => import("@/pages/settings-team-page"));
 const SettingsMembersPage = lazy(() => import("@/pages/settings-members-page"));
 const SettingsThemePage = lazy(() => import("@/pages/settings-theme-page"));
 const SettingsNotificationsPage = lazy(
@@ -121,11 +121,11 @@ export default function RootRoute() {
 
         {/* Member — 인증 필수. */}
         <Route path="/app" element={<ProtectedRoute />}>
-          {/* /app — tenant picker / 자동 redirect */}
+          {/* /app — team picker / 자동 redirect */}
           <Route index element={<AppHomePage />} />
 
-          {/* /app/:tenantId/* — 셸 + tenant 가드 */}
-          <Route path=":tenantId" element={<TenantScopedLayout />}>
+          {/* /app/:teamId/* — 셸 + team 가드 */}
+          <Route path=":teamId" element={<TeamScopedLayout />}>
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="notifications" element={<NotificationsPage />} />
@@ -155,12 +155,12 @@ export default function RootRoute() {
             <Route path="master/locations" element={<MasterLocationsPage />} />
 
             <Route element={<ProtectedRoute require="SUPER_ADMIN" />}>
-              <Route path="system/tenants" element={<SystemTenantsPage />} />
+              <Route path="system/teams" element={<SystemTeamsPage />} />
               <Route path="system/users" element={<SystemUsersPage />} />
             </Route>
 
             <Route element={<ProtectedRoute require="ADMIN" />}>
-              <Route path="settings/tenant" element={<SettingsTenantPage />} />
+              <Route path="settings/team" element={<SettingsTeamPage />} />
               <Route
                 path="settings/members"
                 element={<SettingsMembersPage />}

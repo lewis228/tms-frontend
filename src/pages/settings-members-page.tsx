@@ -1,4 +1,4 @@
-// Settings > Members — list of users in the current tenant. Visual shell
+// Settings > Members — list of users in the current team. Visual shell
 // matches ste's settings-members-page; backend is TMS's listUsers (paged).
 import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -55,14 +55,14 @@ function getSerialId(member: UserEntity) {
 
 export default function SettingsMembersPage() {
   const params = useParams();
-  const tenantId = params.tenantId ? Number(params.tenantId) : undefined;
+  const teamId = params.teamId ? Number(params.teamId) : undefined;
   const { t } = useTranslation();
   const openMemberInviteModal = useOpenMemberInviteModal();
 
   const { data, error, isPending } = useQuery({
-    queryKey: QUERY_KEYS.user.list({ tenantId, page: 1, size: 100 }),
-    queryFn: () => listUsers({ page: 1, size: 100 }, tenantId),
-    enabled: typeof tenantId === "number" && Number.isFinite(tenantId),
+    queryKey: QUERY_KEYS.user.list({ teamId, page: 1, size: 100 }),
+    queryFn: () => listUsers({ page: 1, size: 100 }, teamId),
+    enabled: typeof teamId === "number" && Number.isFinite(teamId),
   });
 
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
@@ -167,7 +167,7 @@ export default function SettingsMembersPage() {
                     variant="ghost"
                     size="icon"
                     onClick={() => openMemberInviteModal()}
-                    disabled={!tenantId}
+                    disabled={!teamId}
                     aria-label={t("settings.members.addMember")}
                   >
                     <Plus className="size-4" />

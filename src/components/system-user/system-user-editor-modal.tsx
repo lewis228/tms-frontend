@@ -1,4 +1,4 @@
-// System User 편집 — SUPER_ADMIN 전용. tenantId 필수 (헤더 명시).
+// System User 편집 — SUPER_ADMIN 전용. teamId 필수 (헤더 명시).
 //
 // CREATE: email/name/password/role/phone. SUPER_ADMIN 은 셀렉트 비활성.
 // EDIT: name/phone/isActive/role. email/password 는 별도 (User 셀프 변경).
@@ -101,7 +101,7 @@ function Body({ modal }: { modal: OpenModal }) {
         return;
       }
       createU({
-        tenantId: modal.tenantId,
+        teamId: modal.teamId,
         payload: {
           email: email.trim(),
           name: name.trim(),
@@ -113,7 +113,7 @@ function Body({ modal }: { modal: OpenModal }) {
     } else {
       updateU({
         id: modal.user.id,
-        tenantId: modal.tenantId,
+        teamId: modal.teamId,
         payload: {
           name: name.trim(),
           phone: phone.trim() || null,

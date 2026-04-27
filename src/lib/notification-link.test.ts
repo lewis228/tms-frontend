@@ -6,7 +6,7 @@ import type { NotificationEntity } from "@/types";
 function n(partial: Partial<NotificationEntity>): NotificationEntity {
   return {
     id: 1,
-    tenantId: 1,
+    teamId: 1,
     userId: 1,
     channel: "PUSH",
     status: "PENDING",

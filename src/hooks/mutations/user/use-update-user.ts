@@ -6,7 +6,7 @@ import type { UserRole, UseMutationCallback } from "@/types";
 
 type Vars = {
   id: number;
-  tenantId: number;
+  teamId: number;
   payload: Partial<{
     name: string;
     phone: string | null;
@@ -18,8 +18,8 @@ type Vars = {
 export function useUpdateUser(callbacks?: UseMutationCallback) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, tenantId, payload }: Vars) =>
-      updateUser(id, payload, tenantId),
+    mutationFn: ({ id, teamId, payload }: Vars) =>
+      updateUser(id, payload, teamId),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: QUERY_KEYS.user.all });
       callbacks?.onSuccess?.();

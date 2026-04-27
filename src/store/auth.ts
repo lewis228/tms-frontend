@@ -1,15 +1,15 @@
-// Auth store — 단일 진실 (user / currentTenantId / role / accessToken / refreshToken).
+// Auth store — 단일 진실 (user / currentTeamId / role / accessToken / refreshToken).
 //
 // 보안 절충 (D 결정):
 // - access token 은 메모리 (Zustand state) — XSS 노출 시간 최소화.
 // - refresh token 은 localStorage 에 persist — 새로고침 후 재로그인 회피.
-// - persist 미들웨어가 refresh / currentTenantId 만 저장 (`partialize`).
+// - persist 미들웨어가 refresh / currentTeamId 만 저장 (`partialize`).
 // - 새로고침 시 부트스트랩 단계가 refresh 로 새 access 받고 /users/me 호출 → user 복원.
 //
 // 멀티 테넌시:
-// - 백엔드는 N:M (한 user 가 여러 tenant 소속). user.tenants 배열로 옴.
-// - "현재 작업 중인 tenant" 는 별도 state (currentTenantId). 첫 멤버십을 default 로 자동 선택.
-// - SUPER_ADMIN 은 멤버십 없이 X-Tenant-Id 헤더로 다른 tenant 들 조회 가능.
+// - 백엔드는 N:M (한 user 가 여러 team 소속). user.teams 배열로 옴.
+// - "현재 작업 중인 team" 는 별도 state (currentTeamId). 첫 멤버십을 default 로 자동 선택.
+// - SUPER_ADMIN 은 멤버십 없이 X-Team-Id 헤더로 다른 team 들 조회 가능.
 import { create } from "zustand";
 import { combine, devtools, persist, createJSONStorage } from "zustand/middleware";
 
@@ -19,7 +19,7 @@ type State = {
   accessToken: string | null;
   refreshToken: string | null;
   user: UserEntity | null;
-  currentTenantId: number | null;
+  currentTeamId: number | null;
   isBootstrapped: boolean;
 };
 
@@ -27,14 +27,14 @@ const initial: State = {
   accessToken: null,
   refreshToken: null,
   user: null,
-  currentTenantId: null,
+  currentTeamId: null,
   isBootstrapped: false,
 };
 
-// user.tenants 의 첫 멤버십을 currentTenantId 로 사용 (이미 set 돼있으면 유지).
-function pickTenantId(user: UserEntity | null, prev: number | null): number | null {
-  if (prev != null && user?.tenants.some((m) => m.tenantId === prev)) return prev;
-  return user?.tenants[0]?.tenantId ?? null;
+// user.teams 의 첫 멤버십을 currentTeamId 로 사용 (이미 set 돼있으면 유지).
+function pickTeamId(user: UserEntity | null, prev: number | null): number | null {
+  if (prev != null && user?.teams.some((m) => m.teamId === prev)) return prev;
+  return user?.teams[0]?.teamId ?? null;
 }
 
 const useAuthStore = create(
@@ -46,8 +46,8 @@ const useAuthStore = create(
             set({ accessToken, refreshToken }),
           setAccessToken: (accessToken: string) => set({ accessToken }),
           setUser: (user: UserEntity | null) =>
-            set({ user, currentTenantId: pickTenantId(user, get().currentTenantId) }),
-          setCurrentTenantId: (id: number | null) => set({ currentTenantId: id }),
+            set({ user, currentTeamId: pickTeamId(user, get().currentTeamId) }),
+          setCurrentTeamId: (id: number | null) => set({ currentTeamId: id }),
           setSession: (params: {
             user: UserEntity;
             accessToken: string;
@@ -57,7 +57,7 @@ const useAuthStore = create(
               user: params.user,
               accessToken: params.accessToken,
               refreshToken: params.refreshToken,
-              currentTenantId: pickTenantId(params.user, get().currentTenantId),
+              currentTeamId: pickTeamId(params.user, get().currentTeamId),
               isBootstrapped: true,
             }),
           markBootstrapped: () => set({ isBootstrapped: true }),
@@ -66,7 +66,7 @@ const useAuthStore = create(
               accessToken: null,
               refreshToken: null,
               user: null,
-              currentTenantId: null,
+              currentTeamId: null,
               isBootstrapped: true,
             }),
         },
@@ -74,11 +74,11 @@ const useAuthStore = create(
       {
         name: "tms-auth",
         storage: createJSONStorage(() => localStorage),
-        // refresh + 사용자가 마지막에 본 tenant 만 persist.
+        // refresh + 사용자가 마지막에 본 team 만 persist.
         // access 는 메모리, user 는 부트스트랩 시 /users/me 로 갱신.
         partialize: (s) => ({
           refreshToken: s.refreshToken,
-          currentTenantId: s.currentTenantId,
+          currentTeamId: s.currentTeamId,
         }),
       },
     ),
@@ -91,7 +91,7 @@ export const useAuthAccessToken = () => useAuthStore((s) => s.accessToken);
 export const useAuthRefreshToken = () => useAuthStore((s) => s.refreshToken);
 export const useCurrentUser = () => useAuthStore((s) => s.user);
 export const useCurrentRole = () => useAuthStore((s) => s.user?.role ?? null);
-export const useCurrentTenantId = () => useAuthStore((s) => s.currentTenantId);
+export const useCurrentTeamId = () => useAuthStore((s) => s.currentTeamId);
 export const useIsBootstrapped = () => useAuthStore((s) => s.isBootstrapped);
 export const useAuthActions = () => useAuthStore((s) => s.actions);
 
@@ -114,8 +114,8 @@ export function clearAuth(): void {
 export function getCurrentUser(): UserEntity | null {
   return useAuthStore.getState().user;
 }
-export function getCurrentTenantIdModule(): number | null {
-  return useAuthStore.getState().currentTenantId;
+export function getCurrentTeamIdModule(): number | null {
+  return useAuthStore.getState().currentTeamId;
 }
 export function getCurrentRoleModule(): UserRole | null {
   return useAuthStore.getState().user?.role ?? null;

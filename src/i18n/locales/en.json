@@ -50,9 +50,9 @@
     "UNAUTHORIZED": "Authentication required.",
     "FORBIDDEN": "You don't have access.",
     "FORBIDDEN_ROLE": "Insufficient role for this action.",
-    "TENANT_MISMATCH": "Cannot access another tenant's data.",
-    "TENANT_REQUIRED": "Tenant is not specified.",
-    "NO_TENANT": "User has no tenant.",
+    "TEAM_MISMATCH": "Cannot access another team's data.",
+    "TEAM_REQUIRED": "Team is not specified.",
+    "NO_TEAM": "User has no team.",
     "AUTH_INVALID": "Email or password is incorrect.",
     "TOKEN_EXPIRED": "Session expired. Please sign in again.",
     "TOKEN_INVALID": "Invalid token.",
@@ -311,13 +311,13 @@
       "nameRequired": "Name is required."
     }
   },
-  "tenant": {
-    "domain": "Tenant",
-    "newButton": "New tenant",
-    "createTitle": "New tenant",
-    "editTitle": "Edit tenant",
-    "deletePromptTitle": "Delete tenant '{{name}}'?",
-    "deletePromptDesc": "⚠ Deleting a tenant CASCADEs to all users / D/O / Leg / Settlement / files. This cannot be undone.",
+  "team": {
+    "domain": "Team",
+    "newButton": "New team",
+    "createTitle": "New team",
+    "editTitle": "Edit team",
+    "deletePromptTitle": "Delete team '{{name}}'?",
+    "deletePromptDesc": "⚠ Deleting a team CASCADEs to all users / D/O / Leg / Settlement / files. This cannot be undone.",
     "searchPlaceholder": "Name / company",
     "field": {
       "name": "Name",
@@ -337,7 +337,7 @@
     "deletePromptTitle": "Delete user '{{name}}'?",
     "deletePromptDesc": "This cannot be undone.",
     "searchPlaceholder": "Email / name / role",
-    "noTenants": "No tenants. Create one in /app/system/tenants first.",
+    "noTeams": "No teams. Create one in /app/system/teams first.",
     "field": {
       "passwordMin": "Password (min 8 chars)"
     },
@@ -826,10 +826,10 @@
       "drivers": "Drivers"
     },
     "system": {
-      "tenants": "Tenants",
-      "tenantsHint": "SUPER_ADMIN only. CRUD across all tenants. Deletes CASCADE to all related data — irreversible.",
+      "teams": "Teams",
+      "teamsHint": "SUPER_ADMIN only. CRUD across all teams. Deletes CASCADE to all related data — irreversible.",
       "users": "System Users",
-      "usersHint": "SUPER_ADMIN only. Selecting a tenant shows users in that tenant (X-Tenant-Id header). SUPER_ADMIN cannot be created via API."
+      "usersHint": "SUPER_ADMIN only. Selecting a team shows users in that team (X-Team-Id header). SUPER_ADMIN cannot be created via API."
     },
     "driverSchedule": {
       "title": "Driver Schedule",
@@ -867,10 +867,10 @@
     "vessels": "Vessels",
     "locations": "Locations",
     "system": "System",
-    "tenants": "Tenants",
+    "teams": "Teams",
     "systemUsers": "System Users",
     "settings": "Settings",
-    "settingsTenant": "Tenant",
+    "settingsTeam": "Team",
     "settingsMembers": "Members",
     "settingsTheme": "Theme",
     "settingsNotifications": "Notifications",
@@ -897,7 +897,7 @@
     "items": {
       "mobileTab": "Mobile driver app — beta",
       "fileAttachment": "File attachments on D/O",
-      "customDocs": "Custom documents per tenant",
+      "customDocs": "Custom documents per team",
       "labelPrint": "Label printing",
       "labelDesign": "Customisable label design",
       "customReport": "Custom reports",
@@ -928,7 +928,7 @@
     "accountSecurity": "Account security",
     "support": "Support",
     "name": "Name",
-    "nameDescription": "The name shown on your profile and in tenant lists.",
+    "nameDescription": "The name shown on your profile and in team lists.",
     "email": "Email",
     "password": "Password",
     "passwordDescription": "Set a permanent password to login to your account.",
@@ -980,32 +980,32 @@
       "received": "Your account deletion request has been received."
     }
   },
-  "tenant": {
-    "untitled": "Tenant #{{id}}",
-    "createSuccess": "Tenant created.",
-    "newNamePlaceholder": "New tenant name",
-    "createTenant": "Create tenant"
+  "team": {
+    "untitled": "Team #{{id}}",
+    "createSuccess": "Team created.",
+    "newNamePlaceholder": "New team name",
+    "createTeam": "Create team"
   },
   "appHome": {
     "title": "TMS Pro",
-    "noTenants": "You're not in any tenant. Ask an administrator to invite you.",
-    "pickTenant": "Pick a tenant to enter",
-    "enterTenant": "Enter →",
-    "createSuccess": "Tenant created.",
+    "noTeams": "You're not in any team. Ask an administrator to invite you.",
+    "pickTeam": "Pick a team to enter",
+    "enterTeam": "Enter →",
+    "createSuccess": "Team created.",
     "createSubmit": "Create",
-    "createNewTenant": "Create a new tenant",
-    "tenantPlaceholder": "Tenant name"
+    "createNewTeam": "Create a new team",
+    "teamPlaceholder": "Team name"
   },
   "settings": {
-    "tenant": {
-      "title": "Tenant",
-      "description": "Manage tenant info and display preferences.",
+    "team": {
+      "title": "Team",
+      "description": "Manage team info and display preferences.",
       "info": {
-        "title": "Tenant info",
+        "title": "Team info",
         "description": "Name, memo, and timezone.",
-        "nameLabel": "Tenant name",
+        "nameLabel": "Team name",
         "namePlaceholder": "e.g. Acme Logistics",
-        "nameRequired": "Tenant name is required.",
+        "nameRequired": "Team name is required.",
         "memoLabel": "Memo",
         "memoPlaceholder": "Internal notes (visible to admins).",
         "timezoneLabel": "Timezone (IANA)"
@@ -1026,15 +1026,15 @@
       "danger": {
         "title": "Danger zone",
         "description": "Irreversible actions.",
-        "leaveTitle": "Leave tenant",
-        "leaveDescription": "Remove yourself from this tenant.",
+        "leaveTitle": "Leave team",
+        "leaveDescription": "Remove yourself from this team.",
         "leaveAction": "Leave",
-        "deleteTitle": "Delete tenant",
-        "deleteDescription": "Permanently delete the tenant and all related data.",
+        "deleteTitle": "Delete team",
+        "deleteDescription": "Permanently delete the team and all related data.",
         "deleteAction": "Delete",
         "deleteConfirmTitle": "Delete '{{name}}'?",
         "deleteConfirmDescription": "This action is irreversible.",
-        "deleteSuccess": "Tenant deleted."
+        "deleteSuccess": "Team deleted."
       }
     },
     "members": {
@@ -1198,7 +1198,7 @@
       "submit": "Add member",
       "submitting": "Adding…",
       "successToast": "Member has been added.",
-      "notFound": "No user with that email was found in this tenant."
+      "notFound": "No user with that email was found in this team."
     },
     "apiKeyCreate": {
       "title": "Create new API key",

@@ -17,7 +17,7 @@ import Fallback from "@/components/fallback";
 import { formatDate } from "@/lib/format";
 import { useDeleteUser } from "@/hooks/mutations/user/use-delete-user";
 import { useUsersData } from "@/hooks/queries/use-users-data";
-import { useTenantsData } from "@/hooks/queries/use-tenants-data";
+import { useTeamsData } from "@/hooks/queries/use-teams-data";
 import { generateErrorMessage } from "@/lib/error";
 import { useOpenAlertModal } from "@/store/alert-modal";
 import {
@@ -28,23 +28,23 @@ import type { UserEntity } from "@/types";
 
 export default function SystemUserList() {
   const { t } = useTranslation();
-  const [selectedTenantId, setSelectedTenantId] = useState<number | null>(null);
+  const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
   const [page, setPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
 
-  const { data: tenants, isPending: tenantsPending, error: tenantsError } =
-    useTenantsData();
+  const { data: teams, isPending: teamsPending, error: teamsError } =
+    useTeamsData();
 
-  // 사용자가 select 로 명시 변경하기 전까지는 첫 tenant 를 default 로 사용 (derived).
-  const tenantId = selectedTenantId ?? tenants?.[0]?.id ?? null;
+  // 사용자가 select 로 명시 변경하기 전까지는 첫 team 를 default 로 사용 (derived).
+  const teamId = selectedTeamId ?? teams?.[0]?.id ?? null;
 
   useEffect(() => {
     const t = setTimeout(() => setSearch(searchInput.trim().toLowerCase()), 300);
     return () => clearTimeout(t);
   }, [searchInput]);
 
-  const { data, isPending, error } = useUsersData(tenantId, page);
+  const { data, isPending, error } = useUsersData(teamId, page);
   const openCreate = useOpenCreateSystemUserModal();
   const openEdit = useOpenEditSystemUserModal();
   const openAlert = useOpenAlertModal();
@@ -67,23 +67,23 @@ export default function SystemUserList() {
     );
   }, [data, search]);
 
-  if (tenantsError) return <Fallback />;
-  if (tenantsPending) return <Loader />;
+  if (teamsError) return <Fallback />;
+  if (teamsPending) return <Loader />;
 
-  if (!tenants || tenants.length === 0) {
+  if (!teams || teams.length === 0) {
     return (
       <p className="rounded-md border bg-background p-6 text-center text-sm text-muted-foreground">
-        {t("systemUser.noTenants")}
+        {t("systemUser.noTeams")}
       </p>
     );
   }
 
   const handleDelete = (u: UserEntity) => {
-    if (!tenantId) return;
+    if (!teamId) return;
     openAlert({
       title: t("systemUser.deletePromptTitle", { name: u.name ?? "" }),
       description: t("systemUser.deletePromptDesc"),
-      onPositive: () => deleteU({ id: u.id, tenantId }),
+      onPositive: () => deleteU({ id: u.id, teamId }),
     });
   };
 
@@ -91,14 +91,14 @@ export default function SystemUserList() {
     <div className="flex flex-col gap-3">
       <div className="flex flex-wrap items-center gap-2">
         <select
-          value={tenantId ?? ""}
+          value={teamId ?? ""}
           onChange={(e) => {
-            setSelectedTenantId(e.target.value ? Number(e.target.value) : null);
+            setSelectedTeamId(e.target.value ? Number(e.target.value) : null);
             setPage(1);
           }}
           className="rounded-md border bg-background px-3 py-2 text-sm"
         >
-          {tenants.map((tt) => (
+          {teams.map((tt) => (
             <option key={tt.id} value={tt.id}>
               {tt.name}
               {tt.companyName ? ` · ${tt.companyName}` : ""}
@@ -112,8 +112,8 @@ export default function SystemUserList() {
           className="w-72"
         />
         <Button
-          onClick={() => tenantId && openCreate(tenantId)}
-          disabled={!tenantId}
+          onClick={() => teamId && openCreate(teamId)}
+          disabled={!teamId}
         >
           {t("systemUser.newButton")}
         </Button>
@@ -171,7 +171,7 @@ export default function SystemUserList() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => tenantId && openEdit(tenantId, u)}
+                          onClick={() => teamId && openEdit(teamId, u)}
                           disabled={u.role === "SUPER_ADMIN"}
                         >
                           {t("common.edit")}

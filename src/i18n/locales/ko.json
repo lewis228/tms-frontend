@@ -50,9 +50,9 @@
     "UNAUTHORIZED": "인증이 필요합니다.",
     "FORBIDDEN": "접근 권한이 없습니다.",
     "FORBIDDEN_ROLE": "해당 작업을 수행할 권한이 부족합니다.",
-    "TENANT_MISMATCH": "다른 테넌트의 데이터에 접근할 수 없습니다.",
-    "TENANT_REQUIRED": "테넌트가 지정되지 않았습니다.",
-    "NO_TENANT": "사용자에게 테넌트가 없습니다.",
+    "TEAM_MISMATCH": "다른 팀의 데이터에 접근할 수 없습니다.",
+    "TEAM_REQUIRED": "팀가 지정되지 않았습니다.",
+    "NO_TEAM": "사용자에게 팀가 없습니다.",
     "AUTH_INVALID": "이메일 또는 비밀번호가 일치하지 않습니다.",
     "TOKEN_EXPIRED": "세션이 만료되었습니다. 다시 로그인해 주세요.",
     "TOKEN_INVALID": "유효하지 않은 토큰입니다.",
@@ -311,13 +311,13 @@
       "nameRequired": "이름을 입력하세요."
     }
   },
-  "tenant": {
-    "domain": "Tenant",
-    "newButton": "새 Tenant",
-    "createTitle": "Tenant 생성",
-    "editTitle": "Tenant 수정",
-    "deletePromptTitle": "Tenant '{{name}}' 을(를) 삭제하시겠습니까?",
-    "deletePromptDesc": "⚠ Tenant 삭제는 CASCADE 로 모든 사용자/D-O/Leg/Settlement/파일 등 모든 연관 데이터가 영구 삭제됩니다. 복구할 수 없습니다.",
+  "team": {
+    "domain": "Team",
+    "newButton": "새 Team",
+    "createTitle": "Team 생성",
+    "editTitle": "Team 수정",
+    "deletePromptTitle": "Team '{{name}}' 을(를) 삭제하시겠습니까?",
+    "deletePromptDesc": "⚠ Team 삭제는 CASCADE 로 모든 사용자/D-O/Leg/Settlement/파일 등 모든 연관 데이터가 영구 삭제됩니다. 복구할 수 없습니다.",
     "searchPlaceholder": "이름 / 회사명 검색",
     "field": {
       "name": "이름",
@@ -337,7 +337,7 @@
     "deletePromptTitle": "'{{name}}' 사용자를 삭제하시겠습니까?",
     "deletePromptDesc": "복구할 수 없습니다.",
     "searchPlaceholder": "이메일 / 이름 / role 검색",
-    "noTenants": "Tenant 가 없습니다. /app/system/tenants 에서 먼저 생성하세요.",
+    "noTeams": "Team 가 없습니다. /app/system/teams 에서 먼저 생성하세요.",
     "field": {
       "passwordMin": "비밀번호 (최소 8자)"
     },
@@ -826,10 +826,10 @@
       "drivers": "기사 (Drivers)"
     },
     "system": {
-      "tenants": "테넌트 (Tenants)",
-      "tenantsHint": "SUPER_ADMIN 전용. 모든 tenant 의 CRUD. 삭제는 CASCADE 로 연관 데이터까지 영구 삭제됨.",
+      "teams": "팀 (Teams)",
+      "teamsHint": "SUPER_ADMIN 전용. 모든 team 의 CRUD. 삭제는 CASCADE 로 연관 데이터까지 영구 삭제됨.",
       "users": "시스템 사용자 (System Users)",
-      "usersHint": "SUPER_ADMIN 전용. tenant 를 선택하면 그 tenant 의 사용자만 표시됨 (X-Tenant-Id 헤더 사용). SUPER_ADMIN 은 API 로 생성 불가."
+      "usersHint": "SUPER_ADMIN 전용. team 를 선택하면 그 team 의 사용자만 표시됨 (X-Team-Id 헤더 사용). SUPER_ADMIN 은 API 로 생성 불가."
     },
     "driverSchedule": {
       "title": "기사 스케줄 (Driver Schedule)",
@@ -867,10 +867,10 @@
     "vessels": "선박",
     "locations": "위치",
     "system": "시스템",
-    "tenants": "회사",
+    "teams": "회사",
     "systemUsers": "시스템 사용자",
     "settings": "설정",
-    "settingsTenant": "회사",
+    "settingsTeam": "회사",
     "settingsMembers": "구성원",
     "settingsTheme": "테마",
     "settingsNotifications": "알림",
@@ -980,24 +980,24 @@
       "received": "계정 삭제 요청이 접수되었습니다."
     }
   },
-  "tenant": {
+  "team": {
     "untitled": "회사 #{{id}}",
     "createSuccess": "회사가 생성되었습니다.",
     "newNamePlaceholder": "새 회사 이름",
-    "createTenant": "회사 만들기"
+    "createTeam": "회사 만들기"
   },
   "appHome": {
     "title": "TMS Pro",
-    "noTenants": "소속된 회사가 없습니다. 관리자에게 초대를 요청하세요.",
-    "pickTenant": "들어갈 회사를 선택하세요",
-    "enterTenant": "들어가기 →",
+    "noTeams": "소속된 회사가 없습니다. 관리자에게 초대를 요청하세요.",
+    "pickTeam": "들어갈 회사를 선택하세요",
+    "enterTeam": "들어가기 →",
     "createSuccess": "회사가 생성되었습니다.",
     "createSubmit": "생성",
-    "createNewTenant": "새 회사 만들기",
-    "tenantPlaceholder": "회사 이름"
+    "createNewTeam": "새 회사 만들기",
+    "teamPlaceholder": "회사 이름"
   },
   "settings": {
-    "tenant": {
+    "team": {
       "title": "회사 설정",
       "description": "회사 정보와 표시 환경설정을 관리합니다.",
       "info": {
@@ -1198,7 +1198,7 @@
       "submit": "멤버 추가",
       "submitting": "추가 중…",
       "successToast": "멤버가 추가되었습니다.",
-      "notFound": "해당 이메일의 사용자를 이 테넌트에서 찾을 수 없습니다."
+      "notFound": "해당 이메일의 사용자를 이 팀에서 찾을 수 없습니다."
     },
     "apiKeyCreate": {
       "title": "새 API 키 생성",

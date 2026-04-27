@@ -8,21 +8,21 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { listUsers } from "@/api/user";
 import { useMemberInviteModal } from "@/store/member-invite-modal";
-import { useInviteMember } from "@/hooks/mutations/tenant/use-invite-member";
-import { useCurrentTenantId } from "@/store/auth";
+import { useInviteMember } from "@/hooks/mutations/team/use-invite-member";
+import { useCurrentTeamId } from "@/store/auth";
 import { generateErrorMessage } from "@/lib/error";
 
 // Invite modal — admin pastes an email, we look up the existing account on
 // the server and create the membership. There's no token-based email invite
 // flow yet (on roadmap), so invited users must already have accounts.
 //
-// TMS adaptation: backend's POST /tenants/{tenantId}/members expects a
+// TMS adaptation: backend's POST /teams/{teamId}/members expects a
 // `userId` (not email), so the modal resolves email → user via listUsers
-// then calls the invite mutation. Tenant id comes from the auth store.
+// then calls the invite mutation. Team id comes from the auth store.
 
 export default function MemberInviteModal() {
   const modal = useMemberInviteModal();
-  const tenantId = useCurrentTenantId();
+  const teamId = useCurrentTeamId();
   const { t } = useTranslation();
 
   const [email, setEmail] = useState("");
@@ -56,16 +56,16 @@ export default function MemberInviteModal() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!tenantId) return;
+    if (!teamId) return;
     const trimmed = email.trim().toLowerCase();
     if (trimmed === "") return;
 
     setIsResolving(true);
     try {
       // Resolve email → user. listUsers is paginated; for this v1 we scan
-      // the first page (size=100) which covers most tenants. Token-based
+      // the first page (size=100) which covers most teams. Token-based
       // email invites (no pre-existing account) are on the roadmap.
-      const page = await listUsers({ page: 1, size: 100 }, tenantId);
+      const page = await listUsers({ page: 1, size: 100 }, teamId);
       const match = page.items.find(
         (u) => (u.email ?? "").toLowerCase() === trimmed,
       );
@@ -75,7 +75,7 @@ export default function MemberInviteModal() {
         });
         return;
       }
-      inviteMember({ tenantId, userId: match.id });
+      inviteMember({ teamId, userId: match.id });
     } catch (err) {
       toast.error(generateErrorMessage(err), { position: "top-center" });
     } finally {
@@ -121,7 +121,7 @@ export default function MemberInviteModal() {
 
           <Button
             type="submit"
-            disabled={isPending || email.trim() === "" || !tenantId}
+            disabled={isPending || email.trim() === "" || !teamId}
             className="rounded-xl bg-black py-3 text-sm font-medium text-white hover:bg-black/80"
           >
             {isPending

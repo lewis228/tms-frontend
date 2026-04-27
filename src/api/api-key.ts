@@ -1,7 +1,7 @@
 // /api/v1/api-keys/* 매핑.
 //
-// tenant 스코프는 axios 의 X-Tenant-Id 헤더 인터셉터가 처리하므로 URL 에는
-// tenant id 가 들어가지 않는다 (TMS ste-pattern).
+// team 스코프는 axios 의 X-Team-Id 헤더 인터셉터가 처리하므로 URL 에는
+// team id 가 들어가지 않는다 (TMS ste-pattern).
 import api from "@/lib/axios";
 import type { ApiKeyEntity, ApiKeyCreated } from "@/types";
 

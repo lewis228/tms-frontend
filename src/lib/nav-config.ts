@@ -1,9 +1,9 @@
 // 사이드바 + breadcrumb + favorites 의 단일 진실.
 // 데이터로 표현 — 컴포넌트 안에 if (role >= ADMIN) 산재 금지.
 //
-// `path` 는 `/app/:tenantId` 하위의 **상대 경로** ("dashboard", "delivery-orders" 등).
-// 사이드바가 현재 URL 의 :tenantId 를 prefix 로 붙여 최종 URL 을 만든다.
-// favorite store 도 같은 상대 경로를 키로 사용 → tenant 전환 시 즐겨찾기가 따라옴.
+// `path` 는 `/app/:teamId` 하위의 **상대 경로** ("dashboard", "delivery-orders" 등).
+// 사이드바가 현재 URL 의 :teamId 를 prefix 로 붙여 최종 URL 을 만든다.
+// favorite store 도 같은 상대 경로를 키로 사용 → team 전환 시 즐겨찾기가 따라옴.
 //
 // `requiredRole` 이 명시되면 ProtectedRoute / Sidebar 에서 ROLE_RANK 비교로 게이트.
 import type { UserRole } from "@/types";
@@ -157,9 +157,9 @@ export const NAV_CONFIG: NavNode[] = [
     children: [
       {
         type: "leaf",
-        label: "nav.tenants",
+        label: "nav.teams",
         iconName: "Building2",
-        path: "system/tenants",
+        path: "system/teams",
         requiredRole: "SUPER_ADMIN",
       },
       {
@@ -178,9 +178,9 @@ export const NAV_CONFIG: NavNode[] = [
     children: [
       {
         type: "leaf",
-        label: "nav.settingsTenant",
+        label: "nav.settingsTeam",
         iconName: "Building2",
-        path: "settings/tenant",
+        path: "settings/team",
         requiredRole: "ADMIN",
       },
       {
@@ -283,7 +283,7 @@ function matches(pathname: string, target: string): boolean {
   return pathname.startsWith(target + "/");
 }
 
-/** /app/:tenantId/foo/bar → "foo/bar" (또는 매치 안 되면 null). */
+/** /app/:teamId/foo/bar → "foo/bar" (또는 매치 안 되면 null). */
 export function relativizeAppPath(pathname: string): string | null {
   const m = pathname.match(/^\/app\/\d+\/?(.*)$/);
   return m ? m[1] : null;

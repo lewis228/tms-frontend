@@ -48,7 +48,7 @@ export default function TestimonialsSection() {
       <FadeIn delay={0.1}>
         <p className="mx-auto mt-5 max-w-xl text-center text-base leading-relaxed text-resend-muted">
           OMNIQ powers forwarders, 3PLs, drayage operators, and freight SaaS
-          tenants shipping real-time visibility without babysitting carrier
+          teams shipping real-time visibility without babysitting carrier
           scrapers.
         </p>
       </FadeIn>

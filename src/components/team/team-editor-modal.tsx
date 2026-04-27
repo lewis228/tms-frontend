@@ -10,18 +10,18 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useCreateTenant } from "@/hooks/mutations/tenant/use-create-tenant";
-import { useUpdateTenant } from "@/hooks/mutations/tenant/use-update-tenant";
+import { useCreateTeam } from "@/hooks/mutations/team/use-create-team";
+import { useUpdateTeam } from "@/hooks/mutations/team/use-update-team";
 import { generateErrorMessage } from "@/lib/error";
-import { useTenantEditorModal } from "@/store/tenant-editor-modal";
+import { useTeamEditorModal } from "@/store/team-editor-modal";
 
 type OpenModal = Extract<
-  ReturnType<typeof useTenantEditorModal>,
+  ReturnType<typeof useTeamEditorModal>,
   { isOpen: true }
 >;
 
-export default function TenantEditorModal() {
-  const modal = useTenantEditorModal();
+export default function TeamEditorModal() {
+  const modal = useTeamEditorModal();
   return (
     <Dialog
       open={modal.isOpen}
@@ -30,7 +30,7 @@ export default function TenantEditorModal() {
       <DialogContent>
         {modal.isOpen && (
           <Body
-            key={modal.type === "EDIT" ? `e-${modal.tenant.id}` : "c"}
+            key={modal.type === "EDIT" ? `e-${modal.team.id}` : "c"}
             modal={modal}
           />
         )}
@@ -42,19 +42,19 @@ export default function TenantEditorModal() {
 function Body({ modal }: { modal: OpenModal }) {
   const { t } = useTranslation();
   const [name, setName] = useState(
-    modal.type === "CREATE" ? "" : modal.tenant.name,
+    modal.type === "CREATE" ? "" : modal.team.name,
   );
   const [companyName, setCompanyName] = useState(
-    modal.type === "CREATE" ? "" : (modal.tenant.companyName ?? ""),
+    modal.type === "CREATE" ? "" : (modal.team.companyName ?? ""),
   );
   const [timezone, setTimezone] = useState(
-    modal.type === "CREATE" ? "Asia/Seoul" : (modal.tenant.timezone ?? "Asia/Seoul"),
+    modal.type === "CREATE" ? "Asia/Seoul" : (modal.team.timezone ?? "Asia/Seoul"),
   );
   const [phoneNumber, setPhoneNumber] = useState(
-    modal.type === "CREATE" ? "" : (modal.tenant.phoneNumber ?? ""),
+    modal.type === "CREATE" ? "" : (modal.team.phoneNumber ?? ""),
   );
 
-  const { mutate: createT, isPending: isCreatePending } = useCreateTenant({
+  const { mutate: createT, isPending: isCreatePending } = useCreateTeam({
     onSuccess: () => {
       toast.success(t("toast.created"), { position: "top-center" });
       modal.actions.close();
@@ -63,7 +63,7 @@ function Body({ modal }: { modal: OpenModal }) {
       toast.error(generateErrorMessage(err), { position: "top-center" }),
   });
 
-  const { mutate: updateT, isPending: isUpdatePending } = useUpdateTenant({
+  const { mutate: updateT, isPending: isUpdatePending } = useUpdateTeam({
     onSuccess: () => {
       toast.success(t("toast.updated"), { position: "top-center" });
       modal.actions.close();
@@ -85,7 +85,7 @@ function Body({ modal }: { modal: OpenModal }) {
     if (modal.type === "CREATE") {
       createT(payload);
     } else {
-      updateT({ id: modal.tenant.id, payload });
+      updateT({ id: modal.team.id, payload });
     }
   };
 
@@ -93,11 +93,11 @@ function Body({ modal }: { modal: OpenModal }) {
     <>
       <DialogHeader>
         <DialogTitle className="font-sans">
-          {t(modal.type === "CREATE" ? "tenant.createTitle" : "tenant.editTitle")}
+          {t(modal.type === "CREATE" ? "team.createTitle" : "team.editTitle")}
         </DialogTitle>
       </DialogHeader>
       <div className="flex flex-col gap-3">
-        <Field label={t("tenant.field.name")} required>
+        <Field label={t("team.field.name")} required>
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -105,7 +105,7 @@ function Body({ modal }: { modal: OpenModal }) {
             placeholder="Acme Drayage"
           />
         </Field>
-        <Field label={t("tenant.field.companyName")}>
+        <Field label={t("team.field.companyName")}>
           <Input
             value={companyName}
             onChange={(e) => setCompanyName(e.target.value)}
@@ -113,7 +113,7 @@ function Body({ modal }: { modal: OpenModal }) {
             placeholder="Acme Drayage Inc."
           />
         </Field>
-        <Field label={t("tenant.field.timezone")}>
+        <Field label={t("team.field.timezone")}>
           <Input
             value={timezone}
             onChange={(e) => setTimezone(e.target.value)}
@@ -121,7 +121,7 @@ function Body({ modal }: { modal: OpenModal }) {
             placeholder="Asia/Seoul / America/Los_Angeles"
           />
         </Field>
-        <Field label={t("tenant.field.phone")}>
+        <Field label={t("team.field.phone")}>
           <Input
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}

@@ -2,7 +2,7 @@
 // values re-flows the entire app consistently.
 //
 // Architecture:
-// - `defaultMinWidth` is applied automatically by TenantScopedLayout's main
+// - `defaultMinWidth` is applied automatically by TeamScopedLayout's main
 //   column wrapper, so every page gets a floor without opting in.
 // - Per-page overrides happen via `<PageShell minWidth={...} maxWidth={...}>`
 //   (see components/layout/page-shell.tsx). The shell defines the outer

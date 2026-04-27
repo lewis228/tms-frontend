@@ -1,8 +1,8 @@
 // 백엔드 WebSocket 클라이언트. ste 의 ShipmentWebSocket 패턴을 그대로 차용 +
-// 백엔드 envelope 매칭 (`{type, tenantId, actorId, payload, occurredAt}`).
+// 백엔드 envelope 매칭 (`{type, teamId, actorId, payload, occurredAt}`).
 //
-// 백엔드 endpoint: `WS /api/v1/ws?token=<accessJWT>&tenant_id=<id>` (SUPER_ADMIN 만 query).
-// Close codes: 4001 EXPIRED / 4002 INVALID / 4003 NO_TENANT / 4004 IDLE_TIMEOUT.
+// 백엔드 endpoint: `WS /api/v1/ws?token=<accessJWT>&team_id=<id>` (SUPER_ADMIN 만 query).
+// Close codes: 4001 EXPIRED / 4002 INVALID / 4003 NO_TEAM / 4004 IDLE_TIMEOUT.
 //
 // 클라:
 // - 30s 마다 ping 전송. 60s pong 없어도 backend idle close 로 정리됨.
@@ -19,7 +19,7 @@ import { getAccessToken, getCurrentRoleModule } from "@/store/auth";
 
 export type ServerEvent = {
   type: string;
-  tenantId: string;
+  teamId: string;
   actorId: string | null;
   payload: Record<string, unknown> | null;
   occurredAt: string;
@@ -30,39 +30,39 @@ type EventListener = (evt: ServerEvent) => void;
 const PING_INTERVAL_MS = 30_000;
 const CLOSE_EXPIRED = 4001;
 
-function wsUrlFor(tenantId: string, token: string): string {
+function wsUrlFor(teamId: string, token: string): string {
   const httpBase = API_BASE_URL.replace(/^http(s?):\/\//, "ws$1://");
   const role = getCurrentRoleModule();
   const url = new URL(`${httpBase}/api/v1/ws`);
   url.searchParams.set("token", token);
   if (role === "SUPER_ADMIN") {
-    url.searchParams.set("tenant_id", tenantId);
+    url.searchParams.set("team_id", teamId);
   }
   return url.toString();
 }
 
 class RealtimeWebSocket {
   private ws: WebSocket | null = null;
-  private tenantId: string | null = null;
+  private teamId: string | null = null;
   private listeners: Set<EventListener> = new Set();
   private retryTimer: ReturnType<typeof setTimeout> | null = null;
   private retryAttempt = 0;
   private intentionalClose = false;
   private pingTimer: ReturnType<typeof setInterval> | null = null;
 
-  connect(tenantId: string): void {
-    if (this.tenantId === tenantId && this.ws?.readyState === WebSocket.OPEN) {
+  connect(teamId: string): void {
+    if (this.teamId === teamId && this.ws?.readyState === WebSocket.OPEN) {
       return;
     }
     this.disconnect();
-    this.tenantId = tenantId;
+    this.teamId = teamId;
     this.intentionalClose = false;
     void this._open();
   }
 
   disconnect(): void {
     this.intentionalClose = true;
-    this.tenantId = null;
+    this.teamId = null;
     if (this.retryTimer) {
       clearTimeout(this.retryTimer);
       this.retryTimer = null;
@@ -90,8 +90,8 @@ class RealtimeWebSocket {
   }
 
   private async _open(): Promise<void> {
-    const tenantId = this.tenantId;
-    if (tenantId === null) return;
+    const teamId = this.teamId;
+    if (teamId === null) return;
 
     let token = getAccessToken();
     if (!token || isAccessTokenExpiringSoon()) {
@@ -102,12 +102,12 @@ class RealtimeWebSocket {
       }
     }
 
-    if (this.intentionalClose || this.tenantId !== tenantId || !token) {
+    if (this.intentionalClose || this.teamId !== teamId || !token) {
       return;
     }
 
     try {
-      const ws = new WebSocket(wsUrlFor(tenantId, token));
+      const ws = new WebSocket(wsUrlFor(teamId, token));
       this.ws = ws;
 
       ws.onopen = () => {

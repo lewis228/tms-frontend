@@ -50,9 +50,9 @@ export type LoginResponse = {
   refreshToken: string | null;
 };
 
-// 백엔드 TenantDetailResponseSchema (camelCase). slug / planTier / contactEmail 같은 필드는
+// 백엔드 TeamDetailResponseSchema (camelCase). slug / planTier / contactEmail 같은 필드는
 // 백엔드 모델에 없으니 제거. phoneNumber 가 공용 연락처 역할.
-export type TenantEntity = {
+export type TeamEntity = {
   id: number;
   name: string;
   isActive: boolean;
@@ -82,11 +82,11 @@ export type TenantEntity = {
   updatedAt: string | null;
 };
 
-// 백엔드 UserTenantRowResponseSchema — 한 user 의 tenant 멤버십 1건.
-export type UserTenantMembership = {
+// 백엔드 UserTeamRowResponseSchema — 한 user 의 team 멤버십 1건.
+export type UserTeamMembership = {
   id: number;
-  tenantId: number;
-  tenantName: string | null;
+  teamId: number;
+  teamName: string | null;
   permissionGroupId: number | null;
   // 온보딩 진행 상태 — wizard 표시 여부 결정
   onboardingCompleted: boolean;
@@ -96,8 +96,8 @@ export type UserTenantMembership = {
 };
 
 // 백엔드 UserResponseSchema (camelCase 변환 후) 와 1:1.
-// N:M 모델: 한 user 가 여러 tenant 에 소속 가능 → tenants 배열.
-// "현재 활성 tenant" 는 별도 store (currentTenantId) 에서 관리.
+// N:M 모델: 한 user 가 여러 team 에 소속 가능 → teams 배열.
+// "현재 활성 team" 는 별도 store (currentTeamId) 에서 관리.
 export type UserEntity = {
   id: number;
   email: string | null;
@@ -109,7 +109,7 @@ export type UserEntity = {
   notificationEmail: string | null;
   eventNotificationEnabled: boolean;
   language: string | null;
-  tenants: UserTenantMembership[];
+  teams: UserTeamMembership[];
   files: unknown[];
   createdAt: string | null;
   updatedAt: string | null;
@@ -117,7 +117,7 @@ export type UserEntity = {
 
 export type DriverEntity = {
   id: number;
-  tenantId: number;
+  teamId: number;
   userId: number;
   email: string;
   name: string;
@@ -133,7 +133,7 @@ export type DriverEntity = {
 
 export type CustomerEntity = {
   id: number;
-  tenantId: number;
+  teamId: number;
   name: string;
   code: string | null;
   billingAddress: string | null;
@@ -148,7 +148,7 @@ export type CustomerEntity = {
 
 export type TerminalEntity = {
   id: number;
-  tenantId: number;
+  teamId: number;
   name: string;
   code: string | null;
   address: string | null;
@@ -162,7 +162,7 @@ export type TerminalEntity = {
 
 export type VesselEntity = {
   id: number;
-  tenantId: number;
+  teamId: number;
   name: string;
   imoNumber: string | null;
   line: string | null;
@@ -174,7 +174,7 @@ export type VesselEntity = {
 
 export type LocationEntity = {
   id: number;
-  tenantId: number;
+  teamId: number;
   name: string;
   kind: LocationKind;
   address: string | null;
@@ -192,7 +192,7 @@ export type DriverCreatedResponse = DriverEntity & { tempPassword: string };
 
 export type DeliveryOrderEntity = {
   id: number;
-  tenantId: number;
+  teamId: number;
   status: DeliveryStatus;
   direction: ShipmentDirection;
   blNumber: string | null;
@@ -225,7 +225,7 @@ export type DeliveryOrderEntity = {
 
 export type LegEntity = {
   id: number;
-  tenantId: number;
+  teamId: number;
   deliveryOrderId: number;
   step: DeliveryStatus;
   moveType: MoveType;
@@ -272,7 +272,7 @@ export type UseMutationCallback = {
 // WebSocket envelope (백엔드 RealtimeEvent).
 export type RealtimeEvent = {
   type: string;
-  tenantId: number;
+  teamId: number;
   actorId: number | null;
   payload: Record<string, unknown> | null;
   occurredAt: string;
@@ -282,7 +282,7 @@ export type RealtimeEvent = {
 // channel/status 는 string 으로 받음 (ENUM 변경 시 프론트 immutable).
 export type NotificationEntity = {
   id: number;
-  tenantId: number;
+  teamId: number;
   userId: number | null;
   channel: string;
   status: string;
@@ -302,7 +302,7 @@ export type NotificationEntity = {
 // 전체 키 문자열은 createApiKey 응답에서만 한 번 노출 (ApiKeyCreated.key).
 export type ApiKeyEntity = {
   id: number;
-  tenantId: number;
+  teamId: number;
   name: string;
   description: string | null;
   prefix: string;
@@ -319,7 +319,7 @@ export type ApiKeyCreated = ApiKeyEntity & { key: string };
 // Phase 8: Settlement / ExtraCharge / AuditLog / RateSetting
 export type SettlementEntity = {
   id: number;
-  tenantId: number;
+  teamId: number;
   legId: number;
   systemTotal: string;
   driverReportedAmount: string | null;
@@ -360,7 +360,7 @@ export type SettlementAuditLog = {
 
 export type RateSettingEntity = {
   id: number;
-  tenantId: number;
+  teamId: number;
   name: string;
   rateType: RateType;
   flatAmount: string | null;

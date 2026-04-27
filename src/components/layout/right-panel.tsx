@@ -3,7 +3,7 @@ import ChatRoom from "@/components/messages/chat-room";
 
 // Right panel is a two-pane chat (list + active room) backed by mock data
 // (see `@/components/messages/mock-data`). Width is driven by the parent
-// aside (tenant-scoped-layout) via drag-resize; we just fill. No backend
+// aside (team-scoped-layout) via drag-resize; we just fill. No backend
 // wiring yet — `@/store/messages` keeps a session-scoped in-memory log so
 // the composer is interactive against the canonical sample conversations.
 export default function RightPanel() {

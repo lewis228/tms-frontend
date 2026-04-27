@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import { combine, devtools, persist } from "zustand/middleware";
 
-// Tenant-scoped display preferences (kept under "team" naming internally so
+// Team-scoped display preferences (kept under "team" naming internally so
 // existing lib/format.ts callers continue to work; user-facing labels say
-// "Tenant"). For the MVP these live in localStorage so the page can stabilise
+// "Team"). For the MVP these live in localStorage so the page can stabilise
 // the UX before backend columns exist.
 //
 // UTC-first architecture: all dates flowing between frontend ↔ backend ↔ DB

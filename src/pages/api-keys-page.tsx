@@ -21,7 +21,7 @@ import { useApiKeysData } from "@/hooks/queries/use-api-keys-data";
 import { useDeleteApiKey } from "@/hooks/mutations/api-key/use-delete-api-key";
 import { useOpenAlertModal } from "@/store/alert-modal";
 import { useOpenApiKeyCreateModal } from "@/store/api-key-create-modal";
-import { useCurrentTenantId } from "@/store/auth";
+import { useCurrentTeamId } from "@/store/auth";
 import { generateErrorMessage } from "@/lib/error";
 import { formatDate } from "@/lib/format";
 import { formatTimeAgo } from "@/lib/time";
@@ -58,11 +58,11 @@ function formatExpiry(row: ApiKeyEntity): string {
 
 export default function ApiKeysPage() {
   const { t } = useTranslation();
-  const tenantId = useCurrentTenantId();
+  const teamId = useCurrentTeamId();
   const openAlertModal = useOpenAlertModal();
   const openCreateModal = useOpenApiKeyCreateModal();
 
-  const { data: apiKeys, error, isPending } = useApiKeysData(tenantId);
+  const { data: apiKeys, error, isPending } = useApiKeysData(teamId);
 
   const { mutate: deleteApiKey, isPending: isDeleteApiKeyPending } =
     useDeleteApiKey({
@@ -93,7 +93,7 @@ export default function ApiKeysPage() {
         <Button
           type="button"
           onClick={() => openCreateModal()}
-          disabled={!tenantId}
+          disabled={!teamId}
           className="gap-1.5 rounded-lg bg-black px-3 py-2 text-xs font-medium text-white hover:bg-black/80"
         >
           <Plus className="h-3.5 w-3.5" />

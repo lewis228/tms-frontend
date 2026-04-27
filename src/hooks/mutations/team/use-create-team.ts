@@ -1,15 +1,15 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { deleteTenant } from "@/api/tenant";
+import { createTeam } from "@/api/team";
 import { QUERY_KEYS } from "@/lib/constants";
 import type { UseMutationCallback } from "@/types";
 
-export function useDeleteTenant(callbacks?: UseMutationCallback) {
+export function useCreateTeam(callbacks?: UseMutationCallback) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: deleteTenant,
+    mutationFn: createTeam,
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: QUERY_KEYS.tenant.all });
+      qc.invalidateQueries({ queryKey: QUERY_KEYS.team.all });
       callbacks?.onSuccess?.();
     },
     onError: (err) => callbacks?.onError?.(err),

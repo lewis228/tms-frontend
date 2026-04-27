@@ -1,13 +1,13 @@
 // /api/v1/users/* 매핑.
 //
-// SUPER_ADMIN 은 user.tenantId 가 null 이라 tenant 컨텍스트 없음.
-// 특정 tenant 의 사용자를 조회/생성/수정/삭제하려면 X-Tenant-Id 헤더 필수.
-// 일반 유저(ADMIN/DISPATCHER)는 tenantId 생략 → 자동으로 자기 tenant.
+// SUPER_ADMIN 은 user.teamId 가 null 이라 team 컨텍스트 없음.
+// 특정 team 의 사용자를 조회/생성/수정/삭제하려면 X-Team-Id 헤더 필수.
+// 일반 유저(ADMIN/DISPATCHER)는 teamId 생략 → 자동으로 자기 team.
 import api from "@/lib/axios";
 import type { PagedResponse, UserEntity, UserRole } from "@/types";
 
-function tenantHeaders(tenantId?: number) {
-  return tenantId ? { "X-Tenant-Id": tenantId } : undefined;
+function teamHeaders(teamId?: number) {
+  return teamId ? { "X-Team-Id": teamId } : undefined;
 }
 
 export async function fetchMe(): Promise<UserEntity> {
@@ -25,11 +25,11 @@ export async function changeMyPassword(payload: {
 
 export async function listUsers(
   params: { page?: number; size?: number } = {},
-  tenantId?: number,
+  teamId?: number,
 ): Promise<PagedResponse<UserEntity>> {
   const { data } = await api.get<PagedResponse<UserEntity>>("/users", {
     params,
-    headers: tenantHeaders(tenantId),
+    headers: teamHeaders(teamId),
   });
   return data;
 }
@@ -46,12 +46,12 @@ export async function createUser(
     password: string;
     role: UserRole;
     phone?: string | null;
-    tenantId?: number | null;
+    teamId?: number | null;
   },
-  tenantId?: number,
+  teamId?: number,
 ): Promise<UserEntity> {
   const { data } = await api.post<UserEntity>("/users", payload, {
-    headers: tenantHeaders(tenantId),
+    headers: teamHeaders(teamId),
   });
   return data;
 }
@@ -64,16 +64,16 @@ export async function updateUser(
     isActive: boolean;
     role: UserRole;
   }>,
-  tenantId?: number,
+  teamId?: number,
 ): Promise<UserEntity> {
   const { data } = await api.patch<UserEntity>(`/users/${id}`, payload, {
-    headers: tenantHeaders(tenantId),
+    headers: teamHeaders(teamId),
   });
   return data;
 }
 
-export async function deleteUser(id: number, tenantId?: number): Promise<void> {
+export async function deleteUser(id: number, teamId?: number): Promise<void> {
   await api.delete(`/users/${id}`, {
-    headers: tenantHeaders(tenantId),
+    headers: teamHeaders(teamId),
   });
 }

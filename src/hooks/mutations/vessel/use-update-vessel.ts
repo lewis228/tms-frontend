@@ -4,7 +4,7 @@ import { updateVessel } from "@/api/vessel";
 import { QUERY_KEYS } from "@/lib/constants";
 import type { UseMutationCallback, VesselEntity } from "@/types";
 
-type Vars = { id: number; payload: Partial<Omit<VesselEntity, "id" | "tenantId" | "createdAt" | "updatedAt">> };
+type Vars = { id: number; payload: Partial<Omit<VesselEntity, "id" | "teamId" | "createdAt" | "updatedAt">> };
 
 export function useUpdateVessel(callbacks?: UseMutationCallback) {
   const qc = useQueryClient();

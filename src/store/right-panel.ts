@@ -3,7 +3,7 @@ import { combine, devtools, persist } from "zustand/middleware";
 
 // ste pattern: drag-resizable right panel for chat/notifications. Width
 // is persisted so the user's choice survives reloads. The collapse flag
-// flips visibility; drag re-expansion handled by Header / TenantScopedLayout.
+// flips visibility; drag re-expansion handled by Header / TeamScopedLayout.
 
 export const RIGHT_PANEL_MIN_WIDTH = 600;
 export const RIGHT_PANEL_MAX_WIDTH = 1100;

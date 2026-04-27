@@ -1,12 +1,12 @@
-// /app — tenant picker / auto-redirect.
+// /app — team picker / auto-redirect.
 //
 // 1) 일반 사용자 (DRIVER/DISPATCHER/ADMIN):
-//    - tenants 1개 → /app/{id}/dashboard 로 자동 redirect.
+//    - teams 1개 → /app/{id}/dashboard 로 자동 redirect.
 //    - 0개 → 빈 상태 (관리자에게 초대 요청 안내).
 //    - 2개 이상 → 멤버십에서 picker.
 // 2) SUPER_ADMIN:
 //    - 멤버십 1개 → 자동 redirect.
-//    - 멤버십이 비어있으면 listTenants() 로 전체 tenant 목록 picker.
+//    - 멤버십이 비어있으면 listTeams() 로 전체 team 목록 picker.
 //
 // ste 의 app-home-page 와 동일한 카드 레이아웃 + "회사 만들기" inline form.
 import { useState } from "react";
@@ -19,7 +19,7 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import GlobalLoader from "@/components/global-loader";
-import { createTenant, listTenants } from "@/api/tenant";
+import { createTeam, listTeams } from "@/api/team";
 import { QUERY_KEYS } from "@/lib/constants";
 import { generateErrorMessage } from "@/lib/error";
 import { useCurrentRole, useCurrentUser } from "@/store/auth";
@@ -34,17 +34,17 @@ export default function AppHomePage() {
   const [name, setName] = useState("");
 
   const isSuperAdmin = role === "SUPER_ADMIN";
-  const memberships = user?.tenants ?? [];
+  const memberships = user?.teams ?? [];
 
-  const { data: allTenants, isPending: isAllTenantsPending } = useQuery({
-    queryKey: QUERY_KEYS.tenant.list,
-    queryFn: listTenants,
+  const { data: allTeams, isPending: isAllTeamsPending } = useQuery({
+    queryKey: QUERY_KEYS.team.list,
+    queryFn: listTeams,
     enabled: isSuperAdmin && memberships.length === 0,
   });
 
-  const { mutate: createTenantMutation, isPending: isCreateTenantPending } =
+  const { mutate: createTeamMutation, isPending: isCreateTeamPending } =
     useMutation({
-      mutationFn: createTenant,
+      mutationFn: createTeam,
       onSuccess: (created) => {
         queryClient.clear();
         toast.success(t("appHome.createSuccess"), { position: "top-center" });
@@ -59,28 +59,28 @@ export default function AppHomePage() {
 
   if (!user) return <Navigate to="/sign-in" replace />;
 
-  // 멤버십 1개면 무조건 그 tenant 로 진입.
+  // 멤버십 1개면 무조건 그 team 로 진입.
   if (memberships.length === 1) {
-    return <Navigate to={`/app/${memberships[0].tenantId}`} replace />;
+    return <Navigate to={`/app/${memberships[0].teamId}`} replace />;
   }
 
-  // SUPER_ADMIN 이고 멤버십 비었으면 전체 tenant 목록 fetch 중.
-  const showAllTenants = isSuperAdmin && memberships.length === 0;
-  if (showAllTenants && isAllTenantsPending) {
+  // SUPER_ADMIN 이고 멤버십 비었으면 전체 team 목록 fetch 중.
+  const showAllTeams = isSuperAdmin && memberships.length === 0;
+  if (showAllTeams && isAllTeamsPending) {
     return <GlobalLoader />;
   }
 
-  const pickerItems = showAllTenants
-    ? (allTenants ?? []).map((tn) => ({ id: tn.id, name: tn.name }))
+  const pickerItems = showAllTeams
+    ? (allTeams ?? []).map((tn) => ({ id: tn.id, name: tn.name }))
     : memberships.map((m) => ({
-        id: m.tenantId,
-        name: m.tenantName ?? `#${m.tenantId}`,
+        id: m.teamId,
+        name: m.teamName ?? `#${m.teamId}`,
       }));
 
   const handleCreateSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (name.trim() === "") return;
-    createTenantMutation({ name: name.trim() });
+    createTeamMutation({ name: name.trim() });
   };
 
   return (
@@ -92,8 +92,8 @@ export default function AppHomePage() {
           </h1>
           <p className="text-sm text-black/55">
             {pickerItems.length === 0
-              ? t("appHome.noTenants")
-              : t("appHome.pickTenant")}
+              ? t("appHome.noTeams")
+              : t("appHome.pickTeam")}
           </p>
         </div>
 
@@ -108,7 +108,7 @@ export default function AppHomePage() {
               >
                 <span className="font-medium">{p.name}</span>
                 <span className="text-xs text-black/55">
-                  {t("appHome.enterTenant")}
+                  {t("appHome.enterTeam")}
                 </span>
               </button>
             ))}
@@ -119,10 +119,10 @@ export default function AppHomePage() {
           <form onSubmit={handleCreateSubmit} className="flex flex-col gap-3">
             <Input
               type="text"
-              placeholder={t("appHome.tenantPlaceholder")}
+              placeholder={t("appHome.teamPlaceholder")}
               value={name}
               onChange={(e) => setName(e.target.value)}
-              disabled={isCreateTenantPending}
+              disabled={isCreateTeamPending}
               maxLength={80}
               autoFocus
               className="rounded-2xl border-black/10 px-4 py-3 text-sm placeholder:text-black/20"
@@ -135,14 +135,14 @@ export default function AppHomePage() {
                   setIsCreating(false);
                   setName("");
                 }}
-                disabled={isCreateTenantPending}
+                disabled={isCreateTeamPending}
                 className="flex-1 rounded-2xl border-black/10 py-3 text-sm"
               >
                 {t("common.cancel")}
               </Button>
               <Button
                 type="submit"
-                disabled={isCreateTenantPending || name.trim() === ""}
+                disabled={isCreateTeamPending || name.trim() === ""}
                 className="flex-1 rounded-2xl bg-black py-3 text-sm font-medium text-white hover:bg-black/80"
               >
                 {t("appHome.createSubmit")}
@@ -157,7 +157,7 @@ export default function AppHomePage() {
             className="flex items-center justify-center gap-2 rounded-2xl border-black/10 py-3 text-sm text-black hover:bg-black/[0.02]"
           >
             <Plus className="h-4 w-4" />
-            {t("appHome.createNewTenant")}
+            {t("appHome.createNewTeam")}
           </Button>
         )}
       </div>

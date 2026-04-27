@@ -14,7 +14,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/lib/constants";
 import { realtimeWs, type ServerEvent } from "@/lib/websocket";
 import {
-  useCurrentTenantId,
+  useCurrentTeamId,
   useCurrentUser,
   useIsBootstrapped,
 } from "@/store/auth";
@@ -27,14 +27,14 @@ export default function WebSocketProvider({
   const qc = useQueryClient();
   const isBootstrapped = useIsBootstrapped();
   const user = useCurrentUser();
-  const tenantId = useCurrentTenantId();
+  const teamId = useCurrentTeamId();
 
   useEffect(() => {
-    if (!isBootstrapped || !user || !tenantId) {
+    if (!isBootstrapped || !user || !teamId) {
       realtimeWs.disconnect();
       return;
     }
-    realtimeWs.connect(String(tenantId));
+    realtimeWs.connect(String(teamId));
 
     const off = realtimeWs.addListener((evt: ServerEvent) => {
       const payload = (evt.payload ?? {}) as Record<string, unknown>;
@@ -131,7 +131,7 @@ export default function WebSocketProvider({
     return () => {
       off();
     };
-  }, [isBootstrapped, user, tenantId, qc]);
+  }, [isBootstrapped, user, teamId, qc]);
 
   return <>{children}</>;
 }

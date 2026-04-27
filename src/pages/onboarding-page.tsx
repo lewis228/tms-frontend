@@ -1,4 +1,4 @@
-// /app/onboarding — 신규 tenant 의 첫 사용자가 거치는 3단계 wizard.
+// /app/onboarding — 신규 team 의 첫 사용자가 거치는 3단계 wizard.
 //
 // step 1: 회사 정보 (회사명/timezone/전화)
 // step 2: 첫 customer 등록
@@ -14,21 +14,21 @@ import { Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Fallback from "@/components/fallback";
-import { useUpdateTenant } from "@/hooks/mutations/tenant/use-update-tenant";
-import { useUpdateOnboarding } from "@/hooks/mutations/tenant/use-update-onboarding";
+import { useUpdateTeam } from "@/hooks/mutations/team/use-update-team";
+import { useUpdateOnboarding } from "@/hooks/mutations/team/use-update-onboarding";
 import { useCreateCustomer } from "@/hooks/mutations/customer/use-create-customer";
 import { useCreateDriver } from "@/hooks/mutations/driver/use-create-driver";
-import { useCurrentTenantId, useCurrentUser } from "@/store/auth";
+import { useCurrentTeamId, useCurrentUser } from "@/store/auth";
 import { generateErrorMessage } from "@/lib/error";
 
 export default function OnboardingPage() {
   const user = useCurrentUser();
-  const tenantId = useCurrentTenantId();
+  const teamId = useCurrentTeamId();
   const navigate = useNavigate();
 
   const membership = useMemo(
-    () => user?.tenants.find((t) => t.tenantId === tenantId) ?? null,
-    [user, tenantId],
+    () => user?.teams.find((t) => t.teamId === teamId) ?? null,
+    [user, teamId],
   );
 
   // 진행 step 결정 — 이미 끝난 단계는 자동으로 다음으로.
@@ -42,7 +42,7 @@ export default function OnboardingPage() {
 
   const [step, setStep] = useState<number>(initialStep);
 
-  if (!user || !tenantId || !membership) {
+  if (!user || !teamId || !membership) {
     return (
       <div className="p-6">
         <Fallback />
@@ -54,13 +54,13 @@ export default function OnboardingPage() {
     <div className="mx-auto flex max-w-2xl flex-col gap-6 p-6">
       <Header step={step} />
       {step === 1 && (
-        <Step1 tenantId={tenantId} onDone={() => setStep(2)} />
+        <Step1 teamId={teamId} onDone={() => setStep(2)} />
       )}
       {step === 2 && (
-        <Step2 tenantId={tenantId} onDone={() => setStep(3)} />
+        <Step2 teamId={teamId} onDone={() => setStep(3)} />
       )}
       {step === 3 && (
-        <Step3 tenantId={tenantId} onDone={() => setStep(4)} />
+        <Step3 teamId={teamId} onDone={() => setStep(4)} />
       )}
       {step === 4 && (
         <Done onContinue={() => navigate("/app", { replace: true })} />
@@ -118,7 +118,7 @@ function Header({ step }: { step: number }) {
 }
 
 // ── Step 1: 회사 정보 ─────────────────────────────────────────
-function Step1({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
+function Step1({ teamId, onDone }: { teamId: number; onDone: () => void }) {
   const { t } = useTranslation();
   const [companyName, setCompanyName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -129,8 +129,8 @@ function Step1({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
     onError: (err) =>
       toast.error(generateErrorMessage(err), { position: "top-center" }),
   });
-  const { mutate: updateT, isPending: isUpdatePending } = useUpdateTenant({
-    onSuccess: () => updateOnb({ tenantId, payload: { step1Done: true } }),
+  const { mutate: updateT, isPending: isUpdatePending } = useUpdateTeam({
+    onSuccess: () => updateOnb({ teamId, payload: { step1Done: true } }),
     onError: (err) =>
       toast.error(generateErrorMessage(err), { position: "top-center" }),
   });
@@ -145,7 +145,7 @@ function Step1({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
       return;
     }
     updateT({
-      id: tenantId,
+      id: teamId,
       payload: {
         companyName: companyName.trim(),
         phoneNumber: phoneNumber.trim() || null,
@@ -191,7 +191,7 @@ function Step1({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
 }
 
 // ── Step 2: 첫 고객사 ─────────────────────────────────────────
-function Step2({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
+function Step2({ teamId, onDone }: { teamId: number; onDone: () => void }) {
   const { t } = useTranslation();
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
@@ -202,7 +202,7 @@ function Step2({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
       toast.error(generateErrorMessage(err), { position: "top-center" }),
   });
   const { mutate: createC, isPending: isCreatePending } = useCreateCustomer({
-    onSuccess: () => updateOnb({ tenantId, payload: { step2Done: true } }),
+    onSuccess: () => updateOnb({ teamId, payload: { step2Done: true } }),
     onError: (err) =>
       toast.error(generateErrorMessage(err), { position: "top-center" }),
   });
@@ -252,7 +252,7 @@ function Step2({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
 }
 
 // ── Step 3: 첫 기사 ───────────────────────────────────────────
-function Step3({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
+function Step3({ teamId, onDone }: { teamId: number; onDone: () => void }) {
   const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -268,7 +268,7 @@ function Step3({ tenantId, onDone }: { tenantId: number; onDone: () => void }) {
     onSuccess: (created) => {
       setTempPassword(created.tempPassword);
       updateOnb({
-        tenantId,
+        teamId,
         payload: { step3Done: true, completed: true },
       });
     },

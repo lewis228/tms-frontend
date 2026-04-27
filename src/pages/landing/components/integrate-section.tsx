@@ -68,7 +68,7 @@ export default function IntegrateSection() {
 
       <FadeIn delay={0.1}>
         <p className="text-center text-xs tracking-widest text-resend-dim uppercase">
-          For your engineering tenant
+          For your engineering team
         </p>
       </FadeIn>
 

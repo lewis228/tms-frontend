@@ -33,7 +33,7 @@ const POSTS = [
   },
   {
     title: "Why D/O Number is a Bad Primary Key",
-    desc: "Lessons from three years of building dispatch systems — and the multi-tenant ID model we settled on.",
+    desc: "Lessons from three years of building dispatch systems — and the multi-team ID model we settled on.",
     date: "Mar 20, 2026",
     tag: "Engineering",
     image: "https://picsum.photos/600/340?random=5",

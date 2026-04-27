@@ -1,10 +1,10 @@
-// /app/:tenantId 하위 라우트의 셸 + tenant 가드.
+// /app/:teamId 하위 라우트의 셸 + team 가드.
 //
 // ste 의 TeamScopedLayout 패턴을 그대로 가져왔다:
-//  - URL `:tenantId` 를 단일 진실로. mount 시 auth store currentTenantId 로 동기화.
-//  - SUPER_ADMIN 은 멤버십 없이 임의 tenant 로 진입 가능 (시스템 관리자).
-//  - 비-SUPER_ADMIN 이 멤버 아닌 tenant 로 들어오면 /app 으로 redirect.
-//  - parsedTenantId 가 NaN 이면 즉시 /app.
+//  - URL `:teamId` 를 단일 진실로. mount 시 auth store currentTeamId 로 동기화.
+//  - SUPER_ADMIN 은 멤버십 없이 임의 team 로 진입 가능 (시스템 관리자).
+//  - 비-SUPER_ADMIN 이 멤버 아닌 team 로 들어오면 /app 으로 redirect.
+//  - parsedTeamId 가 NaN 이면 즉시 /app.
 //
 // 셸 (사이드바 + 헤더 + 메인 + 우측 패널 + 리사이즈 핸들):
 //   ┌─────────┬─────────────────────────┬───────────┐
@@ -32,38 +32,38 @@ import {
 } from "@/store/auth";
 import { LAYOUT } from "@/lib/layout-constants";
 
-export default function TenantScopedLayout() {
+export default function TeamScopedLayout() {
   const params = useParams();
   const user = useCurrentUser();
   const role = useCurrentRole();
   const navigate = useNavigate();
-  const { setCurrentTenantId } = useAuthActions();
+  const { setCurrentTeamId } = useAuthActions();
   const isRightPanelCollapsed = useIsRightPanelCollapsed();
   const rightPanelWidth = useRightPanelWidth();
   const [isResizing, setIsResizing] = useState(false);
   const { t } = useTranslation();
 
-  const parsedTenantId = params.tenantId ? Number(params.tenantId) : NaN;
-  const isValid = Number.isFinite(parsedTenantId);
+  const parsedTeamId = params.teamId ? Number(params.teamId) : NaN;
+  const isValid = Number.isFinite(parsedTeamId);
   const isMember =
-    isValid && (user?.tenants.some((m) => m.tenantId === parsedTenantId) ?? false);
+    isValid && (user?.teams.some((m) => m.teamId === parsedTeamId) ?? false);
   const allowed = isValid && (role === "SUPER_ADMIN" || isMember);
 
   useEffect(() => {
-    if (allowed) setCurrentTenantId(parsedTenantId);
-  }, [allowed, parsedTenantId, setCurrentTenantId]);
+    if (allowed) setCurrentTeamId(parsedTeamId);
+  }, [allowed, parsedTeamId, setCurrentTeamId]);
 
-  // Listen for the global "tenant:not-member" event (raised by api/* layers
-  // when the server signals NOT_TENANT_MEMBER). Toast + bounce to /app.
+  // Listen for the global "team:not-member" event (raised by api/* layers
+  // when the server signals NOT_TEAM_MEMBER). Toast + bounce to /app.
   useEffect(() => {
     const handler = () => {
       toast.error(t("errors.NOT_TEAM_MEMBER"), { position: "top-center" });
-      setCurrentTenantId(null);
+      setCurrentTeamId(null);
       navigate("/app", { replace: true });
     };
-    window.addEventListener("tenant:not-member", handler);
-    return () => window.removeEventListener("tenant:not-member", handler);
-  }, [navigate, setCurrentTenantId, t]);
+    window.addEventListener("team:not-member", handler);
+    return () => window.removeEventListener("team:not-member", handler);
+  }, [navigate, setCurrentTeamId, t]);
 
   if (!allowed) {
     return <Navigate to="/app" replace />;

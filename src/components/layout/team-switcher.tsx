@@ -10,15 +10,15 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useCurrentUser } from "@/store/auth";
-import { createTenant } from "@/api/tenant";
+import { createTeam } from "@/api/team";
 import { generateErrorMessage } from "@/lib/error";
 import { cn } from "@/lib/utils";
 
-// Tenant switcher — top-of-sidebar dropdown for switching among the user's
-// tenant memberships and creating a new tenant inline. Maps ste's
-// TeamSwitcher onto TMS's auth store: `user.tenants` (array of
-// UserTenantMembership) is the source of truth.
-export default function TenantSwitcher({
+// Team switcher — top-of-sidebar dropdown for switching among the user's
+// team memberships and creating a new team inline. Maps ste's
+// TeamSwitcher onto TMS's auth store: `user.teams` (array of
+// UserTeamMembership) is the source of truth.
+export default function TeamSwitcher({
   isCollapsed,
 }: {
   isCollapsed: boolean;
@@ -29,23 +29,23 @@ export default function TenantSwitcher({
   const queryClient = useQueryClient();
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
-  const [newTenantName, setNewTenantName] = useState("");
+  const [newTeamName, setNewTeamName] = useState("");
   const rootRef = useRef<HTMLDivElement>(null);
 
   const createMutation = useMutation({
-    mutationFn: createTenant,
+    mutationFn: createTeam,
     onError: (error) => {
       toast.error(generateErrorMessage(error), { position: "top-center" });
     },
   });
   const isCreatePending = createMutation.isPending;
 
-  const tenants = user?.tenants ?? [];
-  const currentTenantId = params.tenantId ? Number(params.tenantId) : null;
-  const current = tenants.find((m) => m.tenantId === currentTenantId);
+  const teams = user?.teams ?? [];
+  const currentTeamId = params.teamId ? Number(params.teamId) : null;
+  const current = teams.find((m) => m.teamId === currentTeamId);
   const currentLabel =
-    current?.tenantName ??
-    t("tenant.untitled", { id: currentTenantId ?? "" });
+    current?.teamName ??
+    t("team.untitled", { id: currentTeamId ?? "" });
 
   // Close on outside click
   useEffect(() => {
@@ -59,25 +59,25 @@ export default function TenantSwitcher({
     return () => window.removeEventListener("mousedown", handler);
   }, [open]);
 
-  const handleSelect = (tenantId: number) => {
+  const handleSelect = (teamId: number) => {
     setOpen(false);
-    if (tenantId !== currentTenantId) {
-      // Drop every cached query on tenant switch. Otherwise the previous
-      // tenant's data flashes for a beat before X-Tenant-Id-scoped refetches
+    if (teamId !== currentTeamId) {
+      // Drop every cached query on team switch. Otherwise the previous
+      // team's data flashes for a beat before X-Team-Id-scoped refetches
       // arrive. Auth state lives in Zustand, not Query, so it isn't cleared.
       queryClient.clear();
     }
-    navigate(`/app/${tenantId}`);
+    navigate(`/app/${teamId}`);
   };
 
   const handleCreateNew = async () => {
-    const name = newTenantName.trim();
+    const name = newTeamName.trim();
     if (name === "") return;
     try {
       const created = await createMutation.mutateAsync({ name });
       queryClient.clear();
-      toast.success(t("tenant.createSuccess"), { position: "top-center" });
-      setNewTenantName("");
+      toast.success(t("team.createSuccess"), { position: "top-center" });
+      setNewTeamName("");
       setOpen(false);
       navigate(`/app/${created.id}`);
     } catch {
@@ -122,21 +122,21 @@ export default function TenantSwitcher({
       {open && (
         <div className="absolute left-0 right-0 top-full z-50 mt-1 rounded-xl border border-black/10 bg-white p-1 shadow-lg">
           <div className="flex flex-col">
-            {tenants.map((m) => {
-              const isActive = m.tenantId === currentTenantId;
+            {teams.map((m) => {
+              const isActive = m.teamId === currentTeamId;
               return (
                 <button
                   key={m.id}
                   type="button"
-                  onClick={() => handleSelect(m.tenantId)}
+                  onClick={() => handleSelect(m.teamId)}
                   className={cn(
                     "flex items-center justify-between rounded-md px-2 py-1.5 text-left text-sm transition-colors hover:bg-black/[0.04]",
                     isActive ? "font-medium text-black" : "text-black/80",
                   )}
                 >
                   <span className="truncate">
-                    {m.tenantName ??
-                      t("tenant.untitled", { id: m.tenantId })}
+                    {m.teamName ??
+                      t("team.untitled", { id: m.teamId })}
                   </span>
                   {isActive && <Check className="h-3.5 w-3.5 text-black/60" />}
                 </button>
@@ -147,26 +147,26 @@ export default function TenantSwitcher({
               <Plus className="h-3.5 w-3.5 shrink-0 text-black/60" />
               <input
                 type="text"
-                value={newTenantName}
-                onChange={(e) => setNewTenantName(e.target.value)}
+                value={newTeamName}
+                onChange={(e) => setNewTeamName(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
                     handleCreateNew();
                   }
                 }}
-                placeholder={t("tenant.newNamePlaceholder")}
+                placeholder={t("team.newNamePlaceholder")}
                 disabled={isCreatePending}
                 autoFocus
                 className="min-w-0 flex-1 bg-transparent text-sm text-black placeholder:text-black/45 focus:outline-none disabled:opacity-50"
-                aria-label={t("tenant.newNamePlaceholder")}
+                aria-label={t("team.newNamePlaceholder")}
               />
               <button
                 type="button"
                 onClick={handleCreateNew}
-                disabled={isCreatePending || newTenantName.trim() === ""}
+                disabled={isCreatePending || newTeamName.trim() === ""}
                 className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-black text-white transition-colors hover:bg-black/80 disabled:opacity-30 disabled:hover:bg-black"
-                aria-label={t("tenant.createTenant")}
+                aria-label={t("team.createTeam")}
               >
                 <ArrowRight className="h-3 w-3" />
               </button>

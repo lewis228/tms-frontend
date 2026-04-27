@@ -33,9 +33,9 @@ export default function Header() {
   // We derive the display metadata from the same breadcrumb source of truth so
   // the favorite label always matches the breadcrumb the user sees.
   //
-  // IMPORTANT: favorites store tenant-agnostic paths (no `/app/:tenantId` prefix)
-  // so a favorite pinned in tenant A still resolves to the equivalent page in
-  // tenant B after switching. The favorites store normalises these.
+  // IMPORTANT: favorites store team-agnostic paths (no `/app/:teamId` prefix)
+  // so a favorite pinned in team A still resolves to the equivalent page in
+  // team B after switching. The favorites store normalises these.
   const favoritePath = `${location.pathname}${location.search}`;
   const isFavorited = useIsFavorited(favoritePath);
   const toggleFavorite = useToggleFavorite();

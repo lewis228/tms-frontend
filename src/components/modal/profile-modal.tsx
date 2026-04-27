@@ -29,7 +29,7 @@ import { cn } from "@/lib/utils";
 import type { UserEntity } from "@/types";
 
 // Profile modal — opened from the sidebar avatar. A focused single-panel
-// dialog for the current user's profile & account settings. Tenant-wide
+// dialog for the current user's profile & account settings. Team-wide
 // settings (billing, display prefs, etc.) live under the sidebar Settings
 // section instead of a separate modal.
 //

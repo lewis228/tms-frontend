@@ -24,7 +24,7 @@ type State = {
 // First-time users land on the Dashboard, so pre-pinning it in Favorites
 // gives them the intended "single-click back to home" shortcut out of the
 // box. The empty path matches the Dashboard leaf in NAV_CONFIG (root of
-// the tenant-scoped routes) and the title/iconName keys mirror it so the
+// the team-scoped routes) and the title/iconName keys mirror it so the
 // sidebar renderer picks up the exact same label + icon.
 const DEFAULT_FAVORITES: FavoriteItem[] = [
   { path: "dashboard", title: "nav.dashboard", iconName: "LayoutDashboard" },
@@ -32,8 +32,8 @@ const DEFAULT_FAVORITES: FavoriteItem[] = [
 
 const initialState: State = { items: DEFAULT_FAVORITES };
 
-// Strip `/app/{tenantId}/` prefix and any leading `/` so favorites are
-// tenant-agnostic AND match the relative-path convention of nav-config
+// Strip `/app/{teamId}/` prefix and any leading `/` so favorites are
+// team-agnostic AND match the relative-path convention of nav-config
 // (e.g. "dashboard", "delivery-orders").
 const normalisePath = (path: string) =>
   path.replace(/^\/app\/\d+\/?/, "").replace(/^\//, "");
@@ -45,7 +45,7 @@ const useFavoritesStore = create(
         actions: {
           // Atomic toggle keyed by path. Used by the Header star button so
           // callers don't need to know whether the current page is pinned.
-          // Path is normalised so re-toggling from a different tenant still
+          // Path is normalised so re-toggling from a different team still
           // finds the existing row.
           toggle: (item: FavoriteItem) => {
             const normalised = { ...item, path: normalisePath(item.path) };
@@ -72,8 +72,8 @@ const useFavoritesStore = create(
       })),
       {
         name: "FavoritesStore",
-        // v2 moved to tenant-agnostic paths; migrate legacy rows by stripping
-        // the `/app/{tenantId}` prefix. v3 adds Dashboard as a default pin
+        // v2 moved to team-agnostic paths; migrate legacy rows by stripping
+        // the `/app/{teamId}` prefix. v3 adds Dashboard as a default pin
         // for anyone whose saved list is empty — respects customised lists
         // (keep as-is), just fills the void for fresh installs that already
         // persisted an empty `items: []` before this change.
@@ -81,7 +81,7 @@ const useFavoritesStore = create(
         migrate: (persisted, version) => {
           const state = persisted as { items?: FavoriteItem[] } | undefined;
           let items = state?.items ?? [];
-          // v4: relative-path convention — strip /app/{tenantId}/ AND leading /.
+          // v4: relative-path convention — strip /app/{teamId}/ AND leading /.
           if (version < 4) {
             items = items
               .map((i) => ({ ...i, path: normalisePath(i.path) }))
