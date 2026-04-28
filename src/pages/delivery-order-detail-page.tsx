@@ -7,6 +7,7 @@ import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/loader";
 import Fallback from "@/components/fallback";
+import ContainerDrawer from "@/components/container/container-drawer";
 import DeliveryOrderDetail from "@/components/delivery-order/delivery-order-detail";
 import { useDeliveryOrderByIdData } from "@/hooks/queries/use-delivery-order-by-id-data";
 
@@ -43,6 +44,7 @@ export default function DeliveryOrderDetailPage() {
       {!error && !isPending && data && (
         <DeliveryOrderDetail deliveryOrder={data} />
       )}
+      <ContainerDrawer />
     </div>
   );
 }

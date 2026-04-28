@@ -24,6 +24,8 @@ import type { DeliveryOrderEntity, DeliveryStatus } from "@/types";
 
 type GateCheck = { ok: boolean; label: string };
 
+// H-1: 게이트 검증의 컨테이너 단위 컬럼들은 ContainerEntity 로 이전됨.
+// state_machine 도 H-1 단계에서 약화 (그래프만 검사). 클라 사전 안내는 H-6 에서 재설계.
 function checkGates(
   d: DeliveryOrderEntity,
   target: DeliveryStatus,
@@ -32,34 +34,6 @@ function checkGates(
   const checks: GateCheck[] = [];
   if (d.status === "PLANNING" && target === "DISPATCHED") {
     checks.push({ ok: d.blReleased, label: t("leg.statusMover.gate.blReleased") });
-    checks.push({ ok: d.pierPassPaid, label: t("leg.statusMover.gate.pierPassPaid") });
-    checks.push({ ok: d.customsCleared, label: t("leg.statusMover.gate.customsCleared") });
-    checks.push({
-      ok: !!d.pickupAppointment,
-      label: t("leg.statusMover.gate.pickupAppointment"),
-    });
-    checks.push({ ok: true, label: t("leg.statusMover.gate.firstLegDriver") });
-  }
-  if (
-    (d.status === "DISPATCHED" || d.status === "YARD_STAGED") &&
-    target === "FINAL_DELIVERY"
-  ) {
-    checks.push({
-      ok: !!d.deliveryAppointment,
-      label: t("leg.statusMover.gate.deliveryAppointment"),
-    });
-    checks.push({ ok: true, label: t("leg.statusMover.gate.firstLegCompleted") });
-  }
-  if (target === "COMPLETED") {
-    checks.push({ ok: !!d.returnLocationId, label: t("leg.statusMover.gate.returnLocation") });
-    checks.push({ ok: !!d.returnAppointment, label: t("leg.statusMover.gate.returnAppointment") });
-    checks.push({ ok: !!d.detentionLfd, label: t("leg.statusMover.gate.detentionLfd") });
-    if (d.direction === "IMPORT") {
-      checks.push({ ok: !!d.emptyDate, label: t("leg.statusMover.gate.emptyDate") });
-    } else {
-      checks.push({ ok: !!d.loadedDate, label: t("leg.statusMover.gate.loadedDate") });
-    }
-    checks.push({ ok: true, label: t("leg.statusMover.gate.returnLegCompleted") });
   }
   return checks;
 }

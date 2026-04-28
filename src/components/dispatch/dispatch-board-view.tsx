@@ -168,7 +168,6 @@ function BoardCard({
   customerName: string;
   onClick: () => void;
 }) {
-  const { t } = useTranslation();
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({ id: order.id, data: { status: order.status } });
   const style = transform
@@ -191,14 +190,14 @@ function BoardCard({
           : "cursor-grab hover:border-foreground/30")
       }
     >
-      <div className="font-mono font-medium">
-        {order.containerNumber ?? t("dispatch.containerUnnamed")}
+      <div className="font-medium">
+        {order.blNumber ?? `#${order.id}`}
       </div>
       <div className="text-muted-foreground">
         {customerName} · {order.direction}
       </div>
-      {order.blNumber && (
-        <div className="text-muted-foreground">B/L {order.blNumber}</div>
+      {order.bookingNumber && (
+        <div className="text-muted-foreground">BKG {order.bookingNumber}</div>
       )}
     </div>
   );

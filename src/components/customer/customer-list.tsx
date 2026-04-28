@@ -27,11 +27,14 @@ import {
 } from "@/store/customer-editor-modal";
 import type { CustomerEntity } from "@/types";
 
+type KindFilter = "ALL" | "CUSTOMER" | "CARRIER" | "BROKER" | "VENDOR";
+
 export default function CustomerList() {
   const { t } = useTranslation();
   const [page, setPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
+  const [kindFilter, setKindFilter] = useState<KindFilter>("ALL");
 
   useEffect(() => {
     const timeoutId = setTimeout(
@@ -58,15 +61,17 @@ export default function CustomerList() {
 
   const filtered = useMemo<CustomerEntity[]>(() => {
     if (!data) return [];
-    if (!search) return data.items;
-    return data.items.filter(
+    let items = data.items;
+    if (kindFilter !== "ALL") items = items.filter((c) => c.kind === kindFilter);
+    if (!search) return items;
+    return items.filter(
       (c) =>
         c.name.toLowerCase().includes(search) ||
         (c.code ?? "").toLowerCase().includes(search) ||
         (c.contactName ?? "").toLowerCase().includes(search) ||
         (c.contactEmail ?? "").toLowerCase().includes(search),
     );
-  }, [data, search]);
+  }, [data, search, kindFilter]);
 
   if (error) return <Fallback />;
   if (isPending) return <Loader />;
@@ -82,12 +87,25 @@ export default function CustomerList() {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between gap-2">
-        <Input
-          placeholder={t("customer.searchPlaceholder")}
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-          className="max-w-sm"
-        />
+        <div className="flex items-center gap-2">
+          <Input
+            placeholder={t("customer.searchPlaceholder")}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            className="max-w-sm"
+          />
+          <select
+            value={kindFilter}
+            onChange={(e) => setKindFilter(e.target.value as KindFilter)}
+            className="h-9 rounded-md border bg-background px-3 text-sm"
+          >
+            <option value="ALL">{t("customer.kindFilter.all")}</option>
+            <option value="CUSTOMER">{t("customer.kind.CUSTOMER")}</option>
+            <option value="CARRIER">{t("customer.kind.CARRIER")}</option>
+            <option value="BROKER">{t("customer.kind.BROKER")}</option>
+            <option value="VENDOR">{t("customer.kind.VENDOR")}</option>
+          </select>
+        </div>
         {canEdit && (
           <Button onClick={() => openCreate()}>{t("customer.newButton")}</Button>
         )}
@@ -99,6 +117,7 @@ export default function CustomerList() {
             <TableRow>
               <TableHead>{t("field.name")}</TableHead>
               <TableHead>{t("field.code")}</TableHead>
+              <TableHead>{t("customer.field.kind")}</TableHead>
               <TableHead>{t("customer.field.contactName")}</TableHead>
               <TableHead>{t("field.email")}</TableHead>
               <TableHead>{t("common.active")}</TableHead>
@@ -111,7 +130,7 @@ export default function CustomerList() {
             {filtered.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={canEdit ? 6 : 5}
+                  colSpan={canEdit ? 7 : 6}
                   className="text-center text-muted-foreground"
                 >
                   {t("common.noData")}
@@ -122,6 +141,22 @@ export default function CustomerList() {
                 <TableRow key={c.id}>
                   <TableCell className="font-medium">{c.name}</TableCell>
                   <TableCell>{c.code ?? "—"}</TableCell>
+                  <TableCell>
+                    <span
+                      className={
+                        "rounded px-1.5 py-0.5 text-xs " +
+                        (c.kind === "CUSTOMER"
+                          ? "bg-blue-100 text-blue-700"
+                          : c.kind === "CARRIER"
+                            ? "bg-amber-100 text-amber-700"
+                            : c.kind === "BROKER"
+                              ? "bg-purple-100 text-purple-700"
+                              : "bg-muted text-muted-foreground")
+                      }
+                    >
+                      {c.kind}
+                    </span>
+                  </TableCell>
                   <TableCell>{c.contactName ?? "—"}</TableCell>
                   <TableCell>{c.contactEmail ?? "—"}</TableCell>
                   <TableCell>{c.isActive ? "✓" : "—"}</TableCell>

@@ -34,7 +34,8 @@
     "loadFailed": "Failed to load.",
     "pageOf": "Page {{page}} / {{pages}}",
     "signOut": "Sign Out",
-    "soon": "Soon"
+    "soon": "Soon",
+    "add": "Add"
   },
   "toast": {
     "saved": "Saved.",
@@ -193,23 +194,42 @@
       "delivery": "Delivery",
       "return": "Return",
       "demurrageLfd": "Demurrage LFD",
-      "detentionLfd": "Detention LFD"
-    }
+      "detentionLfd": "Detention LFD",
+      "customer": "Forwarder",
+      "vessel": "Vessel",
+      "voyage": "Voyage",
+      "terminal": "Terminal",
+      "direction": "Direction"
+    },
+    "containers": "Containers extracted",
+    "noContainersExtracted": "No containers found in the PDF. Add manually in the create modal."
   },
   "customer": {
-    "domain": "Customer",
-    "newButton": "New customer",
-    "createTitle": "New customer",
-    "editTitle": "Edit customer",
-    "deletePromptTitle": "Delete customer '{{name}}'?",
+    "domain": "Partner",
+    "newButton": "New partner",
+    "createTitle": "New partner",
+    "editTitle": "Edit partner",
+    "deletePromptTitle": "Delete partner '{{name}}'?",
     "deletePromptDesc": "This cannot be undone.",
     "searchPlaceholder": "Name / code / contact",
     "field": {
       "billingAddress": "Billing address",
       "contactName": "Contact name",
       "contactEmail": "Contact email",
-      "contactPhone": "Contact phone"
+      "contactPhone": "Contact phone",
+      "kind": "Role",
+      "mcNumber": "MC No.",
+      "dotNumber": "DOT No.",
+      "insuranceExpiresAt": "Insurance expiry",
+      "paymentTermsDays": "Payment terms (days)"
     },
+    "kind": {
+      "CUSTOMER": "Customer",
+      "CARRIER": "Carrier",
+      "BROKER": "Broker",
+      "VENDOR": "Vendor"
+    },
+    "kindFilter": { "all": "All roles" },
     "validation": {
       "nameRequired": "Name is required."
     }
@@ -282,10 +302,17 @@
     "namePlaceholder": "Jane Doe",
     "phonePlaceholder": "+1 213 555 0100",
     "tempPasswordWarning": "⚠️ A one-time temporary password will be issued. Save it before closing.",
+    "section": { "employment": "Employment / Pay / Compliance" },
     "field": {
       "licenseNumber": "License number",
       "licenseState": "License state",
-      "truckNumber": "Truck number"
+      "truckNumber": "Truck number",
+      "employmentKind": "Employment",
+      "carrier": "Carrier",
+      "paymentTermsKind": "Pay terms",
+      "paymentTermsValue": "Pay value",
+      "licenseExpiresAt": "License expiry",
+      "medicalCertExpiresAt": "Medical cert expiry"
     },
     "tempPassword": {
       "title": "Driver registered",
@@ -308,6 +335,72 @@
     },
     "validation": {
       "emailRequired": "Email is required.",
+      "nameRequired": "Name is required.",
+      "carrierRequired": "Carrier driver requires a carrier."
+    }
+  },
+  "truck": {
+    "newButton": "New truck",
+    "createTitle": "New truck",
+    "editTitle": "Edit truck",
+    "totalCount": "{{count}} total",
+    "deletePromptTitle": "Delete truck '{{plate}}'?",
+    "deletePromptDesc": "Referencing legs will be detached (NULL).",
+    "field": {
+      "plateNo": "Plate No.",
+      "vin": "VIN",
+      "make": "Make",
+      "model": "Model",
+      "year": "Year",
+      "makeModel": "Make / Model",
+      "ownerKind": "Owner",
+      "ownerDriver": "Owner driver",
+      "status": "Status",
+      "note": "Note"
+    },
+    "validation": {
+      "plateRequired": "Plate No. is required.",
+      "driverRequired": "Driver-owned truck requires an owner driver."
+    }
+  },
+  "chassis": {
+    "newButton": "New chassis",
+    "createTitle": "New chassis",
+    "editTitle": "Edit chassis",
+    "totalCount": "{{count}} total",
+    "deletePromptTitle": "Delete chassis '{{number}}'?",
+    "deletePromptDesc": "Referencing container/leg will be detached (NULL).",
+    "field": {
+      "chassisNumber": "Chassis No.",
+      "size": "Size",
+      "ownerKind": "Owner",
+      "owner": "Owner",
+      "ownerDriver": "Owner driver",
+      "ownerPool": "Owner pool",
+      "status": "Status",
+      "note": "Note"
+    },
+    "validation": {
+      "numberRequired": "Chassis No. is required.",
+      "driverRequired": "Driver-owned chassis requires an owner driver.",
+      "poolRequired": "Pool-owned chassis requires a pool."
+    }
+  },
+  "equipmentPool": {
+    "newButton": "New pool",
+    "createTitle": "New pool",
+    "editTitle": "Edit pool",
+    "totalCount": "{{count}} total",
+    "deletePromptTitle": "Delete pool '{{name}}'?",
+    "deletePromptDesc": "Chassis under this pool will have owner_pool_id set to NULL.",
+    "field": {
+      "name": "Name",
+      "kind": "Kind",
+      "operator": "Operator",
+      "contact": "Contact",
+      "note": "Note"
+    },
+    "validation": {
       "nameRequired": "Name is required."
     }
   },
@@ -415,8 +508,10 @@
       "container": "Container",
       "customer": "Customer",
       "bl": "B/L",
+      "booking": "Booking",
       "pickup": "Pickup",
-      "delivery": "Delivery"
+      "delivery": "Delivery",
+      "eta": "ETA"
     },
     "drawer": {
       "title": "D/O"
@@ -427,6 +522,185 @@
       "pierPassPaid": "Pier Pass Paid",
       "customsCleared": "Customs Cleared"
     }
+  },
+  "container": {
+    "section": { "title": "Containers" },
+    "addRow": "Add container",
+    "empty": "No containers.",
+    "unassignedWarning": "unassigned",
+    "drawer": { "title": "Container" },
+    "tab": {
+      "basic": "Basic",
+      "legs": "Legs",
+      "events": "Events",
+      "settlement": "Settlement",
+      "settlementStub": "Settlement lines will appear in Phase H-7."
+    },
+    "field": {
+      "containerNumber": "Container No.",
+      "sealNo": "Seal",
+      "size": "Size",
+      "type": "Type",
+      "weightKg": "Weight (kg)",
+      "chassisNumber": "Chassis No.",
+      "chassis": "Chassis",
+      "demurrageLfd": "Demurrage LFD",
+      "detentionLfd": "Detention LFD",
+      "deliveryLocation": "Delivery",
+      "returnLocation": "Return",
+      "serviceType": "Service",
+      "status": "Status",
+      "note": "Note",
+      "pickupAppointment": "Pickup appt.",
+      "deliveryAppointment": "Delivery appt.",
+      "legCount": "Legs"
+    },
+    "form": {
+      "savedToast": "Container saved.",
+      "deletedToast": "Container deleted.",
+      "deleteConfirm": "Delete this container?"
+    },
+    "legs": {
+      "count": "{{count}} legs",
+      "empty": "No legs for this container.",
+      "add": "Add leg",
+      "addedToast": "Leg added.",
+      "deletedToast": "Leg deleted.",
+      "deleteConfirm": "Delete this leg?"
+    },
+    "events": {
+      "addTitle": "Add event",
+      "add": "Add",
+      "addedToast": "Event recorded.",
+      "empty": "No events recorded.",
+      "locationOptional": "Location (opt.)",
+      "notePlaceholder": "Note (opt.)"
+    },
+    "settlement": {
+      "totalLabel": "Total",
+      "totalHint": "{{count}} lines across {{legs}} legs",
+      "noLegs": "No legs registered.",
+      "noCharges": "No charge lines on this leg.",
+      "addLine": "Add charge line",
+      "addedToast": "Charge line added.",
+      "deletedToast": "Charge line deleted.",
+      "deleteConfirm": "Delete this charge line?",
+      "selectCode": "Select charge code",
+      "amountPlaceholder": "Amount",
+      "notePlaceholder": "Note (opt.)",
+      "autoMatch": "Auto match",
+      "autoMatchedToast": "Auto matched.",
+      "pnl": {
+        "customerRevenue": "Customer revenue",
+        "driverPayout": "Driver payout",
+        "carrierPayout": "Carrier payout",
+        "poolPayout": "Pool fees",
+        "margin": "Margin"
+      },
+      "validation": { "required": "Select charge code and enter amount." }
+    }
+  },
+  "streetTurn": {
+    "totalCount": "{{count}} total",
+    "pageHint": "Reuse import containers for export to cut port turn-ins. REQUESTED → APPROVED / REJECTED / CANCELLED.",
+    "filter": {
+      "ALL": "All",
+      "REQUESTED": "Requested",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected",
+      "CANCELLED": "Cancelled"
+    },
+    "field": {
+      "id": "ID",
+      "status": "Status",
+      "linkType": "Link",
+      "containerNumber": "Container",
+      "containerId": "Container ID",
+      "importOrderId": "Import D/O",
+      "exportOrderId": "Export D/O",
+      "requestedAt": "Requested at",
+      "carrierApprovalNo": "Carrier approval #",
+      "rejectedReason": "Reject reason"
+    },
+    "action": {
+      "approve": "Approve",
+      "reject": "Reject",
+      "cancel": "Cancel"
+    },
+    "approve": {
+      "title": "Approve street turn",
+      "description": "Approve #{{id}}? A container event (STREET_TURNED) will be logged automatically."
+    },
+    "reject": {
+      "title": "Reject street turn",
+      "description": "Reject #{{id}}. Please provide a reason.",
+      "placeholder": "e.g., container size mismatch"
+    },
+    "validation": {
+      "reasonRequired": "Please enter a reason."
+    },
+    "toast": {
+      "approved": "Street turn approved.",
+      "rejected": "Street turn rejected."
+    }
+  },
+  "chargeCode": {
+    "newButton": "New charge code",
+    "createTitle": "New charge code",
+    "editTitle": "Edit charge code",
+    "totalCount": "{{count}} total",
+    "deletePromptTitle": "Delete charge code '{{code}}'?",
+    "deletePromptDesc": "Existing rate_card / leg_charge references may be affected.",
+    "field": {
+      "code": "Code",
+      "name": "Name",
+      "kind": "Kind",
+      "unit": "Unit",
+      "amount": "Default amount",
+      "defaultAmount": "Default amount",
+      "flags": "Flags",
+      "isBillableToCustomer": "Billable to customer",
+      "isPayableToDriver": "Payable to driver",
+      "glAccount": "GL account",
+      "description": "Description"
+    },
+    "validation": { "required": "Enter code and name." }
+  },
+  "rateCard": {
+    "newButton": "New rate card",
+    "createTitle": "New rate card",
+    "editTitle": "Edit rate card",
+    "totalCount": "{{count}} total",
+    "scopeAll": "All (global)",
+    "deletePromptTitle": "Delete this rate card?",
+    "deletePromptDesc": "This cannot be undone.",
+    "field": {
+      "priority": "Priority",
+      "chargeCode": "Charge code",
+      "name": "Name",
+      "scope": "Scope",
+      "unit": "Unit",
+      "amount": "Amount",
+      "percent": "Percent",
+      "perUnit": "Per unit",
+      "size": "Size",
+      "scopeCustomer": "Customer",
+      "scopeTerminal": "Terminal",
+      "scopeZone": "Zone",
+      "effectiveFrom": "Effective from",
+      "effectiveTo": "Effective to",
+      "description": "Description"
+    },
+    "validation": { "chargeCodeRequired": "Select a charge code." }
+  },
+  "legStop": {
+    "stopsLabel": "Stops ({{count}})",
+    "add": "Add stop",
+    "addedToast": "Stop added.",
+    "deletedToast": "Stop deleted.",
+    "deleteConfirm": "Delete this stop?",
+    "empty": "No stops registered.",
+    "locationOptional": "Location (opt.)"
   },
   "leg": {
     "domain": "Leg",
@@ -811,6 +1085,7 @@
       "back": "List",
       "heading": "D/O"
     },
+    "streetTurns": "Street Turns",
     "accounting": {
       "title": "Settlements"
     },
@@ -823,7 +1098,12 @@
       "terminals": "Terminals",
       "vessels": "Vessels",
       "locations": "Locations",
-      "drivers": "Drivers"
+      "drivers": "Drivers",
+      "trucks": "Trucks",
+      "chassis": "Chassis",
+      "equipmentPools": "Equipment Pools",
+      "chargeCodes": "Charge Codes",
+      "rateCards": "Rate Cards"
     },
     "system": {
       "teams": "Teams",
@@ -857,15 +1137,21 @@
     "dispatch": "Dispatch",
     "driverSchedule": "Driver Schedule",
     "deliveryOrders": "Delivery Orders",
+    "streetTurns": "Street Turns",
     "accounting": "Accounting",
     "settlements": "Settlements",
     "rateSettings": "Rate Settings",
     "masterData": "Master Data",
     "customers": "Customers",
     "drivers": "Drivers",
+    "trucks": "Trucks",
+    "chassis": "Chassis",
+    "equipmentPools": "Equipment Pools",
     "terminals": "Terminals",
     "vessels": "Vessels",
     "locations": "Locations",
+    "chargeCodes": "Charge Codes",
+    "rateCards": "Rate Cards",
     "system": "System",
     "teams": "Teams",
     "systemUsers": "System Users",

@@ -12,10 +12,13 @@ import { adaptCursorToPaged, type CursorResponse } from "@/lib/pagination";
 
 export type LegCreatePayload = {
   deliveryOrderId: number;
+  containerId?: number | null;
   step: DeliveryStatus;
   moveType: MoveType;
   serviceType: ServiceType;
   driverId?: number | null;
+  truckId?: number | null;
+  chassisId?: number | null;
   pickupLocationId?: number | null;
   pickupDate?: string | null;
   deliveryLocationId?: number | null;

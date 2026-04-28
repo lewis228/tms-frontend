@@ -126,17 +126,8 @@ function MasterLayer({
   deliveryOrders: DeliveryOrderEntity[];
 }) {
   const { t } = useTranslation();
-  const usageByLocation = useMemo(() => {
-    const m = new Map<number, number>();
-    for (const d of deliveryOrders) {
-      if (d.status === "COMPLETED") continue;
-      if (d.deliveryLocationId)
-        m.set(d.deliveryLocationId, (m.get(d.deliveryLocationId) ?? 0) + 1);
-      if (d.returnLocationId)
-        m.set(d.returnLocationId, (m.get(d.returnLocationId) ?? 0) + 1);
-    }
-    return m;
-  }, [deliveryOrders]);
+  // H-1: D/O 헤더에서 location 제거. usage 집계는 leg/container 기반으로 H-6 에서 재설계.
+  const usageByLocation = useMemo(() => new Map<number, number>(), []);
   const usageByTerminal = useMemo(() => {
     const m = new Map<number, number>();
     for (const d of deliveryOrders) {
@@ -216,26 +207,20 @@ function DOLayer({
     return m;
   }, [locations]);
 
-  // D/O 별로 delivery_location 마커 1개 (없으면 return_location).
-  const markers = useMemo(() => {
-    const out: { id: number; name: string; lat: number; lng: number; status: string; container: string | null }[] = [];
-    for (const d of deliveryOrders) {
-      if (d.status === "COMPLETED") continue;
-      const locId = d.deliveryLocationId ?? d.returnLocationId;
-      if (!locId) continue;
-      const loc = locById.get(locId);
-      if (!loc || !loc.latitude || !loc.longitude) continue;
-      out.push({
-        id: d.id,
-        name: loc.name,
-        lat: Number(loc.latitude),
-        lng: Number(loc.longitude),
-        status: d.status,
-        container: d.containerNumber,
-      });
-    }
-    return out;
-  }, [deliveryOrders, locById]);
+  // H-1: D/O 헤더에서 location 분리. 마커는 H-6 (leg_stop) 정합성 후 재구성.
+  const markers = useMemo(
+    (): {
+      id: number;
+      name: string;
+      lat: number;
+      lng: number;
+      status: string;
+      container: string | null;
+    }[] => [],
+    [],
+  );
+  void deliveryOrders;
+  void locById;
 
   const openDrawer = (id: number) => {
     setSearchParams((prev) => {
@@ -297,14 +282,8 @@ function FitBounds({
           pts.push([Number(t.latitude), Number(t.longitude)]);
       }
     } else {
-      const locById = new Map(locations.map((l) => [l.id, l]));
-      for (const d of deliveryOrders) {
-        if (d.status === "COMPLETED") continue;
-        const locId = d.deliveryLocationId ?? d.returnLocationId;
-        const loc = locId ? locById.get(locId) : undefined;
-        if (loc && loc.latitude && loc.longitude)
-          pts.push([Number(loc.latitude), Number(loc.longitude)]);
-      }
+      // H-1: D/O 헤더에서 locations 제거. zoom-to-DOs 는 H-6 에서 leg/stop 기반으로 재구성.
+      void deliveryOrders;
     }
     return pts;
   }, [mode, locations, terminals, deliveryOrders]);

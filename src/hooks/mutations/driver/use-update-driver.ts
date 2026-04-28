@@ -1,21 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { updateDriver } from "@/api/driver";
+import { updateDriver, type DriverUpdatePayload } from "@/api/driver";
 import { QUERY_KEYS } from "@/lib/constants";
 import type { UseMutationCallback } from "@/types";
 
-type Vars = {
-  id: number;
-  payload: Partial<{
-    name: string;
-    phone: string | null;
-    licenseNumber: string | null;
-    licenseState: string | null;
-    truckNumber: string | null;
-    isActive: boolean;
-    note: string | null;
-  }>;
-};
+type Vars = { id: number; payload: DriverUpdatePayload };
 
 export function useUpdateDriver(callbacks?: UseMutationCallback) {
   const qc = useQueryClient();

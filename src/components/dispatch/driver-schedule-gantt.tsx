@@ -22,6 +22,7 @@ const LEG_STATUS_COLOR: Record<LegStatus, string> = {
   IN_TRANSIT: "bg-blue-500",
   COMPLETED: "bg-green-500",
   FAILED: "bg-red-500",
+  DRY_RUN: "bg-amber-500",
 };
 
 function startOfDay(d: Date): Date {
@@ -125,7 +126,7 @@ function DriverRow({
         <div className="flex flex-col">
           <span className="font-medium">{driver.name}</span>
           <span className="text-muted-foreground">
-            {driver.truckNumber ?? "—"} ·{" "}
+            {driver.licenseNumber ?? "—"} ·{" "}
             {isPending
               ? "…"
               : t("dispatch.gantt.legCount", { count: items.length })}

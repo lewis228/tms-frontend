@@ -2,6 +2,7 @@
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
+import ContainerDrawer from "@/components/container/container-drawer";
 import DeliveryOrderDrawer from "@/components/delivery-order/delivery-order-drawer";
 import DispatchBoardView from "@/components/dispatch/dispatch-board-view";
 import DispatchListView from "@/components/dispatch/dispatch-list-view";
@@ -58,6 +59,7 @@ export default function DispatchPage() {
       {view === "map" && <DispatchMapView />}
 
       <DeliveryOrderDrawer />
+      <ContainerDrawer />
     </div>
   );
 }

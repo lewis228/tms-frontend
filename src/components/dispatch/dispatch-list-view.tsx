@@ -69,7 +69,6 @@ export default function DispatchListView() {
       if (statusFilter !== "ALL" && d.status !== statusFilter) return false;
       if (!search) return true;
       return (
-        (d.containerNumber ?? "").toLowerCase().includes(search) ||
         (d.blNumber ?? "").toLowerCase().includes(search) ||
         (d.bookingNumber ?? "").toLowerCase().includes(search) ||
         (d.reference ?? "").toLowerCase().includes(search)
@@ -121,11 +120,9 @@ export default function DispatchListView() {
             <TableRow>
               <TableHead>{t("deliveryOrder.table.status")}</TableHead>
               <TableHead>{t("deliveryOrder.table.direction")}</TableHead>
-              <TableHead>{t("deliveryOrder.table.container")}</TableHead>
-              <TableHead>{t("deliveryOrder.table.customer")}</TableHead>
               <TableHead>{t("deliveryOrder.table.bl")}</TableHead>
-              <TableHead>{t("deliveryOrder.table.pickup")}</TableHead>
-              <TableHead>{t("deliveryOrder.table.delivery")}</TableHead>
+              <TableHead>{t("deliveryOrder.table.customer")}</TableHead>
+              <TableHead>{t("deliveryOrder.table.eta")}</TableHead>
               <TableHead>{t("dispatch.list.headerGate")}</TableHead>
             </TableRow>
           </TableHeader>
@@ -133,7 +130,7 @@ export default function DispatchListView() {
             {filtered.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={8}
+                  colSpan={6}
                   className="text-center text-muted-foreground"
                 >
                   {t("common.noData")}
@@ -141,8 +138,6 @@ export default function DispatchListView() {
               </TableRow>
             ) : (
               filtered.map((d) => {
-                const gateOk =
-                  d.blReleased && d.pierPassPaid && d.customsCleared;
                 return (
                   <TableRow
                     key={d.id}
@@ -155,32 +150,18 @@ export default function DispatchListView() {
                     <TableCell className="font-mono text-xs">
                       {d.direction}
                     </TableCell>
-                    <TableCell className="font-mono">
-                      {d.containerNumber ?? "—"}
-                    </TableCell>
+                    <TableCell>{d.blNumber ?? "—"}</TableCell>
                     <TableCell>
                       {customerNameById.get(d.customerId) ?? "—"}
                     </TableCell>
-                    <TableCell>{d.blNumber ?? "—"}</TableCell>
                     <TableCell className="text-xs">
-                      {d.pickupAppointment
-                        ? formatDateTime(d.pickupAppointment)
-                        : "—"}
+                      {d.eta ? formatDateTime(d.eta) : "—"}
                     </TableCell>
                     <TableCell className="text-xs">
-                      {d.deliveryAppointment
-                        ? formatDateTime(d.deliveryAppointment)
-                        : "—"}
-                    </TableCell>
-                    <TableCell className="text-xs">
-                      <span className={gateOk ? "text-green-700" : "text-amber-700"}>
-                        {[
-                          d.blReleased ? "BL" : "·",
-                          d.pierPassPaid ? "PP" : "·",
-                          d.customsCleared ? "CC" : "·",
-                        ].join("/")}
+                      <span className={d.blReleased ? "text-green-700" : "text-amber-700"}>
+                        {d.blReleased ? "BL ✓" : "BL ·"}
                       </span>
-                      {!driverNameById.size && d.containerSize ? null : null}
+                      {driverNameById.size === 0 ? null : null}
                     </TableCell>
                   </TableRow>
                 );

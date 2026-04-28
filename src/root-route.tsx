@@ -52,8 +52,14 @@ const MasterTerminalsPage = lazy(() => import("@/pages/master-terminals-page"));
 const MasterLocationsPage = lazy(() => import("@/pages/master-locations-page"));
 const MasterCustomersPage = lazy(() => import("@/pages/master-customers-page"));
 const MasterDriversPage = lazy(() => import("@/pages/master-drivers-page"));
+const MasterTrucksPage = lazy(() => import("@/pages/master-trucks-page"));
+const MasterChassisPage = lazy(() => import("@/pages/master-chassis-page"));
+const MasterEquipmentPoolsPage = lazy(() => import("@/pages/master-equipment-pools-page"));
+const MasterChargeCodesPage = lazy(() => import("@/pages/master-charge-codes-page"));
+const MasterRateCardsPage = lazy(() => import("@/pages/master-rate-cards-page"));
 const DeliveryOrdersPage = lazy(() => import("@/pages/delivery-orders-page"));
 const DeliveryOrderDetailPage = lazy(() => import("@/pages/delivery-order-detail-page"));
+const StreetTurnsPage = lazy(() => import("@/pages/street-turns-page"));
 const OnboardingPage = lazy(() => import("@/pages/onboarding-page"));
 const DispatchPage = lazy(() => import("@/pages/dispatch-page"));
 const DriverSchedulePage = lazy(() => import("@/pages/driver-schedule-page"));
@@ -139,6 +145,7 @@ export default function RootRoute() {
                 path="delivery-orders/:id"
                 element={<DeliveryOrderDetailPage />}
               />
+              <Route path="street-turns" element={<StreetTurnsPage />} />
             </Route>
 
             <Route element={<ProtectedRoute require="DISPATCHER" />}>
@@ -150,9 +157,16 @@ export default function RootRoute() {
 
             <Route path="master/customers" element={<MasterCustomersPage />} />
             <Route path="master/drivers" element={<MasterDriversPage />} />
+            <Route path="master/trucks" element={<MasterTrucksPage />} />
+            <Route path="master/chassis" element={<MasterChassisPage />} />
+            <Route path="master/equipment-pools" element={<MasterEquipmentPoolsPage />} />
             <Route path="master/terminals" element={<MasterTerminalsPage />} />
             <Route path="master/vessels" element={<MasterVesselsPage />} />
             <Route path="master/locations" element={<MasterLocationsPage />} />
+            <Route element={<ProtectedRoute require="ADMIN" />}>
+              <Route path="master/charge-codes" element={<MasterChargeCodesPage />} />
+              <Route path="master/rate-cards" element={<MasterRateCardsPage />} />
+            </Route>
 
             <Route element={<ProtectedRoute require="SUPER_ADMIN" />}>
               <Route path="system/teams" element={<SystemTeamsPage />} />

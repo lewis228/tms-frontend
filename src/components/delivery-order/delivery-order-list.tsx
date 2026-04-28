@@ -69,7 +69,6 @@ export default function DeliveryOrderList() {
       if (statusFilter !== "ALL" && d.status !== statusFilter) return false;
       if (!search) return true;
       return (
-        (d.containerNumber ?? "").toLowerCase().includes(search) ||
         (d.blNumber ?? "").toLowerCase().includes(search) ||
         (d.bookingNumber ?? "").toLowerCase().includes(search) ||
         (d.reference ?? "").toLowerCase().includes(search)
@@ -124,11 +123,10 @@ export default function DeliveryOrderList() {
             <TableRow>
               <TableHead>{t("deliveryOrder.table.status")}</TableHead>
               <TableHead>{t("deliveryOrder.table.direction")}</TableHead>
-              <TableHead>{t("deliveryOrder.table.container")}</TableHead>
-              <TableHead>{t("deliveryOrder.table.customer")}</TableHead>
               <TableHead>{t("deliveryOrder.table.bl")}</TableHead>
-              <TableHead>{t("deliveryOrder.table.pickup")}</TableHead>
-              <TableHead>{t("deliveryOrder.table.delivery")}</TableHead>
+              <TableHead>{t("deliveryOrder.table.booking")}</TableHead>
+              <TableHead>{t("deliveryOrder.table.customer")}</TableHead>
+              <TableHead>{t("deliveryOrder.table.eta")}</TableHead>
               <TableHead className="w-16 text-right"></TableHead>
             </TableRow>
           </TableHeader>
@@ -136,7 +134,7 @@ export default function DeliveryOrderList() {
             {filtered.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={8}
+                  colSpan={7}
                   className="text-center text-muted-foreground"
                 >
                   {t("common.noData")}
@@ -155,22 +153,15 @@ export default function DeliveryOrderList() {
                   <TableCell className="font-mono text-xs">
                     {d.direction}
                   </TableCell>
-                  <TableCell className="font-mono">
-                    {d.containerNumber ?? t("common.none")}
+                  <TableCell>{d.blNumber ?? t("common.none")}</TableCell>
+                  <TableCell className="font-mono text-xs">
+                    {d.bookingNumber ?? t("common.none")}
                   </TableCell>
                   <TableCell>
                     {customerNameById.get(d.customerId) ?? t("common.none")}
                   </TableCell>
-                  <TableCell>{d.blNumber ?? t("common.none")}</TableCell>
                   <TableCell>
-                    {d.pickupAppointment
-                      ? formatDateTime(d.pickupAppointment)
-                      : t("common.none")}
-                  </TableCell>
-                  <TableCell>
-                    {d.deliveryAppointment
-                      ? formatDateTime(d.deliveryAppointment)
-                      : t("common.none")}
+                    {d.eta ? formatDateTime(d.eta) : t("common.none")}
                   </TableCell>
                   <TableCell className="text-right">
                     <Link

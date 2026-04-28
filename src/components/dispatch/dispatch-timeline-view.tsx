@@ -58,21 +58,12 @@ export default function DispatchTimelineView() {
   const customerName = (id: number) =>
     customersData?.items.find((c) => c.id === id)?.name ?? "—";
 
-  // 분류: 범위 안 (any 약속이 범위 안) / 범위 밖 또는 미정.
+  // H-1: 일정 컬럼이 컨테이너로 이전. 헤더 단계에선 ETA 만 사용.
   const inRange: DeliveryOrderEntity[] = [];
   const outRange: DeliveryOrderEntity[] = [];
   for (const d of data.items) {
-    const dates = [
-      d.pickupAppointment,
-      d.deliveryAppointment,
-      d.returnAppointment,
-    ]
-      .filter((x): x is string => !!x)
-      .map((s) => new Date(s));
-    const anyInRange = dates.some(
-      (dt) => dt >= range.start && dt <= range.end,
-    );
-    if (anyInRange) inRange.push(d);
+    const dt = d.eta ? new Date(d.eta) : null;
+    if (dt && dt >= range.start && dt <= range.end) inRange.push(d);
     else outRange.push(d);
   }
 
@@ -109,9 +100,7 @@ export default function DispatchTimelineView() {
                 className="flex items-center gap-2 rounded border bg-background px-2 py-1 text-xs hover:bg-accent/50"
               >
                 <StatusBadge status={d.status} />
-                <span className="font-mono">
-                  {d.containerNumber ?? t("dispatch.containerUnset")}
-                </span>
+                <span>{d.blNumber ?? `#${d.id}`}</span>
                 <span className="text-muted-foreground">
                   {customerName(d.customerId)}
                 </span>
@@ -198,9 +187,10 @@ function TimelineRow({
   onClick: () => void;
 }) {
   const { t } = useTranslation();
-  const pf = fraction(d.pickupAppointment);
-  const df = fraction(d.deliveryAppointment);
-  const rf = fraction(d.returnAppointment);
+  const ef = fraction(d.eta);
+  const pf = ef;
+  const df = ef;
+  const rf = ef;
 
   return (
     <button
@@ -211,9 +201,7 @@ function TimelineRow({
       <div className="flex items-center gap-2 border-r px-3 py-2 text-xs">
         <StatusBadge status={d.status} />
         <div className="flex flex-col">
-          <span className="font-mono font-medium">
-            {d.containerNumber ?? t("dispatch.containerUnset")}
-          </span>
+          <span className="font-medium">{d.blNumber ?? `#${d.id}`}</span>
           <span className="text-muted-foreground">{customerName}</span>
         </div>
       </div>

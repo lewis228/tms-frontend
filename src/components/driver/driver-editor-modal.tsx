@@ -19,6 +19,15 @@ import { useUpdateDriver } from "@/hooks/mutations/driver/use-update-driver";
 import { generateErrorMessage } from "@/lib/error";
 import { useDriverEditorModal } from "@/store/driver-editor-modal";
 import { useOpenDriverTempPasswordModal } from "@/store/driver-temp-password-modal";
+import { useCustomersData } from "@/hooks/queries/use-customers-data";
+import type { EmploymentKind, PaymentTermsKind } from "@/types";
+
+const EMPLOYMENT_KINDS: EmploymentKind[] = [
+  "IN_HOUSE", "OWNER_OPERATOR_SOLO", "CARRIER_DRIVER",
+];
+const PAYMENT_TERMS_KINDS: PaymentTermsKind[] = [
+  "PERCENT_OF_REVENUE", "PER_LEG", "HOURLY", "SALARY",
+];
 
 type OpenModal = Extract<
   ReturnType<typeof useDriverEditorModal>,
@@ -63,11 +72,27 @@ function Body({ modal }: { modal: OpenModal }) {
   const [licenseState, setLicenseState] = useState(
     modal.type === "CREATE" ? "" : (modal.driver.licenseState ?? ""),
   );
-  const [truckNumber, setTruckNumber] = useState(
-    modal.type === "CREATE" ? "" : (modal.driver.truckNumber ?? ""),
-  );
   const [note, setNote] = useState(
     modal.type === "CREATE" ? "" : (modal.driver.note ?? ""),
+  );
+  // H-5
+  const [employmentKind, setEmploymentKind] = useState<EmploymentKind>(
+    modal.type === "CREATE" ? "IN_HOUSE" : modal.driver.employmentKind,
+  );
+  const [carrierId, setCarrierId] = useState<number | null>(
+    modal.type === "CREATE" ? null : modal.driver.carrierId,
+  );
+  const [paymentTermsKind, setPaymentTermsKind] = useState<PaymentTermsKind | "">(
+    modal.type === "CREATE" ? "" : (modal.driver.paymentTermsKind ?? ""),
+  );
+  const [paymentTermsValue, setPaymentTermsValue] = useState(
+    modal.type === "CREATE" ? "" : (modal.driver.paymentTermsValue ?? ""),
+  );
+  const [licenseExpiresAt, setLicenseExpiresAt] = useState(
+    modal.type === "CREATE" ? "" : (modal.driver.licenseExpiresAt ?? ""),
+  );
+  const [medicalCertExpiresAt, setMedicalCertExpiresAt] = useState(
+    modal.type === "CREATE" ? "" : (modal.driver.medicalCertExpiresAt ?? ""),
   );
 
   const { mutate: createDriver, isPending: isCreatePending } = useCreateDriver({
@@ -97,6 +122,21 @@ function Body({ modal }: { modal: OpenModal }) {
 
   const handleSave = () => {
     if (name.trim() === "") return;
+    if (employmentKind === "CARRIER_DRIVER" && !carrierId) {
+      toast.error(t("driver.validation.carrierRequired"), { position: "top-center" });
+      return;
+    }
+    const h5Extras = {
+      employmentKind,
+      carrierId: employmentKind === "CARRIER_DRIVER" ? carrierId : null,
+      paymentTermsKind: (paymentTermsKind || null) as PaymentTermsKind | null,
+      paymentTermsValue:
+        paymentTermsValue === "" || paymentTermsValue === null
+          ? null
+          : String(paymentTermsValue),
+      licenseExpiresAt: licenseExpiresAt || null,
+      medicalCertExpiresAt: medicalCertExpiresAt || null,
+    };
     if (modal.type === "CREATE") {
       if (email.trim() === "") return;
       createDriver({
@@ -105,8 +145,8 @@ function Body({ modal }: { modal: OpenModal }) {
         phone: phone.trim() || null,
         licenseNumber: licenseNumber.trim() || null,
         licenseState: licenseState.trim() || null,
-        truckNumber: truckNumber.trim() || null,
         note: note.trim() || null,
+        ...h5Extras,
       });
     } else {
       updateDriver({
@@ -116,8 +156,8 @@ function Body({ modal }: { modal: OpenModal }) {
           phone: phone.trim() || null,
           licenseNumber: licenseNumber.trim() || null,
           licenseState: licenseState.trim() || null,
-          truckNumber: truckNumber.trim() || null,
           note: note.trim() || null,
+          ...h5Extras,
         },
       });
     }
@@ -176,13 +216,6 @@ function Body({ modal }: { modal: OpenModal }) {
             />
           </Field>
         </div>
-        <Field label={t("driver.field.truckNumber")}>
-          <Input
-            value={truckNumber}
-            onChange={(e) => setTruckNumber(e.target.value)}
-            disabled={isPending}
-          />
-        </Field>
         <Field label={t("field.note")}>
           <Input
             value={note}
@@ -190,6 +223,22 @@ function Body({ modal }: { modal: OpenModal }) {
             disabled={isPending}
           />
         </Field>
+
+        <EmploymentSection
+          employmentKind={employmentKind}
+          setEmploymentKind={setEmploymentKind}
+          carrierId={carrierId}
+          setCarrierId={setCarrierId}
+          paymentTermsKind={paymentTermsKind}
+          setPaymentTermsKind={setPaymentTermsKind}
+          paymentTermsValue={paymentTermsValue}
+          setPaymentTermsValue={setPaymentTermsValue}
+          licenseExpiresAt={licenseExpiresAt}
+          setLicenseExpiresAt={setLicenseExpiresAt}
+          medicalCertExpiresAt={medicalCertExpiresAt}
+          setMedicalCertExpiresAt={setMedicalCertExpiresAt}
+          disabled={isPending}
+        />
       </div>
 
       {modal.type === "CREATE" && (
@@ -218,6 +267,111 @@ function Body({ modal }: { modal: OpenModal }) {
         </Button>
       </div>
     </>
+  );
+}
+
+function EmploymentSection({
+  employmentKind, setEmploymentKind,
+  carrierId, setCarrierId,
+  paymentTermsKind, setPaymentTermsKind,
+  paymentTermsValue, setPaymentTermsValue,
+  licenseExpiresAt, setLicenseExpiresAt,
+  medicalCertExpiresAt, setMedicalCertExpiresAt,
+  disabled,
+}: {
+  employmentKind: EmploymentKind;
+  setEmploymentKind: (v: EmploymentKind) => void;
+  carrierId: number | null;
+  setCarrierId: (v: number | null) => void;
+  paymentTermsKind: PaymentTermsKind | "";
+  setPaymentTermsKind: (v: PaymentTermsKind | "") => void;
+  paymentTermsValue: string;
+  setPaymentTermsValue: (v: string) => void;
+  licenseExpiresAt: string;
+  setLicenseExpiresAt: (v: string) => void;
+  medicalCertExpiresAt: string;
+  setMedicalCertExpiresAt: (v: string) => void;
+  disabled: boolean;
+}) {
+  const { t } = useTranslation();
+  const { data: customersData } = useCustomersData(1);
+  const carriers = (customersData?.items ?? []).filter((c) => c.kind === "CARRIER");
+
+  return (
+    <div className="rounded-md border bg-muted/20 p-3">
+      <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        {t("driver.section.employment")}
+      </p>
+      <div className="grid grid-cols-2 gap-3">
+        <Field label={t("driver.field.employmentKind")} required>
+          <select
+            value={employmentKind}
+            onChange={(e) => setEmploymentKind(e.target.value as EmploymentKind)}
+            disabled={disabled}
+            className="h-9 rounded-md border bg-background px-3 text-sm"
+          >
+            {EMPLOYMENT_KINDS.map((k) => (
+              <option key={k} value={k}>{k}</option>
+            ))}
+          </select>
+        </Field>
+        {employmentKind === "CARRIER_DRIVER" && (
+          <Field label={t("driver.field.carrier")} required>
+            <select
+              value={carrierId ?? ""}
+              onChange={(e) =>
+                setCarrierId(e.target.value ? Number(e.target.value) : null)
+              }
+              disabled={disabled}
+              className="h-9 rounded-md border bg-background px-3 text-sm"
+            >
+              <option value="">—</option>
+              {carriers.map((c) => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
+          </Field>
+        )}
+        <Field label={t("driver.field.paymentTermsKind")}>
+          <select
+            value={paymentTermsKind}
+            onChange={(e) => setPaymentTermsKind(e.target.value as PaymentTermsKind | "")}
+            disabled={disabled}
+            className="h-9 rounded-md border bg-background px-3 text-sm"
+          >
+            <option value="">—</option>
+            {PAYMENT_TERMS_KINDS.map((k) => (
+              <option key={k} value={k}>{k}</option>
+            ))}
+          </select>
+        </Field>
+        <Field label={t("driver.field.paymentTermsValue")}>
+          <Input
+            type="number"
+            step="0.0001"
+            value={paymentTermsValue}
+            onChange={(e) => setPaymentTermsValue(e.target.value)}
+            disabled={disabled}
+          />
+        </Field>
+        <Field label={t("driver.field.licenseExpiresAt")}>
+          <Input
+            type="date"
+            value={licenseExpiresAt}
+            onChange={(e) => setLicenseExpiresAt(e.target.value)}
+            disabled={disabled}
+          />
+        </Field>
+        <Field label={t("driver.field.medicalCertExpiresAt")}>
+          <Input
+            type="date"
+            value={medicalCertExpiresAt}
+            onChange={(e) => setMedicalCertExpiresAt(e.target.value)}
+            disabled={disabled}
+          />
+        </Field>
+      </div>
+    </div>
   );
 }
 

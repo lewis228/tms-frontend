@@ -57,8 +57,7 @@ export default function DriverList() {
       (d) =>
         d.name.toLowerCase().includes(search) ||
         d.email.toLowerCase().includes(search) ||
-        (d.licenseNumber ?? "").toLowerCase().includes(search) ||
-        (d.truckNumber ?? "").toLowerCase().includes(search),
+        (d.licenseNumber ?? "").toLowerCase().includes(search),
     );
   }, [data, search]);
 
@@ -93,7 +92,6 @@ export default function DriverList() {
               <TableHead>{t("field.email")}</TableHead>
               <TableHead>{t("field.phone")}</TableHead>
               <TableHead>{t("driver.field.licenseNumber")}</TableHead>
-              <TableHead>{t("driver.field.truckNumber")}</TableHead>
               <TableHead>{t("common.active")}</TableHead>
               <TableHead className="text-right">{t("common.actions")}</TableHead>
             </TableRow>
@@ -102,7 +100,7 @@ export default function DriverList() {
             {filtered.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={7}
+                  colSpan={6}
                   className="text-center text-muted-foreground"
                 >
                   {t("common.noData")}
@@ -119,7 +117,6 @@ export default function DriverList() {
                       ? `${d.licenseNumber}${d.licenseState ? ` (${d.licenseState})` : ""}`
                       : t("common.none")}
                   </TableCell>
-                  <TableCell>{d.truckNumber ?? t("common.none")}</TableCell>
                   <TableCell>{d.isActive ? "✓" : t("common.none")}</TableCell>
                   <TableCell className="text-right">
                     <Button

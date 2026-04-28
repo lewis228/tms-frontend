@@ -11,14 +11,17 @@ import UrgentList from "@/components/dashboard/urgent-list";
 import { pickUrgent } from "@/components/dashboard/urgent";
 import Loader from "@/components/loader";
 import Fallback from "@/components/fallback";
+import { fetchContainers } from "@/api/container";
 import { useCustomersData } from "@/hooks/queries/use-customers-data";
 import { useDeliveryOrdersData } from "@/hooks/queries/use-delivery-orders-data";
 import { useDriversData } from "@/hooks/queries/use-drivers-data";
 import { useLegsData } from "@/hooks/queries/use-legs-data";
 import { useSettlementsData } from "@/hooks/queries/use-settlements-data";
+import { useQuery } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/lib/constants";
 import { STATUS_ORDER } from "@/lib/delivery-order";
 import { useCurrentUser } from "@/store/auth";
-import type { DeliveryOrderEntity } from "@/types";
+import type { ContainerEntity, DeliveryOrderEntity } from "@/types";
 
 function isToday(iso: string | null | undefined): boolean {
   if (!iso) return false;
@@ -48,15 +51,19 @@ export default function DashboardPage() {
     error: settlementsError,
   } = useSettlementsData(1, 100);
   const { data: customersData } = useCustomersData(1);
+  const { data: containersData } = useQuery({
+    queryKey: QUERY_KEYS.container.list({ size: 200 }),
+    queryFn: () => fetchContainers({ size: 200 }),
+  });
 
   const stats = useMemo(() => {
     const orders = doData?.items ?? [];
+    const containers: ContainerEntity[] = containersData?.items ?? [];
     const inProgress = orders.filter((o) => o.status !== "COMPLETED");
-    const todayPickup = orders.filter((o) => isToday(o.pickupAppointment));
-    const todayDelivery = orders.filter((o) =>
-      isToday(o.deliveryAppointment),
-    );
-    const todayReturn = orders.filter((o) => isToday(o.returnAppointment));
+    // H-1: appointments 가 컨테이너로 이전. KPI 는 컨테이너 단위로 집계.
+    const todayPickup = containers.filter((c) => isToday(c.pickupAppointment));
+    const todayDelivery = containers.filter((c) => isToday(c.deliveryAppointment));
+    const todayReturn = containers.filter((c) => isToday(c.returnAppointment));
 
     const legs = legsData?.items ?? [];
     const pendingLegs = legs.filter(
@@ -89,12 +96,17 @@ export default function DashboardPage() {
         count: byStatus[s] ?? 0,
       })),
       orders,
+      containers,
     };
-  }, [doData, legsData, driversData, settlementsData]);
+  }, [doData, legsData, driversData, settlementsData, containersData]);
 
   const urgent = useMemo(
-    () => pickUrgent(stats.orders as DeliveryOrderEntity[]),
-    [stats.orders],
+    () =>
+      pickUrgent(
+        stats.orders as DeliveryOrderEntity[],
+        stats.containers as ContainerEntity[],
+      ),
+    [stats.orders, stats.containers],
   );
 
   if (doError || legsError || driversError || settlementsError)

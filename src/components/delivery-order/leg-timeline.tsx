@@ -13,6 +13,7 @@ const LEG_STATUS_COLOR: Record<LegStatus, string> = {
   IN_TRANSIT: "bg-blue-100 text-blue-700",
   COMPLETED: "bg-green-100 text-green-700",
   FAILED: "bg-red-100 text-red-700",
+  DRY_RUN: "bg-amber-100 text-amber-700",
 };
 
 export default function LegTimeline({

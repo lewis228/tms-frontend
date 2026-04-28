@@ -1,23 +1,38 @@
 // /ai-intake/* 매핑 — D/O 자동 추출.
 //
-// 백엔드 provider 는 환경변수로 선택 (gemini / anthropic). 프론트는 동일 contract.
+// H-1: containers 배열 추출. 헤더 + containers[]. snake_case 그대로.
 import api from "@/lib/axios";
 
-// 백엔드 EXTRACT_FIELDS 와 1:1 (snake_case 키 그대로 — 백엔드 응답 그대로 받음).
-export type AIIntakeFields = {
-  bl_number?: string | null;
-  booking_number?: string | null;
-  reference?: string | null;
+export type AIIntakeContainer = {
   container_number?: string | null;
-  container_size?: string | null;
-  container_type?: string | null;
+  size?: string | null;
+  type?: string | null;
+  seal_no?: string | null;
+  weight_kg?: number | string | null;
   chassis_number?: string | null;
-  eta?: string | null;
   pickup_appointment?: string | null;
   delivery_appointment?: string | null;
   return_appointment?: string | null;
   demurrage_lfd?: string | null;
   detention_lfd?: string | null;
+  empty_date?: string | null;
+  loaded_date?: string | null;
+  delivery_location_name?: string | null;
+  return_location_name?: string | null;
+  service_type?: string | null;
+};
+
+export type AIIntakeFields = {
+  bl_number?: string | null;
+  booking_number?: string | null;
+  reference?: string | null;
+  customer_name?: string | null;
+  vessel_name?: string | null;
+  voyage_no?: string | null;
+  terminal_name?: string | null;
+  eta?: string | null;
+  direction?: string | null;
+  containers?: AIIntakeContainer[] | null;
 };
 
 export type AIIntakeResponse = {
@@ -25,7 +40,7 @@ export type AIIntakeResponse = {
   sizeBytes: number;
   fields: AIIntakeFields;
   confidence: number;
-  provider: string;       // "gemini" | "anthropic"
+  provider: string;
 };
 
 export async function extractDeliveryOrderFromFile(

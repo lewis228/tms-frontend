@@ -1,8 +1,11 @@
 // 새 D/O 생성 — 풀스크린 (max-w-3xl) 모달.
-// 필드 그룹 (기본/일정/게이트/메타/메모) + container_number 패턴 검증.
+//
+// H-1 이후: D/O 헤더 + 컨테이너 sub-form (N개). containers 배열로 백엔드에 전송.
+// AI Intake prefill 도 containers[] 배열로 받음.
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import { Trash2 } from "lucide-react";
 
 import { fetchCustomers } from "@/api/customer";
 import { fetchLocations } from "@/api/location";
@@ -21,10 +24,12 @@ import { useCreateDeliveryOrder } from "@/hooks/mutations/delivery-order/use-cre
 import { CONTAINER_NUMBER_PATTERN } from "@/lib/delivery-order";
 import { generateErrorMessage } from "@/lib/error";
 import { useDeliveryOrderCreateModal } from "@/store/delivery-order-create-modal";
+import type { ContainerCreateInnerPayload } from "@/api/container";
 import type {
   ContainerSize,
   CustomerEntity,
   LocationEntity,
+  ServiceType,
   ShipmentDirection,
   TerminalEntity,
   VesselEntity,
@@ -33,14 +38,10 @@ import type {
 const SEARCH_SIZE = 50;
 
 const SIZES: ContainerSize[] = [
-  "20GP",
-  "40GP",
-  "40HC",
-  "40OT",
-  "45HC",
-  "20RF",
-  "40RF",
+  "20GP", "40GP", "40HC", "40OT", "45HC", "20RF", "40RF",
 ];
+const ALLOWED_SIZES = new Set<string>(SIZES);
+const SERVICE_TYPES: ServiceType[] = ["LIVE", "DROP"];
 
 type Modal = ReturnType<typeof useDeliveryOrderCreateModal>;
 
@@ -58,8 +59,6 @@ export default function DeliveryOrderCreateModal() {
   );
 }
 
-// AI Intake 추출 결과 → input 포맷 변환 유틸.
-// datetime-local input: "YYYY-MM-DDTHH:mm". date input: "YYYY-MM-DD".
 const isoToLocalInput = (iso: string | null | undefined): string => {
   if (!iso) return "";
   const d = new Date(iso);
@@ -69,47 +68,99 @@ const isoToLocalInput = (iso: string | null | undefined): string => {
 };
 const dateToInput = (s: string | null | undefined): string =>
   s ? s.slice(0, 10) : "";
+const toIsoOrNull = (s: string): string | null => {
+  if (!s) return null;
+  const d = new Date(s);
+  if (Number.isNaN(d.getTime())) return null;
+  return d.toISOString();
+};
 
-const ALLOWED_SIZES: ContainerSize[] = ["20GP", "40GP", "40HC", "40OT", "45HC", "20RF", "40RF"];
+type ContainerFormRow = {
+  containerNumber: string;
+  sealNo: string;
+  size: ContainerSize | "";
+  type: string;
+  weightKg: string;
+  chassisNumber: string;
+  pickupAppointment: string;
+  deliveryAppointment: string;
+  returnAppointment: string;
+  demurrageLfd: string;
+  detentionLfd: string;
+  serviceType: ServiceType | "";
+};
+
+const emptyRow = (): ContainerFormRow => ({
+  containerNumber: "",
+  sealNo: "",
+  size: "",
+  type: "",
+  weightKg: "",
+  chassisNumber: "",
+  pickupAppointment: "",
+  deliveryAppointment: "",
+  returnAppointment: "",
+  demurrageLfd: "",
+  detentionLfd: "",
+  serviceType: "",
+});
 
 function Body({ modal }: { modal: Modal }) {
   const { t } = useTranslation();
-  // AI Intake prefill — modal.prefill 이 있으면 초기값으로 사용. 없으면 빈값.
   const p = modal.prefill ?? null;
-  const initContainerSize = ((): ContainerSize | "" => {
-    const s = p?.container_size;
-    return s && (ALLOWED_SIZES as readonly string[]).includes(s) ? (s as ContainerSize) : "";
-  })();
 
-  const [direction, setDirection] = useState<ShipmentDirection>("IMPORT");
+  // ── 헤더 fields ─────────────────────────────────
+  const [direction, setDirection] = useState<ShipmentDirection>(
+    p?.direction === "EXPORT" ? "EXPORT" : "IMPORT",
+  );
   const [customerId, setCustomerId] = useState<number | null>(null);
   const [blNumber, setBlNumber] = useState(p?.bl_number ?? "");
   const [bookingNumber, setBookingNumber] = useState(p?.booking_number ?? "");
   const [reference, setReference] = useState(p?.reference ?? "");
-  const [containerNumber, setContainerNumber] = useState(p?.container_number ?? "");
-  const [containerSize, setContainerSize] = useState<ContainerSize | "">(initContainerSize);
-  const [containerType, setContainerType] = useState(p?.container_type ?? "");
-  const [chassisNumber, setChassisNumber] = useState(p?.chassis_number ?? "");
   const [terminalId, setTerminalId] = useState<number | null>(null);
   const [vesselId, setVesselId] = useState<number | null>(null);
-  const [deliveryLocationId, setDeliveryLocationId] = useState<number | null>(null);
-  const [returnLocationId, setReturnLocationId] = useState<number | null>(null);
   const [eta, setEta] = useState(isoToLocalInput(p?.eta));
-  const [pickupAppointment, setPickupAppointment] = useState(isoToLocalInput(p?.pickup_appointment));
-  const [deliveryAppointment, setDeliveryAppointment] = useState(isoToLocalInput(p?.delivery_appointment));
-  const [returnAppointment, setReturnAppointment] = useState(isoToLocalInput(p?.return_appointment));
-  const [demurrageLfd, setDemurrageLfd] = useState(dateToInput(p?.demurrage_lfd));
-  const [detentionLfd, setDetentionLfd] = useState(dateToInput(p?.detention_lfd));
   const [internalNote, setInternalNote] = useState("");
 
+  // ── 컨테이너 rows (prefill 의 containers 배열로 초기화) ─────
+  const initialRows = useMemo<ContainerFormRow[]>(() => {
+    const containers = p?.containers ?? [];
+    if (containers.length === 0) return [emptyRow()];
+    return containers.map((c) => ({
+      containerNumber: c.container_number ?? "",
+      sealNo: c.seal_no ?? "",
+      size: c.size && ALLOWED_SIZES.has(c.size) ? (c.size as ContainerSize) : "",
+      type: c.type ?? "",
+      weightKg: c.weight_kg != null ? String(c.weight_kg) : "",
+      chassisNumber: c.chassis_number ?? "",
+      pickupAppointment: isoToLocalInput(c.pickup_appointment),
+      deliveryAppointment: isoToLocalInput(c.delivery_appointment),
+      returnAppointment: isoToLocalInput(c.return_appointment),
+      demurrageLfd: dateToInput(c.demurrage_lfd),
+      detentionLfd: dateToInput(c.detention_lfd),
+      serviceType: c.service_type === "LIVE" || c.service_type === "DROP"
+        ? (c.service_type as ServiceType) : "",
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const [rows, setRows] = useState<ContainerFormRow[]>(initialRows);
 
-  const containerNormalised = useMemo(
-    () => containerNumber.toUpperCase().replace(/[\s-]/g, ""),
-    [containerNumber],
-  );
-  const containerInvalid =
-    containerNumber !== "" &&
-    !CONTAINER_NUMBER_PATTERN.test(containerNormalised);
+  const updateRow = (idx: number, patch: Partial<ContainerFormRow>) => {
+    setRows((prev) => prev.map((r, i) => (i === idx ? { ...r, ...patch } : r)));
+  };
+  const addRow = () => setRows((prev) => [...prev, emptyRow()]);
+  const removeRow = (idx: number) => {
+    setRows((prev) => (prev.length <= 1 ? prev : prev.filter((_, i) => i !== idx)));
+  };
+
+  // ── per-row container 번호 검증 ──
+  const rowsWithValidation = rows.map((r) => {
+    const normalised = r.containerNumber.toUpperCase().replace(/[\s-]/g, "");
+    const invalid =
+      r.containerNumber !== "" && !CONTAINER_NUMBER_PATTERN.test(normalised);
+    return { ...r, normalised, invalid };
+  });
+  const anyInvalid = rowsWithValidation.some((r) => r.invalid);
 
   const { mutate: createDo, isPending } = useCreateDeliveryOrder({
     onSuccess: () => {
@@ -120,14 +171,6 @@ function Body({ modal }: { modal: Modal }) {
       toast.error(generateErrorMessage(err), { position: "top-center" }),
   });
 
-  const toIsoOrNull = (s: string): string | null => {
-    if (!s) return null;
-    const d = new Date(s);
-    if (Number.isNaN(d.getTime())) return null;
-    return d.toISOString();
-  };
-  const dateOrNull = (s: string): string | null => (s ? s : null);
-
   const handleSave = () => {
     if (!customerId) {
       toast.error(t("deliveryOrder.validation.customerRequired"), {
@@ -135,33 +178,39 @@ function Body({ modal }: { modal: Modal }) {
       });
       return;
     }
-    if (containerInvalid) {
+    if (anyInvalid) {
       toast.error(t("deliveryOrder.validation.containerInvalid"), {
         position: "top-center",
       });
       return;
     }
+    const containers: ContainerCreateInnerPayload[] = rowsWithValidation.map((r, idx) => ({
+      sequenceNo: idx + 1,
+      containerNumber: r.normalised || null,
+      sealNo: r.sealNo.trim() || null,
+      size: r.size || null,
+      type: r.type.trim() || null,
+      weightKg: r.weightKg.trim() === "" ? null : r.weightKg.trim(),
+      chassisNumber: r.chassisNumber.trim() || null,
+      pickupAppointment: toIsoOrNull(r.pickupAppointment),
+      deliveryAppointment: toIsoOrNull(r.deliveryAppointment),
+      returnAppointment: toIsoOrNull(r.returnAppointment),
+      demurrageLfd: r.demurrageLfd || null,
+      detentionLfd: r.detentionLfd || null,
+      serviceType: r.serviceType || null,
+    }));
+
     createDo({
       direction,
       customerId,
       blNumber: blNumber.trim() || null,
       bookingNumber: bookingNumber.trim() || null,
       reference: reference.trim() || null,
-      containerNumber: containerNormalised || null,
-      containerSize: containerSize || null,
-      containerType: containerType.trim() || null,
-      chassisNumber: chassisNumber.trim() || null,
       terminalId,
       vesselId,
-      deliveryLocationId,
-      returnLocationId,
       eta: toIsoOrNull(eta),
-      pickupAppointment: toIsoOrNull(pickupAppointment),
-      deliveryAppointment: toIsoOrNull(deliveryAppointment),
-      returnAppointment: toIsoOrNull(returnAppointment),
-      demurrageLfd: dateOrNull(demurrageLfd),
-      detentionLfd: dateOrNull(detentionLfd),
       internalNote: internalNote.trim() || null,
+      containers,
     });
   };
 
@@ -178,9 +227,7 @@ function Body({ modal }: { modal: Modal }) {
           <Field label={t("deliveryOrder.field.direction")} required>
             <select
               value={direction}
-              onChange={(e) =>
-                setDirection(e.target.value as ShipmentDirection)
-              }
+              onChange={(e) => setDirection(e.target.value as ShipmentDirection)}
               disabled={isPending}
               className="rounded-md border bg-background px-3 py-2 text-sm"
             >
@@ -222,54 +269,11 @@ function Body({ modal }: { modal: Modal }) {
               disabled={isPending}
             />
           </Field>
-        </div>
-      </Section>
-
-      <Section title={t("deliveryOrder.section.container")}>
-        <div className="grid grid-cols-2 gap-3">
-          <Field label={t("deliveryOrder.field.containerNumberWithPattern")}>
+          <Field label={t("deliveryOrder.field.eta")}>
             <Input
-              value={containerNumber}
-              onChange={(e) => setContainerNumber(e.target.value)}
-              disabled={isPending}
-              placeholder={t("deliveryOrder.containerPlaceholder")}
-              className={containerInvalid ? "border-destructive" : undefined}
-            />
-            {containerInvalid && (
-              <span className="text-xs text-destructive">
-                {t("deliveryOrder.containerInvalidShort")}
-              </span>
-            )}
-          </Field>
-          <Field label={t("deliveryOrder.field.containerSize")}>
-            <select
-              value={containerSize}
-              onChange={(e) =>
-                setContainerSize(e.target.value as ContainerSize | "")
-              }
-              disabled={isPending}
-              className="rounded-md border bg-background px-3 py-2 text-sm"
-            >
-              <option value="">{t("common.none")}</option>
-              {SIZES.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
-          </Field>
-          <Field label={t("deliveryOrder.field.containerType")}>
-            <Input
-              value={containerType}
-              onChange={(e) => setContainerType(e.target.value)}
-              disabled={isPending}
-              placeholder={t("deliveryOrder.containerTypePlaceholder")}
-            />
-          </Field>
-          <Field label={t("deliveryOrder.field.chassisNumber")}>
-            <Input
-              value={chassisNumber}
-              onChange={(e) => setChassisNumber(e.target.value)}
+              type="datetime-local"
+              value={eta}
+              onChange={(e) => setEta(e.target.value)}
               disabled={isPending}
             />
           </Field>
@@ -306,87 +310,26 @@ function Body({ modal }: { modal: Modal }) {
               disabled={isPending}
             />
           </Field>
-          <Field label={t("deliveryOrder.field.deliveryLocation")}>
-            <SearchableSelect<LocationEntity>
-              value={deliveryLocationId}
-              onSelect={(id) => setDeliveryLocationId(id)}
-              fetchList={(q) =>
-                fetchLocations({ q, size: SEARCH_SIZE }).then((r) => r.items)
-              }
-              queryKeyBase={["location", "search"]}
-              getLabel={(l) => `${l.name} (${l.kind})`}
-              placeholder={t("common.none")}
-              emptyLabel={t("common.noSelection")}
-              disabled={isPending}
-            />
-          </Field>
-          <Field label={t("deliveryOrder.field.returnLocation")}>
-            <SearchableSelect<LocationEntity>
-              value={returnLocationId}
-              onSelect={(id) => setReturnLocationId(id)}
-              fetchList={(q) =>
-                fetchLocations({ q, size: SEARCH_SIZE }).then((r) => r.items)
-              }
-              queryKeyBase={["location", "search"]}
-              getLabel={(l) => `${l.name} (${l.kind})`}
-              placeholder={t("common.none")}
-              emptyLabel={t("common.noSelection")}
-              disabled={isPending}
-            />
-          </Field>
         </div>
       </Section>
 
-      <Section title={t("deliveryOrder.section.schedule")}>
-        <div className="grid grid-cols-2 gap-3">
-          <Field label={t("deliveryOrder.field.eta")}>
-            <Input
-              type="datetime-local"
-              value={eta}
-              onChange={(e) => setEta(e.target.value)}
-              disabled={isPending}
-            />
-          </Field>
-          <Field label={t("deliveryOrder.field.pickupAppointmentLong")}>
-            <Input
-              type="datetime-local"
-              value={pickupAppointment}
-              onChange={(e) => setPickupAppointment(e.target.value)}
-              disabled={isPending}
-            />
-          </Field>
-          <Field label={t("deliveryOrder.field.deliveryAppointmentLong")}>
-            <Input
-              type="datetime-local"
-              value={deliveryAppointment}
-              onChange={(e) => setDeliveryAppointment(e.target.value)}
-              disabled={isPending}
-            />
-          </Field>
-          <Field label={t("deliveryOrder.field.returnAppointmentLong")}>
-            <Input
-              type="datetime-local"
-              value={returnAppointment}
-              onChange={(e) => setReturnAppointment(e.target.value)}
-              disabled={isPending}
-            />
-          </Field>
-          <Field label={t("deliveryOrder.field.demurrageLfd")}>
-            <Input
-              type="date"
-              value={demurrageLfd}
-              onChange={(e) => setDemurrageLfd(e.target.value)}
-              disabled={isPending}
-            />
-          </Field>
-          <Field label={t("deliveryOrder.field.detentionLfd")}>
-            <Input
-              type="date"
-              value={detentionLfd}
-              onChange={(e) => setDetentionLfd(e.target.value)}
-              disabled={isPending}
-            />
-          </Field>
+      <Section
+        title={`${t("container.section.title")} (${rowsWithValidation.length})`}
+      >
+        {rowsWithValidation.map((row, idx) => (
+          <ContainerRow
+            key={idx}
+            idx={idx}
+            row={row}
+            onChange={(patch) => updateRow(idx, patch)}
+            onRemove={rows.length > 1 ? () => removeRow(idx) : undefined}
+            disabled={isPending}
+          />
+        ))}
+        <div className="flex justify-end pt-2">
+          <Button variant="outline" size="sm" onClick={addRow} disabled={isPending}>
+            + {t("container.addRow")}
+          </Button>
         </div>
       </Section>
 
@@ -408,12 +351,168 @@ function Body({ modal }: { modal: Modal }) {
         </Button>
         <Button
           onClick={handleSave}
-          disabled={isPending || !customerId || containerInvalid}
+          disabled={isPending || !customerId || anyInvalid}
         >
           {isPending ? t("deliveryOrder.creating") : t("common.create")}
         </Button>
       </div>
     </>
+  );
+}
+
+function ContainerRow({
+  idx,
+  row,
+  onChange,
+  onRemove,
+  disabled,
+}: {
+  idx: number;
+  row: ContainerFormRow & { invalid: boolean };
+  onChange: (patch: Partial<ContainerFormRow>) => void;
+  onRemove?: () => void;
+  disabled?: boolean;
+}) {
+  const { t } = useTranslation();
+  return (
+    <div className="rounded-md border p-3">
+      <div className="mb-2 flex items-center justify-between">
+        <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          #{idx + 1}
+        </span>
+        {onRemove && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onRemove}
+            disabled={disabled}
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        )}
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <Field label={t("container.field.containerNumber")}>
+          <Input
+            value={row.containerNumber}
+            onChange={(e) => onChange({ containerNumber: e.target.value.toUpperCase() })}
+            disabled={disabled}
+            placeholder="ABCU1234567"
+            className={row.invalid ? "border-destructive" : undefined}
+          />
+          {row.invalid && (
+            <span className="text-xs text-destructive">
+              {t("deliveryOrder.containerInvalidShort")}
+            </span>
+          )}
+        </Field>
+        <Field label={t("container.field.sealNo")}>
+          <Input
+            value={row.sealNo}
+            onChange={(e) => onChange({ sealNo: e.target.value })}
+            disabled={disabled}
+          />
+        </Field>
+        <Field label={t("container.field.size")}>
+          <select
+            value={row.size}
+            onChange={(e) => onChange({ size: e.target.value as ContainerSize | "" })}
+            disabled={disabled}
+            className="rounded-md border bg-background px-3 py-2 text-sm"
+          >
+            <option value="">—</option>
+            {SIZES.map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
+        </Field>
+        <Field label={t("container.field.type")}>
+          <Input
+            value={row.type}
+            onChange={(e) => onChange({ type: e.target.value })}
+            disabled={disabled}
+            placeholder="DRY"
+          />
+        </Field>
+        <Field label={t("container.field.weightKg")}>
+          <Input
+            value={row.weightKg}
+            onChange={(e) => onChange({ weightKg: e.target.value })}
+            disabled={disabled}
+            type="number"
+            step="0.01"
+          />
+        </Field>
+        <Field label={t("container.field.chassisNumber")}>
+          <Input
+            value={row.chassisNumber}
+            onChange={(e) => onChange({ chassisNumber: e.target.value })}
+            disabled={disabled}
+          />
+        </Field>
+        <Field label={t("container.field.serviceType")}>
+          <select
+            value={row.serviceType}
+            onChange={(e) => onChange({ serviceType: e.target.value as ServiceType | "" })}
+            disabled={disabled}
+            className="rounded-md border bg-background px-3 py-2 text-sm"
+          >
+            <option value="">—</option>
+            {SERVICE_TYPES.map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
+        </Field>
+        <Field label={t("container.field.deliveryLocation")}>
+          <SearchableSelect<LocationEntity>
+            value={null}
+            onSelect={() => {
+              /* H-1: location 은 row 별로 받도록 추후 — 지금은 폼 유지 단순화 */
+            }}
+            fetchList={(q) =>
+              fetchLocations({ q, size: SEARCH_SIZE }).then((r) => r.items)
+            }
+            queryKeyBase={["location", "search", `do-row-${idx}`]}
+            getLabel={(l) => `${l.name} (${l.kind})`}
+            placeholder={t("common.none")}
+            emptyLabel={t("common.noSelection")}
+            disabled={disabled}
+          />
+        </Field>
+        <Field label={t("container.field.demurrageLfd")}>
+          <Input
+            type="date"
+            value={row.demurrageLfd}
+            onChange={(e) => onChange({ demurrageLfd: e.target.value })}
+            disabled={disabled}
+          />
+        </Field>
+        <Field label={t("container.field.detentionLfd")}>
+          <Input
+            type="date"
+            value={row.detentionLfd}
+            onChange={(e) => onChange({ detentionLfd: e.target.value })}
+            disabled={disabled}
+          />
+        </Field>
+        <Field label={t("container.field.pickupAppointment")}>
+          <Input
+            type="datetime-local"
+            value={row.pickupAppointment}
+            onChange={(e) => onChange({ pickupAppointment: e.target.value })}
+            disabled={disabled}
+          />
+        </Field>
+        <Field label={t("container.field.deliveryAppointment")}>
+          <Input
+            type="datetime-local"
+            value={row.deliveryAppointment}
+            onChange={(e) => onChange({ deliveryAppointment: e.target.value })}
+            disabled={disabled}
+          />
+        </Field>
+      </div>
+    </div>
   );
 }
 

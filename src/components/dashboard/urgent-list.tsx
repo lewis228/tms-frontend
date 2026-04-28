@@ -42,7 +42,7 @@ export default function UrgentList({
           >
             <StatusBadge status={row.do.status} />
             <span className="font-mono text-xs">
-              {row.do.containerNumber ?? t("dispatch.containerUnset")}
+              {row.container.containerNumber ?? row.do.blNumber ?? `#${row.do.id}`}
             </span>
             <span className="text-muted-foreground">
               {customerName(row.do.customerId)}

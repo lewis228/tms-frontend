@@ -1,27 +1,30 @@
-// Drawer 내용 — 섹션 분리 + 스크롤. 인라인 수정은 Phase 5+. 지금은 읽기 + Status Mover.
+// D/O Detail — 헤더 + 컨테이너 sub-table + leg timeline.
+//
+// H-1 이후: 컨테이너별 정보는 ContainerEntity 1:N 으로 분리. 컨테이너 row 를 클릭하면
+// URL ?container={id} 가 붙고 ContainerDrawer 가 열림 (delivery-order-drawer 의 형제).
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 
 import StatusBadge from "@/components/delivery-order/status-badge";
 import StatusMover from "@/components/delivery-order/status-mover";
 import LegTimeline from "@/components/delivery-order/leg-timeline";
+import ContainerSubTable from "@/components/container/container-sub-table";
 import { useCustomersData } from "@/hooks/queries/use-customers-data";
 import { useTerminalsData } from "@/hooks/queries/use-terminals-data";
 import { useVesselsData } from "@/hooks/queries/use-vessels-data";
-import { useLocationsData } from "@/hooks/queries/use-locations-data";
-import { formatDate, formatDateTime } from "@/lib/format";
-import type { DeliveryOrderEntity } from "@/types";
+import { formatDateTime } from "@/lib/format";
+import type { DeliveryOrderDetailEntity } from "@/types";
 
 export default function DeliveryOrderDetail({
   deliveryOrder,
 }: {
-  deliveryOrder: DeliveryOrderEntity;
+  deliveryOrder: DeliveryOrderDetailEntity;
 }) {
   const { t } = useTranslation();
-  // FK 라벨 lookup. 1페이지만 — 100건 이하 가정.
+  const [, setSearchParams] = useSearchParams();
   const { data: customersData } = useCustomersData(1);
   const { data: terminalsData } = useTerminalsData(1);
   const { data: vesselsData } = useVesselsData(1);
-  const { data: locationsData } = useLocationsData(1);
 
   const dash = t("common.none");
 
@@ -36,15 +39,17 @@ export default function DeliveryOrderDetail({
     ? (vesselsData?.items.find((v) => v.id === deliveryOrder.vesselId)?.name ??
       dash)
     : dash;
-  const deliveryLocationName = deliveryOrder.deliveryLocationId
-    ? (locationsData?.items.find(
-        (l) => l.id === deliveryOrder.deliveryLocationId,
-      )?.name ?? dash)
-    : dash;
-  const returnLocationName = deliveryOrder.returnLocationId
-    ? (locationsData?.items.find((l) => l.id === deliveryOrder.returnLocationId)
-        ?.name ?? dash)
-    : dash;
+
+  const handleOpenContainer = (containerId: number) => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.set("container", String(containerId));
+        return next;
+      },
+      { replace: true },
+    );
+  };
 
   return (
     <div className="flex flex-col gap-5 pt-4">
@@ -62,42 +67,24 @@ export default function DeliveryOrderDetail({
         <Field label={t("deliveryOrder.field.blNumber")} value={deliveryOrder.blNumber} />
         <Field label={t("deliveryOrder.field.booking")} value={deliveryOrder.bookingNumber} />
         <Field label={t("deliveryOrder.field.reference")} value={deliveryOrder.reference} />
-        <Field
-          label={t("deliveryOrder.field.container")}
-          value={deliveryOrder.containerNumber}
-          mono
-        />
-        <Field label={t("deliveryOrder.field.containerSizeLong")} value={deliveryOrder.containerSize} />
-        <Field label={t("deliveryOrder.field.containerTypeLong")} value={deliveryOrder.containerType} />
-        <Field label={t("deliveryOrder.field.chassisNumber")} value={deliveryOrder.chassisNumber} />
         <Field label={t("deliveryOrder.field.customer")} value={customerName} />
-      </Section>
-
-      <Section title={t("deliveryOrder.section.schedule")}>
-        <Field label={t("deliveryOrder.field.eta")} value={fmt(deliveryOrder.eta)} />
-        <Field label={t("deliveryOrder.field.pickupAppointmentLong")} value={fmt(deliveryOrder.pickupAppointment)} />
-        <Field
-          label={t("deliveryOrder.field.deliveryAppointmentLong")}
-          value={fmt(deliveryOrder.deliveryAppointment)}
-        />
-        <Field label={t("deliveryOrder.field.returnAppointmentLong")} value={fmt(deliveryOrder.returnAppointment)} />
-        <Field label={t("deliveryOrder.field.demurrageLfd")} value={fmtDate(deliveryOrder.demurrageLfd)} />
-        <Field label={t("deliveryOrder.field.detentionLfd")} value={fmtDate(deliveryOrder.detentionLfd)} />
-        <Field label={t("deliveryOrder.field.emptyDate")} value={fmtDate(deliveryOrder.emptyDate)} />
-        <Field label={t("deliveryOrder.field.loadedDate")} value={fmtDate(deliveryOrder.loadedDate)} />
-      </Section>
-
-      <Section title={t("deliveryOrder.section.gatesCondition")}>
-        <GateRow label={t("deliveryOrder.gates.blReleased")} checked={deliveryOrder.blReleased} dash={dash} />
-        <GateRow label={t("deliveryOrder.gates.pierPassPaid")} checked={deliveryOrder.pierPassPaid} dash={dash} />
-        <GateRow label={t("deliveryOrder.gates.customsCleared")} checked={deliveryOrder.customsCleared} dash={dash} />
-      </Section>
-
-      <Section title={t("deliveryOrder.section.meta")}>
         <Field label={t("deliveryOrder.field.terminal")} value={terminalName} />
         <Field label={t("deliveryOrder.field.vessel")} value={vesselName} />
-        <Field label={t("deliveryOrder.field.deliveryLocation")} value={deliveryLocationName} />
-        <Field label={t("deliveryOrder.field.returnLocation")} value={returnLocationName} />
+        <Field label={t("deliveryOrder.field.eta")} value={fmt(deliveryOrder.eta)} />
+        <GateRow
+          label={t("deliveryOrder.gates.blReleased")}
+          checked={deliveryOrder.blReleased}
+          dash={dash}
+        />
+      </Section>
+
+      <Section
+        title={`${t("container.section.title")} (${deliveryOrder.containers.length})`}
+      >
+        <ContainerSubTable
+          containers={deliveryOrder.containers}
+          onOpenContainer={handleOpenContainer}
+        />
       </Section>
 
       <Section title={t("deliveryOrder.section.legTimeline")}>
@@ -169,9 +156,4 @@ function GateRow({
 function fmt(iso: string | null | undefined): string {
   if (!iso) return "";
   return formatDateTime(iso, iso);
-}
-
-function fmtDate(iso: string | null | undefined): string {
-  if (!iso) return "";
-  return formatDate(iso, iso);
 }

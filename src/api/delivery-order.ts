@@ -1,8 +1,12 @@
 // /api/v1/delivery-orders/* 매핑.
+//
+// H-1 이후: D/O detail 응답에 `containers: ContainerEntity[]` nested.
+// Create payload 에 containers 배열 동시 전달 가능.
 import api from "@/lib/axios";
 import { adaptCursorToPaged, type CursorResponse } from "@/lib/pagination";
+import type { ContainerCreateInnerPayload } from "@/api/container";
 import type {
-  ContainerSize,
+  DeliveryOrderDetailEntity,
   DeliveryOrderEntity,
   DeliveryStatus,
   PagedResponse,
@@ -15,30 +19,16 @@ export type DeliveryOrderCreatePayload = {
   blNumber?: string | null;
   bookingNumber?: string | null;
   reference?: string | null;
-  containerNumber?: string | null;
-  containerSize?: ContainerSize | null;
-  containerType?: string | null;
-  chassisNumber?: string | null;
   terminalId?: number | null;
   vesselId?: number | null;
-  deliveryLocationId?: number | null;
-  returnLocationId?: number | null;
   eta?: string | null;
-  pickupAppointment?: string | null;
-  deliveryAppointment?: string | null;
-  returnAppointment?: string | null;
-  demurrageLfd?: string | null;
-  detentionLfd?: string | null;
-  emptyDate?: string | null;
-  loadedDate?: string | null;
   blReleased?: boolean;
-  pierPassPaid?: boolean;
-  customsCleared?: boolean;
   internalNote?: string | null;
+  containers?: ContainerCreateInnerPayload[];
 };
 
 export type DeliveryOrderUpdatePayload = Partial<
-  Omit<DeliveryOrderCreatePayload, "direction" | "customerId">
+  Omit<DeliveryOrderCreatePayload, "direction" | "customerId" | "containers">
 >;
 
 export async function fetchDeliveryOrders(
@@ -53,15 +43,17 @@ export async function fetchDeliveryOrders(
 
 export async function fetchDeliveryOrder(
   id: number,
-): Promise<DeliveryOrderEntity> {
-  const { data } = await api.get<DeliveryOrderEntity>(`/delivery-orders/${id}`);
+): Promise<DeliveryOrderDetailEntity> {
+  const { data } = await api.get<DeliveryOrderDetailEntity>(
+    `/delivery-orders/${id}`,
+  );
   return data;
 }
 
 export async function createDeliveryOrder(
   payload: DeliveryOrderCreatePayload,
-): Promise<DeliveryOrderEntity> {
-  const { data } = await api.post<DeliveryOrderEntity>(
+): Promise<DeliveryOrderDetailEntity> {
+  const { data } = await api.post<DeliveryOrderDetailEntity>(
     "/delivery-orders",
     payload,
   );

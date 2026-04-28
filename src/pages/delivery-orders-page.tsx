@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 
+import ContainerDrawer from "@/components/container/container-drawer";
 import DeliveryOrderDrawer from "@/components/delivery-order/delivery-order-drawer";
 import DeliveryOrderList from "@/components/delivery-order/delivery-order-list";
 
@@ -12,6 +13,7 @@ export default function DeliveryOrdersPage() {
       </h1>
       <DeliveryOrderList />
       <DeliveryOrderDrawer />
+      <ContainerDrawer />
     </div>
   );
 }

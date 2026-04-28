@@ -52,7 +52,7 @@ export default function DeliveryOrderDrawer() {
         <SheetHeader>
           <SheetTitle className="font-sans">
             {data
-              ? `${t("deliveryOrder.drawer.title")} ${data.containerNumber ?? String(data.id).slice(0, 8)}`
+              ? `${t("deliveryOrder.drawer.title")} ${data.blNumber ?? `#${data.id}`}`
               : t("deliveryOrder.drawer.title")}
           </SheetTitle>
         </SheetHeader>

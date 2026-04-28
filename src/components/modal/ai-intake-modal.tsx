@@ -114,20 +114,18 @@ function ResultView({ result, close }: { result: AIIntakeResponse; close: () => 
   const openCreateWithPrefill = useOpenCreateDeliveryOrderModalWithPrefill();
   const conf = Math.round(result.confidence * 100);
   const fields = result.fields;
-  const rows: { key: string; label: string; value: string | null | undefined }[] = [
+  const containers = fields.containers ?? [];
+
+  const headerRows: { key: string; label: string; value: string | null | undefined }[] = [
     { key: "bl_number", label: t("aiIntake.fields.blNumber"), value: fields.bl_number },
     { key: "booking_number", label: t("aiIntake.fields.bookingNumber"), value: fields.booking_number },
     { key: "reference", label: t("aiIntake.fields.reference"), value: fields.reference },
-    { key: "container_number", label: t("aiIntake.fields.containerNumber"), value: fields.container_number },
-    { key: "container_size", label: t("aiIntake.fields.containerSize"), value: fields.container_size },
-    { key: "container_type", label: t("aiIntake.fields.containerType"), value: fields.container_type },
-    { key: "chassis_number", label: t("aiIntake.fields.chassisNumber"), value: fields.chassis_number },
+    { key: "customer_name", label: t("aiIntake.fields.customer"), value: fields.customer_name },
+    { key: "vessel_name", label: t("aiIntake.fields.vessel"), value: fields.vessel_name },
+    { key: "voyage_no", label: t("aiIntake.fields.voyage"), value: fields.voyage_no },
+    { key: "terminal_name", label: t("aiIntake.fields.terminal"), value: fields.terminal_name },
     { key: "eta", label: t("aiIntake.fields.eta"), value: fields.eta },
-    { key: "pickup_appointment", label: t("aiIntake.fields.pickup"), value: fields.pickup_appointment },
-    { key: "delivery_appointment", label: t("aiIntake.fields.delivery"), value: fields.delivery_appointment },
-    { key: "return_appointment", label: t("aiIntake.fields.return"), value: fields.return_appointment },
-    { key: "demurrage_lfd", label: t("aiIntake.fields.demurrageLfd"), value: fields.demurrage_lfd },
-    { key: "detention_lfd", label: t("aiIntake.fields.detentionLfd"), value: fields.detention_lfd },
+    { key: "direction", label: t("aiIntake.fields.direction"), value: fields.direction },
   ];
 
   const handleUse = () => {
@@ -146,7 +144,7 @@ function ResultView({ result, close }: { result: AIIntakeResponse; close: () => 
         </div>
         <table className="w-full text-xs">
           <tbody>
-            {rows.map((r) => (
+            {headerRows.map((r) => (
               <tr key={r.key} className="border-b last:border-0">
                 <td className="w-40 py-1 text-muted-foreground">{r.label}</td>
                 <td className="py-1 font-mono">{r.value || "—"}</td>
@@ -155,6 +153,46 @@ function ResultView({ result, close }: { result: AIIntakeResponse; close: () => 
           </tbody>
         </table>
       </div>
+
+      <div className="rounded-md border bg-muted/20 p-3">
+        <p className="mb-2 text-sm font-medium">
+          {t("aiIntake.containers")} ({containers.length})
+        </p>
+        {containers.length === 0 ? (
+          <p className="text-xs text-muted-foreground">
+            {t("aiIntake.noContainersExtracted")}
+          </p>
+        ) : (
+          <div className="flex flex-col gap-2">
+            {containers.map((c, idx) => (
+              <div
+                key={idx}
+                className="rounded border bg-background p-2 text-xs"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="font-mono font-medium">
+                    {c.container_number ?? "—"}
+                  </span>
+                  <span className="text-muted-foreground">
+                    {c.size ?? "—"} / {c.type ?? "DRY"}
+                  </span>
+                  {c.seal_no && (
+                    <span className="ml-auto font-mono text-muted-foreground">
+                      Seal {c.seal_no}
+                    </span>
+                  )}
+                </div>
+                {c.delivery_location_name && (
+                  <p className="mt-1 text-muted-foreground">
+                    → {c.delivery_location_name}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       <div className="flex justify-end">
         <Button onClick={handleUse}>{t("aiIntake.useResult")}</Button>
       </div>
