@@ -144,6 +144,18 @@ export const QUERY_KEYS = {
     list: (params: Record<string, unknown> = {}) =>
       ["street-turn", "list", params] as const,
     byId: (id: number) => ["street-turn", "byId", id] as const,
+    candidates: (limit: number) =>
+      ["street-turn", "candidates", limit] as const,
+  },
+  analytics: {
+    all: ["analytics"] as const,
+    marginTrend: (days: number) => ["analytics", "margin-trend", days] as const,
+    driverUtilization: (days: number) =>
+      ["analytics", "driver-utilization", days] as const,
+    containerTurnover: (days: number) =>
+      ["analytics", "container-turnover", days] as const,
+    streetTurnSavings: (days: number) =>
+      ["analytics", "street-turn-savings", days] as const,
   },
 };
 

@@ -29,6 +29,10 @@ type EventListener = (evt: ServerEvent) => void;
 
 const PING_INTERVAL_MS = 30_000;
 const CLOSE_EXPIRED = 4001;
+const CLOSE_INVALID = 4002;
+const CLOSE_NO_TEAM = 4003;
+// 재연결 안 할 close code: 인증 실패 / 팀 미해결 (무한 루프 방지)
+const FATAL_CLOSE_CODES = new Set([CLOSE_INVALID, CLOSE_NO_TEAM]);
 
 function wsUrlFor(teamId: string, token: string): string {
   const httpBase = API_BASE_URL.replace(/^http(s?):\/\//, "ws$1://");
@@ -166,6 +170,13 @@ class RealtimeWebSocket {
             }
             void this._open();
           })();
+          return;
+        }
+        // 인증 실패 / 팀 미해결 등 fatal — 재연결 안 함 (무한 루프 방지)
+        if (FATAL_CLOSE_CODES.has(event.code)) {
+          this.intentionalClose = true;
+          this.teamId = null;
+          this.retryAttempt = 0;
           return;
         }
         this._scheduleReconnect();

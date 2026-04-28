@@ -366,6 +366,8 @@ export type LocationEntity = {
 export type DriverCreatedResponse = DriverEntity & { tempPassword: string };
 
 // H-1: D/O 헤더 슬림화. 컨테이너 상세는 ContainerEntity 1:N 으로 분리.
+export type EtaStatus = "OVERDUE" | "URGENT" | "OK" | "NONE";
+
 export type DeliveryOrderEntity = {
   id: number;
   teamId: number;
@@ -383,6 +385,11 @@ export type DeliveryOrderEntity = {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  // H-10: list 응답에만 채워짐
+  containerCount?: number | null;
+  containerCompletedCount?: number | null;
+  marginPreview?: string | null;
+  etaStatus?: EtaStatus | null;
 };
 
 // D/O detail 응답 — containers nested 포함 (백엔드 DeliveryOrderDetailResponseSchema).

@@ -9,6 +9,10 @@ import KpiCard from "@/components/dashboard/kpi-card";
 import StatusDonut from "@/components/dashboard/status-donut";
 import UrgentList from "@/components/dashboard/urgent-list";
 import { pickUrgent } from "@/components/dashboard/urgent";
+import MarginTrendChart from "@/components/dashboard/margin-trend-chart";
+import DriverUtilizationList from "@/components/dashboard/driver-utilization-list";
+import ContainerTurnoverChart from "@/components/dashboard/container-turnover-chart";
+import StreetTurnSavingsCard from "@/components/dashboard/street-turn-savings-card";
 import Loader from "@/components/loader";
 import Fallback from "@/components/fallback";
 import { fetchContainers } from "@/api/container";
@@ -153,6 +157,21 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <MarginTrendChart days={30} />
+        <ContainerTurnoverChart days={30} />
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <StreetTurnSavingsCard days={30} />
+        <DriverUtilizationList days={7} />
+        <KpiCard
+          label={t("dashboard.kpi.activeDrivers")}
+          value={`${stats.activeDrivers} / ${stats.totalDrivers}`}
+          hint={t("dashboard.kpi.activeDriversHint")}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <section className="rounded-md border bg-background p-4">
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             {t("dashboard.section.statusDistribution")}
@@ -162,11 +181,6 @@ export default function DashboardPage() {
 
         <section className="flex flex-col gap-3">
           <UrgentList rows={urgent} customers={customersData?.items ?? []} />
-          <KpiCard
-            label={t("dashboard.kpi.activeDrivers")}
-            value={`${stats.activeDrivers} / ${stats.totalDrivers}`}
-            hint={t("dashboard.kpi.activeDriversHint")}
-          />
         </section>
       </div>
     </div>

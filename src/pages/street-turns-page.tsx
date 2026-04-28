@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 
 import StreetTurnList from "@/components/street-turn/street-turn-list";
+import StreetTurnCandidatesCard from "@/components/street-turn/street-turn-candidates-card";
 
 export default function StreetTurnsPage() {
   const { t } = useTranslation();
@@ -12,6 +13,7 @@ export default function StreetTurnsPage() {
           {t("streetTurn.pageHint")}
         </p>
       </div>
+      <StreetTurnCandidatesCard />
       <StreetTurnList />
     </div>
   );

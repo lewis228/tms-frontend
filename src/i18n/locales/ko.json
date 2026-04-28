@@ -24,6 +24,7 @@
     "updatedAt": "수정일",
     "actions": "동작",
     "noData": "데이터가 없습니다.",
+    "daysShort": "일",
     "page": "페이지",
     "totalCount": "전체 {{count}}건",
     "selectPlaceholder": "선택하세요",
@@ -511,7 +512,9 @@
       "booking": "Booking",
       "pickup": "픽업",
       "delivery": "배송",
-      "eta": "ETA"
+      "eta": "ETA",
+      "progress": "진척",
+      "margin": "마진"
     },
     "drawer": {
       "title": "D/O"
@@ -644,6 +647,14 @@
     "toast": {
       "approved": "스트릿 턴이 승인되었습니다.",
       "rejected": "스트릿 턴이 거절되었습니다."
+    },
+    "candidates": {
+      "title": "추천 후보",
+      "hint": "매칭 가능한 페어 {{total}}건 · 건당 절감 {{saving}}",
+      "estimatedTotal": "예상 절감 {{amount}}",
+      "empty": "현재 매칭 가능한 후보가 없습니다.",
+      "requestButton": "요청 생성",
+      "createdToast": "Street Turn 요청이 생성되었습니다."
     }
   },
   "chargeCode": {
@@ -951,7 +962,33 @@
       "tooltipUnit": "{{count}} 건"
     },
     "section": {
-      "statusDistribution": "상태별 D/O 분포"
+      "statusDistribution": "상태별 D/O 분포",
+      "marginTrend": "마진 트렌드",
+      "marginTrendHint": "최근 {{days}}일 매출 / 지급 / 마진",
+      "driverUtilization": "기사 가동률",
+      "driverUtilizationHint": "최근 {{days}}일 기준 (완료 / 전체)",
+      "containerTurnover": "컨테이너 회전",
+      "containerTurnoverHint": "최근 {{days}}일 GATE_OUT / RETURNED / STREET_TURNED",
+      "streetTurnSavings": "Street Turn 절감액",
+      "streetTurnSavingsHint": "최근 {{days}}일 누적"
+    },
+    "marginTrend": {
+      "revenue": "매출",
+      "payouts": "지급",
+      "margin": "마진",
+      "totalMargin": "누적 마진"
+    },
+    "containerTurnover": {
+      "picked": "픽업",
+      "returned": "반납",
+      "streetTurned": "Street Turn",
+      "avgDwell": "평균 보유"
+    },
+    "streetTurnSavings": {
+      "perTurn": "건당 {{amount}}",
+      "approved": "승인",
+      "requested": "요청",
+      "rejected": "거절"
     },
     "kpi": {
       "inProgress": "진행 중 D/O",

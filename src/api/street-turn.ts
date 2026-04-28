@@ -83,3 +83,31 @@ export async function cancelStreetTurn(id: number): Promise<StreetTurnEntity> {
 export async function deleteStreetTurn(id: number): Promise<void> {
   await api.delete(`/street-turns/${id}`);
 }
+
+// H-11 추천 후보
+export type StreetTurnCandidate = {
+  importOrderId: number;
+  exportOrderId: number;
+  containerId: number | null;
+  containerNumber: string | null;
+  customerId: number;
+  containerSize: string | null;
+  score: number;
+  estimatedSaving: string;
+};
+
+export type StreetTurnCandidatesResponse = {
+  candidates: StreetTurnCandidate[];
+  total: number;
+  savingPerTurn: string;
+};
+
+export async function fetchStreetTurnCandidates(
+  limit = 20,
+): Promise<StreetTurnCandidatesResponse> {
+  const { data } = await api.get<StreetTurnCandidatesResponse>(
+    "/street-turns/candidates",
+    { params: { limit } },
+  );
+  return data;
+}

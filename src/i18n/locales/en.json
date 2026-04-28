@@ -24,6 +24,7 @@
     "updatedAt": "Updated",
     "actions": "Actions",
     "noData": "No data.",
+    "daysShort": "d",
     "page": "page",
     "totalCount": "{{count}} total",
     "selectPlaceholder": "Select...",
@@ -511,7 +512,9 @@
       "booking": "Booking",
       "pickup": "Pickup",
       "delivery": "Delivery",
-      "eta": "ETA"
+      "eta": "ETA",
+      "progress": "Progress",
+      "margin": "Margin"
     },
     "drawer": {
       "title": "D/O"
@@ -642,6 +645,14 @@
     "toast": {
       "approved": "Street turn approved.",
       "rejected": "Street turn rejected."
+    },
+    "candidates": {
+      "title": "Suggested matches",
+      "hint": "{{total}} pairs available · saving {{saving}} per turn",
+      "estimatedTotal": "Est. total saving {{amount}}",
+      "empty": "No matchable candidates right now.",
+      "requestButton": "Request",
+      "createdToast": "Street turn request created."
     }
   },
   "chargeCode": {
@@ -949,7 +960,33 @@
       "tooltipUnit": "{{count}}"
     },
     "section": {
-      "statusDistribution": "D/O by status"
+      "statusDistribution": "D/O by status",
+      "marginTrend": "Margin trend",
+      "marginTrendHint": "Last {{days}} days revenue / payouts / margin",
+      "driverUtilization": "Driver utilization",
+      "driverUtilizationHint": "Last {{days}} days (completed / total)",
+      "containerTurnover": "Container turnover",
+      "containerTurnoverHint": "Last {{days}} days GATE_OUT / RETURNED / STREET_TURNED",
+      "streetTurnSavings": "Street Turn savings",
+      "streetTurnSavingsHint": "Last {{days}} days cumulative"
+    },
+    "marginTrend": {
+      "revenue": "Revenue",
+      "payouts": "Payouts",
+      "margin": "Margin",
+      "totalMargin": "Total margin"
+    },
+    "containerTurnover": {
+      "picked": "Picked",
+      "returned": "Returned",
+      "streetTurned": "Street Turn",
+      "avgDwell": "Avg dwell"
+    },
+    "streetTurnSavings": {
+      "perTurn": "{{amount}} / turn",
+      "approved": "Approved",
+      "requested": "Requested",
+      "rejected": "Rejected"
     },
     "kpi": {
       "inProgress": "Active D/O",

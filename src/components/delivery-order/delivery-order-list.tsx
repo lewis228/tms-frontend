@@ -25,8 +25,8 @@ import { useDeliveryOrdersData } from "@/hooks/queries/use-delivery-orders-data"
 import { useOpenCreateDeliveryOrderModal } from "@/store/delivery-order-create-modal";
 import { useOpenAIIntakeModal } from "@/store/ai-intake-modal";
 import { STATUS_ORDER } from "@/lib/delivery-order";
-import { formatDateTime } from "@/lib/format";
-import type { DeliveryOrderEntity, DeliveryStatus } from "@/types";
+import { formatAmount, formatDateTime } from "@/lib/format";
+import type { DeliveryOrderEntity, DeliveryStatus, EtaStatus } from "@/types";
 
 const STATUS_FILTER_OPTIONS: ("ALL" | DeliveryStatus)[] = [
   "ALL",
@@ -124,8 +124,9 @@ export default function DeliveryOrderList() {
               <TableHead>{t("deliveryOrder.table.status")}</TableHead>
               <TableHead>{t("deliveryOrder.table.direction")}</TableHead>
               <TableHead>{t("deliveryOrder.table.bl")}</TableHead>
-              <TableHead>{t("deliveryOrder.table.booking")}</TableHead>
               <TableHead>{t("deliveryOrder.table.customer")}</TableHead>
+              <TableHead className="w-32">{t("deliveryOrder.table.progress")}</TableHead>
+              <TableHead className="text-right">{t("deliveryOrder.table.margin")}</TableHead>
               <TableHead>{t("deliveryOrder.table.eta")}</TableHead>
               <TableHead className="w-16 text-right"></TableHead>
             </TableRow>
@@ -134,7 +135,7 @@ export default function DeliveryOrderList() {
             {filtered.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={7}
+                  colSpan={8}
                   className="text-center text-muted-foreground"
                 >
                   {t("common.noData")}
@@ -154,14 +155,20 @@ export default function DeliveryOrderList() {
                     {d.direction}
                   </TableCell>
                   <TableCell>{d.blNumber ?? t("common.none")}</TableCell>
-                  <TableCell className="font-mono text-xs">
-                    {d.bookingNumber ?? t("common.none")}
-                  </TableCell>
                   <TableCell>
                     {customerNameById.get(d.customerId) ?? t("common.none")}
                   </TableCell>
                   <TableCell>
-                    {d.eta ? formatDateTime(d.eta) : t("common.none")}
+                    <ContainerProgress
+                      total={d.containerCount ?? null}
+                      done={d.containerCompletedCount ?? null}
+                    />
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <MarginCell value={d.marginPreview ?? null} />
+                  </TableCell>
+                  <TableCell>
+                    <EtaCell eta={d.eta} status={d.etaStatus ?? null} />
                   </TableCell>
                   <TableCell className="text-right">
                     <Link
@@ -203,6 +210,66 @@ export default function DeliveryOrderList() {
           </Button>
         </div>
       </div>
+    </div>
+  );
+}
+
+function ContainerProgress({
+  total,
+  done,
+}: {
+  total: number | null;
+  done: number | null;
+}) {
+  if (total === null || total === undefined) {
+    return <span className="text-xs text-muted-foreground">—</span>;
+  }
+  const completed = done ?? 0;
+  const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+  const tone =
+    pct === 100 ? "bg-emerald-500" : pct >= 50 ? "bg-blue-500" : "bg-amber-500";
+  return (
+    <div className="flex items-center gap-2">
+      <div className="h-1.5 w-16 overflow-hidden rounded bg-muted">
+        <div className={`h-full ${tone}`} style={{ width: `${pct}%` }} />
+      </div>
+      <span className="font-mono text-xs">{completed}/{total}</span>
+    </div>
+  );
+}
+
+function MarginCell({ value }: { value: string | null }) {
+  if (value === null || value === undefined) {
+    return <span className="text-xs text-muted-foreground">—</span>;
+  }
+  const n = Number(value);
+  const tone =
+    n > 0 ? "text-emerald-700" : n < 0 ? "text-red-700" : "text-muted-foreground";
+  return <span className={`font-mono text-xs ${tone}`}>{formatAmount(n)}</span>;
+}
+
+function EtaCell({
+  eta,
+  status,
+}: {
+  eta: string | null;
+  status: EtaStatus | null;
+}) {
+  if (!eta) return <span className="text-xs text-muted-foreground">—</span>;
+  const tone =
+    status === "OVERDUE"
+      ? "bg-red-100 text-red-700"
+      : status === "URGENT"
+        ? "bg-amber-100 text-amber-800"
+        : "bg-muted text-muted-foreground";
+  return (
+    <div className="flex items-center gap-2">
+      <span className="text-xs">{formatDateTime(eta)}</span>
+      {status && status !== "OK" && status !== "NONE" && (
+        <span className={`rounded px-1.5 py-0.5 text-[10px] ${tone}`}>
+          {status}
+        </span>
+      )}
     </div>
   );
 }
