@@ -1,3 +1,5 @@
+// ⚠️ DEPRECATED (Phase v3): D/O 단위 지도. v3 는 dispatch-map-view-v3 (컨테이너 work_state 색별 핀).
+//
 // Dispatch Map — react-leaflet + OSM tile.
 //
 // 토글:

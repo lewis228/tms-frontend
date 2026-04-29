@@ -68,8 +68,110 @@ export default function SettingsTeamPage() {
 
       <TeamInfoSection team={team} />
       <DisplaySettingsSection />
+      <DisplayLabelsV3Section team={team} />
       <DangerZoneSection team={team} />
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// v3 Display Labels — distance unit / currency labels / distance provider
+// (단위 무관 정책: 숫자 환산 X, 표시 라벨/심볼만 회사 설정)
+// ---------------------------------------------------------------------------
+function DisplayLabelsV3Section({ team }: { team: TeamEntity }) {
+  const qc = useQueryClient();
+  const [distanceUnitLabel, setDistanceUnitLabel] = useState(
+    team.distanceUnitLabel ?? "km",
+  );
+  const [currencyLabel, setCurrencyLabel] = useState(team.currencyLabel ?? "");
+  const [currencySymbol, setCurrencySymbol] = useState(
+    team.currencySymbol ?? "",
+  );
+  const [distanceProvider, setDistanceProvider] = useState(
+    team.distanceProvider ?? "MANUAL",
+  );
+
+  const isDirty =
+    distanceUnitLabel !== (team.distanceUnitLabel ?? "km") ||
+    currencyLabel !== (team.currencyLabel ?? "") ||
+    currencySymbol !== (team.currencySymbol ?? "") ||
+    distanceProvider !== (team.distanceProvider ?? "MANUAL");
+
+  const { mutate: save, isPending } = useMutation({
+    mutationFn: (payload: Partial<TeamWritePayload>) =>
+      updateTeam(team.id, payload),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: QUERY_KEYS.team.byId(team.id) });
+      toast.success("저장됨", { position: "top-center" });
+    },
+    onError: (err) =>
+      toast.error(generateErrorMessage(err), { position: "top-center" }),
+  });
+
+  return (
+    <Section
+      title="v3 표시 라벨 / Distance Provider"
+      description="DB 는 단위 무관 Decimal. 라벨/심볼만 회사 설정으로 표시 시점에 붙음 (환산 X)."
+      footer={
+        <>
+          <CancelButton
+            onClick={() => {
+              setDistanceUnitLabel(team.distanceUnitLabel ?? "km");
+              setCurrencyLabel(team.currencyLabel ?? "");
+              setCurrencySymbol(team.currencySymbol ?? "");
+              setDistanceProvider(team.distanceProvider ?? "MANUAL");
+            }}
+            disabled={!isDirty || isPending}
+          />
+          <SaveButton
+            onClick={() =>
+              save({
+                distanceUnitLabel: distanceUnitLabel || null,
+                currencyLabel: currencyLabel || null,
+                currencySymbol: currencySymbol || null,
+                distanceProvider: distanceProvider || null,
+              })
+            }
+            disabled={!isDirty || isPending}
+          />
+        </>
+      }
+    >
+      <FieldGrid>
+        <Field label="Distance Unit Label">
+          <Input
+            value={distanceUnitLabel}
+            onChange={(e) => setDistanceUnitLabel(e.target.value)}
+            placeholder="km / mi / 마일"
+          />
+        </Field>
+        <Field label="Currency Label">
+          <Input
+            value={currencyLabel}
+            onChange={(e) => setCurrencyLabel(e.target.value)}
+            placeholder="KRW / USD"
+          />
+        </Field>
+        <Field label="Currency Symbol">
+          <Input
+            value={currencySymbol}
+            onChange={(e) => setCurrencySymbol(e.target.value)}
+            placeholder="₩ / $"
+          />
+        </Field>
+        <Field label="Distance Provider">
+          <select
+            value={distanceProvider}
+            onChange={(e) => setDistanceProvider(e.target.value)}
+            className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+          >
+            <option value="MANUAL">MANUAL (haversine)</option>
+            <option value="OSRM">OSRM</option>
+            <option value="GOOGLE">GOOGLE</option>
+          </select>
+        </Field>
+      </FieldGrid>
+    </Section>
   );
 }
 

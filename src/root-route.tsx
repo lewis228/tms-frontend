@@ -56,12 +56,16 @@ const MasterTrucksPage = lazy(() => import("@/pages/master-trucks-page"));
 const MasterChassisPage = lazy(() => import("@/pages/master-chassis-page"));
 const MasterEquipmentPoolsPage = lazy(() => import("@/pages/master-equipment-pools-page"));
 const MasterChargeCodesPage = lazy(() => import("@/pages/master-charge-codes-page"));
+const MasterRateTariffsPage = lazy(() => import("@/pages/master-rate-tariffs-page"));
+const MasterRateQuotesPage = lazy(() => import("@/pages/master-rate-quotes-page"));
+const MasterDistanceMatrixPage = lazy(() => import("@/pages/master-distance-matrix-page"));
 const MasterRateCardsPage = lazy(() => import("@/pages/master-rate-cards-page"));
 const DeliveryOrdersPage = lazy(() => import("@/pages/delivery-orders-page"));
 const DeliveryOrderDetailPage = lazy(() => import("@/pages/delivery-order-detail-page"));
 const StreetTurnsPage = lazy(() => import("@/pages/street-turns-page"));
 const OnboardingPage = lazy(() => import("@/pages/onboarding-page"));
 const DispatchPage = lazy(() => import("@/pages/dispatch-page"));
+const ContainerDetailPage = lazy(() => import("@/pages/container-detail-page"));
 const DriverSchedulePage = lazy(() => import("@/pages/driver-schedule-page"));
 const AccountingPage = lazy(() => import("@/pages/accounting-page"));
 const AccountingRatesPage = lazy(
@@ -145,6 +149,10 @@ export default function RootRoute() {
                 path="delivery-orders/:id"
                 element={<DeliveryOrderDetailPage />}
               />
+              <Route
+                path="containers/:id"
+                element={<ContainerDetailPage />}
+              />
               <Route path="street-turns" element={<StreetTurnsPage />} />
             </Route>
 
@@ -166,6 +174,9 @@ export default function RootRoute() {
             <Route element={<ProtectedRoute require="ADMIN" />}>
               <Route path="master/charge-codes" element={<MasterChargeCodesPage />} />
               <Route path="master/rate-cards" element={<MasterRateCardsPage />} />
+              <Route path="master/rate-tariffs" element={<MasterRateTariffsPage />} />
+              <Route path="master/rate-quotes" element={<MasterRateQuotesPage />} />
+              <Route path="master/distance-matrix" element={<MasterDistanceMatrixPage />} />
             </Route>
 
             <Route element={<ProtectedRoute require="SUPER_ADMIN" />}>

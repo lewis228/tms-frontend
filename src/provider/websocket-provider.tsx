@@ -63,9 +63,62 @@ export default function WebSocketProvider({
         "settlement.adjusted",
         "settlement.approved",
         "settlement.unapproved",
+        // v3: 컨테이너 WAITING_PLAN 진입 시 디스패처 inbox 알림.
+        "container.waiting_plan",
       ]);
       if (inboxTypes.has(evt.type)) {
         qc.invalidateQueries({ queryKey: QUERY_KEYS.notification.all });
+      }
+
+      // ── v3 Container-First 이벤트 invalidation ──
+      const containerIdEvt = idFrom("containerId");
+      if (
+        evt.type.startsWith("container_stop.") ||
+        evt.type === "container.state_changed"
+      ) {
+        if (containerIdEvt) {
+          qc.invalidateQueries({
+            queryKey: QUERY_KEYS.containerV3.stops(containerIdEvt),
+          });
+          qc.invalidateQueries({
+            queryKey: QUERY_KEYS.containerV3.full(containerIdEvt),
+          });
+        }
+        qc.invalidateQueries({ queryKey: QUERY_KEYS.containerV3.all });
+      }
+      if (evt.type.startsWith("leg_segment.")) {
+        if (legId) {
+          qc.invalidateQueries({
+            queryKey: QUERY_KEYS.legSegment.byLeg(legId),
+          });
+        }
+        qc.invalidateQueries({ queryKey: QUERY_KEYS.containerV3.all });
+      }
+      if (evt.type === "leg_rate.updated") {
+        if (legId) {
+          qc.invalidateQueries({
+            queryKey: QUERY_KEYS.legRate.byLeg(legId),
+          });
+        }
+        qc.invalidateQueries({ queryKey: QUERY_KEYS.containerV3.all });
+      }
+      if (evt.type.startsWith("leg_charge.")) {
+        if (legId) {
+          qc.invalidateQueries({
+            queryKey: QUERY_KEYS.legCharge.byLeg(legId),
+          });
+        }
+        qc.invalidateQueries({ queryKey: QUERY_KEYS.legCharge.all });
+        qc.invalidateQueries({ queryKey: QUERY_KEYS.containerV3.all });
+      }
+      if (
+        evt.type.startsWith("rate_quote.") ||
+        evt.type.startsWith("rate_tariff.") ||
+        evt.type.startsWith("distance_matrix.")
+      ) {
+        qc.invalidateQueries({ queryKey: QUERY_KEYS.rateQuote.all });
+        qc.invalidateQueries({ queryKey: QUERY_KEYS.rateTariff.all });
+        qc.invalidateQueries({ queryKey: QUERY_KEYS.distanceMatrix.all });
       }
 
       switch (evt.type) {

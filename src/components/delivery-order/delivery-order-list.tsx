@@ -3,9 +3,11 @@
 // - 상태 필터 (전체/PLANNING/.../COMPLETED)
 // - 행 클릭 → URL ?do=:id (Drawer 가 open)
 // - 새 D/O 버튼 → 풀스크린 모달
+// - v3 expand row: ▶ 클릭 시 그 D/O 의 컨테이너 인라인 표시
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useSearchParams } from "react-router-dom";
+import { ChevronDown, ChevronRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +22,7 @@ import {
 import Loader from "@/components/loader";
 import Fallback from "@/components/fallback";
 import StatusBadge from "@/components/delivery-order/status-badge";
+import DOContainersInline from "@/components/delivery-order/do-containers-inline";
 import { useCustomersData } from "@/hooks/queries/use-customers-data";
 import { useDeliveryOrdersData } from "@/hooks/queries/use-delivery-orders-data";
 import { useOpenCreateDeliveryOrderModal } from "@/store/delivery-order-create-modal";
@@ -43,6 +46,16 @@ export default function DeliveryOrderList() {
   );
   const [searchParams, setSearchParams] = useSearchParams();
   const activeId = searchParams.get("do");
+  const [expanded, setExpanded] = useState<Set<number>>(new Set());
+
+  const toggleExpand = (id: number) => {
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
 
   useEffect(() => {
     const timer = setTimeout(
@@ -121,6 +134,7 @@ export default function DeliveryOrderList() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-8" />
               <TableHead>{t("deliveryOrder.table.status")}</TableHead>
               <TableHead>{t("deliveryOrder.table.direction")}</TableHead>
               <TableHead>{t("deliveryOrder.table.bl")}</TableHead>
@@ -135,52 +149,82 @@ export default function DeliveryOrderList() {
             {filtered.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={8}
+                  colSpan={9}
                   className="text-center text-muted-foreground"
                 >
                   {t("common.noData")}
                 </TableCell>
               </TableRow>
             ) : (
-              filtered.map((d) => (
-                <TableRow
-                  key={d.id}
-                  onClick={() => handleRowClick(d.id)}
-                  className={`cursor-pointer ${activeId === String(d.id) ? "bg-accent/40" : ""}`}
-                >
-                  <TableCell>
-                    <StatusBadge status={d.status} />
-                  </TableCell>
-                  <TableCell className="font-mono text-xs">
-                    {d.direction}
-                  </TableCell>
-                  <TableCell>{d.blNumber ?? t("common.none")}</TableCell>
-                  <TableCell>
-                    {customerNameById.get(d.customerId) ?? t("common.none")}
-                  </TableCell>
-                  <TableCell>
-                    <ContainerProgress
-                      total={d.containerCount ?? null}
-                      done={d.containerCompletedCount ?? null}
-                    />
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <MarginCell value={d.marginPreview ?? null} />
-                  </TableCell>
-                  <TableCell>
-                    <EtaCell eta={d.eta} status={d.etaStatus ?? null} />
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <Link
-                      to={`${d.id}`}
-                      onClick={(e) => e.stopPropagation()}
-                      className="text-xs text-muted-foreground hover:text-foreground hover:underline"
+              filtered.map((d) => {
+                const isOpen = expanded.has(d.id);
+                return (
+                  <>
+                    <TableRow
+                      key={d.id}
+                      onClick={() => handleRowClick(d.id)}
+                      className={`cursor-pointer ${activeId === String(d.id) ? "bg-accent/40" : ""}`}
                     >
-                      {t("deliveryOrder.viewDetail")}
-                    </Link>
-                  </TableCell>
-                </TableRow>
-              ))
+                      <TableCell className="w-8">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleExpand(d.id);
+                          }}
+                          className="p-1 text-muted-foreground hover:text-foreground"
+                          aria-label={isOpen ? "collapse" : "expand"}
+                        >
+                          {isOpen ? (
+                            <ChevronDown className="size-4" />
+                          ) : (
+                            <ChevronRight className="size-4" />
+                          )}
+                        </button>
+                      </TableCell>
+                      <TableCell>
+                        <StatusBadge status={d.status} />
+                      </TableCell>
+                      <TableCell className="font-mono text-xs">
+                        {d.direction}
+                      </TableCell>
+                      <TableCell>{d.blNumber ?? t("common.none")}</TableCell>
+                      <TableCell>
+                        {customerNameById.get(d.customerId) ?? t("common.none")}
+                      </TableCell>
+                      <TableCell>
+                        <ContainerProgress
+                          total={d.containerCount ?? null}
+                          done={d.containerCompletedCount ?? null}
+                        />
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <MarginCell value={d.marginPreview ?? null} />
+                      </TableCell>
+                      <TableCell>
+                        <EtaCell eta={d.eta} status={d.etaStatus ?? null} />
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Link
+                          to={`${d.id}`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="text-xs text-muted-foreground hover:text-foreground hover:underline"
+                        >
+                          {t("deliveryOrder.viewDetail")}
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                    {isOpen && (
+                      <TableRow key={`${d.id}-containers`} className="bg-muted/30 hover:bg-muted/30">
+                        <TableCell />
+                        <TableCell colSpan={8} className="p-0">
+                          <DOContainersInline deliveryOrderId={d.id} />
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </>
+                );
+              })
             )}
           </TableBody>
         </Table>

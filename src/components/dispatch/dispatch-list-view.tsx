@@ -1,3 +1,6 @@
+// ⚠️ DEPRECATED (Phase v3): D/O 단위 dispatch list. 신규 작업은 dispatch-list-view-v3 사용 (컨테이너 단위).
+// 본 컴포넌트는 운영 트랜지션 기간 동안 보조 뷰로 유지.
+//
 // Dispatch 운영 list — D/O 마스터 list 와 유사하지만 driver/leg 정보 인라인 표시.
 // 행 클릭 → URL ?do=:id (Drawer 가 open).
 import { useEffect, useMemo, useState } from "react";

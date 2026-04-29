@@ -1,3 +1,5 @@
+// ⚠️ DEPRECATED (Phase v3): D/O 단위 타임라인. v3 는 dispatch-timeline-view-v3 (컨테이너 단위 leg 막대).
+//
 // Dispatch Timeline — 오늘 ±3일 (7일) 가로 시간축, 각 D/O 가 1행.
 //
 // 점:

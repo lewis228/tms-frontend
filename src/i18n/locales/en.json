@@ -903,10 +903,14 @@
     "title": "Dispatch",
     "workspace": "Dispatch Workspace",
     "view": {
-      "list": "List",
-      "board": "Board",
-      "timeline": "Timeline",
-      "map": "Map",
+      "containers": "Containers",
+      "container-board": "Cont. Board",
+      "container-timeline": "Cont. Timeline",
+      "container-map": "Cont. Map",
+      "list": "D/O List",
+      "board": "D/O Board",
+      "timeline": "D/O Timeline",
+      "map": "D/O Map",
       "gantt": "Gantt"
     },
     "board": {
@@ -1189,6 +1193,9 @@
     "locations": "Locations",
     "chargeCodes": "Charge Codes",
     "rateCards": "Rate Cards",
+    "rateTariffs": "Rate Tariffs",
+    "rateQuotes": "Rate Quotes",
+    "distanceMatrix": "Distance Matrix",
     "system": "System",
     "teams": "Teams",
     "systemUsers": "System Users",

@@ -905,10 +905,14 @@
     "title": "디스패치",
     "workspace": "Dispatch Workspace",
     "view": {
-      "list": "목록",
-      "board": "보드",
-      "timeline": "타임라인",
-      "map": "지도",
+      "containers": "컨테이너",
+      "container-board": "컨 보드",
+      "container-timeline": "컨 타임라인",
+      "container-map": "컨 지도",
+      "list": "D/O 목록",
+      "board": "D/O 보드",
+      "timeline": "D/O 타임라인",
+      "map": "D/O 지도",
       "gantt": "Gantt"
     },
     "board": {
@@ -1191,6 +1195,9 @@
     "locations": "위치",
     "chargeCodes": "청구 코드",
     "rateCards": "요율 카드",
+    "rateTariffs": "Rate Tariff (거리×단가)",
+    "rateQuotes": "Rate Quote (정찰가)",
+    "distanceMatrix": "Distance Matrix",
     "system": "시스템",
     "teams": "회사",
     "systemUsers": "시스템 사용자",

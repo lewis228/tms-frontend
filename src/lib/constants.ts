@@ -157,6 +157,46 @@ export const QUERY_KEYS = {
     streetTurnSavings: (days: number) =>
       ["analytics", "street-turn-savings", days] as const,
   },
+
+  // ── Phase I — v3 Container-First ──────────────────────────────
+  containerV3: {
+    all: ["container-v3"] as const,
+    list: (params: Record<string, unknown> = {}) =>
+      ["container-v3", "list", params] as const,
+    full: (id: number) => ["container-v3", "full", id] as const,
+    stops: (containerId: number) =>
+      ["container-v3", "stops", containerId] as const,
+  },
+  legSegment: {
+    all: ["leg-segment"] as const,
+    byLeg: (legId: number) => ["leg-segment", "byLeg", legId] as const,
+  },
+  legRate: {
+    all: ["leg-rate"] as const,
+    byLeg: (legId: number) => ["leg-rate", "byLeg", legId] as const,
+  },
+  rateQuote: {
+    all: ["rate-quote"] as const,
+    list: (params: Record<string, unknown> = {}) =>
+      ["rate-quote", "list", params] as const,
+    byId: (id: number) => ["rate-quote", "byId", id] as const,
+  },
+  rateTariff: {
+    all: ["rate-tariff"] as const,
+    list: (params: Record<string, unknown> = {}) =>
+      ["rate-tariff", "list", params] as const,
+    byId: (id: number) => ["rate-tariff", "byId", id] as const,
+  },
+  distanceMatrix: {
+    all: ["distance-matrix"] as const,
+    list: (params: Record<string, unknown> = {}) =>
+      ["distance-matrix", "list", params] as const,
+    byId: (id: number) => ["distance-matrix", "byId", id] as const,
+  },
+  locationPing: {
+    all: ["location-ping"] as const,
+    latest: (driverId: number) => ["location-ping", "latest", driverId] as const,
+  },
 };
 
 export const PAGE_SIZE = 20;

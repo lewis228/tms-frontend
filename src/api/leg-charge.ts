@@ -13,7 +13,9 @@ export type LegChargeCreatePayload = {
   legId: number;
   chargeCodeId: number;
   rateCardId?: number | null;
-  amount: string | number;
+  // v3: amount 미입력 시 백엔드가 quantity × snapshot_unit_amount 자동 계산
+  amount?: string | number | null;
+  snapshotUnitAmount?: string | number | null;
   quantity?: string | number | null;
   unit?: ChargeUnit | null;
   source?: ChargeSource;

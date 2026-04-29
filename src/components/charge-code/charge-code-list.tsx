@@ -79,8 +79,11 @@ export default function ChargeCodeList() {
               <TableHead>{t("chargeCode.field.code")}</TableHead>
               <TableHead>{t("chargeCode.field.name")}</TableHead>
               <TableHead>{t("chargeCode.field.kind")}</TableHead>
+              <TableHead>Category</TableHead>
               <TableHead>{t("chargeCode.field.unit")}</TableHead>
+              <TableHead>Unit Label</TableHead>
               <TableHead>{t("chargeCode.field.amount")}</TableHead>
+              <TableHead>±</TableHead>
               <TableHead>{t("chargeCode.field.flags")}</TableHead>
               <TableHead className="w-32 text-right" />
             </TableRow>
@@ -88,7 +91,7 @@ export default function ChargeCodeList() {
           <TableBody>
             {data.items.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center text-muted-foreground">
+                <TableCell colSpan={10} className="text-center text-muted-foreground">
                   {t("common.noData")}
                 </TableCell>
               </TableRow>
@@ -102,9 +105,22 @@ export default function ChargeCodeList() {
                       {c.kind}
                     </span>
                   </TableCell>
+                  <TableCell className="text-xs">
+                    {c.category ? (
+                      <span className="rounded bg-blue-100 px-1.5 py-0.5 text-blue-800">
+                        {c.category}
+                      </span>
+                    ) : (
+                      "—"
+                    )}
+                  </TableCell>
                   <TableCell className="text-xs">{c.defaultUnit}</TableCell>
+                  <TableCell className="text-xs">{c.unitLabel ?? "—"}</TableCell>
                   <TableCell className="font-mono text-xs">
                     {c.defaultAmount ?? "—"}
+                  </TableCell>
+                  <TableCell className="text-xs">
+                    {c.signed ? "✓" : ""}
                   </TableCell>
                   <TableCell className="text-xs">
                     {c.isBillableToCustomer ? "💰" : ""}{" "}

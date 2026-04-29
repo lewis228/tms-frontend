@@ -160,6 +160,12 @@ export type TeamEntity = {
   productInfoTemplate: string | null;
   excelProductIdentification: string | null;
   gs1GtinEnabled: boolean;
+  // ── v3 표시 라벨 / distance provider ─────────
+  distanceUnitLabel?: string | null;
+  currencyLabel?: string | null;
+  currencySymbol?: string | null;
+  distanceProvider?: string | null;
+  distanceProviderConfig?: string | null;
   files: unknown[];
   createdAt: string | null;
   updatedAt: string | null;
@@ -623,6 +629,12 @@ export type ChargeCodeEntity = {
   isPayableToDriver: boolean;
   glAccount: string | null;
   description: string | null;
+  // ── v3 보강 ───────────────────────────────────
+  unitLabel?: string | null;
+  category?: ChargeCategory | null;
+  signed?: boolean;
+  payeeDefault?: string | null;
+  payerDefault?: string | null;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -696,4 +708,234 @@ export type StreetTurnEntity = {
   approvedAt: string | null;
   rejectedReason: string | null;
   isActive: boolean;
+};
+
+// ─────────────────────────────────────────────────────────────────
+// Phase I — Container-First v3
+// ─────────────────────────────────────────────────────────────────
+
+export type StopRole = "ORIGIN" | "DELIVERY" | "TRANSIT" | "TERMINUS";
+
+export type HandoverReason =
+  | "TERMINAL_CLOSED"
+  | "ACCIDENT"
+  | "SHIFT_CHANGE"
+  | "OTHER";
+
+export type ContainerWorkState =
+  | "DRAFT"
+  | "PLANNED"
+  | "IN_TRANSIT"
+  | "AT_STOP"
+  | "WAITING_PLAN"
+  | "HOLD"
+  | "COMPLETED"
+  | "CANCELLED";
+
+export type MoveTypeV3 =
+  | "TRUCK_ONLY"
+  | "CHASSIS_ONLY"
+  | "EMPTY_LOADED"
+  | "FULL_LOADED";
+
+export type LegRateSource =
+  | "QUOTE_FIXED"
+  | "TARIFF_CALC"
+  | "TARIFF_FLAT"
+  | "MANUAL"
+  | "NONE";
+
+export type DistanceProvider = "OSRM" | "GOOGLE" | "MANUAL" | "CACHED";
+
+export type ChargeCategory =
+  | "BASE"
+  | "WAITING"
+  | "EXTRA_STOP"
+  | "DRY_RUN"
+  | "PENALTY"
+  | "SURCHARGE"
+  | "ADJUSTMENT"
+  | "OTHER";
+
+export type ContainerListEntity = ContainerEntity & {
+  workState: ContainerWorkState | null;
+  blNumber: string | null;
+  bookingNumber: string | null;
+  customerId: number | null;
+  customerName: string | null;
+  direction: "IMPORT" | "EXPORT" | null;
+  moveTypeV3: MoveTypeV3 | null;
+  nextStopId: number | null;
+  currentDriverId: number | null;
+  currentDriverName: string | null;
+  legsTotal: number | null;
+  legsCompleted: number | null;
+};
+
+export type ContainerStopEntity = {
+  id: number;
+  containerId: number;
+  sequenceNo: number;
+  role: StopRole;
+  locationId: number | null;
+  locationName: string | null;
+  plannedArrival: string | null;
+  plannedDeparture: string | null;
+  actualArrival: string | null;
+  actualDeparture: string | null;
+  note: string | null;
+  isActive: boolean;
+};
+
+export type LegDriverSegmentEntity = {
+  id: number;
+  legId: number;
+  sequenceNo: number;
+  driverId: number;
+  driverName: string | null;
+  truckId: number | null;
+  startedAt: string | null;
+  endedAt: string | null;
+  handoverReason: HandoverReason | null;
+  note: string | null;
+  isActive: boolean;
+};
+
+export type LegRateEntity = {
+  id: number;
+  legId: number;
+  rateQuoteId: number | null;
+  rateTariffId: number | null;
+  snapshotDistanceValue: string | null;
+  snapshotDurationMin: string | null;
+  snapshotPerValue: string | null;
+  snapshotPerMin: string | null;
+  snapshotFlatBase: string | null;
+  snapshotQuoteFixed: string | null;
+  baseAmount: string;
+  source: LegRateSource;
+  manualOverride: boolean;
+  payeeDriverId: number | null;
+  computedAt: string | null;
+  note: string | null;
+  isActive: boolean;
+};
+
+export type LegChargeLineEntity = {
+  id: number;
+  legId: number;
+  chargeCodeId: number;
+  chargeCode: string | null;
+  chargeName: string | null;
+  category: ChargeCategory | null;
+  snapshotUnitAmount: string | null;
+  quantity: string | null;
+  subtotal: string;
+  payeeKind: string | null;
+  payeeDriverId: number | null;
+  payeeDriverName: string | null;
+  description: string | null;
+  isActive: boolean;
+};
+
+export type LegFullEntity = {
+  id: number;
+  deliveryOrderId: number;
+  containerId: number | null;
+  fromStopId: number | null;
+  toStopId: number | null;
+  moveTypeV3: MoveTypeV3 | null;
+  serviceType: ServiceType | null;
+  status: LegStatus;
+  driverId: number | null;
+  driverName: string | null;
+  startedAt: string | null;
+  arrivedAt: string | null;
+  completedAt: string | null;
+  failureReason: string | null;
+  note: string | null;
+  isActive: boolean;
+  segments: LegDriverSegmentEntity[];
+  rate: LegRateEntity | null;
+  charges: LegChargeLineEntity[];
+  legTotal: string;
+};
+
+export type ContainerFullEntity = {
+  container: ContainerListEntity;
+  deliveryOrder: {
+    id: number | null;
+    blNumber: string | null;
+    bookingNumber: string | null;
+    reference: string | null;
+    customerId: number | null;
+    customerName: string | null;
+    direction: "IMPORT" | "EXPORT" | null;
+    eta: string | null;
+    terminalId: number | null;
+    terminalName: string | null;
+    vesselId: number | null;
+    vesselName: string | null;
+    blReleased: boolean;
+  };
+  stops: ContainerStopEntity[];
+  legs: LegFullEntity[];
+  events: ContainerEventEntity[];
+};
+
+export type RateQuoteEntity = {
+  id: number;
+  name: string | null;
+  originLocationId: number | null;
+  destinationLocationId: number | null;
+  containerSize: ContainerSize | null;
+  moveType: MoveTypeV3 | null;
+  customerId: number | null;
+  fixedAmount: string;
+  effectiveFrom: string;
+  effectiveTo: string | null;
+  priority: number;
+  description: string | null;
+  isActive: boolean;
+};
+
+export type RateTariffEntity = {
+  id: number;
+  name: string;
+  moveType: MoveTypeV3 | null;
+  containerSize: ContainerSize | null;
+  customerId: number | null;
+  perValue: string;
+  perMin: string;
+  flatBase: string;
+  effectiveFrom: string;
+  effectiveTo: string | null;
+  priority: number;
+  description: string | null;
+  isActive: boolean;
+};
+
+export type DistanceMatrixEntity = {
+  id: number;
+  originLocationId: number;
+  destinationLocationId: number;
+  distanceValue: string;
+  durationMin: string;
+  source: DistanceProvider;
+  measuredAt: string | null;
+  note: string | null;
+  isActive: boolean;
+};
+
+export type RateCalculateResult = {
+  rateQuoteId: number | null;
+  rateTariffId: number | null;
+  snapshotDistanceValue: string | null;
+  snapshotDurationMin: string | null;
+  snapshotPerValue: string | null;
+  snapshotPerMin: string | null;
+  snapshotFlatBase: string | null;
+  snapshotQuoteFixed: string | null;
+  baseAmount: string;
+  source: LegRateSource;
 };

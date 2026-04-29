@@ -6,6 +6,7 @@ import {
   BadgeDollarSign,
   Bell,
   Building2,
+  Calculator,
   ChevronDown,
   Container,
   CreditCard,
@@ -18,6 +19,7 @@ import {
   Palette,
   Plug,
   Receipt,
+  Route,
   Server,
   Settings,
   ShieldCheck,
@@ -82,6 +84,8 @@ const ICON_MAP: Record<NavIconName, LucideIcon> = {
   Plug,
   CreditCard,
   Key,
+  Calculator,
+  Route,
 };
 
 // Build an absolute `/app/:teamId/...` URL from a nav leaf's relative path.

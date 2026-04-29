@@ -1,3 +1,5 @@
+// ⚠️ DEPRECATED (Phase v3): D/O 단위 보드. v3 는 dispatch-board-view-v3 (컨테이너 work_state 7컬럼).
+//
 // Dispatch Board (Kanban) — status 6컬럼 + D/O 카드.
 //
 // 드래그 (dnd-kit):

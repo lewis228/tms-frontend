@@ -32,7 +32,9 @@ export type NavIconName =
   | "Tag"
   | "Plug"
   | "CreditCard"
-  | "Key";
+  | "Key"
+  | "Calculator"
+  | "Route";
 
 export type NavLeaf = {
   type: "leaf";
@@ -184,6 +186,27 @@ export const NAV_CONFIG: NavNode[] = [
         label: "nav.rateCards",
         iconName: "BadgeDollarSign",
         path: "master/rate-cards",
+        requiredRole: "ADMIN",
+      },
+      {
+        type: "leaf",
+        label: "nav.rateTariffs",
+        iconName: "Calculator",
+        path: "master/rate-tariffs",
+        requiredRole: "ADMIN",
+      },
+      {
+        type: "leaf",
+        label: "nav.rateQuotes",
+        iconName: "Receipt",
+        path: "master/rate-quotes",
+        requiredRole: "ADMIN",
+      },
+      {
+        type: "leaf",
+        label: "nav.distanceMatrix",
+        iconName: "Route",
+        path: "master/distance-matrix",
         requiredRole: "ADMIN",
       },
     ],

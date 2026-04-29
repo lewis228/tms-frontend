@@ -26,6 +26,12 @@ export type TeamWritePayload = {
   memo?: string | null;
   timezone?: string | null;
   currency?: string | null;
+  // ── v3 표시 라벨 / distance provider ─────────
+  distanceUnitLabel?: string | null;
+  currencyLabel?: string | null;
+  currencySymbol?: string | null;
+  distanceProvider?: string | null;
+  distanceProviderConfig?: string | null;
 };
 
 export async function createTeam(payload: TeamWritePayload): Promise<TeamEntity> {
