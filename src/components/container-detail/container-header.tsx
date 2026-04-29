@@ -1,5 +1,5 @@
 // 컨테이너 상세 헤더 — Container No / Size / 소속 D/O / work_state / Demurrage / 현재 위치
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import { formatDateTime } from "@/lib/format";
 import type { ContainerFullEntity, ContainerWorkState } from "@/types";
@@ -20,6 +20,7 @@ export default function ContainerHeader({
 }: {
   full: ContainerFullEntity;
 }) {
+  const { teamId } = useParams();
   const c = full.container;
   const d = full.deliveryOrder;
   const state = (c.workState ?? "DRAFT") as ContainerWorkState;
@@ -48,7 +49,7 @@ export default function ContainerHeader({
         <Field label="B/L">
           {d.id ? (
             <Link
-              to={`/app/operations/delivery-orders/${d.id}`}
+              to={`/app/${teamId}/delivery-orders/${d.id}`}
               className="font-mono text-blue-700 hover:underline"
             >
               {d.blNumber ?? `#${d.id}`}

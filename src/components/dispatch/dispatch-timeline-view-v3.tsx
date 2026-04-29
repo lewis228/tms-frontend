@@ -1,7 +1,7 @@
 // v3 Dispatch Timeline — 컨테이너 단위 Gantt.
 // 행 = 컨테이너. 가로축 = 7일 (오늘 ±3). leg 가 시간 막대로 status 색 표시.
 import { useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import Loader from "@/components/loader";
 import Fallback from "@/components/fallback";
@@ -31,6 +31,7 @@ const STATUS_COLOR: Record<string, string> = {
 };
 
 export default function DispatchTimelineViewV3() {
+  const { teamId } = useParams();
   const range = useMemo(() => {
     const today = startOfDay(new Date());
     const start = new Date(today);
@@ -118,7 +119,7 @@ export default function DispatchTimelineViewV3() {
                 style={{ height: ROW_HEIGHT }}
               >
                 <Link
-                  to={`/app/operations/containers/${c.id}`}
+                  to={`/app/${teamId}/containers/${c.id}`}
                   className="flex w-48 shrink-0 items-center gap-2 border-r px-3 text-xs"
                 >
                   <span className="font-mono">{c.containerNumber ?? "—"}</span>

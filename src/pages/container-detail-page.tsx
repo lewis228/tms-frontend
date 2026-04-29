@@ -1,4 +1,4 @@
-// /app/operations/containers/:id — v3 컨테이너 상세
+// /app/containers/:id — v3 컨테이너 상세
 import { Navigate, useParams } from "react-router-dom";
 
 import Loader from "@/components/loader";
@@ -29,7 +29,7 @@ export default function ContainerDetailPage() {
   const activeDriverName = activeLeg?.driverName ?? null;
   const { data: ping } = useDriverLatestPing(activeDriverId);
 
-  if (!idStr) return <Navigate to="/app/operations/dispatch" replace />;
+  if (!idStr) return <Navigate to="/app" replace />;
   if (error) return <Fallback />;
   if (isPending) return <Loader />;
   if (!data) return <Fallback />;

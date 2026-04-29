@@ -1,7 +1,7 @@
 // v3 Dispatch Map — 진행 중 컨테이너 한 화면.
 // 활성 컨테이너의 현재 위치(=활성 leg from_stop / driver position) 핀.
 import { useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   MapContainer,
   Marker,
@@ -52,6 +52,7 @@ function FitBounds({ bounds }: { bounds: LatLngExpression[] }) {
 }
 
 export default function DispatchMapViewV3() {
+  const { teamId } = useParams();
   const { data, isPending, error } = useContainersV3Data({ size: 200 });
   const { data: locationsData } = useLocationsData(1);
 
@@ -143,7 +144,7 @@ export default function DispatchMapViewV3() {
                   Next: {p.locName}
                 </span>
                 <Link
-                  to={`/app/operations/containers/${p.c.id}`}
+                  to={`/app/${teamId}/containers/${p.c.id}`}
                   className="text-blue-700 hover:underline"
                 >
                   상세 →

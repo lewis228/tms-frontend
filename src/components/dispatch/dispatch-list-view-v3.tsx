@@ -1,9 +1,9 @@
 // v3 Dispatch List — 컨테이너 단위 (D/O 단위가 아님).
 // 한 D/O 의 N개 컨테이너가 각각 한 행으로 나타남. work_state(8단계) / move_type / current driver / demurrage 인라인.
-// 행 클릭 → /app/operations/containers/{id} 상세 페이지.
+// 행 클릭 → /app/containers/{id} 상세 페이지.
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -45,6 +45,7 @@ const STATE_TONE: Record<ContainerWorkState, string> = {
 
 export default function DispatchListViewV3() {
   const { t } = useTranslation();
+  const { teamId } = useParams();
   const [page, setPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
@@ -158,7 +159,7 @@ export default function DispatchListViewV3() {
                     </TableCell>
                     <TableCell className="text-right">
                       <Link
-                        to={`/app/operations/containers/${c.id}`}
+                        to={`/app/${teamId}/containers/${c.id}`}
                         className="text-xs text-muted-foreground hover:text-foreground hover:underline"
                       >
                         {t("deliveryOrder.viewDetail")}

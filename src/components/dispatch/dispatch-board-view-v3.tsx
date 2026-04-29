@@ -1,7 +1,7 @@
 // v3 Dispatch Board — Container work_state 8단계 칸반.
 // 컨테이너 단위 카드 (D/O 단위가 아님). 클릭 → 컨테이너 상세.
 import { useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import Loader from "@/components/loader";
 import Fallback from "@/components/fallback";
@@ -19,6 +19,7 @@ const COLUMNS: { state: ContainerWorkState; tone: string; label: string }[] = [
 ];
 
 export default function DispatchBoardViewV3() {
+  const { teamId } = useParams();
   const { data, isPending, error } = useContainersV3Data({ size: 200 });
 
   const grouped = useMemo(() => {
@@ -59,7 +60,7 @@ export default function DispatchBoardViewV3() {
                 items.map((c) => (
                   <Link
                     key={c.id}
-                    to={`/app/operations/containers/${c.id}`}
+                    to={`/app/${teamId}/containers/${c.id}`}
                     className="flex flex-col gap-1 rounded border bg-background p-2 text-xs hover:bg-accent/40"
                   >
                     <div className="flex items-center justify-between">
