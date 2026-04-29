@@ -15,21 +15,25 @@ import { useContainerFullData } from "@/hooks/queries/use-container-full-data";
 export default function ContainerDetailPage() {
   const params = useParams();
   const idStr = params.id;
+  const containerId = idStr ? Number(idStr) : 0;
+
+  // ⚠️ Hook 규칙: 모든 hook 은 early return 전에 호출. enabled 가 안전 가드.
+  const { data, isPending, error } = useContainerFullData(
+    containerId || undefined,
+  );
+
+  // 활성 leg (IN_TRANSIT) 의 driver 를 찾아 실시간 위치 표시.
+  // data 가 아직 없을 때는 null → useDriverLatestPing 의 enabled 가 false 로 떨어짐.
+  const activeLeg = data?.legs.find((l) => l.status === "IN_TRANSIT") ?? null;
+  const activeDriverId = activeLeg?.driverId ?? null;
+  const activeDriverName = activeLeg?.driverName ?? null;
+  const { data: ping } = useDriverLatestPing(activeDriverId);
 
   if (!idStr) return <Navigate to="/app/operations/dispatch" replace />;
-  const containerId = Number(idStr);
-
-  const { data, isPending, error } = useContainerFullData(containerId);
-
   if (error) return <Fallback />;
   if (isPending) return <Loader />;
   if (!data) return <Fallback />;
 
-  // 활성 leg (IN_TRANSIT) 의 driver 를 찾아 실시간 위치 표시
-  const activeLeg = data.legs.find((l) => l.status === "IN_TRANSIT");
-  const activeDriverId = activeLeg?.driverId ?? null;
-  const activeDriverName = activeLeg?.driverName ?? null;
-  const { data: ping } = useDriverLatestPing(activeDriverId);
   const driverPosition = ping
     ? {
         lat: Number(ping.latitude),
