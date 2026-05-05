@@ -1,28 +1,28 @@
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, User } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import FadeIn from "@/pages/landing/components/fade-in";
 
 const TEAM = [
   {
-    name: "James Riley",
-    role: "CEO & Founder",
-    avatar: "https://i.pravatar.cc/400?u=james-riley",
+    name: "Andy Kim",
+    role: "CEO",
+    avatar: "",
   },
   {
-    name: "Emily Tran",
-    role: "Chief Operations Officer",
-    avatar: "https://i.pravatar.cc/400?u=emily-tran",
+    name: "Kay Sung",
+    role: "CEO",
+    avatar: "",
   },
   {
-    name: "Mark Douglas",
-    role: "Head of Customer Solutions",
-    avatar: "https://i.pravatar.cc/400?u=mark-douglas",
+    name: "Jin Hong",
+    role: "CEO",
+    avatar: "",
   },
   {
-    name: "Alex Kim",
-    role: "Director of Technology",
-    avatar: "https://i.pravatar.cc/400?u=alex-kim",
+    name: "Lewis Jo",
+    role: "Developer",
+    avatar: "/images/team-ceo.png",
   },
 ];
 
@@ -77,11 +77,17 @@ export default function AboutTeamSection() {
               <FadeIn key={member.name} delay={0.08 * i}>
                 <div className="group flex items-center gap-6 border-b border-landing-border pb-6 last:border-b-0 last:pb-0">
                   <div className="h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-landing-light md:h-32 md:w-32">
-                    <img
-                      src={member.avatar}
-                      alt={member.name} // TODO: replace asset
-                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
+                    {member.avatar ? (
+                      <img
+                        src={member.avatar}
+                        alt={member.name}
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center bg-landing-light text-landing-muted">
+                        <User className="h-10 w-10 md:h-14 md:w-14" />
+                      </div>
+                    )}
                   </div>
                   <div>
                     <h3 className="font-heading text-xl font-bold text-landing-navy md:text-2xl">
