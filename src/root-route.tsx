@@ -38,11 +38,10 @@ const ForbiddenPage = lazy(() => import("@/pages/forbidden-page"));
 const MaintenancePage = lazy(() => import("@/pages/maintenance-page"));
 const LandingLayout = lazy(() => import("@/pages/landing/landing-layout"));
 const LandingPage = lazy(() => import("@/pages/landing/landing-page"));
-const PricingPage = lazy(() => import("@/pages/landing/pricing-page"));
 const AboutPage = lazy(() => import("@/pages/landing/about-page"));
-const CareersPage = lazy(() => import("@/pages/landing/careers-page"));
-const BlogPage = lazy(() => import("@/pages/landing/blog-page"));
-const CustomersPage = lazy(() => import("@/pages/landing/customers-page"));
+const ServicesPage = lazy(() => import("@/pages/landing/services-page"));
+const ServiceDetailPage = lazy(() => import("@/pages/landing/service-detail-page"));
+const ContactPage = lazy(() => import("@/pages/landing/contact-page"));
 const ComingSoonPage = lazy(() => import("@/pages/coming-soon-page"));
 const MobileComingSoonPage = lazy(
   () => import("@/pages/mobile-coming-soon-page"),
@@ -103,11 +102,10 @@ export default function RootRoute() {
         {/* Marketing — 랜딩. */}
         <Route element={<LandingLayout />}>
           <Route index element={<LandingPage />} />
-          <Route path="/pricing" element={<PricingPage />} />
           <Route path="/about" element={<AboutPage />} />
-          <Route path="/careers" element={<CareersPage />} />
-          <Route path="/blog" element={<BlogPage />} />
-          <Route path="/customers" element={<CustomersPage />} />
+          <Route path="/services" element={<ServicesPage />} />
+          <Route path="/services/:slug" element={<ServiceDetailPage />} />
+          <Route path="/contact" element={<ContactPage />} />
         </Route>
 
         {/* Guest — 로그인 상태면 /app 으로. */}

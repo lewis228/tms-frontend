@@ -4,7 +4,7 @@ import LandingFooter from "./components/landing-footer";
 
 export default function LandingLayout() {
   return (
-    <div className="min-h-screen bg-resend-bg text-resend-text font-sans">
+    <div className="min-h-screen bg-white font-sans text-landing-navy">
       <LandingHeader />
       <main>
         <Outlet />

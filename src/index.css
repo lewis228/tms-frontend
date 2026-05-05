@@ -65,6 +65,13 @@
     --color-resend-orange: #FF6B2C;
     --color-resend-btn: #EDEDED;
 
+    --color-landing-navy: #0B1340;
+    --color-landing-navy-light: #162058;
+    --color-landing-red: #E63946;
+    --color-landing-light: #F5F7FA;
+    --color-landing-muted: #64748B;
+    --color-landing-border: #E5E7EB;
+
     --radius-sm: calc(var(--radius) * 0.6);
     --radius-md: calc(var(--radius) * 0.8);
     --radius-lg: var(--radius);

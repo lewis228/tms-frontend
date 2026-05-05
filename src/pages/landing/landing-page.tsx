@@ -1,25 +1,29 @@
-import HeroSection from "./components/hero-section";
-import LogosSection from "./components/logos-section";
-import IntegrateSection from "./components/integrate-section";
-import DxSection from "./components/dx-section";
-import DeliverabilitySection from "./components/deliverability-section";
-import TestimonialQuoteSection from "./components/testimonial-quote-section";
-import DashboardSection from "./components/dashboard-section";
-import TestimonialsSection from "./components/testimonials-section";
-import CtaSection from "./components/cta-section";
+import HomepageHeroSection from "./components/homepage-hero-section";
+import HomepageServiceSection from "./components/homepage-service-section";
+import HomepageFreightSection from "./components/homepage-freight-section";
+import HomepageValuesSection from "./components/homepage-values-section";
+import HomepageCtaBannerSection from "./components/homepage-cta-banner-section";
+import HomepageProcessSection from "./components/homepage-process-section";
+import HomepageLogisticsSection from "./components/homepage-logistics-section";
+import HomepageTestimonialsSection from "./components/homepage-testimonials-section";
+import HomepagePricingSection from "./components/homepage-pricing-section";
+import HomepageArticlesSection from "./components/homepage-articles-section";
+import SharedCtaSection from "./components/shared-cta-section";
 
 export default function LandingPage() {
   return (
     <>
-      <HeroSection />
-      <LogosSection />
-      <IntegrateSection />
-      <DxSection />
-      <DeliverabilitySection />
-      <TestimonialQuoteSection />
-      <DashboardSection />
-      <TestimonialsSection />
-      <CtaSection />
+      <HomepageHeroSection />
+      <HomepageServiceSection />
+      <HomepageFreightSection />
+      <HomepageValuesSection />
+      <HomepageCtaBannerSection />
+      <HomepageProcessSection />
+      <HomepageLogisticsSection />
+      <HomepageTestimonialsSection />
+      <HomepagePricingSection />
+      <HomepageArticlesSection />
+      <SharedCtaSection />
     </>
   );
 }
