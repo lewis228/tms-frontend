@@ -21,6 +21,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { useCreateLeg } from "@/hooks/mutations/leg/use-create-leg";
 import { useUpdateLeg } from "@/hooks/mutations/leg/use-update-leg";
+import { useAssignLeg } from "@/hooks/mutations/leg/use-assign-leg";
+import { useUnassignLeg } from "@/hooks/mutations/leg/use-unassign-leg";
 import { generateErrorMessage } from "@/lib/error";
 import { useLegEditorModal } from "@/store/leg-editor-modal";
 import type {
@@ -106,6 +108,24 @@ function Body({ modal }: { modal: OpenModal }) {
       toast.error(generateErrorMessage(err), { position: "top-center" }),
   });
 
+  // 배차는 전용 엔드포인트(assign/unassign)로 — ASSIGNED 상태 + offered_at + D/O 파생을 위해.
+  const originalDriverId = modal.type === "EDIT" ? (modal.leg.driverId ?? null) : null;
+
+  const { mutate: assignLeg, isPending: isAssignPending } = useAssignLeg({
+    onError: (err) =>
+      toast.error(generateErrorMessage(err), { position: "top-center" }),
+  });
+  const { mutate: unassignLeg, isPending: isUnassignPending } = useUnassignLeg({
+    onError: (err) =>
+      toast.error(generateErrorMessage(err), { position: "top-center" }),
+  });
+
+  const applyDriverChange = (legId: number) => {
+    if (driverId === originalDriverId) return;
+    if (driverId) assignLeg({ id: legId, driverId });
+    else unassignLeg(legId);
+  };
+
   const { mutate: updateLeg, isPending: isUpdatePending } = useUpdateLeg({
     onSuccess: () => {
       toast.success(t("leg.toast.updated"), { position: "top-center" });
@@ -115,24 +135,41 @@ function Body({ modal }: { modal: OpenModal }) {
       toast.error(generateErrorMessage(err), { position: "top-center" }),
   });
 
-  const isPending = isCreatePending || isUpdatePending;
+  const isPending =
+    isCreatePending || isUpdatePending || isAssignPending || isUnassignPending;
 
   const handleSave = () => {
-    const payload = {
-      step,
-      moveType,
-      serviceType,
-      driverId,
-      pickupLocationId,
-      pickupDate: toIsoOrNull(pickupDate),
-      deliveryLocationId,
-      deliveryDate: toIsoOrNull(deliveryDate),
-      note: note.trim() || null,
-    };
     if (modal.type === "CREATE") {
-      createLeg({ deliveryOrderId: modal.deliveryOrderId, ...payload });
+      // 생성 시엔 driverId 를 그대로 포함 (백엔드 create 가 수용, D/O 파생은 driver_id 유무로 동작)
+      createLeg({
+        deliveryOrderId: modal.deliveryOrderId,
+        step,
+        moveType,
+        serviceType,
+        driverId,
+        pickupLocationId,
+        pickupDate: toIsoOrNull(pickupDate),
+        deliveryLocationId,
+        deliveryDate: toIsoOrNull(deliveryDate),
+        note: note.trim() || null,
+      });
     } else {
-      updateLeg({ id: modal.leg.id, payload });
+      // 수정: 일반 필드는 updateLeg(PUT), 드라이버 변경은 assign/unassign 으로 분리
+      const legId = modal.leg.id;
+      applyDriverChange(legId);
+      updateLeg({
+        id: legId,
+        payload: {
+          step,
+          moveType,
+          serviceType,
+          pickupLocationId,
+          pickupDate: toIsoOrNull(pickupDate),
+          deliveryLocationId,
+          deliveryDate: toIsoOrNull(deliveryDate),
+          note: note.trim() || null,
+        },
+      });
     }
   };
 

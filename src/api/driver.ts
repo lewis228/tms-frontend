@@ -68,7 +68,7 @@ export async function updateDriver(
   id: number,
   payload: DriverUpdatePayload,
 ): Promise<DriverEntity> {
-  const { data } = await api.patch<DriverEntity>(`/drivers/${id}`, payload);
+  const { data } = await api.put<DriverEntity>(`/drivers/${id}`, payload);
   return data;
 }
 

@@ -71,7 +71,28 @@ export async function updateLeg(
   id: number,
   payload: LegUpdatePayload,
 ): Promise<LegEntity> {
-  const { data } = await api.patch<LegEntity>(`/legs/${id}`, payload);
+  // 백엔드 leg 라우터는 PUT /{leg_id} (PATCH 아님)
+  const { data } = await api.put<LegEntity>(`/legs/${id}`, payload);
+  return data;
+}
+
+// 드라이버 배차 — PENDING→ASSIGNED + offered_at + container/D-O 상태 파생.
+// 단순 updateLeg(driverId) 대신 이 엔드포인트를 써야 정식 배차 처리가 됨.
+export async function assignLeg(
+  id: number,
+  { driverId, truckId, chassisId }: { driverId: number; truckId?: number | null; chassisId?: number | null },
+): Promise<LegEntity> {
+  const { data } = await api.post<LegEntity>(`/legs/${id}/assign`, {
+    driverId,
+    truckId: truckId ?? null,
+    chassisId: chassisId ?? null,
+  });
+  return data;
+}
+
+// 배차 취소 — ASSIGNED→PENDING.
+export async function unassignLeg(id: number): Promise<LegEntity> {
+  const { data } = await api.post<LegEntity>(`/legs/${id}/unassign`, {});
   return data;
 }
 

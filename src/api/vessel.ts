@@ -37,7 +37,7 @@ export async function updateVessel(
     note: string | null;
   }>,
 ): Promise<VesselEntity> {
-  const { data } = await api.patch<VesselEntity>(`/vessels/${id}`, payload);
+  const { data } = await api.put<VesselEntity>(`/vessels/${id}`, payload);
   return data;
 }
 

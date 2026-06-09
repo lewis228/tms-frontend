@@ -41,7 +41,7 @@ export async function updateTerminal(
     note: string | null;
   }>,
 ): Promise<TerminalEntity> {
-  const { data } = await api.patch<TerminalEntity>(`/terminals/${id}`, payload);
+  const { data } = await api.put<TerminalEntity>(`/terminals/${id}`, payload);
   return data;
 }
 

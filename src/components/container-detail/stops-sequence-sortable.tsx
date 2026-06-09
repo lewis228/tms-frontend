@@ -1,6 +1,7 @@
 // 드래그&드롭으로 stop sequence_no 재정렬.
 // dnd-kit + sortable.
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   DndContext,
   closestCenter,
@@ -36,12 +37,14 @@ export default function StopsSequenceSortable({
   containerId: number;
   stops: ContainerStopEntity[];
 }) {
+  const { t } = useTranslation();
   const [items, setItems] = useState<ContainerStopEntity[]>(stops);
-
-  // server 가 새 데이터 보내면 동기화
-  useEffect(() => {
+  // server 가 새 데이터 보내면 동기화 — effect 대신 render 중 prev-prop 비교 reset (React 공식 패턴)
+  const [prevStops, setPrevStops] = useState(stops);
+  if (stops !== prevStops) {
+    setPrevStops(stops);
     setItems(stops);
-  }, [stops]);
+  }
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
@@ -66,7 +69,7 @@ export default function StopsSequenceSortable({
   if (items.length === 0) {
     return (
       <div className="rounded-md border p-4 text-sm text-muted-foreground">
-        아직 stop 이 없습니다.
+        {t("container.stops.empty")}
       </div>
     );
   }
@@ -74,7 +77,7 @@ export default function StopsSequenceSortable({
   return (
     <div className="rounded-md border bg-card">
       <div className="border-b px-3 py-2 text-xs font-medium uppercase text-muted-foreground">
-        Stops ({items.length}) — 드래그로 순서 변경
+        Stops ({items.length}) — {t("container.stops.dragHint")}
       </div>
       <DndContext
         sensors={sensors}

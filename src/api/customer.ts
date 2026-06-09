@@ -55,7 +55,7 @@ export async function updateCustomer(
   id: number,
   payload: CustomerUpdatePayload,
 ): Promise<CustomerEntity> {
-  const { data } = await api.patch<CustomerEntity>(`/customers/${id}`, payload);
+  const { data } = await api.put<CustomerEntity>(`/customers/${id}`, payload);
   return data;
 }
 

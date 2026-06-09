@@ -565,6 +565,10 @@
     "addRow": "Add container",
     "empty": "No containers.",
     "unassignedWarning": "unassigned",
+    "stops": {
+      "empty": "No stops yet.",
+      "dragHint": "Drag to reorder"
+    },
     "drawer": {
       "title": "Container"
     },
@@ -715,35 +719,6 @@
     },
     "validation": {
       "required": "Enter code and name."
-    }
-  },
-  "rateCard": {
-    "newButton": "New rate card",
-    "createTitle": "New rate card",
-    "editTitle": "Edit rate card",
-    "totalCount": "{{count}} total",
-    "scopeAll": "All (global)",
-    "deletePromptTitle": "Delete this rate card?",
-    "deletePromptDesc": "This cannot be undone.",
-    "field": {
-      "priority": "Priority",
-      "chargeCode": "Charge code",
-      "name": "Name",
-      "scope": "Scope",
-      "unit": "Unit",
-      "amount": "Amount",
-      "percent": "Percent",
-      "perUnit": "Per unit",
-      "size": "Size",
-      "scopeCustomer": "Customer",
-      "scopeTerminal": "Terminal",
-      "scopeZone": "Zone",
-      "effectiveFrom": "Effective from",
-      "effectiveTo": "Effective to",
-      "description": "Description"
-    },
-    "validation": {
-      "chargeCodeRequired": "Select a charge code."
     }
   },
   "legStop": {
@@ -950,37 +925,6 @@
       "discrepancyLabel": "Discrepancy",
       "finalAmountLabel": "Final Amount",
       "loading": "Loading..."
-    }
-  },
-  "rateSetting": {
-    "domain": "Rate",
-    "newButton": "New rate",
-    "createTitle": "New rate setting",
-    "editTitle": "Edit rate setting",
-    "deletePromptTitle": "Delete this rate setting?",
-    "deletePromptDesc": "This will delete '{{name}}'. This cannot be undone.",
-    "searchPlaceholder": "Name / description / type",
-    "namePlaceholder": "Base rate / night surcharge",
-    "typeImmutableHint": "(immutable after create — create a new row instead)",
-    "activeToggled": "Active state updated.",
-    "effectiveDateRequired": "Effective date is required.",
-    "flatAmountRequired": "Flat amount is required.",
-    "percentageRequired": "Percentage is required.",
-    "perMileRequired": "Per mile rate is required.",
-    "field": {
-      "name": "Name",
-      "type": "Type",
-      "amount": "Amount",
-      "effective": "Effective",
-      "active": "Active",
-      "inactive": "Inactive",
-      "activeOn": "✓ Active",
-      "description": "Description",
-      "rateType": "Rate Type",
-      "flatAmount": "Flat Amount",
-      "percentage": "Percentage",
-      "perMile": "Per Mile",
-      "effectiveDate": "Effective Date"
     }
   },
   "dispatch": {

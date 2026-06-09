@@ -43,7 +43,7 @@ export async function updateLocation(
     note: string | null;
   }>,
 ): Promise<LocationEntity> {
-  const { data } = await api.patch<LocationEntity>(`/locations/${id}`, payload);
+  const { data } = await api.put<LocationEntity>(`/locations/${id}`, payload);
   return data;
 }
 

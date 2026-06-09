@@ -65,7 +65,8 @@ export async function updateDeliveryOrder(
   id: number,
   payload: DeliveryOrderUpdatePayload,
 ): Promise<DeliveryOrderEntity> {
-  const { data } = await api.patch<DeliveryOrderEntity>(
+  // 백엔드 D/O 라우터는 PUT /{delivery_order_id} (customer/driver 등과 동일)
+  const { data } = await api.put<DeliveryOrderEntity>(
     `/delivery-orders/${id}`,
     payload,
   );

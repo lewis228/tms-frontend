@@ -15,8 +15,10 @@ type Args = { legId: number; containerId?: number } & Omit<
 export function useCreateLegSegment(callbacks?: UseMutationCallback) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ legId, containerId: _cid, ...payload }: Args) =>
-      createLegSegment(legId, payload),
+    mutationFn: ({ legId, containerId, ...payload }: Args) => {
+      void containerId; // body 에서 제외 (containerId 는 onSuccess 캐시 무효화에서만 사용)
+      return createLegSegment(legId, payload);
+    },
     onSuccess: (data, vars) => {
       qc.invalidateQueries({
         queryKey: QUERY_KEYS.legSegment.byLeg(data.legId),
