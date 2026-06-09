@@ -98,7 +98,6 @@ export type ContainerSize =
   | "45HC"
   | "20RF"
   | "40RF";
-export type RateType = "FLAT_RATE" | "PERCENTAGE" | "PER_MILE";
 
 export type ChargeKind =
   | "BASE"
@@ -116,9 +115,6 @@ export type ChargeUnit =
   | "MILE"
   | "PERCENT";
 
-export type ChargeSource = "AUTO" | "MANUAL" | "EVENT";
-export type PartyKind = "CUSTOMER" | "CARRIER" | "DRIVER" | "COMPANY" | "POOL";
-export type SettlementStatus = "PENDING" | "CALCULATED" | "ADJUSTED" | "APPROVED";
 export type LocationKind = "YARD" | "CUSTOMER" | "PORT" | "OTHER";
 
 export type TokenPair = {
@@ -558,63 +554,6 @@ export type ApiKeyEntity = {
 
 export type ApiKeyCreated = ApiKeyEntity & { key: string };
 
-// Phase 8: Settlement / ExtraCharge / AuditLog / RateSetting
-export type SettlementEntity = {
-  id: number;
-  teamId: number;
-  legId: number;
-  systemTotal: string;
-  driverReportedAmount: string | null;
-  discrepancy: string | null;
-  hasFlag: boolean;
-  finalAmount: string | null;
-  settlementStatus: SettlementStatus;
-  isSettled: boolean;
-  approvedAt: string | null;
-  approvedBy: string | null;
-  unapprovedAt: string | null;
-  unapprovedBy: string | null;
-  unapprovedReason: string | null;
-  note: string | null;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type ExtraChargeEntity = {
-  id: number;
-  settlementId: number;
-  type: string;
-  amount: string;
-  description: string | null;
-  createdAt: string;
-};
-
-export type SettlementAuditLog = {
-  id: number;
-  settlementId: number;
-  action: string;
-  actorId: number | null;
-  before: Record<string, unknown> | null;
-  after: Record<string, unknown> | null;
-  reason: string | null;
-  createdAt: string;
-};
-
-export type RateSettingEntity = {
-  id: number;
-  teamId: number;
-  name: string;
-  rateType: RateType;
-  flatAmount: string | null;
-  ratePercent: string | null;
-  ratePerMile: string | null;
-  effectiveDate: string;
-  isActive: boolean;
-  description: string | null;
-  createdAt: string;
-  updatedAt: string;
-};
-
 // H-2 ─────────────────────────────────────────────────────────
 
 export type ChargeCodeEntity = {
@@ -635,54 +574,6 @@ export type ChargeCodeEntity = {
   signed?: boolean;
   payeeDefault?: string | null;
   payerDefault?: string | null;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type RateCardEntity = {
-  id: number;
-  teamId: number;
-  chargeCodeId: number;
-  name: string | null;
-  scopeCustomerId: number | null;
-  scopeTerminalId: number | null;
-  scopeSize: ContainerSize | null;
-  scopeZone: string | null;
-  scopeFromLocationId: number | null;
-  scopeToLocationId: number | null;
-  unit: ChargeUnit;
-  amount: string | null;
-  percent: string | null;
-  perUnit: string | null;
-  effectiveFrom: string;
-  effectiveTo: string | null;
-  priority: number;
-  description: string | null;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type LegChargeEntity = {
-  id: number;
-  teamId: number;
-  legId: number;
-  chargeCodeId: number;
-  rateCardId: number | null;
-  amount: string;
-  quantity: string | null;
-  unit: ChargeUnit | null;
-  source: ChargeSource;
-  description: string | null;
-  settlementId: number | null;
-  isSettled: boolean;
-  payeeKind: PartyKind | null;
-  payeePartnerId: number | null;
-  payeeDriverId: number | null;
-  payeePoolId: number | null;
-  payerKind: PartyKind | null;
-  payerPartnerId: number | null;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -738,15 +629,6 @@ export type MoveTypeV3 =
   | "EMPTY_LOADED"
   | "FULL_LOADED";
 
-export type LegRateSource =
-  | "QUOTE_FIXED"
-  | "TARIFF_CALC"
-  | "TARIFF_FLAT"
-  | "MANUAL"
-  | "NONE";
-
-export type DistanceProvider = "OSRM" | "GOOGLE" | "MANUAL" | "CACHED";
-
 export type ChargeCategory =
   | "BASE"
   | "WAITING"
@@ -801,43 +683,6 @@ export type LegDriverSegmentEntity = {
   isActive: boolean;
 };
 
-export type LegRateEntity = {
-  id: number;
-  legId: number;
-  rateQuoteId: number | null;
-  rateTariffId: number | null;
-  snapshotDistanceValue: string | null;
-  snapshotDurationMin: string | null;
-  snapshotPerValue: string | null;
-  snapshotPerMin: string | null;
-  snapshotFlatBase: string | null;
-  snapshotQuoteFixed: string | null;
-  baseAmount: string;
-  source: LegRateSource;
-  manualOverride: boolean;
-  payeeDriverId: number | null;
-  computedAt: string | null;
-  note: string | null;
-  isActive: boolean;
-};
-
-export type LegChargeLineEntity = {
-  id: number;
-  legId: number;
-  chargeCodeId: number;
-  chargeCode: string | null;
-  chargeName: string | null;
-  category: ChargeCategory | null;
-  snapshotUnitAmount: string | null;
-  quantity: string | null;
-  subtotal: string;
-  payeeKind: string | null;
-  payeeDriverId: number | null;
-  payeeDriverName: string | null;
-  description: string | null;
-  isActive: boolean;
-};
-
 export type LegFullEntity = {
   id: number;
   deliveryOrderId: number;
@@ -856,9 +701,6 @@ export type LegFullEntity = {
   note: string | null;
   isActive: boolean;
   segments: LegDriverSegmentEntity[];
-  rate: LegRateEntity | null;
-  charges: LegChargeLineEntity[];
-  legTotal: string;
 };
 
 export type ContainerFullEntity = {
@@ -881,61 +723,4 @@ export type ContainerFullEntity = {
   stops: ContainerStopEntity[];
   legs: LegFullEntity[];
   events: ContainerEventEntity[];
-};
-
-export type RateQuoteEntity = {
-  id: number;
-  name: string | null;
-  originLocationId: number | null;
-  destinationLocationId: number | null;
-  containerSize: ContainerSize | null;
-  moveType: MoveTypeV3 | null;
-  customerId: number | null;
-  fixedAmount: string;
-  effectiveFrom: string;
-  effectiveTo: string | null;
-  priority: number;
-  description: string | null;
-  isActive: boolean;
-};
-
-export type RateTariffEntity = {
-  id: number;
-  name: string;
-  moveType: MoveTypeV3 | null;
-  containerSize: ContainerSize | null;
-  customerId: number | null;
-  perValue: string;
-  perMin: string;
-  flatBase: string;
-  effectiveFrom: string;
-  effectiveTo: string | null;
-  priority: number;
-  description: string | null;
-  isActive: boolean;
-};
-
-export type DistanceMatrixEntity = {
-  id: number;
-  originLocationId: number;
-  destinationLocationId: number;
-  distanceValue: string;
-  durationMin: string;
-  source: DistanceProvider;
-  measuredAt: string | null;
-  note: string | null;
-  isActive: boolean;
-};
-
-export type RateCalculateResult = {
-  rateQuoteId: number | null;
-  rateTariffId: number | null;
-  snapshotDistanceValue: string | null;
-  snapshotDurationMin: string | null;
-  snapshotPerValue: string | null;
-  snapshotPerMin: string | null;
-  snapshotFlatBase: string | null;
-  snapshotQuoteFixed: string | null;
-  baseAmount: string;
-  source: LegRateSource;
 };

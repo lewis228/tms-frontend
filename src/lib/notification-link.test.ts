@@ -56,25 +56,6 @@ describe("notificationLinkFor", () => {
     ).toBeNull();
   });
 
-  it("links settlement.* with settlementId", () => {
-    expect(
-      notificationLinkFor(
-        n({
-          eventType: "settlement.approved",
-          payload: { settlementId: "S1" },
-        }),
-      ),
-    ).toBe("/app/accounting?settlement=S1");
-  });
-
-  it("falls back to /app/accounting for settlement without id", () => {
-    expect(
-      notificationLinkFor(
-        n({ eventType: "settlement.calculated", payload: {} }),
-      ),
-    ).toBe("/app/accounting");
-  });
-
   it("accepts number payload values for ids", () => {
     expect(
       notificationLinkFor(

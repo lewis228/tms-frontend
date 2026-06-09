@@ -55,10 +55,6 @@ const MasterTrucksPage = lazy(() => import("@/pages/master-trucks-page"));
 const MasterChassisPage = lazy(() => import("@/pages/master-chassis-page"));
 const MasterEquipmentPoolsPage = lazy(() => import("@/pages/master-equipment-pools-page"));
 const MasterChargeCodesPage = lazy(() => import("@/pages/master-charge-codes-page"));
-const MasterRateTariffsPage = lazy(() => import("@/pages/master-rate-tariffs-page"));
-const MasterRateQuotesPage = lazy(() => import("@/pages/master-rate-quotes-page"));
-const MasterDistanceMatrixPage = lazy(() => import("@/pages/master-distance-matrix-page"));
-const MasterRateCardsPage = lazy(() => import("@/pages/master-rate-cards-page"));
 const DeliveryOrdersPage = lazy(() => import("@/pages/delivery-orders-page"));
 const DeliveryOrderDetailPage = lazy(() => import("@/pages/delivery-order-detail-page"));
 const StreetTurnsPage = lazy(() => import("@/pages/street-turns-page"));
@@ -66,10 +62,6 @@ const OnboardingPage = lazy(() => import("@/pages/onboarding-page"));
 const DispatchPage = lazy(() => import("@/pages/dispatch-page"));
 const ContainerDetailPage = lazy(() => import("@/pages/container-detail-page"));
 const DriverSchedulePage = lazy(() => import("@/pages/driver-schedule-page"));
-const AccountingPage = lazy(() => import("@/pages/accounting-page"));
-const AccountingRatesPage = lazy(
-  () => import("@/pages/accounting-rates-page"),
-);
 const SystemTeamsPage = lazy(() => import("@/pages/system-teams-page"));
 const SystemUsersPage = lazy(() => import("@/pages/system-users-page"));
 const NotificationsPage = lazy(() => import("@/pages/notifications-page"));
@@ -154,13 +146,6 @@ export default function RootRoute() {
               <Route path="street-turns" element={<StreetTurnsPage />} />
             </Route>
 
-            <Route element={<ProtectedRoute require="DISPATCHER" />}>
-              <Route path="accounting" element={<AccountingPage />} />
-            </Route>
-            <Route element={<ProtectedRoute require="ADMIN" />}>
-              <Route path="accounting/rates" element={<AccountingRatesPage />} />
-            </Route>
-
             <Route path="master/customers" element={<MasterCustomersPage />} />
             <Route path="master/drivers" element={<MasterDriversPage />} />
             <Route path="master/trucks" element={<MasterTrucksPage />} />
@@ -171,10 +156,6 @@ export default function RootRoute() {
             <Route path="master/locations" element={<MasterLocationsPage />} />
             <Route element={<ProtectedRoute require="ADMIN" />}>
               <Route path="master/charge-codes" element={<MasterChargeCodesPage />} />
-              <Route path="master/rate-cards" element={<MasterRateCardsPage />} />
-              <Route path="master/rate-tariffs" element={<MasterRateTariffsPage />} />
-              <Route path="master/rate-quotes" element={<MasterRateQuotesPage />} />
-              <Route path="master/distance-matrix" element={<MasterDistanceMatrixPage />} />
             </Route>
 
             <Route element={<ProtectedRoute require="SUPER_ADMIN" />}>

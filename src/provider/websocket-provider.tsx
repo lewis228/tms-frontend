@@ -4,7 +4,6 @@
 // - do.created / do.status_changed
 // - leg.created / leg.status_changed
 // - file.uploaded
-// - settlement.calculated/adjusted/approved/unapproved
 //
 // 백엔드 fan_out_event 가 inbox row 를 자동 생성하므로 프론트는 알림 list/count
 // 캐시 무효화만 처리. 다음 fetch 에서 새 알림이 보임.
@@ -51,7 +50,6 @@ export default function WebSocketProvider({
       const deliveryOrderId = idFrom("deliveryOrderId");
       const legId = idFrom("legId");
       const driverId = idFrom("driverId");
-      const settlementId = idFrom("settlementId");
 
       // 모든 inbox 대상 이벤트 → 알림 캐시 무효화 (서버 fan-out 후 다음 fetch 에서 보임).
       const inboxTypes = new Set([
@@ -59,10 +57,6 @@ export default function WebSocketProvider({
         "do.status_changed",
         "leg.created",
         "leg.status_changed",
-        "settlement.calculated",
-        "settlement.adjusted",
-        "settlement.approved",
-        "settlement.unapproved",
         // v3: 컨테이너 WAITING_PLAN 진입 시 디스패처 inbox 알림.
         "container.waiting_plan",
       ]);
@@ -93,32 +87,6 @@ export default function WebSocketProvider({
           });
         }
         qc.invalidateQueries({ queryKey: QUERY_KEYS.containerV3.all });
-      }
-      if (evt.type === "leg_rate.updated") {
-        if (legId) {
-          qc.invalidateQueries({
-            queryKey: QUERY_KEYS.legRate.byLeg(legId),
-          });
-        }
-        qc.invalidateQueries({ queryKey: QUERY_KEYS.containerV3.all });
-      }
-      if (evt.type.startsWith("leg_charge.")) {
-        if (legId) {
-          qc.invalidateQueries({
-            queryKey: QUERY_KEYS.legCharge.byLeg(legId),
-          });
-        }
-        qc.invalidateQueries({ queryKey: QUERY_KEYS.legCharge.all });
-        qc.invalidateQueries({ queryKey: QUERY_KEYS.containerV3.all });
-      }
-      if (
-        evt.type.startsWith("rate_quote.") ||
-        evt.type.startsWith("rate_tariff.") ||
-        evt.type.startsWith("distance_matrix.")
-      ) {
-        qc.invalidateQueries({ queryKey: QUERY_KEYS.rateQuote.all });
-        qc.invalidateQueries({ queryKey: QUERY_KEYS.rateTariff.all });
-        qc.invalidateQueries({ queryKey: QUERY_KEYS.distanceMatrix.all });
       }
 
       switch (evt.type) {
@@ -154,26 +122,6 @@ export default function WebSocketProvider({
           break;
         case "file.uploaded":
           // Phase 7+ files 도메인에서 처리.
-          break;
-        case "settlement.calculated":
-        case "settlement.adjusted":
-        case "settlement.approved":
-        case "settlement.unapproved":
-          qc.invalidateQueries({ queryKey: QUERY_KEYS.settlement.all });
-          if (settlementId) {
-            qc.invalidateQueries({
-              queryKey: QUERY_KEYS.settlement.byId(settlementId),
-            });
-            qc.invalidateQueries({
-              queryKey: QUERY_KEYS.settlement.extras(settlementId),
-            });
-            qc.invalidateQueries({
-              queryKey: QUERY_KEYS.settlement.auditLogs(settlementId),
-            });
-          }
-          if (legId) {
-            qc.invalidateQueries({ queryKey: QUERY_KEYS.leg.byId(legId) });
-          }
           break;
         default:
           // 알 수 없는 type — 무시.

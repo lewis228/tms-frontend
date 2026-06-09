@@ -60,38 +60,11 @@ export const QUERY_KEYS = {
     events: (containerId: number) =>
       ["container", "events", containerId] as const,
   },
-  settlement: {
-    all: ["settlement"] as const,
-    list: (params: Record<string, unknown> = {}) =>
-      ["settlement", "list", params] as const,
-    byId: (id: number) => ["settlement", "byId", id] as const,
-    extras: (id: number) => ["settlement", "extras", id] as const,
-    auditLogs: (id: number) => ["settlement", "auditLogs", id] as const,
-  },
-  rateSetting: {
-    all: ["rate-setting"] as const,
-    list: (params: Record<string, unknown> = {}) =>
-      ["rate-setting", "list", params] as const,
-    byId: (id: number) => ["rate-setting", "byId", id] as const,
-  },
   chargeCode: {
     all: ["charge-code"] as const,
     list: (params: Record<string, unknown> = {}) =>
       ["charge-code", "list", params] as const,
     byId: (id: number) => ["charge-code", "byId", id] as const,
-  },
-  rateCard: {
-    all: ["rate-card"] as const,
-    list: (params: Record<string, unknown> = {}) =>
-      ["rate-card", "list", params] as const,
-    byId: (id: number) => ["rate-card", "byId", id] as const,
-  },
-  legCharge: {
-    all: ["leg-charge"] as const,
-    list: (params: Record<string, unknown> = {}) =>
-      ["leg-charge", "list", params] as const,
-    byLeg: (legId: number) => ["leg-charge", "byLeg", legId] as const,
-    byId: (id: number) => ["leg-charge", "byId", id] as const,
   },
   truck: {
     all: ["truck"] as const,
@@ -170,28 +143,6 @@ export const QUERY_KEYS = {
   legSegment: {
     all: ["leg-segment"] as const,
     byLeg: (legId: number) => ["leg-segment", "byLeg", legId] as const,
-  },
-  legRate: {
-    all: ["leg-rate"] as const,
-    byLeg: (legId: number) => ["leg-rate", "byLeg", legId] as const,
-  },
-  rateQuote: {
-    all: ["rate-quote"] as const,
-    list: (params: Record<string, unknown> = {}) =>
-      ["rate-quote", "list", params] as const,
-    byId: (id: number) => ["rate-quote", "byId", id] as const,
-  },
-  rateTariff: {
-    all: ["rate-tariff"] as const,
-    list: (params: Record<string, unknown> = {}) =>
-      ["rate-tariff", "list", params] as const,
-    byId: (id: number) => ["rate-tariff", "byId", id] as const,
-  },
-  distanceMatrix: {
-    all: ["distance-matrix"] as const,
-    list: (params: Record<string, unknown> = {}) =>
-      ["distance-matrix", "list", params] as const,
-    byId: (id: number) => ["distance-matrix", "byId", id] as const,
   },
   locationPing: {
     all: ["location-ping"] as const,

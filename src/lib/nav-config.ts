@@ -101,28 +101,6 @@ export const NAV_CONFIG: NavNode[] = [
   },
   {
     type: "section",
-    label: "nav.accounting",
-    iconName: "Wallet",
-    requiredRole: "DISPATCHER",
-    children: [
-      {
-        type: "leaf",
-        label: "nav.settlements",
-        iconName: "Receipt",
-        path: "accounting",
-        requiredRole: "DISPATCHER",
-      },
-      {
-        type: "leaf",
-        label: "nav.rateSettings",
-        iconName: "BadgeDollarSign",
-        path: "accounting/rates",
-        requiredRole: "ADMIN",
-      },
-    ],
-  },
-  {
-    type: "section",
     label: "nav.masterData",
     iconName: "Folder",
     children: [
@@ -179,34 +157,6 @@ export const NAV_CONFIG: NavNode[] = [
         label: "nav.chargeCodes",
         iconName: "Tag",
         path: "master/charge-codes",
-        requiredRole: "ADMIN",
-      },
-      {
-        type: "leaf",
-        label: "nav.rateCards",
-        iconName: "BadgeDollarSign",
-        path: "master/rate-cards",
-        requiredRole: "ADMIN",
-      },
-      {
-        type: "leaf",
-        label: "nav.rateTariffs",
-        iconName: "Calculator",
-        path: "master/rate-tariffs",
-        requiredRole: "ADMIN",
-      },
-      {
-        type: "leaf",
-        label: "nav.rateQuotes",
-        iconName: "Receipt",
-        path: "master/rate-quotes",
-        requiredRole: "ADMIN",
-      },
-      {
-        type: "leaf",
-        label: "nav.distanceMatrix",
-        iconName: "Route",
-        path: "master/distance-matrix",
         requiredRole: "ADMIN",
       },
     ],

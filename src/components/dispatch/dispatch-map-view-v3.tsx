@@ -16,7 +16,7 @@ import Loader from "@/components/loader";
 import Fallback from "@/components/fallback";
 import { useContainersV3Data } from "@/hooks/queries/use-containers-v3-data";
 import { useLocationsData } from "@/hooks/queries/use-locations-data";
-import type { ContainerListEntity, ContainerWorkState } from "@/types";
+import type { ContainerWorkState } from "@/types";
 
 const STATE_COLOR: Record<ContainerWorkState, string> = {
   DRAFT: "#a1a1aa",

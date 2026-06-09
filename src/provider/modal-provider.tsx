@@ -15,11 +15,6 @@ import DriverEditorModal from "@/components/driver/driver-editor-modal";
 import DriverTempPasswordModal from "@/components/driver/driver-temp-password-modal";
 import LegEditorModal from "@/components/leg/leg-editor-modal";
 import LocationEditorModal from "@/components/location/location-editor-modal";
-import RateSettingEditorModal from "@/components/rate-setting/rate-setting-editor-modal";
-import SettlementAdjustModal from "@/components/settlement/settlement-adjust-modal";
-import SettlementApproveModal from "@/components/settlement/settlement-approve-modal";
-import SettlementCalculateModal from "@/components/settlement/settlement-calculate-modal";
-import SettlementUnapproveModal from "@/components/settlement/settlement-unapprove-modal";
 import SystemUserEditorModal from "@/components/system-user/system-user-editor-modal";
 import TeamEditorModal from "@/components/team/team-editor-modal";
 import TerminalEditorModal from "@/components/terminal/terminal-editor-modal";
@@ -47,13 +42,6 @@ export default function ModalProvider({ children }: { children: ReactNode }) {
           <DeliveryOrderCreateModal />
           <AIIntakeModal />
           <LegEditorModal />
-          {/* Settlements */}
-          <SettlementCalculateModal />
-          <SettlementAdjustModal />
-          <SettlementApproveModal />
-          <SettlementUnapproveModal />
-          {/* Rate Settings */}
-          <RateSettingEditorModal />
           {/* System (SUPER_ADMIN) */}
           <TeamEditorModal />
           <SystemUserEditorModal />

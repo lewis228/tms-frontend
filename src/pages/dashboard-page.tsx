@@ -20,7 +20,6 @@ import { useCustomersData } from "@/hooks/queries/use-customers-data";
 import { useDeliveryOrdersData } from "@/hooks/queries/use-delivery-orders-data";
 import { useDriversData } from "@/hooks/queries/use-drivers-data";
 import { useLegsData } from "@/hooks/queries/use-legs-data";
-import { useSettlementsData } from "@/hooks/queries/use-settlements-data";
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/lib/constants";
 import { STATUS_ORDER } from "@/lib/delivery-order";
@@ -49,11 +48,6 @@ export default function DashboardPage() {
     useLegsData(1, 100);
   const { data: driversData, isPending: driversPending, error: driversError } =
     useDriversData(1);
-  const {
-    data: settlementsData,
-    isPending: settlementsPending,
-    error: settlementsError,
-  } = useSettlementsData(1, 100);
   const { data: customersData } = useCustomersData(1);
   const { data: containersData } = useQuery({
     queryKey: QUERY_KEYS.container.list({ size: 200 }),
@@ -77,11 +71,6 @@ export default function DashboardPage() {
     const drivers = driversData?.items ?? [];
     const activeDrivers = drivers.filter((d) => d.isActive);
 
-    const settlements = settlementsData?.items ?? [];
-    const unsettled = settlements.filter(
-      (s) => s.settlementStatus !== "APPROVED",
-    );
-
     const byStatus: Record<string, number> = {};
     for (const s of STATUS_ORDER) byStatus[s] = 0;
     for (const o of orders) byStatus[o.status] = (byStatus[o.status] ?? 0) + 1;
@@ -94,7 +83,6 @@ export default function DashboardPage() {
       pendingLegs: pendingLegs.length,
       activeDrivers: activeDrivers.length,
       totalDrivers: drivers.length,
-      unsettled: unsettled.length,
       donut: STATUS_ORDER.map((s) => ({
         status: s,
         count: byStatus[s] ?? 0,
@@ -102,7 +90,7 @@ export default function DashboardPage() {
       orders,
       containers,
     };
-  }, [doData, legsData, driversData, settlementsData, containersData]);
+  }, [doData, legsData, driversData, containersData]);
 
   const urgent = useMemo(
     () =>
@@ -113,10 +101,8 @@ export default function DashboardPage() {
     [stats.orders, stats.containers],
   );
 
-  if (doError || legsError || driversError || settlementsError)
-    return <Fallback />;
-  if (doPending || legsPending || driversPending || settlementsPending)
-    return <Loader />;
+  if (doError || legsError || driversError) return <Fallback />;
+  if (doPending || legsPending || driversPending) return <Loader />;
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -147,12 +133,6 @@ export default function DashboardPage() {
           value={stats.pendingLegs}
           hint={t("dashboard.kpi.pendingLegsHint")}
           to="dispatch/drivers"
-        />
-        <KpiCard
-          label={t("dashboard.kpi.unsettled")}
-          value={stats.unsettled}
-          hint={t("dashboard.kpi.unsettledHint")}
-          tone={stats.unsettled > 0 ? "warning" : "default"}
         />
       </div>
 

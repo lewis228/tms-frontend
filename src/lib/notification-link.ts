@@ -13,13 +13,7 @@ export function notificationLinkFor(n: NotificationEntity): string | null {
   };
 
   const deliveryOrderId = ref("deliveryOrderId");
-  const settlementId = ref("settlementId");
 
-  if (n.eventType.startsWith("settlement.")) {
-    return settlementId != null
-      ? `/app/accounting?settlement=${settlementId}`
-      : "/app/accounting";
-  }
   if (n.eventType.startsWith("do.") || n.eventType.startsWith("leg.")) {
     return deliveryOrderId != null
       ? `/app/delivery-orders?do=${deliveryOrderId}`

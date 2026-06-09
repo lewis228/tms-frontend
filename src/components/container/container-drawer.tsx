@@ -1,5 +1,5 @@
 // Container Drawer — URL ?container=:id 와 양방향 동기화.
-// 탭 4개: 기본정보 / Legs / 이벤트 / 정산(stub).
+// 탭 3개: 기본정보 / Legs / 이벤트.
 //
 // D/O Drawer 와 같은 sheet 패턴. ?do 와 ?container 가 동시에 있으면
 // 둘 다 열림 (D/O drawer 위에 container drawer 가 stack).
@@ -18,16 +18,14 @@ import Fallback from "@/components/fallback";
 import ContainerForm from "@/components/container/container-form";
 import ContainerLegList from "@/components/container/container-leg-list";
 import ContainerEventTimeline from "@/components/container/container-event-timeline";
-import ContainerSettlement from "@/components/container/container-settlement";
 import { useContainerByIdData } from "@/hooks/queries/use-container-by-id-data";
 
-type Tab = "basic" | "legs" | "events" | "settlement";
+type Tab = "basic" | "legs" | "events";
 
 const TABS: { value: Tab; labelKey: string }[] = [
   { value: "basic", labelKey: "container.tab.basic" },
   { value: "legs", labelKey: "container.tab.legs" },
   { value: "events", labelKey: "container.tab.events" },
-  { value: "settlement", labelKey: "container.tab.settlement" },
 ];
 
 export default function ContainerDrawer() {
@@ -86,7 +84,6 @@ export default function ContainerDrawer() {
               {tab === "events" && (
                 <ContainerEventTimeline containerId={data.id} />
               )}
-              {tab === "settlement" && <ContainerSettlement container={data} />}
             </>
           )}
         </div>
