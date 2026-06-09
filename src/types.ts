@@ -15,13 +15,44 @@ export const ROLE_RANK: Record<UserRole, number> = {
 
 export type DeliveryStatus =
   | "PLANNING"
+  | "DISPATCHING"
   | "DISPATCHED"
   | "YARD_STAGED"
   | "FINAL_DELIVERY"
   | "EMPTY_STAGED"
   | "COMPLETED";
 
-export type LegStatus = "PENDING" | "IN_TRANSIT" | "COMPLETED" | "FAILED" | "DRY_RUN";
+export type LegStatus =
+  | "PENDING"
+  | "ASSIGNED"
+  | "IN_TRANSIT"
+  | "COMPLETED"
+  | "FAILED"
+  | "DRY_RUN";
+
+// 재설계(컨플루언스): Leg From/To 의 Location 종류 + Layer1 move_code + Load Direction
+export type LegLocationType = "TERMINAL" | "YARD" | "CUSTOMER";
+export type LegMoveCode =
+  | "PPU"
+  | "PRE"
+  | "PPL"
+  | "DRP"
+  | "STR"
+  | "TRL"
+  | "RMP"
+  | "OTR"
+  | "ERP";
+export type LoadDirection = "IMPORT" | "EXPORT" | "BOTH";
+
+export type LoadTypeTemplateEntity = {
+  id: number;
+  code: string;
+  name: string;
+  direction: LoadDirection;
+  description: string | null;
+  isSystem: boolean;
+  isActive: boolean;
+};
 
 export type ShipmentDirection = "IMPORT" | "EXPORT";
 export type MoveType = "LOADED" | "EMPTY" | "BOBTAIL";
@@ -230,6 +261,8 @@ export type DriverEntity = {
   defaultChassisId: number | null;
   licenseExpiresAt: string | null;
   medicalCertExpiresAt: string | null;
+  twicExpiresAt: string | null;
+  hireDate: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -250,6 +283,9 @@ export type TruckEntity = {
   ownerKind: TruckOwnerKind;
   ownerDriverId: number | null;
   status: TruckStatus;
+  registrationExpiresAt: string | null;
+  insuranceExpiresAt: string | null;
+  inspectionExpiresAt: string | null;
   note: string | null;
   isActive: boolean;
   createdAt: string;
@@ -292,6 +328,8 @@ export type ChassisEntity = {
   ownerPoolId: number | null;
   status: ChassisStatus;
   currentLocationId: number | null;
+  registrationExpiresAt: string | null;
+  inspectionExpiresAt: string | null;
   note: string | null;
   isActive: boolean;
   createdAt: string;
@@ -385,6 +423,10 @@ export type DeliveryOrderEntity = {
   blReleased: boolean;
   internalNote: string | null;
   isActive: boolean;
+  isOnHold: boolean;
+  holdReason: string | null;
+  cancelledAt: string | null;
+  cancelReason: string | null;
   createdAt: string;
   updatedAt: string;
   // H-10: list 응답에만 채워짐
@@ -397,6 +439,19 @@ export type DeliveryOrderEntity = {
 // D/O detail 응답 — containers nested 포함 (백엔드 DeliveryOrderDetailResponseSchema).
 export type DeliveryOrderDetailEntity = DeliveryOrderEntity & {
   containers: ContainerEntity[];
+};
+
+// 감사 로그 1건 — D/O activity timeline (백엔드 AuditLog).
+export type AuditLogEntity = {
+  id: number;
+  entityType: string;
+  entityId: number;
+  action: string;
+  summary: string | null;
+  beforeState: Record<string, unknown> | null;
+  afterState: Record<string, unknown> | null;
+  createdByUserId: number | null;
+  createdAt: string | null;
 };
 
 export type ContainerEntity = {
@@ -467,6 +522,9 @@ export type LegEntity = {
   moveType: MoveType;
   serviceType: ServiceType;
   legKind: LegKind | null;
+  fromLocationType: LegLocationType | null;
+  toLocationType: LegLocationType | null;
+  moveCode: LegMoveCode | null;
   status: LegStatus;
   driverId: number | null;
   pickupLocationId: number | null;
@@ -477,6 +535,7 @@ export type LegEntity = {
   arrivedAt: string | null;
   completedAt: string | null;
   failureReason: string | null;
+  reissuedFromLegId: number | null;
   storageDays: number;
   isSettled: boolean;
   settlementId: number | null;
@@ -484,6 +543,163 @@ export type LegEntity = {
   note: string | null;
   createdAt: string;
   updatedAt: string;
+};
+
+// ─────────────────────────────────────────────────────────────────
+// Rate management (rate-group / rate-point / rate-multiplier / driver-rate-assignment)
+// 백엔드 응답은 alias_generator=to_camel 로 camelCase. Entity 필드도 camelCase 1:1.
+// ─────────────────────────────────────────────────────────────────
+
+export type RateMethod = "ZONE" | "CITY" | "MILE" | "HOURLY";
+export type PointType = "TERMINAL" | "YARD";
+export type RateContainerSize = "SIZE_20" | "SIZE_40" | "SIZE_45";
+
+export type RateGroupEntity = {
+  id: number;
+  name: string;
+  method: RateMethod;
+  isDefault: boolean;
+  isTemplate: boolean;
+  description: string | null;
+  isActive: boolean;
+};
+
+export type RatePointEntity = {
+  id: number;
+  name: string;
+  code: string | null;
+  pointType: PointType;
+  address: string | null;
+  latitude: string | null;
+  longitude: string | null;
+  terminalId: number | null;
+  locationId: number | null;
+  note: string | null;
+  isActive: boolean;
+};
+
+export type RateMultiplierEntity = {
+  id: number;
+  rateGroupId: number | null;
+  containerSize: RateContainerSize;
+  factor: string;
+  note: string | null;
+  isActive: boolean;
+};
+
+export type DriverRateAssignmentEntity = {
+  id: number;
+  driverId: number;
+  rateGroupId: number;
+  effectiveFrom: string;
+  effectiveTo: string | null;
+  note: string | null;
+  isActive: boolean;
+};
+
+// UI 합성 — list 에서 driver / group 이름을 join 표시.
+export type DriverRateAssignment = DriverRateAssignmentEntity & {
+  driverName?: string;
+  groupName?: string;
+};
+
+// ─────────────────────────────────────────────────────────────────
+// Rate Zone — zip/city 묶음 (요율 매트릭스의 column 차원 후보)
+// 백엔드 응답은 alias_generator=to_camel 로 camelCase.
+// ─────────────────────────────────────────────────────────────────
+
+export type RateZoneMemberEntity = {
+  id: number;
+  zipCode: string | null;
+  city: string | null;
+  state: string | null;
+};
+
+export type RateZoneEntity = {
+  id: number;
+  name: string;
+  code: string | null;
+  color: string | null;
+  geojson: Record<string, unknown> | null;
+  description: string | null;
+  isActive: boolean;
+};
+
+// 상세 — members 포함.
+export type RateZone = RateZoneEntity & {
+  members: RateZoneMemberEntity[];
+};
+
+// ─────────────────────────────────────────────────────────────────
+// Rate Sheet — 요율 매트릭스 슬롯 + 셀(entry) + 변경 이력
+// ─────────────────────────────────────────────────────────────────
+
+export type SheetKind =
+  | "POINT_ZONE"
+  | "POINT_CITY"
+  | "POINT_POINT"
+  | "MILE"
+  | "HOURLY";
+
+export type RateMoveType = "LOAD" | "EMPTY" | "NONE";
+
+export type SheetStatus = "EMPTY" | "PARTIAL" | "ACTIVE" | "INACTIVE";
+
+export type RateSheetEntity = {
+  id: number;
+  rateGroupId: number;
+  kind: SheetKind;
+  moveType: RateMoveType | null;
+  rowPointId: number | null;
+  note: string | null;
+  isActive: boolean;
+  status: SheetStatus;
+  openEntryCount: number;
+};
+
+export type RateEntryEntity = {
+  id: number;
+  rateSheetId: number;
+  colZoneId: number | null;
+  colPointId: number | null;
+  colCity: string | null;
+  colState: string | null;
+  containerSize: RateContainerSize | null;
+  amount: string | null;
+  perUnit: string | null;
+  effectiveFrom: string;
+  effectiveTo: string | null;
+  source: string;
+  changeReason: string | null;
+  isActive: boolean;
+};
+
+export type RateEntryHistoryEntity = {
+  id: number;
+  rateSheetId: number;
+  rateEntryId: number | null;
+  colZoneId: number | null;
+  colPointId: number | null;
+  colCity: string | null;
+  colState: string | null;
+  containerSize: RateContainerSize | null;
+  oldAmount: string | null;
+  newAmount: string | null;
+  oldPerUnit: string | null;
+  newPerUnit: string | null;
+  effectiveFrom: string | null;
+  action: string;
+  reason: string | null;
+  createdAt: string | null;
+};
+
+export type RateLookupResult = {
+  found: boolean;
+  amount: string | null;
+  perUnit: string | null;
+  rateEntryId: number | null;
+  effectiveFrom: string | null;
+  message: string | null;
 };
 
 export type PagedResponse<T> = {
@@ -515,6 +731,126 @@ export type RealtimeEvent = {
   payload: Record<string, unknown> | null;
   occurredAt: string;
 };
+
+// ── Payroll (드라이버 정산) ────────────────────────────────────
+// Decimal 필드(baseTotal/accessorialTotal/grandTotal/baseAmount/...)는 문자열로 직렬화한다.
+export type PayrollStatus = "DRAFT" | "CONFIRMED" | "PAID" | "VOID";
+export type PayrollLineSource = "RESOLVED" | "UNRESOLVED" | "MANUAL";
+
+export type PayrollEntity = {
+  id: number;
+  driverId: number;
+  periodStart: string;
+  periodEnd: string;
+  status: PayrollStatus;
+  baseTotal: string;
+  accessorialTotal: string;
+  grandTotal: string;
+  note: string | null;
+  isActive: boolean;
+};
+
+export type PayrollLineEntity = {
+  id: number;
+  legId: number | null;
+  workDate: string | null;
+  baseAmount: string;
+  source: PayrollLineSource;
+  rateSnapshot: Record<string, unknown> | null;
+  message: string | null;
+};
+
+export type PayrollChargeEntity = {
+  id: number;
+  code: string;
+  accessorialId: number | null;
+  snapshotUnitAmount: string | null;
+  quantity: string;
+  amount: string;
+  note: string | null;
+};
+
+export type PayrollDetailEntity = PayrollEntity & {
+  lines: PayrollLineEntity[];
+  charges: PayrollChargeEntity[];
+};
+
+export type PayrollPreviewLine = {
+  legId: number;
+  workDate: string | null;
+  baseAmount: string;
+  source: PayrollLineSource;
+  message: string | null;
+};
+
+export type PayrollPreview = {
+  driverId: number;
+  periodStart: string;
+  periodEnd: string;
+  lineCount: number;
+  unresolvedCount: number;
+  baseTotal: string;
+  lines: PayrollPreviewLine[];
+};
+
+export type PayrollPeriodSummary = {
+  periodStart: string;
+  periodEnd: string;
+  count: number;
+  driverCount: number;
+  baseTotal: string;
+  accessorialTotal: string;
+  grandTotal: string;
+};
+
+export type PayrollBuildPeriodResult = {
+  periodStart: string;
+  periodEnd: string;
+  builtCount: number;
+  skippedDrivers: number[];
+  settlements: PayrollEntity[];
+};
+
+// UI 합성 — driver 이름 join.
+export type Payroll = PayrollEntity & { driverName?: string };
+
+// ── Invoice (고객 청구) ────────────────────────────────────────
+export type InvoiceStatus = "DRAFT" | "ISSUED" | "PAID" | "VOID";
+export type InvoiceLineSource = "PREFILL" | "MANUAL";
+
+export type InvoiceEntity = {
+  id: number;
+  customerId: number;
+  deliveryOrderId: number | null;
+  invoiceNumber: string | null;
+  status: InvoiceStatus;
+  issueDate: string | null;
+  dueDate: string | null;
+  costTotal: string;
+  chargeTotal: string;
+  margin: string; // 서버 computed field
+  note: string | null;
+  isActive: boolean;
+};
+
+export type InvoiceLineEntity = {
+  id: number;
+  containerId: number | null;
+  description: string;
+  quantity: string;
+  unitAmount: string;
+  amount: string;
+  source: InvoiceLineSource;
+  costAmount: string | null;
+  note: string | null;
+};
+
+export type InvoiceDetailEntity = InvoiceEntity & {
+  lines: InvoiceLineEntity[];
+};
+
+// UI 합성 — customer 이름 join.
+export type Invoice = InvoiceEntity & { customerName?: string };
 
 // 백엔드 Notification entity (서버 fan-out 결과).
 // channel/status 는 string 으로 받음 (ENUM 변경 시 프론트 immutable).
@@ -599,6 +935,46 @@ export type StreetTurnEntity = {
   approvedAt: string | null;
   rejectedReason: string | null;
   isActive: boolean;
+};
+
+// ─────────────────────────────────────────────────────────────────
+// Dual Transaction (반납 + 픽업 1 드라이버 묶음)
+// ─────────────────────────────────────────────────────────────────
+
+export type DualTransactionStatus = "PLANNED" | "COMPLETED" | "CANCELLED";
+
+export type DualTransactionEntity = {
+  id: number;
+  driverId: number;
+  truckId: number | null;
+  returnLegId: number;
+  pickupLegId: number;
+  status: DualTransactionStatus;
+  scheduledAt: string | null;
+  note: string | null;
+  isActive: boolean;
+};
+
+export type DualTransaction = DualTransactionEntity & { driverName?: string };
+
+// ─────────────────────────────────────────────────────────────────
+// Expiring compliance (장비 / DQ 만료 알림) — analytics widget
+// ─────────────────────────────────────────────────────────────────
+
+export type ExpiringItem = {
+  entityType: "truck" | "chassis" | "driver";
+  entityId: number;
+  label: string;
+  field: "registration" | "insurance" | "inspection" | "license" | "medical" | "twic";
+  expiresAt: string;
+  daysLeft: number;
+};
+
+export type ExpiringComplianceResponse = {
+  days: number;
+  expiredCount: number;
+  soonCount: number;
+  items: ExpiringItem[];
 };
 
 // ─────────────────────────────────────────────────────────────────
@@ -691,6 +1067,9 @@ export type LegFullEntity = {
   toStopId: number | null;
   moveTypeV3: MoveTypeV3 | null;
   serviceType: ServiceType | null;
+  fromLocationType: LegLocationType | null;
+  toLocationType: LegLocationType | null;
+  moveCode: LegMoveCode | null;
   status: LegStatus;
   driverId: number | null;
   driverName: string | null;
@@ -698,6 +1077,7 @@ export type LegFullEntity = {
   arrivedAt: string | null;
   completedAt: string | null;
   failureReason: string | null;
+  reissuedFromLegId: number | null;
   note: string | null;
   isActive: boolean;
   segments: LegDriverSegmentEntity[];

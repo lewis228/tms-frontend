@@ -12,6 +12,7 @@ import type { DeliveryStatus } from "@/types";
 
 const COLOR: Record<DeliveryStatus, string> = {
   PLANNING: "#94a3b8",
+  DISPATCHING: "#38bdf8",
   DISPATCHED: "#3b82f6",
   YARD_STAGED: "#f59e0b",
   FINAL_DELIVERY: "#8b5cf6",

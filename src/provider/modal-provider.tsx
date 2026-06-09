@@ -11,6 +11,7 @@ import ApiKeyCreatedModal from "@/components/modal/api-key-created-modal";
 import AIIntakeModal from "@/components/modal/ai-intake-modal";
 import CustomerEditorModal from "@/components/customer/customer-editor-modal";
 import DeliveryOrderCreateModal from "@/components/delivery-order/delivery-order-create-modal";
+import DualTransactionCreateModal from "@/components/dual-transaction/dual-transaction-create-modal";
 import DriverEditorModal from "@/components/driver/driver-editor-modal";
 import DriverTempPasswordModal from "@/components/driver/driver-temp-password-modal";
 import LegEditorModal from "@/components/leg/leg-editor-modal";
@@ -19,6 +20,12 @@ import SystemUserEditorModal from "@/components/system-user/system-user-editor-m
 import TeamEditorModal from "@/components/team/team-editor-modal";
 import TerminalEditorModal from "@/components/terminal/terminal-editor-modal";
 import VesselEditorModal from "@/components/vessel/vessel-editor-modal";
+import RateGroupEditorModal from "@/components/rate-group/rate-group-editor-modal";
+import RatePointEditorModal from "@/components/rate-point/rate-point-editor-modal";
+import RateZoneEditorModal from "@/components/rate-zone/rate-zone-editor-modal";
+import RateSheetCreateModal from "@/components/rate-sheet/rate-sheet-create-modal";
+import DriverRateAssignmentEditorModal from "@/components/driver-rate-assignment/driver-rate-assignment-editor-modal";
+import InvoiceCreateModal from "@/components/invoice/invoice-create-modal";
 
 export default function ModalProvider({ children }: { children: ReactNode }) {
   return (
@@ -38,10 +45,19 @@ export default function ModalProvider({ children }: { children: ReactNode }) {
           <CustomerEditorModal />
           <DriverEditorModal />
           <DriverTempPasswordModal />
+          {/* Rate management */}
+          <RateGroupEditorModal />
+          <RatePointEditorModal />
+          <RateZoneEditorModal />
+          <RateSheetCreateModal />
+          <DriverRateAssignmentEditorModal />
+          {/* Billing */}
+          <InvoiceCreateModal />
           {/* Delivery Orders / Legs */}
           <DeliveryOrderCreateModal />
           <AIIntakeModal />
           <LegEditorModal />
+          <DualTransactionCreateModal />
           {/* System (SUPER_ADMIN) */}
           <TeamEditorModal />
           <SystemUserEditorModal />

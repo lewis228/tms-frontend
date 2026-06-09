@@ -8,6 +8,9 @@ import { useSearchParams } from "react-router-dom";
 import StatusBadge from "@/components/delivery-order/status-badge";
 import StatusMover from "@/components/delivery-order/status-mover";
 import LegTimeline from "@/components/delivery-order/leg-timeline";
+import ActivityTimeline from "@/components/delivery-order/activity-timeline";
+import DeliveryOrderActions from "@/components/delivery-order/delivery-order-actions";
+import DeliveryOrderBanners from "@/components/delivery-order/delivery-order-banners";
 import ContainerSubTable from "@/components/container/container-sub-table";
 import { useCustomersData } from "@/hooks/queries/use-customers-data";
 import { useTerminalsData } from "@/hooks/queries/use-terminals-data";
@@ -51,8 +54,12 @@ export default function DeliveryOrderDetail({
     );
   };
 
+  const isCancelled = deliveryOrder.cancelledAt !== null;
+
   return (
     <div className="flex flex-col gap-5 pt-4">
+      <DeliveryOrderBanners deliveryOrder={deliveryOrder} />
+
       <Section title={t("deliveryOrder.section.status")}>
         <div className="flex items-center gap-2">
           <StatusBadge status={deliveryOrder.status} />
@@ -60,7 +67,8 @@ export default function DeliveryOrderDetail({
             {t("deliveryOrder.directionPrefix")} {deliveryOrder.direction}
           </span>
         </div>
-        <StatusMover deliveryOrder={deliveryOrder} />
+        {!isCancelled && <StatusMover deliveryOrder={deliveryOrder} />}
+        <DeliveryOrderActions deliveryOrder={deliveryOrder} />
       </Section>
 
       <Section title={t("deliveryOrder.section.basicInfo")}>
@@ -89,6 +97,10 @@ export default function DeliveryOrderDetail({
 
       <Section title={t("deliveryOrder.section.legTimeline")}>
         <LegTimeline deliveryOrderId={deliveryOrder.id} />
+      </Section>
+
+      <Section title={t("deliveryOrder.section.activity")}>
+        <ActivityTimeline deliveryOrderId={deliveryOrder.id} />
       </Section>
 
       <Section title={t("deliveryOrder.section.note")}>

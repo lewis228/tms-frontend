@@ -1,0 +1,182 @@
+import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
+
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import Loader from "@/components/loader";
+import Fallback from "@/components/fallback";
+import { useDriverRateAssignmentsData } from "@/hooks/queries/use-driver-rate-assignments-data";
+import { useDriversData } from "@/hooks/queries/use-drivers-data";
+import { useRateGroupsData } from "@/hooks/queries/use-rate-groups-data";
+import { useDeleteDriverRateAssignment } from "@/hooks/mutations/driver-rate-assignment/use-delete-driver-rate-assignment";
+import { generateErrorMessage } from "@/lib/error";
+import { formatDate } from "@/lib/format";
+import { useOpenAlertModal } from "@/store/alert-modal";
+import {
+  useOpenCreateDriverRateAssignmentModal,
+  useOpenEditDriverRateAssignmentModal,
+} from "@/store/driver-rate-assignment-editor-modal";
+import type { DriverRateAssignment, DriverRateAssignmentEntity } from "@/types";
+
+export default function DriverRateAssignmentList() {
+  const { t } = useTranslation();
+  const [page, setPage] = useState(1);
+
+  const { data, isPending, error } = useDriverRateAssignmentsData(page);
+  const { data: driversData } = useDriversData();
+  const { data: groupsData } = useRateGroupsData();
+  const openCreate = useOpenCreateDriverRateAssignmentModal();
+  const openEdit = useOpenEditDriverRateAssignmentModal();
+  const openAlert = useOpenAlertModal();
+
+  const { mutate: deleteAssignment } = useDeleteDriverRateAssignment({
+    onSuccess: () =>
+      toast.success(t("toast.deleted"), { position: "top-center" }),
+    onError: (err) =>
+      toast.error(generateErrorMessage(err), { position: "top-center" }),
+  });
+
+  const driverNameById = useMemo(() => {
+    const map = new Map<number, string>();
+    driversData?.items.forEach((d) => map.set(d.id, d.name));
+    return map;
+  }, [driversData]);
+
+  const groupNameById = useMemo(() => {
+    const map = new Map<number, string>();
+    groupsData?.items.forEach((g) => map.set(g.id, g.name));
+    return map;
+  }, [groupsData]);
+
+  const rows = useMemo<DriverRateAssignment[]>(() => {
+    if (!data) return [];
+    return data.items.map((a) => ({
+      ...a,
+      driverName: driverNameById.get(a.driverId),
+      groupName: groupNameById.get(a.rateGroupId),
+    }));
+  }, [data, driverNameById, groupNameById]);
+
+  if (error) return <Fallback />;
+  if (isPending) return <Loader />;
+
+  const handleDelete = (v: DriverRateAssignmentEntity) => {
+    openAlert({
+      title: t("driverRateAssignment.deletePromptTitle"),
+      description: t("driverRateAssignment.deletePromptDesc"),
+      onPositive: () => deleteAssignment(v.id),
+    });
+  };
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center justify-end gap-2">
+        <Button onClick={() => openCreate()}>
+          {t("driverRateAssignment.newButton")}
+        </Button>
+      </div>
+
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>{t("driverRateAssignment.field.driver")}</TableHead>
+              <TableHead>{t("driverRateAssignment.field.rateGroup")}</TableHead>
+              <TableHead>
+                {t("driverRateAssignment.field.effectiveFrom")}
+              </TableHead>
+              <TableHead>
+                {t("driverRateAssignment.field.effectiveTo")}
+              </TableHead>
+              <TableHead>{t("field.note")}</TableHead>
+              <TableHead>{t("common.active")}</TableHead>
+              <TableHead className="text-right">{t("common.actions")}</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {rows.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={7}
+                  className="text-center text-muted-foreground"
+                >
+                  {t("common.noData")}
+                </TableCell>
+              </TableRow>
+            ) : (
+              rows.map((v) => (
+                <TableRow key={v.id}>
+                  <TableCell className="font-medium">
+                    {v.driverName ?? `#${v.driverId}`}
+                  </TableCell>
+                  <TableCell>{v.groupName ?? `#${v.rateGroupId}`}</TableCell>
+                  <TableCell>{formatDate(v.effectiveFrom)}</TableCell>
+                  <TableCell>
+                    {v.effectiveTo ? formatDate(v.effectiveTo) : "—"}
+                  </TableCell>
+                  <TableCell className="max-w-xs truncate">
+                    {v.note ?? "—"}
+                  </TableCell>
+                  <TableCell>{v.isActive ? "✓" : "—"}</TableCell>
+                  <TableCell className="text-right">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => openEdit(v)}
+                    >
+                      {t("common.edit")}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="ml-2 text-destructive"
+                      onClick={() => handleDelete(v)}
+                    >
+                      {t("common.delete")}
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
+
+      <div className="flex items-center justify-between text-sm">
+        <span className="text-muted-foreground">
+          {t("common.totalCount", { count: data.total })} ·{" "}
+          {t("common.pageOf", {
+            page: data.page,
+            pages: Math.max(1, data.pages),
+          })}
+        </span>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={page <= 1}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+          >
+            {t("common.previous")}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={page >= data.pages}
+            onClick={() => setPage((p) => p + 1)}
+          >
+            {t("common.next")}
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}

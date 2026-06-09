@@ -19,6 +19,7 @@ const TOTAL_DAYS = DAYS_BEFORE + 1 + DAYS_AFTER;
 
 const LEG_STATUS_COLOR: Record<LegStatus, string> = {
   PENDING: "bg-slate-400",
+  ASSIGNED: "bg-indigo-500",
   IN_TRANSIT: "bg-blue-500",
   COMPLETED: "bg-green-500",
   FAILED: "bg-red-500",

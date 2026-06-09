@@ -1,5 +1,6 @@
 // /api/v1/analytics/* — Dashboard 집계 endpoint.
 import api from "@/lib/axios";
+import type { ExpiringComplianceResponse } from "@/types";
 
 export type MarginTrendPoint = {
   bucket: string;
@@ -85,6 +86,16 @@ export async function fetchStreetTurnSavings(
 ): Promise<StreetTurnSavingsResponse> {
   const { data } = await api.get<StreetTurnSavingsResponse>(
     "/analytics/street-turn-savings",
+    { params: { days } },
+  );
+  return data;
+}
+
+export async function fetchExpiringCompliance(
+  days = 30,
+): Promise<ExpiringComplianceResponse> {
+  const { data } = await api.get<ExpiringComplianceResponse>(
+    "/analytics/expiring-compliance",
     { params: { days } },
   );
   return data;

@@ -90,3 +90,32 @@ export async function transitionLeg(
 export async function deleteLeg(id: number): Promise<void> {
   await api.delete(`/legs/${id}`);
 }
+
+// Load Type 템플릿 → container 에 leg N개 자동 생성. 생성된 leg 배열 반환.
+export async function applyLoadType({
+  containerId,
+  templateId,
+  replaceExisting,
+}: {
+  containerId: number;
+  templateId: number;
+  replaceExisting?: boolean;
+}): Promise<LegEntity[]> {
+  const { data } = await api.post<LegEntity[]>("/legs/apply-load-type", {
+    containerId,
+    templateId,
+    replaceExisting: replaceExisting ?? false,
+  });
+  return data;
+}
+
+// Dry Run 재발급 — 원본 leg 는 DRY_RUN 으로 종료, 동일 구간 새 PENDING leg 발급.
+export async function reissueLeg(
+  id: number,
+  { reason }: { reason?: string | null } = {},
+): Promise<LegEntity> {
+  const { data } = await api.post<LegEntity>(`/legs/${id}/reissue`, {
+    reason: reason ?? null,
+  });
+  return data;
+}

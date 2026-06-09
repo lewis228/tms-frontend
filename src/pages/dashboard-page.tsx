@@ -13,6 +13,7 @@ import MarginTrendChart from "@/components/dashboard/margin-trend-chart";
 import DriverUtilizationList from "@/components/dashboard/driver-utilization-list";
 import ContainerTurnoverChart from "@/components/dashboard/container-turnover-chart";
 import StreetTurnSavingsCard from "@/components/dashboard/street-turn-savings-card";
+import ExpiringComplianceCard from "@/components/dashboard/expiring-compliance-card";
 import Loader from "@/components/loader";
 import Fallback from "@/components/fallback";
 import { fetchContainers } from "@/api/container";
@@ -152,6 +153,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <ExpiringComplianceCard days={30} />
         <section className="rounded-md border bg-background p-4">
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             {t("dashboard.section.statusDistribution")}

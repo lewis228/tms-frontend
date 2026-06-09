@@ -6,6 +6,7 @@ import api from "@/lib/axios";
 import { adaptCursorToPaged, type CursorResponse } from "@/lib/pagination";
 import type { ContainerCreateInnerPayload } from "@/api/container";
 import type {
+  AuditLogEntity,
   DeliveryOrderDetailEntity,
   DeliveryOrderEntity,
   DeliveryStatus,
@@ -78,6 +79,37 @@ export async function transitionDeliveryOrder(
   const { data } = await api.post<DeliveryOrderEntity>(
     `/delivery-orders/${id}/transition`,
     { target },
+  );
+  return data;
+}
+
+export async function holdDeliveryOrder(
+  id: number,
+  { onHold, reason }: { onHold: boolean; reason?: string },
+): Promise<DeliveryOrderEntity> {
+  const { data } = await api.post<DeliveryOrderEntity>(
+    `/delivery-orders/${id}/hold`,
+    { onHold, reason },
+  );
+  return data;
+}
+
+export async function cancelDeliveryOrder(
+  id: number,
+  { reason }: { reason?: string } = {},
+): Promise<DeliveryOrderEntity> {
+  const { data } = await api.post<DeliveryOrderEntity>(
+    `/delivery-orders/${id}/cancel`,
+    { reason },
+  );
+  return data;
+}
+
+export async function fetchDeliveryOrderActivity(
+  id: number,
+): Promise<AuditLogEntity[]> {
+  const { data } = await api.get<AuditLogEntity[]>(
+    `/delivery-orders/${id}/activity`,
   );
   return data;
 }

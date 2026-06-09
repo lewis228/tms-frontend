@@ -49,6 +49,8 @@ export type DriverCreatePayload = {
   defaultChassisId?: number | null;
   licenseExpiresAt?: string | null;
   medicalCertExpiresAt?: string | null;
+  twicExpiresAt?: string | null;
+  hireDate?: string | null;
 };
 
 export type DriverUpdatePayload = Partial<DriverCreatePayload> & {

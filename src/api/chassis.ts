@@ -18,6 +18,8 @@ export type ChassisCreatePayload = {
   status?: ChassisStatus;
   currentLocationId?: number | null;
   note?: string | null;
+  registrationExpiresAt?: string | null;
+  inspectionExpiresAt?: string | null;
 };
 
 export type ChassisUpdatePayload = Partial<ChassisCreatePayload>;

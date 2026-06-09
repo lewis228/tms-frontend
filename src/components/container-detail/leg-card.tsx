@@ -1,7 +1,10 @@
 // Leg 카드 — segments 표시. 가장 정보 밀도 높은 곳.
+import { useTranslation } from "react-i18next";
+
 import { formatDateTime } from "@/lib/format";
 import type { LegFullEntity } from "@/types";
 import AddSegmentButton from "@/components/container-detail/add-segment-button";
+import ReissueLegButton from "@/components/container-detail/reissue-leg-button";
 
 export default function LegCard({
   leg,
@@ -10,6 +13,9 @@ export default function LegCard({
   leg: LegFullEntity;
   containerId: number;
 }) {
+  const { t } = useTranslation();
+  const canReissue = leg.status === "ASSIGNED" || leg.status === "IN_TRANSIT";
+
   return (
     <div className="rounded-md border bg-card">
       <div className="flex flex-wrap items-center gap-3 border-b px-3 py-2">
@@ -22,6 +28,11 @@ export default function LegCard({
             {leg.moveTypeV3}
           </span>
         )}
+        {leg.moveCode && (
+          <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
+            {leg.moveCode}
+          </span>
+        )}
         {leg.serviceType && (
           <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
             {leg.serviceType}
@@ -32,6 +43,16 @@ export default function LegCard({
             ? `#${leg.fromStopId} → #${leg.toStopId}`
             : "stop 미연결"}
         </span>
+        {leg.reissuedFromLegId !== null && (
+          <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] text-amber-800">
+            {t("loadType.reissuedFrom", { id: leg.reissuedFromLegId })}
+          </span>
+        )}
+        {canReissue && (
+          <div className="ml-auto">
+            <ReissueLegButton legId={leg.id} containerId={containerId} />
+          </div>
+        )}
       </div>
 
       {/* Driver Segments */}

@@ -182,6 +182,8 @@ function ChassisEditor({
   const [ownerPoolId, setOwnerPoolId] = useState<number | null>(initial?.ownerPoolId ?? null);
   const [status, setStatus] = useState<ChassisStatus>(initial?.status ?? "AVAILABLE");
   const [note, setNote] = useState(initial?.note ?? "");
+  const [registrationExpiresAt, setRegistrationExpiresAt] = useState(initial?.registrationExpiresAt ?? "");
+  const [inspectionExpiresAt, setInspectionExpiresAt] = useState(initial?.inspectionExpiresAt ?? "");
 
   const { mutate: createChassis, isPending: isCreatePending } = useCreateChassis({
     onSuccess: () => {
@@ -222,6 +224,8 @@ function ChassisEditor({
       ownerPoolId: isPool ? ownerPoolId : null,
       status,
       note: note.trim() || null,
+      registrationExpiresAt: registrationExpiresAt || null,
+      inspectionExpiresAt: inspectionExpiresAt || null,
     };
     if (isEdit) {
       updateChassis({ id: editor.row.id, payload });
@@ -305,6 +309,22 @@ function ChassisEditor({
                   </select>
                 </Field>
               )}
+              <Field label={t("chassis.field.registrationExpiresAt")}>
+                <Input
+                  type="date"
+                  value={registrationExpiresAt}
+                  onChange={(e) => setRegistrationExpiresAt(e.target.value)}
+                  disabled={isPending}
+                />
+              </Field>
+              <Field label={t("chassis.field.inspectionExpiresAt")}>
+                <Input
+                  type="date"
+                  value={inspectionExpiresAt}
+                  onChange={(e) => setInspectionExpiresAt(e.target.value)}
+                  disabled={isPending}
+                />
+              </Field>
             </div>
             <Field label={t("chassis.field.note")}>
               <textarea

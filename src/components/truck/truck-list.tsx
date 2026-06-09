@@ -181,6 +181,9 @@ function TruckEditor({
   const [ownerDriverId, setOwnerDriverId] = useState<number | null>(initial?.ownerDriverId ?? null);
   const [status, setStatus] = useState<TruckStatus>(initial?.status ?? "ACTIVE");
   const [note, setNote] = useState(initial?.note ?? "");
+  const [registrationExpiresAt, setRegistrationExpiresAt] = useState(initial?.registrationExpiresAt ?? "");
+  const [insuranceExpiresAt, setInsuranceExpiresAt] = useState(initial?.insuranceExpiresAt ?? "");
+  const [inspectionExpiresAt, setInspectionExpiresAt] = useState(initial?.inspectionExpiresAt ?? "");
 
   const { mutate: createTruck, isPending: isCreatePending } = useCreateTruck({
     onSuccess: () => {
@@ -217,6 +220,9 @@ function TruckEditor({
       ownerDriverId: ownerKind === "DRIVER" ? ownerDriverId : null,
       status,
       note: note.trim() || null,
+      registrationExpiresAt: registrationExpiresAt || null,
+      insuranceExpiresAt: insuranceExpiresAt || null,
+      inspectionExpiresAt: inspectionExpiresAt || null,
     };
     if (isEdit) {
       updateTruck({ id: editor.row.id, payload });
@@ -293,6 +299,30 @@ function TruckEditor({
                   </select>
                 </Field>
               )}
+              <Field label={t("truck.field.registrationExpiresAt")}>
+                <Input
+                  type="date"
+                  value={registrationExpiresAt}
+                  onChange={(e) => setRegistrationExpiresAt(e.target.value)}
+                  disabled={isPending}
+                />
+              </Field>
+              <Field label={t("truck.field.insuranceExpiresAt")}>
+                <Input
+                  type="date"
+                  value={insuranceExpiresAt}
+                  onChange={(e) => setInsuranceExpiresAt(e.target.value)}
+                  disabled={isPending}
+                />
+              </Field>
+              <Field label={t("truck.field.inspectionExpiresAt")}>
+                <Input
+                  type="date"
+                  value={inspectionExpiresAt}
+                  onChange={(e) => setInspectionExpiresAt(e.target.value)}
+                  disabled={isPending}
+                />
+              </Field>
             </div>
             <Field label={t("truck.field.note")}>
               <textarea

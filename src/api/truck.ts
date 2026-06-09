@@ -18,6 +18,9 @@ export type TruckCreatePayload = {
   ownerDriverId?: number | null;
   status?: TruckStatus;
   note?: string | null;
+  registrationExpiresAt?: string | null;
+  insuranceExpiresAt?: string | null;
+  inspectionExpiresAt?: string | null;
 };
 
 export type TruckUpdatePayload = Partial<TruckCreatePayload>;

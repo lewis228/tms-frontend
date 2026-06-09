@@ -36,7 +36,9 @@
     "pageOf": "{{page}}/{{pages}} 페이지",
     "signOut": "로그아웃",
     "soon": "예정",
-    "add": "추가"
+    "add": "추가",
+    "remove": "제거",
+    "open": "열기"
   },
   "toast": {
     "saved": "저장되었습니다.",
@@ -53,7 +55,7 @@
     "FORBIDDEN": "접근 권한이 없습니다.",
     "FORBIDDEN_ROLE": "해당 작업을 수행할 권한이 부족합니다.",
     "TEAM_MISMATCH": "다른 팀의 데이터에 접근할 수 없습니다.",
-    "TEAM_REQUIRED": "팀가 지정되지 않았습니다.",
+    "TEAM_REQUIRED": "팀을 먼저 선택해주세요.",
     "NO_TEAM": "사용자에게 팀가 없습니다.",
     "AUTH_INVALID": "이메일 또는 비밀번호가 일치하지 않습니다.",
     "TOKEN_EXPIRED": "세션이 만료되었습니다. 다시 로그인해 주세요.",
@@ -93,7 +95,6 @@
     "NOT_TEAM_MEMBER": "팀에서 제외되었습니다. 팀 선택 화면으로 이동합니다.",
     "TEAM_NOT_FOUND": "해당 팀을 찾을 수 없습니다.",
     "TEAM_SCOPE_REQUIRED": "팀을 먼저 선택해주세요.",
-    "TEAM_REQUIRED": "팀을 먼저 선택해주세요.",
     "ALREADY_EXISTS": "현재 팀에 이미 존재하는 항목입니다.",
     "FK_IN_USE": "다른 데이터가 참조 중이라 삭제할 수 없습니다.",
     "FK_REFERENCE_NOT_FOUND": "참조하는 리소스가 더 이상 존재하지 않습니다.",
@@ -230,7 +231,9 @@
       "BROKER": "브로커",
       "VENDOR": "공급사"
     },
-    "kindFilter": { "all": "전체 역할" },
+    "kindFilter": {
+      "all": "전체 역할"
+    },
     "validation": {
       "nameRequired": "이름을 입력하세요."
     }
@@ -303,7 +306,9 @@
     "namePlaceholder": "홍길동",
     "phonePlaceholder": "+1 213 555 0100",
     "tempPasswordWarning": "⚠️ 생성 후 1회만 노출되는 임시 비밀번호가 발급됩니다. 닫기 전에 반드시 안전하게 저장하세요.",
-    "section": { "employment": "고용 / 정산 / 컴플라이언스" },
+    "section": {
+      "employment": "고용 / 정산 / 컴플라이언스"
+    },
     "field": {
       "licenseNumber": "면허 번호",
       "licenseState": "면허 주",
@@ -313,7 +318,9 @@
       "paymentTermsKind": "정산 방식",
       "paymentTermsValue": "정산 값",
       "licenseExpiresAt": "면허 만료일",
-      "medicalCertExpiresAt": "건강 진단서 만료일"
+      "medicalCertExpiresAt": "건강 진단서 만료일",
+      "twicExpiresAt": "TWIC 만료일",
+      "hireDate": "입사일"
     },
     "tempPassword": {
       "title": "기사 가입 완료",
@@ -357,7 +364,10 @@
       "ownerKind": "소유",
       "ownerDriver": "소유 기사",
       "status": "상태",
-      "note": "메모"
+      "note": "메모",
+      "registrationExpiresAt": "등록증 만료일",
+      "insuranceExpiresAt": "보험 만료일",
+      "inspectionExpiresAt": "검사 만료일"
     },
     "validation": {
       "plateRequired": "차량 번호를 입력하세요.",
@@ -379,7 +389,9 @@
       "ownerDriver": "소유 기사",
       "ownerPool": "소유 풀",
       "status": "상태",
-      "note": "메모"
+      "note": "메모",
+      "registrationExpiresAt": "등록증 만료일",
+      "inspectionExpiresAt": "검사 만료일"
     },
     "validation": {
       "numberRequired": "챠시 번호를 입력하세요.",
@@ -406,22 +418,10 @@
     }
   },
   "team": {
-    "domain": "Team",
-    "newButton": "새 Team",
-    "createTitle": "Team 생성",
-    "editTitle": "Team 수정",
-    "deletePromptTitle": "Team '{{name}}' 을(를) 삭제하시겠습니까?",
-    "deletePromptDesc": "⚠ Team 삭제는 CASCADE 로 모든 사용자/D-O/Leg/Settlement/파일 등 모든 연관 데이터가 영구 삭제됩니다. 복구할 수 없습니다.",
-    "searchPlaceholder": "이름 / 회사명 검색",
-    "field": {
-      "name": "이름",
-      "companyName": "회사명",
-      "timezone": "Timezone",
-      "phone": "전화"
-    },
-    "validation": {
-      "nameRequired": "이름을 입력하세요."
-    }
+    "untitled": "회사 #{{id}}",
+    "createSuccess": "회사가 생성되었습니다.",
+    "newNamePlaceholder": "새 회사 이름",
+    "createTeam": "회사 만들기"
   },
   "systemUser": {
     "domain": "사용자",
@@ -465,7 +465,8 @@
       "basicInfo": "기본 정보",
       "gatesCondition": "게이트 조건",
       "legTimeline": "Leg Timeline",
-      "note": "메모"
+      "note": "메모",
+      "activity": "활동 내역"
     },
     "field": {
       "direction": "방향",
@@ -524,10 +525,43 @@
       "blReleased": "B/L Released",
       "pierPassPaid": "Pier Pass Paid",
       "customsCleared": "Customs Cleared"
+    },
+    "status": {
+      "PLANNING": "계획",
+      "DISPATCHING": "배차중",
+      "DISPATCHED": "배차완료",
+      "YARD_STAGED": "야드 대기",
+      "FINAL_DELIVERY": "최종 배송",
+      "EMPTY_STAGED": "공컨 대기",
+      "COMPLETED": "완료"
+    },
+    "actions": {
+      "hold": "보류",
+      "releaseHold": "보류 해제",
+      "cancel": "취소",
+      "holdTitle": "D/O 보류",
+      "holdDescription": "이 D/O 를 보류 상태로 전환합니다. 사유를 입력하세요 (선택).",
+      "releaseTitle": "보류 해제",
+      "releaseDescription": "이 D/O 의 보류를 해제합니다.",
+      "cancelTitle": "D/O 취소",
+      "cancelDescription": "이 D/O 를 취소합니다. 취소 후에는 상태 변경이 불가합니다. 사유를 입력하세요 (선택).",
+      "reasonPlaceholder": "사유 (선택)",
+      "submitting": "처리중...",
+      "holdSuccess": "보류 상태가 변경되었습니다.",
+      "cancelSuccess": "D/O 가 취소되었습니다."
+    },
+    "banner": {
+      "onHold": "보류 중",
+      "cancelled": "취소됨"
+    },
+    "activity": {
+      "empty": "활동 내역이 없습니다."
     }
   },
   "container": {
-    "section": { "title": "컨테이너" },
+    "section": {
+      "title": "컨테이너"
+    },
     "addRow": "컨테이너 추가",
     "empty": "컨테이너가 없습니다.",
     "unassignedWarning": "미배차",
@@ -602,7 +636,9 @@
         "poolPayout": "풀 사용료",
         "margin": "마진"
       },
-      "validation": { "required": "청구 코드와 금액을 입력하세요." }
+      "validation": {
+        "required": "청구 코드와 금액을 입력하세요."
+      }
     }
   },
   "streetTurn": {
@@ -677,7 +713,9 @@
       "glAccount": "회계 계정",
       "description": "설명"
     },
-    "validation": { "required": "코드와 이름을 입력하세요." }
+    "validation": {
+      "required": "코드와 이름을 입력하세요."
+    }
   },
   "rateCard": {
     "newButton": "요율 카드 추가",
@@ -704,7 +742,9 @@
       "effectiveTo": "유효 종료일",
       "description": "설명"
     },
-    "validation": { "chargeCodeRequired": "청구 코드를 선택하세요." }
+    "validation": {
+      "chargeCodeRequired": "청구 코드를 선택하세요."
+    }
   },
   "legStop": {
     "stopsLabel": "Stops ({{count}})",
@@ -771,6 +811,48 @@
     },
     "transition": {
       "failureReasonPrompt": "실패 사유를 입력하세요"
+    }
+  },
+  "shipmentDetail": {
+    "tabs": {
+      "legs": "경로 / Leg",
+      "stops": "정차지",
+      "events": "이벤트",
+      "map": "지도"
+    },
+    "legsHeading": "Leg",
+    "stopsHeading": "정차지",
+    "noLegs": "Leg 없음.",
+    "meta": {
+      "route": "경로",
+      "size": "크기",
+      "deliveryOrder": "D/O",
+      "customer": "고객",
+      "direction": "방향",
+      "terminal": "터미널",
+      "vessel": "선박",
+      "driver": "기사",
+      "demurrageLfd": "Demurrage LFD",
+      "eta": "ETA"
+    }
+  },
+  "loadType": {
+    "applyButton": "Load Type 적용",
+    "dialogTitle": "Load Type 적용",
+    "reissueButton": "재발급 (Dry Run)",
+    "reissueDialogTitle": "Leg 재발급 (Dry Run)",
+    "reissuedFrom": "#{{id}} 에서 재발급됨",
+    "field": {
+      "template": "템플릿",
+      "selectTemplate": "— 템플릿 선택 —",
+      "replaceExisting": "기존 Leg 교체",
+      "replaceExistingWarn": "아직 시작하지 않은 기존 Leg 를 교체합니다.",
+      "reissueReason": "사유",
+      "reissueReasonPlaceholder": "이 Leg 를 재발급하는 이유는?"
+    },
+    "toast": {
+      "applied": "템플릿으로 Leg 를 생성했습니다.",
+      "reissued": "Leg 재발급 완료. 새 PENDING Leg 가 생성되었습니다."
     }
   },
   "settlement": {
@@ -974,7 +1056,9 @@
       "containerTurnover": "컨테이너 회전",
       "containerTurnoverHint": "최근 {{days}}일 GATE_OUT / RETURNED / STREET_TURNED",
       "streetTurnSavings": "Street Turn 절감액",
-      "streetTurnSavingsHint": "최근 {{days}}일 누적"
+      "streetTurnSavingsHint": "최근 {{days}}일 누적",
+      "expiringCompliance": "장비/DQ 만료 알림",
+      "expiringComplianceHint": "최근 {{days}}일 내 만료 / 임박 항목"
     },
     "marginTrend": {
       "revenue": "매출",
@@ -1005,6 +1089,26 @@
       "unsettledHint": "APPROVED 외 settlement",
       "activeDrivers": "활성 기사",
       "activeDriversHint": "활성 / 전체"
+    },
+    "expiringCompliance": {
+      "expired": "만료 {{count}}",
+      "soon": "임박 {{count}}",
+      "daysLeft": "{{count}}일 남음",
+      "expiredChip": "만료됨",
+      "more": "외 {{count}}건",
+      "entityType": {
+        "truck": "트럭",
+        "chassis": "샤시",
+        "driver": "드라이버"
+      },
+      "field": {
+        "registration": "등록",
+        "insurance": "보험",
+        "inspection": "검사",
+        "license": "면허",
+        "medical": "건강진단",
+        "twic": "TWIC"
+      }
     }
   },
   "notification": {
@@ -1167,7 +1271,16 @@
       "title": "404 — 찾을 수 없음",
       "alt": "에러 일러스트",
       "backHome": "홈으로 돌아가기"
-    }
+    },
+    "rates": {
+      "rateGroups": "요율 그룹 (Rate Groups)",
+      "ratePoints": "요율 포인트 (Rate Points)",
+      "rateMultipliers": "요율 배율 (Rate Multipliers)",
+      "driverRateAssignments": "기사 요율 배정 (Driver Rate Assignments)",
+      "rateZones": "요율 존 (Rate Zones)",
+      "rateSheets": "요율표 (Rate Sheets)"
+    },
+    "dualTransactions": "듀얼 트랜잭션 (Dual Transactions)"
   },
   "oauth": {
     "processing": "인증 처리 중..."
@@ -1210,7 +1323,17 @@
     "settingsTags": "태그",
     "settingsPlugins": "플러그인",
     "settingsPayment": "결제",
-    "settingsApiKeys": "API 키"
+    "settingsApiKeys": "API 키",
+    "rates": "요율 (Rates)",
+    "rateGroups": "요율 그룹",
+    "ratePoints": "요율 포인트",
+    "rateMultipliers": "요율 배율",
+    "driverRateAssignments": "기사 요율 배정",
+    "rateZones": "요율 존",
+    "rateSheets": "요율표 (매트릭스)",
+    "billing": "정산·청구",
+    "invoices": "고객 청구",
+    "dualTransactions": "듀얼 트랜잭션"
   },
   "header": {
     "toggleSidebar": "사이드바 토글",
@@ -1311,12 +1434,6 @@
       "confirmDescription": "계정과 모든 관련 데이터가 영구적으로 삭제되며, 복구할 수 없습니다.",
       "received": "계정 삭제 요청이 접수되었습니다."
     }
-  },
-  "team": {
-    "untitled": "회사 #{{id}}",
-    "createSuccess": "회사가 생성되었습니다.",
-    "newNamePlaceholder": "새 회사 이름",
-    "createTeam": "회사 만들기"
   },
   "appHome": {
     "title": "TMS Pro",
@@ -1586,5 +1703,320 @@
     "revokeSuccess": "API 키가 폐기되었습니다.",
     "revokeConfirmTitle": "'{{name}}' 키를 폐기할까요?",
     "revokeConfirmDescription": "폐기된 키로는 더 이상 API 에 접근할 수 없습니다. 이 작업은 되돌릴 수 없습니다."
+  },
+  "rateGroup": {
+    "newButton": "새 요율 그룹",
+    "createTitle": "요율 그룹 생성",
+    "editTitle": "요율 그룹 수정",
+    "deletePromptTitle": "'{{name}}' 요율 그룹을 삭제하시겠습니까?",
+    "deletePromptDesc": "복구할 수 없습니다.",
+    "searchPlaceholder": "이름 / 설명 검색",
+    "field": {
+      "method": "산정 방식",
+      "isDefault": "기본값",
+      "isTemplate": "템플릿"
+    },
+    "method": {
+      "ZONE": "존 (ZONE)",
+      "CITY": "도시/우편 (CITY)",
+      "MILE": "거리 (MILE)",
+      "HOURLY": "시간 (HOURLY)"
+    }
+  },
+  "ratePoint": {
+    "newButton": "새 요율 포인트",
+    "createTitle": "요율 포인트 생성",
+    "editTitle": "요율 포인트 수정",
+    "deletePromptTitle": "'{{name}}' 요율 포인트를 삭제하시겠습니까?",
+    "deletePromptDesc": "복구할 수 없습니다.",
+    "searchPlaceholder": "이름 / 코드 / 주소 검색",
+    "terminalPlaceholder": "터미널 선택",
+    "locationPlaceholder": "장소 선택",
+    "field": {
+      "pointType": "포인트 종류",
+      "latitude": "위도",
+      "longitude": "경도",
+      "terminal": "터미널",
+      "location": "장소"
+    },
+    "pointTypeOption": {
+      "TERMINAL": "터미널",
+      "YARD": "야드"
+    }
+  },
+  "rateMultiplier": {
+    "description": "컨테이너 사이즈별 요율 배율을 관리합니다. 요율 그룹을 선택하면 해당 그룹 전용 배율을, 선택하지 않으면 팀 전역 기본 배율을 설정합니다.",
+    "scopeLabel": "적용 범위 (요율 그룹)",
+    "globalScope": "— 팀 전역 (기본) —",
+    "invalidFactor": "배율은 0보다 큰 숫자여야 합니다.",
+    "deletePromptTitle": "이 배율을 삭제하시겠습니까?",
+    "deletePromptDesc": "삭제 시 기본값으로 폴백됩니다.",
+    "field": {
+      "containerSize": "컨테이너 사이즈",
+      "factor": "배율"
+    },
+    "sizeOption": {
+      "SIZE_20": "20ft",
+      "SIZE_40": "40ft",
+      "SIZE_45": "45ft"
+    }
+  },
+  "driverRateAssignment": {
+    "newButton": "새 요율 배정",
+    "createTitle": "기사 요율 배정 생성",
+    "editTitle": "기사 요율 배정 수정",
+    "deletePromptTitle": "이 요율 배정을 삭제하시겠습니까?",
+    "deletePromptDesc": "복구할 수 없습니다.",
+    "driverPlaceholder": "기사 선택",
+    "rateGroupPlaceholder": "요율 그룹 선택",
+    "field": {
+      "driver": "기사",
+      "rateGroup": "요율 그룹",
+      "effectiveFrom": "적용 시작일",
+      "effectiveTo": "적용 종료일"
+    }
+  },
+  "rateZone": {
+    "newButton": "새 요율 존",
+    "createTitle": "요율 존 생성",
+    "editTitle": "요율 존 수정",
+    "deletePromptTitle": "'{{name}}' 요율 존을 삭제하시겠습니까?",
+    "deletePromptDesc": "복구할 수 없습니다.",
+    "searchPlaceholder": "이름 / 코드 / 설명 검색",
+    "field": {
+      "color": "색상"
+    },
+    "members": {
+      "title": "멤버 (우편번호 / 도시)",
+      "addRow": "행 추가",
+      "save": "멤버 저장",
+      "zipCode": "우편번호",
+      "city": "도시",
+      "state": "주(State)"
+    }
+  },
+  "rateSheet": {
+    "newButton": "새 요율표",
+    "createTitle": "요율표 생성",
+    "deletePromptTitle": "이 요율표를 삭제하시겠습니까?",
+    "deletePromptDesc": "복구할 수 없습니다.",
+    "allGroups": "전체 그룹",
+    "rateGroupPlaceholder": "요율 그룹 선택",
+    "rowPointPlaceholder": "요율 포인트 선택",
+    "field": {
+      "rateGroup": "요율 그룹",
+      "kind": "종류",
+      "moveType": "이동 타입",
+      "rowPoint": "행 포인트",
+      "openEntryCount": "열린 셀 수"
+    },
+    "kind": {
+      "POINT_ZONE": "포인트 × 존",
+      "POINT_CITY": "포인트 × 도시",
+      "POINT_POINT": "포인트 × 포인트",
+      "MILE": "거리 (MILE)",
+      "HOURLY": "시간 (HOURLY)"
+    },
+    "moveType": {
+      "LOAD": "적재 (LOAD)",
+      "EMPTY": "공컨 (EMPTY)",
+      "NONE": "없음 (Bobtail)"
+    },
+    "containerSize": {
+      "SIZE_20": "20ft",
+      "SIZE_40": "40ft",
+      "SIZE_45": "45ft"
+    },
+    "tabs": {
+      "entries": "셀 (Entries)",
+      "history": "이력",
+      "lookup": "조회"
+    },
+    "detail": {
+      "subtitle": "요율 그룹 {{group}}"
+    },
+    "grid": {
+      "column": "열 (Column)",
+      "containerSize": "컨테이너 사이즈",
+      "amount": "금액",
+      "perUnit": "단가",
+      "effectiveFrom": "유효 시작일",
+      "effectiveTo": "유효 종료일",
+      "reason": "사유",
+      "colZoneId": "존 ID",
+      "colPointId": "포인트 ID",
+      "colCity": "도시",
+      "colState": "주(State)",
+      "setTitle": "요율 등록 / 변경",
+      "setButton": "요율 등록"
+    },
+    "history": {
+      "action": "액션",
+      "oldAmount": "이전 값",
+      "newAmount": "새 값",
+      "createdAt": "변경 시각"
+    },
+    "lookup": {
+      "workDate": "기준일",
+      "button": "조회",
+      "found": "요율 발견",
+      "notFound": "등록된 요율이 없습니다."
+    }
+  },
+  "payroll": {
+    "title": "드라이버 정산",
+    "newButton": "정산 생성",
+    "allStatuses": "전체 상태",
+    "invalidRange": "종료일은 시작일 이후여야 합니다.",
+    "deletePromptTitle": "이 정산을 삭제하시겠습니까?",
+    "deletePromptDesc": "복구할 수 없습니다.",
+    "field": {
+      "driver": "기사",
+      "period": "기간",
+      "periodStart": "시작일",
+      "periodEnd": "종료일",
+      "status": "상태",
+      "baseTotal": "기본 합계",
+      "accessorialTotal": "부가요금 합계",
+      "grandTotal": "총합계"
+    },
+    "status": {
+      "DRAFT": "초안",
+      "CONFIRMED": "확정",
+      "PAID": "지급 완료",
+      "VOID": "취소"
+    },
+    "lineSource": {
+      "RESOLVED": "산출됨",
+      "UNRESOLVED": "요율 미등록",
+      "MANUAL": "수동"
+    },
+    "tabs": {
+      "lines": "라인",
+      "charges": "부가요금"
+    },
+    "line": {
+      "legId": "레그",
+      "workDate": "작업일",
+      "source": "출처",
+      "baseAmount": "기본 금액"
+    },
+    "charge": {
+      "code": "코드",
+      "quantity": "수량",
+      "amount": "금액",
+      "note": "메모",
+      "add": "부가요금 추가"
+    },
+    "action": {
+      "confirm": "확정",
+      "markPaid": "지급 완료",
+      "void": "취소"
+    },
+    "summary": {
+      "driverCount": "기사 수",
+      "count": "정산 건수",
+      "grandTotal": "총합계"
+    },
+    "buildPeriod": {
+      "button": "기간 일괄 생성",
+      "driversOptional": "기사 (선택)",
+      "addDriver": "기사 추가",
+      "result": "{{built}}건 생성됨, {{skipped}}명 건너뜀"
+    }
+  },
+  "invoice": {
+    "title": "고객 청구",
+    "newButton": "청구서 생성",
+    "createTitle": "청구서 생성",
+    "allStatuses": "전체 상태",
+    "customerPlaceholder": "고객사 선택",
+    "deliveryOrderPlaceholder": "D/O 선택",
+    "prefillFromDo": "D/O 원가에서 라인 프리필",
+    "recomputeCost": "원가 재계산",
+    "deletePromptTitle": "이 청구서를 삭제하시겠습니까?",
+    "deletePromptDesc": "복구할 수 없습니다.",
+    "field": {
+      "customer": "고객사",
+      "deliveryOrder": "배송 주문 (D/O)",
+      "invoiceNumber": "청구 번호",
+      "issueDate": "발행일",
+      "dueDate": "지급기한",
+      "status": "상태",
+      "costTotal": "원가",
+      "chargeTotal": "청구",
+      "margin": "마진"
+    },
+    "status": {
+      "DRAFT": "초안",
+      "ISSUED": "발행됨",
+      "PAID": "수금 완료",
+      "VOID": "취소"
+    },
+    "lineSource": {
+      "PREFILL": "프리필",
+      "MANUAL": "수동"
+    },
+    "tabs": {
+      "lines": "라인",
+      "info": "정보"
+    },
+    "line": {
+      "description": "설명",
+      "quantity": "수량",
+      "unitAmount": "단가",
+      "amount": "금액",
+      "costAmount": "원가(참고)",
+      "add": "라인 추가"
+    },
+    "action": {
+      "issue": "발행",
+      "markPaid": "수금 완료",
+      "void": "취소"
+    }
+  },
+  "dualTransaction": {
+    "pageHint": "반납 leg 와 픽업 leg 를 한 드라이버에게 묶어 처리합니다.",
+    "create": "듀얼 트랜잭션 생성",
+    "createTitle": "듀얼 트랜잭션 생성",
+    "legPlaceholder": "leg 선택",
+    "selectDriverFirst": "먼저 드라이버를 선택하세요",
+    "status": {
+      "PLANNED": "예정",
+      "COMPLETED": "완료",
+      "CANCELLED": "취소"
+    },
+    "filter": {
+      "ALL": "전체",
+      "PLANNED": "예정",
+      "COMPLETED": "완료",
+      "CANCELLED": "취소"
+    },
+    "field": {
+      "id": "ID",
+      "driver": "드라이버",
+      "returnLeg": "반납 Leg",
+      "pickupLeg": "픽업 Leg",
+      "truck": "트럭",
+      "status": "상태",
+      "scheduledAt": "예정 시각",
+      "note": "메모"
+    },
+    "action": {
+      "complete": "완료",
+      "cancel": "취소",
+      "delete": "삭제"
+    },
+    "validation": {
+      "driverRequired": "드라이버를 선택하세요.",
+      "legsRequired": "반납 leg 와 픽업 leg 를 모두 선택하세요.",
+      "legsDistinct": "반납 leg 와 픽업 leg 는 서로 달라야 합니다."
+    },
+    "toast": {
+      "created": "듀얼 트랜잭션이 생성되었습니다.",
+      "completed": "완료 처리되었습니다.",
+      "cancelled": "취소 처리되었습니다.",
+      "deleted": "삭제되었습니다."
+    }
   }
 }

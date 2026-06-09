@@ -49,6 +49,7 @@ export const QUERY_KEYS = {
     list: (params: Record<string, unknown> = {}) =>
       ["delivery-order", "list", params] as const,
     byId: (id: number) => ["delivery-order", "byId", id] as const,
+    activity: (id: number) => ["delivery-order", "activity", id] as const,
   },
   container: {
     all: ["container"] as const,
@@ -101,6 +102,11 @@ export const QUERY_KEYS = {
     byDriver: (driverId: number) => ["leg", "byDriver", driverId] as const,
     byId: (id: number) => ["leg", "byId", id] as const,
   },
+  loadTypeTemplate: {
+    all: ["load-type-template"] as const,
+    list: (params: Record<string, unknown> = {}) =>
+      ["load-type-template", "list", params] as const,
+  },
   notification: {
     all: ["notification"] as const,
     list: (params: Record<string, unknown> = {}) =>
@@ -120,6 +126,12 @@ export const QUERY_KEYS = {
     candidates: (limit: number) =>
       ["street-turn", "candidates", limit] as const,
   },
+  dualTransaction: {
+    all: ["dual-transaction"] as const,
+    list: (params: Record<string, unknown> = {}) =>
+      ["dual-transaction", "list", params] as const,
+    byId: (id: number) => ["dual-transaction", "byId", id] as const,
+  },
   analytics: {
     all: ["analytics"] as const,
     marginTrend: (days: number) => ["analytics", "margin-trend", days] as const,
@@ -129,6 +141,8 @@ export const QUERY_KEYS = {
       ["analytics", "container-turnover", days] as const,
     streetTurnSavings: (days: number) =>
       ["analytics", "street-turn-savings", days] as const,
+    expiringCompliance: (days: number) =>
+      ["analytics", "expiring-compliance", days] as const,
   },
 
   // ── Phase I — v3 Container-First ──────────────────────────────
@@ -147,6 +161,63 @@ export const QUERY_KEYS = {
   locationPing: {
     all: ["location-ping"] as const,
     latest: (driverId: number) => ["location-ping", "latest", driverId] as const,
+  },
+
+  // ── Rate management ──────────────────────────────────────────
+  rateGroup: {
+    all: ["rate-group"] as const,
+    list: (params: Record<string, unknown> = {}) =>
+      ["rate-group", "list", params] as const,
+    byId: (id: number) => ["rate-group", "byId", id] as const,
+  },
+  ratePoint: {
+    all: ["rate-point"] as const,
+    list: (params: Record<string, unknown> = {}) =>
+      ["rate-point", "list", params] as const,
+    byId: (id: number) => ["rate-point", "byId", id] as const,
+  },
+  rateMultiplier: {
+    all: ["rate-multiplier"] as const,
+    list: (params: Record<string, unknown> = {}) =>
+      ["rate-multiplier", "list", params] as const,
+    byId: (id: number) => ["rate-multiplier", "byId", id] as const,
+  },
+  driverRateAssignment: {
+    all: ["driver-rate-assignment"] as const,
+    list: (params: Record<string, unknown> = {}) =>
+      ["driver-rate-assignment", "list", params] as const,
+    byId: (id: number) => ["driver-rate-assignment", "byId", id] as const,
+  },
+  rateZone: {
+    all: ["rate-zone"] as const,
+    list: (params: Record<string, unknown> = {}) =>
+      ["rate-zone", "list", params] as const,
+    byId: (id: number) => ["rate-zone", "byId", id] as const,
+    members: (id: number) => ["rate-zone", "members", id] as const,
+  },
+  rateSheet: {
+    all: ["rate-sheet"] as const,
+    list: (params: Record<string, unknown> = {}) =>
+      ["rate-sheet", "list", params] as const,
+    byId: (id: number) => ["rate-sheet", "byId", id] as const,
+    entries: (id: number) => ["rate-sheet", "entries", id] as const,
+    history: (id: number) => ["rate-sheet", "history", id] as const,
+  },
+
+  // ── Billing — Payroll(정산) / Invoice(청구) ──────────────────
+  payroll: {
+    all: ["payroll"] as const,
+    list: (params: Record<string, unknown> = {}) =>
+      ["payroll", "list", params] as const,
+    byId: (id: number) => ["payroll", "byId", id] as const,
+    periodSummary: (params: Record<string, unknown> = {}) =>
+      ["payroll", "periodSummary", params] as const,
+  },
+  invoice: {
+    all: ["invoice"] as const,
+    list: (params: Record<string, unknown> = {}) =>
+      ["invoice", "list", params] as const,
+    byId: (id: number) => ["invoice", "byId", id] as const,
   },
 };
 

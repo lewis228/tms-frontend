@@ -18,7 +18,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { useTransitionDeliveryOrder } from "@/hooks/mutations/delivery-order/use-transition-delivery-order";
-import { ALLOWED_TRANSITIONS } from "@/lib/delivery-order";
+import { ALLOWED_TRANSITIONS, STATUS_LABEL } from "@/lib/delivery-order";
 import { generateErrorMessage } from "@/lib/error";
 import type { DeliveryOrderEntity, DeliveryStatus } from "@/types";
 
@@ -73,7 +73,12 @@ export default function StatusMover({
             className="flex flex-col gap-1 rounded-md border p-2"
           >
             <div className="flex items-center justify-between gap-2">
-              <span className="text-sm font-medium">→ {target}</span>
+              <span className="text-sm font-medium">
+                →{" "}
+                {t(`deliveryOrder.status.${target}`, {
+                  defaultValue: STATUS_LABEL[target],
+                })}
+              </span>
               <Button
                 size="sm"
                 disabled={isPending}

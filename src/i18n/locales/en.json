@@ -36,7 +36,9 @@
     "pageOf": "Page {{page}} / {{pages}}",
     "signOut": "Sign Out",
     "soon": "Soon",
-    "add": "Add"
+    "add": "Add",
+    "remove": "Remove",
+    "open": "Open"
   },
   "toast": {
     "saved": "Saved.",
@@ -53,7 +55,7 @@
     "FORBIDDEN": "You don't have access.",
     "FORBIDDEN_ROLE": "Insufficient role for this action.",
     "TEAM_MISMATCH": "Cannot access another team's data.",
-    "TEAM_REQUIRED": "Team is not specified.",
+    "TEAM_REQUIRED": "Please choose a team first.",
     "NO_TEAM": "User has no team.",
     "AUTH_INVALID": "Email or password is incorrect.",
     "TOKEN_EXPIRED": "Session expired. Please sign in again.",
@@ -93,7 +95,6 @@
     "NOT_TEAM_MEMBER": "You've been removed from the team. Redirecting to the team picker.",
     "TEAM_NOT_FOUND": "Team not found.",
     "TEAM_SCOPE_REQUIRED": "Please choose a team first.",
-    "TEAM_REQUIRED": "Please choose a team first.",
     "ALREADY_EXISTS": "This item already exists in the current team.",
     "FK_IN_USE": "Cannot delete — another record still references this item.",
     "FK_REFERENCE_NOT_FOUND": "The referenced item no longer exists.",
@@ -230,7 +231,9 @@
       "BROKER": "Broker",
       "VENDOR": "Vendor"
     },
-    "kindFilter": { "all": "All roles" },
+    "kindFilter": {
+      "all": "All roles"
+    },
     "validation": {
       "nameRequired": "Name is required."
     }
@@ -303,7 +306,9 @@
     "namePlaceholder": "Jane Doe",
     "phonePlaceholder": "+1 213 555 0100",
     "tempPasswordWarning": "⚠️ A one-time temporary password will be issued. Save it before closing.",
-    "section": { "employment": "Employment / Pay / Compliance" },
+    "section": {
+      "employment": "Employment / Pay / Compliance"
+    },
     "field": {
       "licenseNumber": "License number",
       "licenseState": "License state",
@@ -313,7 +318,9 @@
       "paymentTermsKind": "Pay terms",
       "paymentTermsValue": "Pay value",
       "licenseExpiresAt": "License expiry",
-      "medicalCertExpiresAt": "Medical cert expiry"
+      "medicalCertExpiresAt": "Medical cert expiry",
+      "twicExpiresAt": "TWIC expiry",
+      "hireDate": "Hire date"
     },
     "tempPassword": {
       "title": "Driver registered",
@@ -357,7 +364,10 @@
       "ownerKind": "Owner",
       "ownerDriver": "Owner driver",
       "status": "Status",
-      "note": "Note"
+      "note": "Note",
+      "registrationExpiresAt": "Registration expiry",
+      "insuranceExpiresAt": "Insurance expiry",
+      "inspectionExpiresAt": "Inspection expiry"
     },
     "validation": {
       "plateRequired": "Plate No. is required.",
@@ -379,7 +389,9 @@
       "ownerDriver": "Owner driver",
       "ownerPool": "Owner pool",
       "status": "Status",
-      "note": "Note"
+      "note": "Note",
+      "registrationExpiresAt": "Registration expiry",
+      "inspectionExpiresAt": "Inspection expiry"
     },
     "validation": {
       "numberRequired": "Chassis No. is required.",
@@ -406,22 +418,10 @@
     }
   },
   "team": {
-    "domain": "Team",
-    "newButton": "New team",
-    "createTitle": "New team",
-    "editTitle": "Edit team",
-    "deletePromptTitle": "Delete team '{{name}}'?",
-    "deletePromptDesc": "⚠ Deleting a team CASCADEs to all users / D/O / Leg / Settlement / files. This cannot be undone.",
-    "searchPlaceholder": "Name / company",
-    "field": {
-      "name": "Name",
-      "companyName": "Company name",
-      "timezone": "Timezone",
-      "phone": "Phone"
-    },
-    "validation": {
-      "nameRequired": "Name is required."
-    }
+    "untitled": "Team #{{id}}",
+    "createSuccess": "Team created.",
+    "newNamePlaceholder": "New team name",
+    "createTeam": "Create team"
   },
   "systemUser": {
     "domain": "User",
@@ -465,7 +465,8 @@
       "basicInfo": "Basic info",
       "gatesCondition": "Gate conditions",
       "legTimeline": "Leg Timeline",
-      "note": "Note"
+      "note": "Note",
+      "activity": "Activity"
     },
     "field": {
       "direction": "Direction",
@@ -524,14 +525,49 @@
       "blReleased": "B/L Released",
       "pierPassPaid": "Pier Pass Paid",
       "customsCleared": "Customs Cleared"
+    },
+    "status": {
+      "PLANNING": "Planning",
+      "DISPATCHING": "Dispatching",
+      "DISPATCHED": "Dispatched",
+      "YARD_STAGED": "Yard Staged",
+      "FINAL_DELIVERY": "Final Delivery",
+      "EMPTY_STAGED": "Empty Staged",
+      "COMPLETED": "Completed"
+    },
+    "actions": {
+      "hold": "Hold",
+      "releaseHold": "Release hold",
+      "cancel": "Cancel",
+      "holdTitle": "Hold D/O",
+      "holdDescription": "Put this D/O on hold. Optionally enter a reason.",
+      "releaseTitle": "Release hold",
+      "releaseDescription": "Release the hold on this D/O.",
+      "cancelTitle": "Cancel D/O",
+      "cancelDescription": "Cancel this D/O. After cancellation no status changes are allowed. Optionally enter a reason.",
+      "reasonPlaceholder": "Reason (optional)",
+      "submitting": "Submitting...",
+      "holdSuccess": "Hold status updated.",
+      "cancelSuccess": "D/O cancelled."
+    },
+    "banner": {
+      "onHold": "ON HOLD",
+      "cancelled": "CANCELLED"
+    },
+    "activity": {
+      "empty": "No activity yet."
     }
   },
   "container": {
-    "section": { "title": "Containers" },
+    "section": {
+      "title": "Containers"
+    },
     "addRow": "Add container",
     "empty": "No containers.",
     "unassignedWarning": "unassigned",
-    "drawer": { "title": "Container" },
+    "drawer": {
+      "title": "Container"
+    },
     "tab": {
       "basic": "Basic",
       "legs": "Legs",
@@ -600,7 +636,9 @@
         "poolPayout": "Pool fees",
         "margin": "Margin"
       },
-      "validation": { "required": "Select charge code and enter amount." }
+      "validation": {
+        "required": "Select charge code and enter amount."
+      }
     }
   },
   "streetTurn": {
@@ -675,7 +713,9 @@
       "glAccount": "GL account",
       "description": "Description"
     },
-    "validation": { "required": "Enter code and name." }
+    "validation": {
+      "required": "Enter code and name."
+    }
   },
   "rateCard": {
     "newButton": "New rate card",
@@ -702,7 +742,9 @@
       "effectiveTo": "Effective to",
       "description": "Description"
     },
-    "validation": { "chargeCodeRequired": "Select a charge code." }
+    "validation": {
+      "chargeCodeRequired": "Select a charge code."
+    }
   },
   "legStop": {
     "stopsLabel": "Stops ({{count}})",
@@ -769,6 +811,48 @@
     },
     "transition": {
       "failureReasonPrompt": "Enter the failure reason"
+    }
+  },
+  "shipmentDetail": {
+    "tabs": {
+      "legs": "Route / Legs",
+      "stops": "Stops",
+      "events": "Events",
+      "map": "Map"
+    },
+    "legsHeading": "Legs",
+    "stopsHeading": "Stops",
+    "noLegs": "No legs.",
+    "meta": {
+      "route": "Route",
+      "size": "Size",
+      "deliveryOrder": "D/O",
+      "customer": "Customer",
+      "direction": "Direction",
+      "terminal": "Terminal",
+      "vessel": "Vessel",
+      "driver": "Driver",
+      "demurrageLfd": "Demurrage LFD",
+      "eta": "ETA"
+    }
+  },
+  "loadType": {
+    "applyButton": "Apply Load Type",
+    "dialogTitle": "Apply Load Type",
+    "reissueButton": "Reissue (Dry Run)",
+    "reissueDialogTitle": "Reissue Leg (Dry Run)",
+    "reissuedFrom": "reissued from #{{id}}",
+    "field": {
+      "template": "Template",
+      "selectTemplate": "— select template —",
+      "replaceExisting": "Replace existing legs",
+      "replaceExistingWarn": "Replaces existing legs that have not started yet.",
+      "reissueReason": "Reason",
+      "reissueReasonPlaceholder": "Why is this leg being reissued?"
+    },
+    "toast": {
+      "applied": "Legs generated from template.",
+      "reissued": "Leg reissued. A new pending leg was created."
     }
   },
   "settlement": {
@@ -972,7 +1056,9 @@
       "containerTurnover": "Container turnover",
       "containerTurnoverHint": "Last {{days}} days GATE_OUT / RETURNED / STREET_TURNED",
       "streetTurnSavings": "Street Turn savings",
-      "streetTurnSavingsHint": "Last {{days}} days cumulative"
+      "streetTurnSavingsHint": "Last {{days}} days cumulative",
+      "expiringCompliance": "Expiring Compliance",
+      "expiringComplianceHint": "Expired / expiring within {{days}} days"
     },
     "marginTrend": {
       "revenue": "Revenue",
@@ -1003,6 +1089,26 @@
       "unsettledHint": "non-APPROVED settlements",
       "activeDrivers": "Active drivers",
       "activeDriversHint": "active / total"
+    },
+    "expiringCompliance": {
+      "expired": "{{count}} expired",
+      "soon": "{{count}} soon",
+      "daysLeft": "{{count}}d left",
+      "expiredChip": "Expired",
+      "more": "+{{count}} more",
+      "entityType": {
+        "truck": "Truck",
+        "chassis": "Chassis",
+        "driver": "Driver"
+      },
+      "field": {
+        "registration": "Registration",
+        "insurance": "Insurance",
+        "inspection": "Inspection",
+        "license": "License",
+        "medical": "Medical",
+        "twic": "TWIC"
+      }
     }
   },
   "notification": {
@@ -1165,7 +1271,16 @@
       "title": "404 — Not found",
       "alt": "Error illustration",
       "backHome": "Back to home"
-    }
+    },
+    "rates": {
+      "rateGroups": "Rate Groups",
+      "ratePoints": "Rate Points",
+      "rateMultipliers": "Rate Multipliers",
+      "driverRateAssignments": "Driver Rate Assignments",
+      "rateZones": "Rate Zones",
+      "rateSheets": "Rate Sheets"
+    },
+    "dualTransactions": "Dual Transactions"
   },
   "oauth": {
     "processing": "Processing authentication…"
@@ -1208,7 +1323,17 @@
     "settingsTags": "Tags",
     "settingsPlugins": "Plugins",
     "settingsPayment": "Payment",
-    "settingsApiKeys": "API Keys"
+    "settingsApiKeys": "API Keys",
+    "rates": "Rates",
+    "rateGroups": "Rate Groups",
+    "ratePoints": "Rate Points",
+    "rateMultipliers": "Rate Multipliers",
+    "driverRateAssignments": "Driver Rate Assignments",
+    "rateZones": "Rate Zones",
+    "rateSheets": "Rate Sheets",
+    "billing": "Billing",
+    "invoices": "Invoices",
+    "dualTransactions": "Dual Transactions"
   },
   "header": {
     "toggleSidebar": "Toggle sidebar",
@@ -1309,12 +1434,6 @@
       "confirmDescription": "Your account and all related data will be permanently deleted. This cannot be undone.",
       "received": "Your account deletion request has been received."
     }
-  },
-  "team": {
-    "untitled": "Team #{{id}}",
-    "createSuccess": "Team created.",
-    "newNamePlaceholder": "New team name",
-    "createTeam": "Create team"
   },
   "appHome": {
     "title": "TMS Pro",
@@ -1584,5 +1703,320 @@
     "revokeSuccess": "API key revoked.",
     "revokeConfirmTitle": "Revoke '{{name}}'?",
     "revokeConfirmDescription": "Revoked keys can no longer access the API. This is irreversible."
+  },
+  "rateGroup": {
+    "newButton": "New rate group",
+    "createTitle": "New rate group",
+    "editTitle": "Edit rate group",
+    "deletePromptTitle": "Delete rate group '{{name}}'?",
+    "deletePromptDesc": "This cannot be undone.",
+    "searchPlaceholder": "Name / description",
+    "field": {
+      "method": "Method",
+      "isDefault": "Default",
+      "isTemplate": "Template"
+    },
+    "method": {
+      "ZONE": "Zone",
+      "CITY": "City / Zip",
+      "MILE": "Mile",
+      "HOURLY": "Hourly"
+    }
+  },
+  "ratePoint": {
+    "newButton": "New rate point",
+    "createTitle": "New rate point",
+    "editTitle": "Edit rate point",
+    "deletePromptTitle": "Delete rate point '{{name}}'?",
+    "deletePromptDesc": "This cannot be undone.",
+    "searchPlaceholder": "Name / code / address",
+    "terminalPlaceholder": "Select terminal",
+    "locationPlaceholder": "Select location",
+    "field": {
+      "pointType": "Point type",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "terminal": "Terminal",
+      "location": "Location"
+    },
+    "pointTypeOption": {
+      "TERMINAL": "Terminal",
+      "YARD": "Yard"
+    }
+  },
+  "rateMultiplier": {
+    "description": "Manage rate multipliers per container size. Pick a rate group to scope multipliers to that group, or leave it empty to set team-wide defaults.",
+    "scopeLabel": "Scope (rate group)",
+    "globalScope": "— Team-wide (default) —",
+    "invalidFactor": "Factor must be a number greater than 0.",
+    "deletePromptTitle": "Delete this multiplier?",
+    "deletePromptDesc": "It will fall back to the default value.",
+    "field": {
+      "containerSize": "Container size",
+      "factor": "Factor"
+    },
+    "sizeOption": {
+      "SIZE_20": "20ft",
+      "SIZE_40": "40ft",
+      "SIZE_45": "45ft"
+    }
+  },
+  "driverRateAssignment": {
+    "newButton": "New assignment",
+    "createTitle": "New driver rate assignment",
+    "editTitle": "Edit driver rate assignment",
+    "deletePromptTitle": "Delete this rate assignment?",
+    "deletePromptDesc": "This cannot be undone.",
+    "driverPlaceholder": "Select driver",
+    "rateGroupPlaceholder": "Select rate group",
+    "field": {
+      "driver": "Driver",
+      "rateGroup": "Rate group",
+      "effectiveFrom": "Effective from",
+      "effectiveTo": "Effective to"
+    }
+  },
+  "rateZone": {
+    "newButton": "New Rate Zone",
+    "createTitle": "Create Rate Zone",
+    "editTitle": "Edit Rate Zone",
+    "deletePromptTitle": "Delete rate zone '{{name}}'?",
+    "deletePromptDesc": "This cannot be undone.",
+    "searchPlaceholder": "Search name / code / description",
+    "field": {
+      "color": "Color"
+    },
+    "members": {
+      "title": "Members (zip / city)",
+      "addRow": "Add Row",
+      "save": "Save Members",
+      "zipCode": "Zip Code",
+      "city": "City",
+      "state": "State"
+    }
+  },
+  "rateSheet": {
+    "newButton": "New Rate Sheet",
+    "createTitle": "Create Rate Sheet",
+    "deletePromptTitle": "Delete this rate sheet?",
+    "deletePromptDesc": "This cannot be undone.",
+    "allGroups": "All Groups",
+    "rateGroupPlaceholder": "Select rate group",
+    "rowPointPlaceholder": "Select rate point",
+    "field": {
+      "rateGroup": "Rate Group",
+      "kind": "Kind",
+      "moveType": "Move Type",
+      "rowPoint": "Row Point",
+      "openEntryCount": "Open Cells"
+    },
+    "kind": {
+      "POINT_ZONE": "Point × Zone",
+      "POINT_CITY": "Point × City",
+      "POINT_POINT": "Point × Point",
+      "MILE": "Mile",
+      "HOURLY": "Hourly"
+    },
+    "moveType": {
+      "LOAD": "Load",
+      "EMPTY": "Empty",
+      "NONE": "None (Bobtail)"
+    },
+    "containerSize": {
+      "SIZE_20": "20ft",
+      "SIZE_40": "40ft",
+      "SIZE_45": "45ft"
+    },
+    "tabs": {
+      "entries": "Entries",
+      "history": "History",
+      "lookup": "Lookup"
+    },
+    "detail": {
+      "subtitle": "Rate Group {{group}}"
+    },
+    "grid": {
+      "column": "Column",
+      "containerSize": "Container Size",
+      "amount": "Amount",
+      "perUnit": "Per Unit",
+      "effectiveFrom": "Effective From",
+      "effectiveTo": "Effective To",
+      "reason": "Reason",
+      "colZoneId": "Zone ID",
+      "colPointId": "Point ID",
+      "colCity": "City",
+      "colState": "State",
+      "setTitle": "Set / Update Rate",
+      "setButton": "Set Rate"
+    },
+    "history": {
+      "action": "Action",
+      "oldAmount": "Old Value",
+      "newAmount": "New Value",
+      "createdAt": "Changed At"
+    },
+    "lookup": {
+      "workDate": "Work Date",
+      "button": "Look Up",
+      "found": "Rate Found",
+      "notFound": "No rate registered."
+    }
+  },
+  "payroll": {
+    "title": "Driver Settlements",
+    "newButton": "New Settlement",
+    "allStatuses": "All statuses",
+    "invalidRange": "End date must be on or after start date.",
+    "deletePromptTitle": "Delete this settlement?",
+    "deletePromptDesc": "This cannot be undone.",
+    "field": {
+      "driver": "Driver",
+      "period": "Period",
+      "periodStart": "Start date",
+      "periodEnd": "End date",
+      "status": "Status",
+      "baseTotal": "Base total",
+      "accessorialTotal": "Accessorial total",
+      "grandTotal": "Grand total"
+    },
+    "status": {
+      "DRAFT": "Draft",
+      "CONFIRMED": "Confirmed",
+      "PAID": "Paid",
+      "VOID": "Void"
+    },
+    "lineSource": {
+      "RESOLVED": "Resolved",
+      "UNRESOLVED": "Unresolved",
+      "MANUAL": "Manual"
+    },
+    "tabs": {
+      "lines": "Lines",
+      "charges": "Charges"
+    },
+    "line": {
+      "legId": "Leg",
+      "workDate": "Work date",
+      "source": "Source",
+      "baseAmount": "Base amount"
+    },
+    "charge": {
+      "code": "Code",
+      "quantity": "Qty",
+      "amount": "Amount",
+      "note": "Note",
+      "add": "Add charge"
+    },
+    "action": {
+      "confirm": "Confirm",
+      "markPaid": "Mark paid",
+      "void": "Void"
+    },
+    "summary": {
+      "driverCount": "Drivers",
+      "count": "Settlements",
+      "grandTotal": "Grand total"
+    },
+    "buildPeriod": {
+      "button": "Build period",
+      "driversOptional": "Drivers (optional)",
+      "addDriver": "Add driver",
+      "result": "{{built}} built, {{skipped}} skipped"
+    }
+  },
+  "invoice": {
+    "title": "Invoices",
+    "newButton": "New Invoice",
+    "createTitle": "Create Invoice",
+    "allStatuses": "All statuses",
+    "customerPlaceholder": "Select customer",
+    "deliveryOrderPlaceholder": "Select D/O",
+    "prefillFromDo": "Prefill lines from D/O cost",
+    "recomputeCost": "Recompute cost",
+    "deletePromptTitle": "Delete this invoice?",
+    "deletePromptDesc": "This cannot be undone.",
+    "field": {
+      "customer": "Customer",
+      "deliveryOrder": "Delivery order (D/O)",
+      "invoiceNumber": "Invoice no.",
+      "issueDate": "Issue date",
+      "dueDate": "Due date",
+      "status": "Status",
+      "costTotal": "Cost",
+      "chargeTotal": "Charge",
+      "margin": "Margin"
+    },
+    "status": {
+      "DRAFT": "Draft",
+      "ISSUED": "Issued",
+      "PAID": "Paid",
+      "VOID": "Void"
+    },
+    "lineSource": {
+      "PREFILL": "Prefill",
+      "MANUAL": "Manual"
+    },
+    "tabs": {
+      "lines": "Lines",
+      "info": "Info"
+    },
+    "line": {
+      "description": "Description",
+      "quantity": "Qty",
+      "unitAmount": "Unit price",
+      "amount": "Amount",
+      "costAmount": "Cost (ref)",
+      "add": "Add line"
+    },
+    "action": {
+      "issue": "Issue",
+      "markPaid": "Mark paid",
+      "void": "Void"
+    }
+  },
+  "dualTransaction": {
+    "pageHint": "Bundle a return leg and a pickup leg onto a single driver.",
+    "create": "New Dual Transaction",
+    "createTitle": "New Dual Transaction",
+    "legPlaceholder": "Select a leg",
+    "selectDriverFirst": "Select a driver first",
+    "status": {
+      "PLANNED": "Planned",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled"
+    },
+    "filter": {
+      "ALL": "All",
+      "PLANNED": "Planned",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled"
+    },
+    "field": {
+      "id": "ID",
+      "driver": "Driver",
+      "returnLeg": "Return Leg",
+      "pickupLeg": "Pickup Leg",
+      "truck": "Truck",
+      "status": "Status",
+      "scheduledAt": "Scheduled",
+      "note": "Note"
+    },
+    "action": {
+      "complete": "Complete",
+      "cancel": "Cancel",
+      "delete": "Delete"
+    },
+    "validation": {
+      "driverRequired": "Select a driver.",
+      "legsRequired": "Select both a return leg and a pickup leg.",
+      "legsDistinct": "Return leg and pickup leg must differ."
+    },
+    "toast": {
+      "created": "Dual transaction created.",
+      "completed": "Marked as completed.",
+      "cancelled": "Marked as cancelled.",
+      "deleted": "Deleted."
+    }
   }
 }

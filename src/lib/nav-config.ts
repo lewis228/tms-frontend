@@ -97,6 +97,13 @@ export const NAV_CONFIG: NavNode[] = [
         path: "street-turns",
         requiredRole: "DISPATCHER",
       },
+      {
+        type: "leaf",
+        label: "nav.dualTransactions",
+        iconName: "Route",
+        path: "dual-transactions",
+        requiredRole: "DISPATCHER",
+      },
     ],
   },
   {
@@ -158,6 +165,68 @@ export const NAV_CONFIG: NavNode[] = [
         iconName: "Tag",
         path: "master/charge-codes",
         requiredRole: "ADMIN",
+      },
+    ],
+  },
+  {
+    type: "section",
+    label: "nav.rates",
+    iconName: "Calculator",
+    children: [
+      {
+        type: "leaf",
+        label: "nav.rateGroups",
+        iconName: "BadgeDollarSign",
+        path: "rates/rate-groups",
+      },
+      {
+        type: "leaf",
+        label: "nav.ratePoints",
+        iconName: "MapPin",
+        path: "rates/rate-points",
+      },
+      {
+        type: "leaf",
+        label: "nav.rateZones",
+        iconName: "Map",
+        path: "rates/rate-zones",
+      },
+      {
+        type: "leaf",
+        label: "nav.rateSheets",
+        iconName: "Calculator",
+        path: "rates/rate-sheets",
+      },
+      {
+        type: "leaf",
+        label: "nav.rateMultipliers",
+        iconName: "Calculator",
+        path: "rates/rate-multipliers",
+      },
+      {
+        type: "leaf",
+        label: "nav.driverRateAssignments",
+        iconName: "User",
+        path: "rates/driver-rate-assignments",
+      },
+    ],
+  },
+  {
+    type: "section",
+    label: "nav.billing",
+    iconName: "Wallet",
+    children: [
+      {
+        type: "leaf",
+        label: "nav.settlements",
+        iconName: "Wallet",
+        path: "billing/settlements",
+      },
+      {
+        type: "leaf",
+        label: "nav.invoices",
+        iconName: "Receipt",
+        path: "billing/invoices",
       },
     ],
   },

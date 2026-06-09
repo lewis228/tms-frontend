@@ -94,6 +94,12 @@ function Body({ modal }: { modal: OpenModal }) {
   const [medicalCertExpiresAt, setMedicalCertExpiresAt] = useState(
     modal.type === "CREATE" ? "" : (modal.driver.medicalCertExpiresAt ?? ""),
   );
+  const [twicExpiresAt, setTwicExpiresAt] = useState(
+    modal.type === "CREATE" ? "" : (modal.driver.twicExpiresAt ?? ""),
+  );
+  const [hireDate, setHireDate] = useState(
+    modal.type === "CREATE" ? "" : (modal.driver.hireDate ?? ""),
+  );
 
   const { mutate: createDriver, isPending: isCreatePending } = useCreateDriver({
     onSuccess: (created) => {
@@ -136,6 +142,8 @@ function Body({ modal }: { modal: OpenModal }) {
           : String(paymentTermsValue),
       licenseExpiresAt: licenseExpiresAt || null,
       medicalCertExpiresAt: medicalCertExpiresAt || null,
+      twicExpiresAt: twicExpiresAt || null,
+      hireDate: hireDate || null,
     };
     if (modal.type === "CREATE") {
       if (email.trim() === "") return;
@@ -237,6 +245,10 @@ function Body({ modal }: { modal: OpenModal }) {
           setLicenseExpiresAt={setLicenseExpiresAt}
           medicalCertExpiresAt={medicalCertExpiresAt}
           setMedicalCertExpiresAt={setMedicalCertExpiresAt}
+          twicExpiresAt={twicExpiresAt}
+          setTwicExpiresAt={setTwicExpiresAt}
+          hireDate={hireDate}
+          setHireDate={setHireDate}
           disabled={isPending}
         />
       </div>
@@ -277,6 +289,8 @@ function EmploymentSection({
   paymentTermsValue, setPaymentTermsValue,
   licenseExpiresAt, setLicenseExpiresAt,
   medicalCertExpiresAt, setMedicalCertExpiresAt,
+  twicExpiresAt, setTwicExpiresAt,
+  hireDate, setHireDate,
   disabled,
 }: {
   employmentKind: EmploymentKind;
@@ -291,6 +305,10 @@ function EmploymentSection({
   setLicenseExpiresAt: (v: string) => void;
   medicalCertExpiresAt: string;
   setMedicalCertExpiresAt: (v: string) => void;
+  twicExpiresAt: string;
+  setTwicExpiresAt: (v: string) => void;
+  hireDate: string;
+  setHireDate: (v: string) => void;
   disabled: boolean;
 }) {
   const { t } = useTranslation();
@@ -367,6 +385,22 @@ function EmploymentSection({
             type="date"
             value={medicalCertExpiresAt}
             onChange={(e) => setMedicalCertExpiresAt(e.target.value)}
+            disabled={disabled}
+          />
+        </Field>
+        <Field label={t("driver.field.twicExpiresAt")}>
+          <Input
+            type="date"
+            value={twicExpiresAt}
+            onChange={(e) => setTwicExpiresAt(e.target.value)}
+            disabled={disabled}
+          />
+        </Field>
+        <Field label={t("driver.field.hireDate")}>
+          <Input
+            type="date"
+            value={hireDate}
+            onChange={(e) => setHireDate(e.target.value)}
             disabled={disabled}
           />
         </Field>
