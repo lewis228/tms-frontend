@@ -1636,7 +1636,8 @@
       "kind": "Kind",
       "moveType": "Move Type",
       "rowPoint": "Row Point",
-      "openEntryCount": "Open Cells"
+      "openEntryCount": "Open Cells",
+      "serviceType": "Service Type"
     },
     "kind": {
       "POINT_ZONE": "Point × Zone",
@@ -1689,6 +1690,11 @@
       "button": "Look Up",
       "found": "Rate Found",
       "notFound": "No rate registered."
+    },
+    "serviceType": {
+      "LIVE": "Live (wait)",
+      "DROP": "Drop",
+      "NONE": "None"
     }
   },
   "payroll": {

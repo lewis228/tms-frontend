@@ -9,6 +9,7 @@ import type {
   RateEntryHistoryEntity,
   RateLookupResult,
   RateMoveType,
+  RateServiceType,
   RateSheetEntity,
   SheetKind,
 } from "@/types";
@@ -40,6 +41,7 @@ export async function createRateSheet(payload: {
   rateGroupId: number;
   kind: SheetKind;
   moveType?: RateMoveType | null;
+  serviceType?: RateServiceType | null;
   rowPointId?: number | null;
   note?: string | null;
 }): Promise<RateSheetEntity> {

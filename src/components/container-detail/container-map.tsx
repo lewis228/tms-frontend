@@ -95,29 +95,25 @@ export default function ContainerMap({
     return b;
   }, [stopsWithCoords, driverPosition]);
 
-  // Leg 경로선 — from_stop_id → to_stop_id pair 의 좌표
-  const legPolylines = useMemo(() => {
-    const stopMap = new Map(
-      stopsWithCoords.map((s) => [s.id, [s.lat, s.lng] as [number, number]]),
+  // 경로선 — Container Stop 시퀀스를 순서대로 연결한 좌표
+  const routePolylines = useMemo(() => {
+    const ordered = [...stopsWithCoords].sort(
+      (a, b) => a.sequenceNo - b.sequenceNo,
     );
-    return full.legs
-      .map((leg) => {
-        const from = leg.fromStopId !== null ? stopMap.get(leg.fromStopId) : null;
-        const to = leg.toStopId !== null ? stopMap.get(leg.toStopId) : null;
-        if (!from || !to) return null;
-        const color =
-          leg.status === "COMPLETED"
-            ? "#10b981"
-            : leg.status === "IN_TRANSIT"
-              ? "#f59e0b"
-              : leg.status === "FAILED"
-                ? "#ef4444"
-                : "#a1a1aa";
-        const dashArray = leg.status === "IN_TRANSIT" ? "8 6" : undefined;
-        return { id: leg.id, from, to, color, dashArray };
-      })
-      .filter((p): p is NonNullable<typeof p> => p !== null);
-  }, [full.legs, stopsWithCoords]);
+    const segments: {
+      id: number;
+      from: [number, number];
+      to: [number, number];
+    }[] = [];
+    for (let i = 0; i < ordered.length - 1; i++) {
+      segments.push({
+        id: ordered[i].id,
+        from: [ordered[i].lat, ordered[i].lng],
+        to: [ordered[i + 1].lat, ordered[i + 1].lng],
+      });
+    }
+    return segments;
+  }, [stopsWithCoords]);
 
   if (stopsWithCoords.length === 0 && !driverPosition) {
     return (
@@ -144,15 +140,14 @@ export default function ContainerMap({
         />
         <FitBounds bounds={bounds} />
 
-        {legPolylines.map((p) => (
+        {routePolylines.map((p) => (
           <Polyline
             key={p.id}
             positions={[p.from, p.to]}
             pathOptions={{
-              color: p.color,
+              color: "#a1a1aa",
               weight: 3,
               opacity: 0.7,
-              dashArray: p.dashArray,
             }}
           />
         ))}

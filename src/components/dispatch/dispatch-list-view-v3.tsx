@@ -111,7 +111,6 @@ export default function DispatchListViewV3() {
               <TableHead>Customer</TableHead>
               <TableHead>Dir</TableHead>
               <TableHead>State</TableHead>
-              <TableHead>Move</TableHead>
               <TableHead>Driver</TableHead>
               <TableHead>Demurrage</TableHead>
               <TableHead>Legs</TableHead>
@@ -146,9 +145,6 @@ export default function DispatchListViewV3() {
                       <span className={`rounded px-1.5 py-0.5 text-[10px] ${tone}`}>
                         {state}
                       </span>
-                    </TableCell>
-                    <TableCell className="font-mono text-[10px] text-muted-foreground">
-                      {c.moveTypeV3 ?? "—"}
                     </TableCell>
                     <TableCell>{c.currentDriverName ?? "—"}</TableCell>
                     <TableCell className="text-xs">

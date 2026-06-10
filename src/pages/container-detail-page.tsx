@@ -137,9 +137,6 @@ export default function ContainerDetailPage() {
             <span>
               {t("shipmentDetail.meta.size")}: {c.size ?? "—"}
             </span>
-            {c.moveTypeV3 && (
-              <span className="font-mono">{c.moveTypeV3}</span>
-            )}
             <span>
               {t("shipmentDetail.meta.deliveryOrder")}:{" "}
               {d.id ? (

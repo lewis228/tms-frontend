@@ -23,9 +23,9 @@ export default function LegCard({
         <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px]">
           {leg.status}
         </span>
-        {leg.moveTypeV3 && (
+        {leg.moveType && (
           <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
-            {leg.moveTypeV3}
+            {leg.moveType}
           </span>
         )}
         {leg.moveCode && (
@@ -39,8 +39,8 @@ export default function LegCard({
           </span>
         )}
         <span className="text-xs text-muted-foreground">
-          {leg.fromStopId !== null && leg.toStopId !== null
-            ? `#${leg.fromStopId} → #${leg.toStopId}`
+          {leg.fromLocationType !== null && leg.toLocationType !== null
+            ? `${leg.fromLocationType} → ${leg.toLocationType}`
             : t("container.leg.stopUnlinked")}
         </span>
         {leg.reissuedFromLegId !== null && (

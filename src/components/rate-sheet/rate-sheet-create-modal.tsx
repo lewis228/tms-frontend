@@ -20,6 +20,7 @@ import type {
   RateGroupEntity,
   RateMoveType,
   RatePointEntity,
+  RateServiceType,
   SheetKind,
 } from "@/types";
 
@@ -32,6 +33,7 @@ const KINDS: SheetKind[] = [
   "HOURLY",
 ];
 const MOVE_TYPES: RateMoveType[] = ["LOAD", "EMPTY", "NONE"];
+const SERVICE_TYPES: RateServiceType[] = ["LIVE", "DROP", "NONE"];
 const MATRIX_KINDS: SheetKind[] = ["POINT_ZONE", "POINT_CITY", "POINT_POINT"];
 
 export default function RateSheetCreateModal() {
@@ -50,6 +52,7 @@ function Body({ onClose }: { onClose: () => void }) {
   const [rateGroupId, setRateGroupId] = useState<number | null>(null);
   const [kind, setKind] = useState<SheetKind>("POINT_ZONE");
   const [moveType, setMoveType] = useState<RateMoveType>("LOAD");
+  const [serviceType, setServiceType] = useState<RateServiceType>("LIVE");
   const [rowPointId, setRowPointId] = useState<number | null>(null);
   const [note, setNote] = useState("");
 
@@ -73,6 +76,7 @@ function Body({ onClose }: { onClose: () => void }) {
       rateGroupId,
       kind,
       moveType: isMatrix ? moveType : null,
+      serviceType: isMatrix ? serviceType : null,
       rowPointId: isMatrix ? rowPointId : null,
       note: note.trim() || null,
     });
@@ -126,6 +130,22 @@ function Body({ onClose }: { onClose: () => void }) {
                 {MOVE_TYPES.map((m) => (
                   <option key={m} value={m}>
                     {t(`rateSheet.moveType.${m}`)}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field label={t("rateSheet.field.serviceType")} required>
+              <select
+                value={serviceType}
+                onChange={(e) =>
+                  setServiceType(e.target.value as RateServiceType)
+                }
+                disabled={isPending}
+                className="rounded-md border bg-background px-3 py-2 text-sm"
+              >
+                {SERVICE_TYPES.map((s) => (
+                  <option key={s} value={s}>
+                    {t(`rateSheet.serviceType.${s}`)}
                   </option>
                 ))}
               </select>

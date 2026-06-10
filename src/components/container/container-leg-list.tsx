@@ -104,11 +104,6 @@ export default function ContainerLegList({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-semibold">#{leg.id}</span>
-                {leg.legKind && (
-                  <span className="rounded bg-blue-100 px-1.5 py-0.5 text-xs text-blue-700">
-                    {leg.legKind}
-                  </span>
-                )}
                 <span className="rounded bg-muted px-1.5 py-0.5 text-xs">
                   {leg.step}
                 </span>

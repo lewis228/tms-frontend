@@ -1636,7 +1636,8 @@
       "kind": "종류",
       "moveType": "이동 타입",
       "rowPoint": "행 포인트",
-      "openEntryCount": "열린 셀 수"
+      "openEntryCount": "열린 셀 수",
+      "serviceType": "서비스 타입"
     },
     "kind": {
       "POINT_ZONE": "포인트 × 존",
@@ -1689,6 +1690,11 @@
       "button": "조회",
       "found": "요율 발견",
       "notFound": "등록된 요율이 없습니다."
+    },
+    "serviceType": {
+      "LIVE": "라이브 (LIVE 대기)",
+      "DROP": "드롭 (DROP)",
+      "NONE": "없음 (NONE)"
     }
   },
   "payroll": {

@@ -58,19 +58,6 @@ export type ShipmentDirection = "IMPORT" | "EXPORT";
 export type MoveType = "LOADED" | "EMPTY" | "BOBTAIL";
 export type ServiceType = "LIVE" | "DROP";
 
-export type LegKind =
-  | "BOBTAIL"
-  | "PICKUP"
-  | "DROP"
-  | "LIVE_UNLOAD"
-  | "RETURN"
-  | "STREET_TURN"
-  | "CHASSIS_FLIP"
-  | "DRY_RUN"
-  | "REPOSITION"
-  | "PARTIAL_PICKUP"
-  | "MULTI_STOP_DELIVERY";
-
 export type StopKind =
   | "PICKUP_FULL"
   | "DROP_FULL"
@@ -521,7 +508,6 @@ export type LegEntity = {
   step: DeliveryStatus;
   moveType: MoveType;
   serviceType: ServiceType;
-  legKind: LegKind | null;
   fromLocationType: LegLocationType | null;
   toLocationType: LegLocationType | null;
   moveCode: LegMoveCode | null;
@@ -643,6 +629,9 @@ export type SheetKind =
 
 export type RateMoveType = "LOAD" | "EMPTY" | "NONE";
 
+// 컨플루언스 'Leg 전체 유형': 같은 From→To·Move 라도 Service Type 별 요율 분리.
+export type RateServiceType = "LIVE" | "DROP" | "NONE";
+
 export type SheetStatus = "EMPTY" | "PARTIAL" | "ACTIVE" | "INACTIVE";
 
 export type RateSheetEntity = {
@@ -650,6 +639,7 @@ export type RateSheetEntity = {
   rateGroupId: number;
   kind: SheetKind;
   moveType: RateMoveType | null;
+  serviceType: RateServiceType | null;
   rowPointId: number | null;
   note: string | null;
   isActive: boolean;
@@ -999,12 +989,6 @@ export type ContainerWorkState =
   | "COMPLETED"
   | "CANCELLED";
 
-export type MoveTypeV3 =
-  | "TRUCK_ONLY"
-  | "CHASSIS_ONLY"
-  | "EMPTY_LOADED"
-  | "FULL_LOADED";
-
 export type ChargeCategory =
   | "BASE"
   | "WAITING"
@@ -1022,7 +1006,6 @@ export type ContainerListEntity = ContainerEntity & {
   customerId: number | null;
   customerName: string | null;
   direction: "IMPORT" | "EXPORT" | null;
-  moveTypeV3: MoveTypeV3 | null;
   nextStopId: number | null;
   currentDriverId: number | null;
   currentDriverName: string | null;
@@ -1063,9 +1046,7 @@ export type LegFullEntity = {
   id: number;
   deliveryOrderId: number;
   containerId: number | null;
-  fromStopId: number | null;
-  toStopId: number | null;
-  moveTypeV3: MoveTypeV3 | null;
+  moveType: MoveType | null;
   serviceType: ServiceType | null;
   fromLocationType: LegLocationType | null;
   toLocationType: LegLocationType | null;
