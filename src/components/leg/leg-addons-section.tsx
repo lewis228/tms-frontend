@@ -1,6 +1,6 @@
 // Leg Add-on 섹션 — leg 마다 추가요금 한 줄(중복 가능) 리스트 + 추가/수정/삭제.
 // 컨플루언스 재정의: 시스템 자동 + 사용자 CRUD. amount 공란이면 백엔드가 자동 채움.
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
@@ -50,6 +50,8 @@ export default function LegAddonsSection({ legId }: { legId: number }) {
     onSuccess: () => {
       toast.success(t("toast.updated"), { position: "top-center" });
       setEditingId(null);
+      setEditHasPoint(false);
+      setEditPoint(EMPTY_POINT);
     },
     onError,
   });
@@ -63,6 +65,9 @@ export default function LegAddonsSection({ legId }: { legId: number }) {
   const [editQuantity, setEditQuantity] = useState("");
   const [editUnitAmount, setEditUnitAmount] = useState("");
   const [editAmount, setEditAmount] = useState("");
+  const [editPoint, setEditPoint] = useState<PointValue>(EMPTY_POINT);
+  // 편집 중인 add-on 이 위치형(EXTRA_STOP)인지 — 부착 시점에 pointType 가 박혀 있음
+  const [editHasPoint, setEditHasPoint] = useState(false);
 
   const [newAddonId, setNewAddonId] = useState<number | null>(null);
   const [newQuantity, setNewQuantity] = useState("1");
@@ -82,6 +87,17 @@ export default function LegAddonsSection({ legId }: { legId: number }) {
     setEditQuantity(addon.quantity);
     setEditUnitAmount(addon.unitAmount ?? "");
     setEditAmount(addon.amount);
+    setEditHasPoint(addon.pointType != null);
+    setEditPoint(
+      addon.pointType != null
+        ? {
+            pointType: addon.pointType,
+            terminalId: addon.terminalId,
+            locationId: addon.locationId,
+            customerId: addon.customerId,
+          }
+        : EMPTY_POINT,
+    );
   };
 
   const handleSaveEdit = (addonId: number) => {
@@ -92,6 +108,14 @@ export default function LegAddonsSection({ legId }: { legId: number }) {
         quantity: editQuantity.trim() || "1",
         unitAmount: editUnitAmount.trim() === "" ? null : editUnitAmount.trim(),
         amount: editAmount.trim() === "" ? null : editAmount.trim(),
+        ...(editHasPoint
+          ? {
+              pointType: editPoint.pointType,
+              terminalId: editPoint.terminalId,
+              locationId: editPoint.locationId,
+              customerId: editPoint.customerId,
+            }
+          : {}),
       },
     });
   };
@@ -147,7 +171,8 @@ export default function LegAddonsSection({ legId }: { legId: number }) {
               addons.map((addon) => {
                 const isEditing = editingId === addon.id;
                 return (
-                  <TableRow key={addon.id}>
+                  <Fragment key={addon.id}>
+                  <TableRow>
                     <TableCell className="font-mono text-xs">
                       {addon.code}
                     </TableCell>
@@ -236,6 +261,23 @@ export default function LegAddonsSection({ legId }: { legId: number }) {
                       )}
                     </TableCell>
                   </TableRow>
+                  {isEditing && editHasPoint && (
+                    <TableRow>
+                      <TableCell colSpan={5}>
+                        <div className="flex flex-col gap-1">
+                          <label className="text-[10px] uppercase text-muted-foreground">
+                            {t("point.label")}
+                          </label>
+                          <PointPicker
+                            value={editPoint}
+                            onChange={setEditPoint}
+                            disabled={mutating}
+                          />
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                  </Fragment>
                 );
               })
             )}

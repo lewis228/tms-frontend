@@ -4,10 +4,12 @@ import type { LocationEntity, LocationKind, PagedResponse } from "@/types";
 import { adaptCursorToPaged, type CursorResponse } from "@/lib/pagination";
 
 export async function fetchLocations(
-  params: { page?: number; size?: number; q?: string } = {},
+  params: { page?: number; size?: number; q?: string; kind?: LocationKind } = {},
 ): Promise<PagedResponse<LocationEntity>> {
+  const { kind, ...rest } = params;
   const { data } = await api.get<CursorResponse<LocationEntity>>("/locations", {
-    params,
+    // kind 필터는 백엔드 where__kind__equal 로 전달 (예: YARD 캐스케이드)
+    params: { ...rest, ...(kind ? { where__kind__equal: kind } : {}) },
   });
   return adaptCursorToPaged(data, params?.page, params?.size);
 }

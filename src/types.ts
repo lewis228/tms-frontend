@@ -107,7 +107,7 @@ export type ContainerSize =
   | "20RF"
   | "40RF";
 
-// Addon(부가요금 타입 마스터) — 사용자 CRUD. accessorial→addon 통합.
+// Addon(부가요금 타입 마스터) — 사용자 CRUD.
 export type AddonCategory =
   | "WAITING"
   | "EXTRA_STOP"
@@ -764,7 +764,7 @@ export type RealtimeEvent = {
 };
 
 // ── Payroll (드라이버 정산) ────────────────────────────────────
-// Decimal 필드(baseTotal/accessorialTotal/grandTotal/baseAmount/...)는 문자열로 직렬화한다.
+// Decimal 필드(baseTotal/addonTotal/grandTotal/baseAmount/...)는 문자열로 직렬화한다.
 export type PayrollStatus = "DRAFT" | "CONFIRMED" | "PAID" | "VOID";
 export type PayrollLineSource = "RESOLVED" | "UNRESOLVED" | "MANUAL";
 
@@ -775,7 +775,7 @@ export type PayrollEntity = {
   periodEnd: string;
   status: PayrollStatus;
   baseTotal: string;
-  accessorialTotal: string;
+  addonTotal: string;
   grandTotal: string;
   note: string | null;
   isActive: boolean;
@@ -794,7 +794,7 @@ export type PayrollLineEntity = {
 export type PayrollChargeEntity = {
   id: number;
   code: string;
-  accessorialId: number | null;
+  addonId: number | null;
   snapshotUnitAmount: string | null;
   quantity: string;
   amount: string;
@@ -830,7 +830,7 @@ export type PayrollPeriodSummary = {
   count: number;
   driverCount: number;
   baseTotal: string;
-  accessorialTotal: string;
+  addonTotal: string;
   grandTotal: string;
 };
 

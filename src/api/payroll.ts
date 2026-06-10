@@ -118,7 +118,7 @@ export async function voidPayroll(id: number): Promise<PayrollDetailEntity> {
 
 export type PayrollChargeAddPayload = {
   code: string;
-  accessorialId?: number | null;
+  addonId?: number | null;
   snapshotUnitAmount?: string | null;
   quantity: string;
   amount: string;

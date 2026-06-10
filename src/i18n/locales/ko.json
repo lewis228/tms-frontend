@@ -1720,7 +1720,7 @@
       "periodEnd": "종료일",
       "status": "상태",
       "baseTotal": "기본 합계",
-      "accessorialTotal": "부가요금 합계",
+      "addonTotal": "부가요금 합계",
       "grandTotal": "총합계"
     },
     "status": {

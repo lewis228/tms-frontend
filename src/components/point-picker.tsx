@@ -79,10 +79,13 @@ export default function PointPicker({
               onChange({ ...EMPTY_POINT, pointType: "YARD", locationId: id })
             }
             fetchList={(q) =>
-              fetchLocations({ q, size: SEARCH_SIZE }).then((r) => r.items)
+              // YARD 캐스케이드: location 중 kind=YARD 만 (types.ts 의 YARD→location(kind=YARD))
+              fetchLocations({ q, size: SEARCH_SIZE, kind: "YARD" }).then(
+                (r) => r.items,
+              )
             }
             fetchById={(id) => fetchLocation(id)}
-            queryKeyBase={["location", "search"]}
+            queryKeyBase={["location", "search", "yard"]}
             getLabel={(x) => x.name}
             placeholder={t("point.pickPlaceholder")}
             emptyLabel={t("point.pickPlaceholder")}

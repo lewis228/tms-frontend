@@ -209,7 +209,7 @@ function DOLayer({
     return m;
   }, [locations]);
 
-  // H-1: D/O 헤더에서 location 분리. 마커는 H-6 (leg_stop) 정합성 후 재구성.
+  // H-1: D/O 헤더에서 location 분리. 마커는 Point 모델(container_stop) 정합성 후 재구성.
   const markers = useMemo(
     (): {
       id: number;

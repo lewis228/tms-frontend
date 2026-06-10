@@ -148,8 +148,8 @@ export default function SettlementDetail({
             {t("payroll.field.baseTotal")}: {formatAmount(settlement.baseTotal)}
           </span>
           <span>
-            {t("payroll.field.accessorialTotal")}:{" "}
-            {formatAmount(settlement.accessorialTotal)}
+            {t("payroll.field.addonTotal")}:{" "}
+            {formatAmount(settlement.addonTotal)}
           </span>
           <span className="text-foreground font-medium">
             {t("payroll.field.grandTotal")}:{" "}

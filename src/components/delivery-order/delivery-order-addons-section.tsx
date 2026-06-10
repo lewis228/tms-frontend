@@ -1,5 +1,5 @@
 // D/O Add-on 섹션 — D/O 단위 추가요금(고객 청구) 리스트 + 추가/수정/삭제.
-// amount 공란이면 백엔드가 accessorial 마스터 단가로 자동 채움.
+// amount 공란이면 백엔드가 addon 마스터 단가로 자동 채움.
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";

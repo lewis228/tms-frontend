@@ -15,6 +15,7 @@ export type LegAddonCreatePayload = {
   terminalId?: number | null;
   locationId?: number | null;
   customerId?: number | null;
+  extra?: Record<string, unknown> | null;
   note?: string | null;
 };
 
@@ -23,6 +24,12 @@ export type LegAddonUpdatePayload = {
   unitAmount?: string | null;
   amount?: string | null;
   amountOverride?: string | null;
+  // EXTRA_STOP add-on 편집 시 위치 변경 지원
+  pointType?: PointType | null;
+  terminalId?: number | null;
+  locationId?: number | null;
+  customerId?: number | null;
+  extra?: Record<string, unknown> | null;
   note?: string | null;
 };
 
