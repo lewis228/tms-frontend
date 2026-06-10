@@ -218,6 +218,7 @@ function GroupEntries({
           service={service}
           size={size}
           zoneName={zoneName}
+          allZones={zonesData?.items ?? []}
         />
       ) : (
         <ListView method={method} rows={rows} zoneName={zoneName} />
@@ -329,6 +330,7 @@ function MatrixView({
   service,
   size,
   zoneName,
+  allZones,
 }: {
   method: RateMethod;
   rows: FlatRateEntry[];
@@ -336,6 +338,7 @@ function MatrixView({
   service: RateServiceType;
   size: RateContainerSize;
   zoneName: Map<number, string>;
+  allZones: { id: number; name: string; code: string | null }[];
 }) {
   const { t } = useTranslation();
 
@@ -356,8 +359,21 @@ function MatrixView({
     return `${city}${state ? `, ${state}` : ""}`;
   };
 
-  const fromKeys = Array.from(new Set(rows.map(fromKey))).filter(Boolean).sort();
-  const toKeys = Array.from(new Set(rows.map(toKey))).filter(Boolean).sort();
+  // ZONE: 모든 존을 행·열 양축에 표시(정사각 매트릭스, 빈 칸은 입력 가능 위치).
+  // CITY: 도시 마스터 열거가 불가하므로 등록된 행에서 from/to 도시 합집합.
+  const allZoneKeys = allZones
+    .map((z) => String(z.id))
+    .sort((a, b) =>
+      (zoneName.get(Number(a)) ?? a).localeCompare(zoneName.get(Number(b)) ?? b),
+    );
+  const fromKeys =
+    method === "ZONE"
+      ? allZoneKeys
+      : Array.from(new Set(rows.map(fromKey))).filter(Boolean).sort();
+  const toKeys =
+    method === "ZONE"
+      ? allZoneKeys
+      : Array.from(new Set(rows.map(toKey))).filter(Boolean).sort();
 
   const cell = new Map<string, string>();
   rows
