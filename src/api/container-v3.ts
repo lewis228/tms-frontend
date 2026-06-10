@@ -5,7 +5,7 @@ import type {
   ContainerListEntity,
   ContainerFullEntity,
   ContainerStopEntity,
-  StopRole,
+  PointType,
   PagedResponse,
   ContainerWorkState,
 } from "@/types";
@@ -57,8 +57,10 @@ export async function fetchContainerStops(
 
 export type ContainerStopCreatePayload = {
   containerId: number;
-  role: StopRole;
+  pointType: PointType;
+  terminalId?: number | null;
   locationId?: number | null;
+  customerId?: number | null;
   sequenceNo?: number | null;
   plannedArrival?: string | null;
   plannedDeparture?: string | null;

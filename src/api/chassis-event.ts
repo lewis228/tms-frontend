@@ -5,7 +5,6 @@ import type { ChassisEventEntity, ChassisEventKind } from "@/types";
 export type ChassisEventCreatePayload = {
   chassisId: number;
   legId?: number | null;
-  legStopId?: number | null;
   eventKind: ChassisEventKind;
   locationId?: number | null;
   occurredAt: string;

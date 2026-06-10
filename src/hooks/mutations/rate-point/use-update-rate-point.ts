@@ -2,14 +2,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { updateRatePoint } from "@/api/rate-point";
 import { QUERY_KEYS } from "@/lib/constants";
-import type { PointType, UseMutationCallback } from "@/types";
+import type { RatePointType, UseMutationCallback } from "@/types";
 
 type Vars = {
   id: number;
   payload: Partial<{
     name: string;
     code: string | null;
-    pointType: PointType;
+    pointType: RatePointType;
     address: string | null;
     latitude: string | null;
     longitude: string | null;

@@ -730,6 +730,10 @@
       "moveType": "Move Type",
       "serviceType": "Service Type",
       "driver": "기사",
+      "fromPoint": "출발 포인트",
+      "toPoint": "도착 포인트",
+      "from": "출발",
+      "to": "도착",
       "pickupLocation": "픽업 장소",
       "pickupDate": "픽업 시각",
       "deliveryLocation": "배송 장소",
@@ -737,6 +741,7 @@
       "note": "메모"
     },
     "driverPlaceholder": "— 미지정 —",
+    "pointPlaceholder": "— 포인트 선택 —",
     "locationPlaceholder": "—",
     "locationEmpty": "— 선택 안함 —",
     "toast": {
@@ -1758,6 +1763,18 @@
       "driversOptional": "기사 (선택)",
       "addDriver": "기사 추가",
       "result": "{{built}}건 생성됨, {{skipped}}명 건너뜀"
+    }
+  },
+  "point": {
+    "label": "포인트",
+    "add": "포인트 추가",
+    "plannedArrival": "예정 도착",
+    "pickPlaceholder": "— 선택 —",
+    "type": {
+      "placeholder": "타입",
+      "TERMINAL": "터미널",
+      "YARD": "야드",
+      "CUSTOMER": "거래처"
     }
   },
   "legAddon": {

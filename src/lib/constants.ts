@@ -85,10 +85,6 @@ export const QUERY_KEYS = {
       ["equipment-pool", "list", params] as const,
     byId: (id: number) => ["equipment-pool", "byId", id] as const,
   },
-  legStop: {
-    all: ["leg-stop"] as const,
-    byLeg: (legId: number) => ["leg-stop", "byLeg", legId] as const,
-  },
   chassisEvent: {
     all: ["chassis-event"] as const,
     byChassis: (chassisId: number) => ["chassis-event", "byChassis", chassisId] as const,

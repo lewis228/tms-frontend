@@ -31,7 +31,8 @@ export type LegStatus =
   | "DRY_RUN";
 
 // 재설계(컨플루언스): Leg From/To 의 Location 종류 + Layer1 move_code + Load Direction
-export type LegLocationType = "TERMINAL" | "YARD" | "CUSTOMER";
+// Point/Leg from·to 종류. 타입별 마스터: TERMINAL→terminal, YARD→location(kind=YARD), CUSTOMER→customer.
+export type PointType = "TERMINAL" | "YARD" | "CUSTOMER";
 export type LegMoveCode =
   | "PPU"
   | "PRE"
@@ -58,18 +59,6 @@ export type ShipmentDirection = "IMPORT" | "EXPORT";
 export type MoveType = "LOADED" | "EMPTY" | "BOBTAIL";
 export type ServiceType = "LIVE" | "DROP";
 
-export type StopKind =
-  | "PICKUP_FULL"
-  | "DROP_FULL"
-  | "PICKUP_EMPTY"
-  | "DROP_EMPTY"
-  | "CHASSIS_GET"
-  | "CHASSIS_RETURN"
-  | "WAIT"
-  | "FUEL"
-  | "SCALE"
-  | "OTHER";
-
 export type ChassisEventKind =
   | "PICKED_UP"
   | "DROPPED_OFF"
@@ -77,29 +66,11 @@ export type ChassisEventKind =
   | "RETURNED_TO_POOL"
   | "RETURNED_TO_TERMINAL";
 
-export type LegStopEntity = {
-  id: number;
-  teamId: number;
-  legId: number;
-  sequenceNo: number;
-  stopKind: StopKind;
-  locationId: number | null;
-  containerId: number | null;
-  chassisId: number | null;
-  arrivedAt: string | null;
-  departedAt: string | null;
-  note: string | null;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-};
-
 export type ChassisEventEntity = {
   id: number;
   teamId: number;
   chassisId: number;
   legId: number | null;
-  legStopId: number | null;
   eventKind: ChassisEventKind;
   locationId: number | null;
   occurredAt: string;
@@ -508,14 +479,14 @@ export type LegEntity = {
   step: DeliveryStatus;
   moveType: MoveType;
   serviceType: ServiceType;
-  fromLocationType: LegLocationType | null;
-  toLocationType: LegLocationType | null;
+  fromPointId: number | null;
+  toPointId: number | null;
+  fromLocationType: PointType | null;
+  toLocationType: PointType | null;
   moveCode: LegMoveCode | null;
   status: LegStatus;
   driverId: number | null;
-  pickupLocationId: number | null;
   pickupDate: string | null;
-  deliveryLocationId: number | null;
   deliveryDate: string | null;
   startedAt: string | null;
   arrivedAt: string | null;
@@ -564,6 +535,11 @@ export type LegAddonEntity = {
   unitAmount: string | null;
   amount: string;
   amountOverride: string | null;
+  // STP 등 위치형 add-on (그 레그에서 추가로 들른 곳)
+  pointType: PointType | null;
+  terminalId: number | null;
+  locationId: number | null;
+  customerId: number | null;
   extra: Record<string, unknown> | null;
   note: string | null;
   isActive: boolean;
@@ -587,7 +563,8 @@ export type DeliveryOrderAddonEntity = {
 // ─────────────────────────────────────────────────────────────────
 
 export type RateMethod = "ZONE" | "CITY" | "MILE" | "HOURLY";
-export type PointType = "TERMINAL" | "YARD";
+// 요율표 행 포인트 종류(rate_point) — Point 모델의 PointType 과 별개.
+export type RatePointType = "TERMINAL" | "YARD";
 export type RateContainerSize = "SIZE_20" | "SIZE_40" | "SIZE_45";
 
 export type RateGroupEntity = {
@@ -604,7 +581,7 @@ export type RatePointEntity = {
   id: number;
   name: string;
   code: string | null;
-  pointType: PointType;
+  pointType: RatePointType;
   address: string | null;
   latitude: string | null;
   longitude: string | null;
@@ -1021,8 +998,6 @@ export type ExpiringComplianceResponse = {
 // Phase I — Container-First v3
 // ─────────────────────────────────────────────────────────────────
 
-export type StopRole = "ORIGIN" | "DELIVERY" | "TRANSIT" | "TERMINUS";
-
 export type HandoverReason =
   | "TERMINAL_CLOSED"
   | "ACCIDENT"
@@ -1067,8 +1042,11 @@ export type ContainerStopEntity = {
   id: number;
   containerId: number;
   sequenceNo: number;
-  role: StopRole;
+  pointType: PointType;
+  terminalId: number | null;
   locationId: number | null;
+  customerId: number | null;
+  pointName: string | null;
   locationName: string | null;
   plannedArrival: string | null;
   plannedDeparture: string | null;
@@ -1098,8 +1076,10 @@ export type LegFullEntity = {
   containerId: number | null;
   moveType: MoveType | null;
   serviceType: ServiceType | null;
-  fromLocationType: LegLocationType | null;
-  toLocationType: LegLocationType | null;
+  fromPointId: number | null;
+  toPointId: number | null;
+  fromLocationType: PointType | null;
+  toLocationType: PointType | null;
   moveCode: LegMoveCode | null;
   status: LegStatus;
   driverId: number | null;

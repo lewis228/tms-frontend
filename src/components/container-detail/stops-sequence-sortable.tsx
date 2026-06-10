@@ -21,13 +21,12 @@ import { GripVertical } from "lucide-react";
 
 import { useReorderContainerStops } from "@/hooks/mutations/container-stop/use-reorder-container-stops";
 import { formatDateTime } from "@/lib/format";
-import type { ContainerStopEntity, StopRole } from "@/types";
+import type { ContainerStopEntity, PointType } from "@/types";
 
-const ROLE_TONE: Record<StopRole, string> = {
-  ORIGIN: "bg-blue-100 text-blue-800",
-  DELIVERY: "bg-emerald-100 text-emerald-800",
-  TRANSIT: "bg-zinc-100 text-zinc-700",
-  TERMINUS: "bg-slate-200 text-slate-800",
+const TYPE_TONE: Record<PointType, string> = {
+  TERMINAL: "bg-blue-100 text-blue-800",
+  YARD: "bg-zinc-100 text-zinc-700",
+  CUSTOMER: "bg-emerald-100 text-emerald-800",
 };
 
 export default function StopsSequenceSortable({
@@ -108,7 +107,7 @@ function SortableRow({
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: stop.id });
-  const tone = ROLE_TONE[stop.role] ?? "bg-muted text-muted-foreground";
+  const tone = TYPE_TONE[stop.pointType] ?? "bg-muted text-muted-foreground";
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -133,9 +132,11 @@ function SortableRow({
       </button>
       <span className="font-mono text-muted-foreground">#{display}</span>
       <span className={`rounded px-1.5 py-0.5 text-[10px] ${tone}`}>
-        {stop.role}
+        {stop.pointType}
       </span>
-      <span className="font-medium">{stop.locationName ?? "—"}</span>
+      <span className="font-medium">
+        {stop.pointName ?? stop.locationName ?? "—"}
+      </span>
       <span className="text-muted-foreground">
         {stop.plannedArrival ? `plan ${formatDateTime(stop.plannedArrival)}` : ""}
       </span>

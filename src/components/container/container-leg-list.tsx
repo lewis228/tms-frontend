@@ -9,10 +9,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/loader";
 import Fallback from "@/components/fallback";
-import LegStopList from "@/components/container/leg-stop-list";
 import { useLegsByDoData } from "@/hooks/queries/use-legs-by-do-data";
 import { useDriversData } from "@/hooks/queries/use-drivers-data";
-import { useLocationsData } from "@/hooks/queries/use-locations-data";
 import { useCreateLeg } from "@/hooks/mutations/leg/use-create-leg";
 import { useDeleteLeg } from "@/hooks/mutations/leg/use-delete-leg";
 import { generateErrorMessage } from "@/lib/error";
@@ -27,7 +25,6 @@ export default function ContainerLegList({
   const { t } = useTranslation();
   const { data: legs, isPending, error } = useLegsByDoData(container.deliveryOrderId);
   const { data: driversData } = useDriversData(1);
-  const { data: locationsData } = useLocationsData(1);
 
   const { mutate: createLeg, isPending: isCreateLegPending } = useCreateLeg({
     onSuccess: () =>
@@ -91,14 +88,8 @@ export default function ContainerLegList({
           leg.driverId
             ? (driversData?.items.find((d) => d.id === leg.driverId)?.name ?? "—")
             : "—";
-        const pickupName =
-          leg.pickupLocationId
-            ? (locationsData?.items.find((l) => l.id === leg.pickupLocationId)?.name ?? "—")
-            : "—";
-        const deliveryName =
-          leg.deliveryLocationId
-            ? (locationsData?.items.find((l) => l.id === leg.deliveryLocationId)?.name ?? "—")
-            : "—";
+        const fromName = leg.fromLocationType ?? "—";
+        const toName = leg.toLocationType ?? "—";
         return (
           <div key={leg.id} className="rounded-md border p-3">
             <div className="flex items-center justify-between">
@@ -125,8 +116,8 @@ export default function ContainerLegList({
             </div>
             <div className="mt-2 grid grid-cols-2 gap-1 text-xs text-muted-foreground">
               <div>{t("leg.field.driver")}: {driverName}</div>
-              <div>{t("leg.field.pickup")}: {pickupName}</div>
-              <div>{t("leg.field.delivery")}: {deliveryName}</div>
+              <div>{t("leg.field.from")}: {fromName}</div>
+              <div>{t("leg.field.to")}: {toName}</div>
               <div>
                 {t("leg.field.pickupDate")}:{" "}
                 {leg.pickupDate ? formatDateTime(leg.pickupDate) : "—"}
@@ -135,7 +126,6 @@ export default function ContainerLegList({
             {leg.remarks && (
               <p className="mt-1 text-xs text-foreground/70">📝 {leg.remarks}</p>
             )}
-            <LegStopList legId={leg.id} />
           </div>
         );
       })}

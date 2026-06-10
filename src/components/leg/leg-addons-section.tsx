@@ -23,6 +23,8 @@ import { useDeleteLegAddon } from "@/hooks/mutations/leg-addon/use-delete-leg-ad
 import { formatAmount } from "@/lib/format";
 import { generateErrorMessage } from "@/lib/error";
 import { LEG_ADDON_CODES } from "@/lib/constants";
+import PointPicker from "@/components/point-picker";
+import { EMPTY_POINT, type PointValue } from "@/lib/point";
 import type { LegAddonEntity } from "@/types";
 
 export default function LegAddonsSection({ legId }: { legId: number }) {
@@ -64,6 +66,7 @@ export default function LegAddonsSection({ legId }: { legId: number }) {
   const [newQuantity, setNewQuantity] = useState("1");
   const [newUnitAmount, setNewUnitAmount] = useState("");
   const [newAmount, setNewAmount] = useState("");
+  const [newPoint, setNewPoint] = useState<PointValue>(EMPTY_POINT);
 
   if (error) return <Fallback />;
   if (isPending) return <Loader />;
@@ -99,8 +102,13 @@ export default function LegAddonsSection({ legId }: { legId: number }) {
         quantity: newQuantity.trim() || "1",
         unitAmount: newUnitAmount.trim() === "" ? null : newUnitAmount.trim(),
         amount: newAmount.trim() === "" ? null : newAmount.trim(),
+        pointType: newPoint.pointType,
+        terminalId: newPoint.terminalId,
+        locationId: newPoint.locationId,
+        customerId: newPoint.customerId,
       },
     });
+    setNewPoint(EMPTY_POINT);
   };
 
   return (
@@ -293,6 +301,15 @@ export default function LegAddonsSection({ legId }: { legId: number }) {
           {t("common.add")}
         </Button>
       </div>
+
+      {newCode === "STP" && (
+        <div className="flex flex-col gap-1">
+          <label className="text-[10px] uppercase text-muted-foreground">
+            {t("point.label")}
+          </label>
+          <PointPicker value={newPoint} onChange={setNewPoint} disabled={mutating} />
+        </div>
+      )}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 // /api/v1/rate-points/* 매핑. (axios baseURL 이 이미 /api/v1 포함)
 // bulk 엔드포인트는 UI 미사용 — 단건 CRUD 만 래핑.
 import api from "@/lib/axios";
-import type { PagedResponse, PointType, RatePointEntity } from "@/types";
+import type { PagedResponse, RatePointType, RatePointEntity } from "@/types";
 import { adaptCursorToPaged, type CursorResponse } from "@/lib/pagination";
 
 export async function fetchRatePoints(
@@ -22,7 +22,7 @@ export async function fetchRatePoint(id: number): Promise<RatePointEntity> {
 export async function createRatePoint(payload: {
   name: string;
   code?: string | null;
-  pointType: PointType;
+  pointType: RatePointType;
   address?: string | null;
   latitude?: string | null;
   longitude?: string | null;
@@ -39,7 +39,7 @@ export async function updateRatePoint(
   payload: Partial<{
     name: string;
     code: string | null;
-    pointType: PointType;
+    pointType: RatePointType;
     address: string | null;
     latitude: string | null;
     longitude: string | null;

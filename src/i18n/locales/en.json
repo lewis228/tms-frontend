@@ -730,6 +730,10 @@
       "moveType": "Move type",
       "serviceType": "Service type",
       "driver": "Driver",
+      "fromPoint": "From point",
+      "toPoint": "To point",
+      "from": "From",
+      "to": "To",
       "pickupLocation": "Pickup location",
       "pickupDate": "Pickup at",
       "deliveryLocation": "Delivery location",
@@ -737,6 +741,7 @@
       "note": "Note"
     },
     "driverPlaceholder": "— Unassigned —",
+    "pointPlaceholder": "— Select point —",
     "locationPlaceholder": "—",
     "locationEmpty": "— None —",
     "toast": {
@@ -1758,6 +1763,18 @@
       "driversOptional": "Drivers (optional)",
       "addDriver": "Add driver",
       "result": "{{built}} built, {{skipped}} skipped"
+    }
+  },
+  "point": {
+    "label": "Point",
+    "add": "Add Point",
+    "plannedArrival": "Planned arrival",
+    "pickPlaceholder": "— Select —",
+    "type": {
+      "placeholder": "Type",
+      "TERMINAL": "Terminal",
+      "YARD": "Yard",
+      "CUSTOMER": "Customer"
     }
   },
   "legAddon": {

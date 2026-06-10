@@ -9,8 +9,8 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { fetchDriver, fetchDrivers } from "@/api/driver";
-import { fetchLocation, fetchLocations } from "@/api/location";
 import SearchableSelect from "@/components/searchable-select";
+import { useContainerStopsData } from "@/hooks/queries/use-container-stops-data";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -28,7 +28,6 @@ import { useLegEditorModal } from "@/store/leg-editor-modal";
 import type {
   DeliveryStatus,
   DriverEntity,
-  LocationEntity,
   MoveType,
   ServiceType,
 } from "@/types";
@@ -83,14 +82,17 @@ function Body({ modal }: { modal: OpenModal }) {
   const [driverId, setDriverId] = useState<number | null>(
     modal.type === "CREATE" ? null : (modal.leg.driverId ?? null),
   );
-  const [pickupLocationId, setPickupLocationId] = useState<number | null>(
-    modal.type === "CREATE" ? null : (modal.leg.pickupLocationId ?? null),
+  const containerId =
+    modal.type === "EDIT" ? (modal.leg.containerId ?? undefined) : undefined;
+  const { data: stops } = useContainerStopsData(containerId);
+  const [fromPointId, setFromPointId] = useState<number | null>(
+    modal.type === "CREATE" ? null : (modal.leg.fromPointId ?? null),
+  );
+  const [toPointId, setToPointId] = useState<number | null>(
+    modal.type === "CREATE" ? null : (modal.leg.toPointId ?? null),
   );
   const [pickupDate, setPickupDate] = useState(
     modal.type === "CREATE" ? "" : toLocalInput(modal.leg.pickupDate),
-  );
-  const [deliveryLocationId, setDeliveryLocationId] = useState<number | null>(
-    modal.type === "CREATE" ? null : (modal.leg.deliveryLocationId ?? null),
   );
   const [deliveryDate, setDeliveryDate] = useState(
     modal.type === "CREATE" ? "" : toLocalInput(modal.leg.deliveryDate),
@@ -147,9 +149,9 @@ function Body({ modal }: { modal: OpenModal }) {
         moveType,
         serviceType,
         driverId,
-        pickupLocationId,
+        fromPointId,
+        toPointId,
         pickupDate: toIsoOrNull(pickupDate),
-        deliveryLocationId,
         deliveryDate: toIsoOrNull(deliveryDate),
         note: note.trim() || null,
       });
@@ -163,9 +165,9 @@ function Body({ modal }: { modal: OpenModal }) {
           step,
           moveType,
           serviceType,
-          pickupLocationId,
+          fromPointId,
+          toPointId,
           pickupDate: toIsoOrNull(pickupDate),
-          deliveryLocationId,
           deliveryDate: toIsoOrNull(deliveryDate),
           note: note.trim() || null,
         },
@@ -242,20 +244,22 @@ function Body({ modal }: { modal: OpenModal }) {
             disabled={isPending}
           />
         </Field>
-        <Field label={t("leg.field.pickupLocation")}>
-          <SearchableSelect<LocationEntity>
-            value={pickupLocationId}
-            onSelect={(id) => setPickupLocationId(id)}
-            fetchList={(q) =>
-              fetchLocations({ q, size: SEARCH_SIZE }).then((r) => r.items)
+        <Field label={t("leg.field.fromPoint")}>
+          <select
+            value={fromPointId ?? ""}
+            onChange={(e) =>
+              setFromPointId(e.target.value ? Number(e.target.value) : null)
             }
-            fetchById={(id) => fetchLocation(id)}
-            queryKeyBase={["location", "search"]}
-            getLabel={(l) => `${l.name} (${l.kind})`}
-            placeholder={t("leg.locationPlaceholder")}
-            emptyLabel={t("leg.locationEmpty")}
-            disabled={isPending}
-          />
+            disabled={isPending || !stops?.length}
+            className="rounded-md border bg-background px-3 py-2 text-sm"
+          >
+            <option value="">{t("leg.pointPlaceholder")}</option>
+            {(stops ?? []).map((s) => (
+              <option key={s.id} value={s.id}>
+                #{s.sequenceNo} · {s.pointType} · {s.pointName ?? s.locationName ?? "—"}
+              </option>
+            ))}
+          </select>
         </Field>
         <Field label={t("leg.field.pickupDate")}>
           <Input
@@ -265,20 +269,22 @@ function Body({ modal }: { modal: OpenModal }) {
             disabled={isPending}
           />
         </Field>
-        <Field label={t("leg.field.deliveryLocation")}>
-          <SearchableSelect<LocationEntity>
-            value={deliveryLocationId}
-            onSelect={(id) => setDeliveryLocationId(id)}
-            fetchList={(q) =>
-              fetchLocations({ q, size: SEARCH_SIZE }).then((r) => r.items)
+        <Field label={t("leg.field.toPoint")}>
+          <select
+            value={toPointId ?? ""}
+            onChange={(e) =>
+              setToPointId(e.target.value ? Number(e.target.value) : null)
             }
-            fetchById={(id) => fetchLocation(id)}
-            queryKeyBase={["location", "search"]}
-            getLabel={(l) => `${l.name} (${l.kind})`}
-            placeholder={t("leg.locationPlaceholder")}
-            emptyLabel={t("leg.locationEmpty")}
-            disabled={isPending}
-          />
+            disabled={isPending || !stops?.length}
+            className="rounded-md border bg-background px-3 py-2 text-sm"
+          >
+            <option value="">{t("leg.pointPlaceholder")}</option>
+            {(stops ?? []).map((s) => (
+              <option key={s.id} value={s.id}>
+                #{s.sequenceNo} · {s.pointType} · {s.pointName ?? s.locationName ?? "—"}
+              </option>
+            ))}
+          </select>
         </Field>
         <Field label={t("leg.field.deliveryDate")}>
           <Input

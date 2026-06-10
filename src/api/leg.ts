@@ -16,12 +16,13 @@ export type LegCreatePayload = {
   step: DeliveryStatus;
   moveType: MoveType;
   serviceType: ServiceType;
+  // 포인트 모델: from/to 포인트(container_stop) 선택 → 백엔드가 타입 스냅샷
+  fromPointId?: number | null;
+  toPointId?: number | null;
   driverId?: number | null;
   truckId?: number | null;
   chassisId?: number | null;
-  pickupLocationId?: number | null;
   pickupDate?: string | null;
-  deliveryLocationId?: number | null;
   deliveryDate?: string | null;
   note?: string | null;
 };

@@ -13,17 +13,17 @@ import L, { type LatLngExpression } from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 import { useLocationsData } from "@/hooks/queries/use-locations-data";
-import type { ContainerFullEntity, StopRole } from "@/types";
+import { useTerminalsData } from "@/hooks/queries/use-terminals-data";
+import type { ContainerFullEntity, PointType } from "@/types";
 
-const ROLE_COLOR: Record<StopRole, string> = {
-  ORIGIN: "#3b82f6",
-  DELIVERY: "#10b981",
-  TRANSIT: "#a1a1aa",
-  TERMINUS: "#1e293b",
+const TYPE_COLOR: Record<PointType, string> = {
+  TERMINAL: "#3b82f6",
+  YARD: "#a1a1aa",
+  CUSTOMER: "#10b981",
 };
 
-function stopIcon(role: StopRole, sequenceNo: number) {
-  const color = ROLE_COLOR[role];
+function stopIcon(pointType: PointType, sequenceNo: number) {
+  const color = TYPE_COLOR[pointType] ?? "#a1a1aa";
   return L.divIcon({
     className: "",
     html: `<div style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:${color};color:white;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.4);font-size:11px;font-weight:600;font-family:monospace">${sequenceNo}</div>`,
@@ -62,6 +62,7 @@ export default function ContainerMap({
 }) {
   const { t } = useTranslation();
   const { data: locationsData } = useLocationsData(1);
+  const { data: terminalsData } = useTerminalsData(1);
   const locById = useMemo(() => {
     const m = new Map<number, { lat: number; lng: number; name: string }>();
     for (const l of locationsData?.items ?? []) {
@@ -75,17 +76,35 @@ export default function ContainerMap({
     }
     return m;
   }, [locationsData]);
+  const termById = useMemo(() => {
+    const m = new Map<number, { lat: number; lng: number; name: string }>();
+    for (const tm of terminalsData?.items ?? []) {
+      if (tm.latitude !== null && tm.longitude !== null) {
+        m.set(tm.id, {
+          lat: Number(tm.latitude),
+          lng: Number(tm.longitude),
+          name: tm.name,
+        });
+      }
+    }
+    return m;
+  }, [terminalsData]);
 
   const stopsWithCoords = useMemo(() => {
     return full.stops
       .map((s) => {
-        if (s.locationId === null) return null;
-        const loc = locById.get(s.locationId);
-        if (!loc) return null;
-        return { ...s, lat: loc.lat, lng: loc.lng, locName: loc.name };
+        // Customer 포인트는 좌표 없음 → 지도 생략. Terminal/Yard 만 핀.
+        const ref =
+          s.terminalId != null
+            ? termById.get(s.terminalId)
+            : s.locationId != null
+              ? locById.get(s.locationId)
+              : undefined;
+        if (!ref) return null;
+        return { ...s, lat: ref.lat, lng: ref.lng, locName: ref.name };
       })
       .filter((s): s is NonNullable<typeof s> => s !== null);
-  }, [full.stops, locById]);
+  }, [full.stops, locById, termById]);
 
   const bounds: LatLngExpression[] = useMemo(() => {
     const b: LatLngExpression[] = stopsWithCoords.map(
@@ -156,12 +175,12 @@ export default function ContainerMap({
           <Marker
             key={s.id}
             position={[s.lat, s.lng]}
-            icon={stopIcon(s.role, s.sequenceNo)}
+            icon={stopIcon(s.pointType, s.sequenceNo)}
           >
             <Popup>
               <div className="text-xs">
                 <div className="font-mono">
-                  #{s.sequenceNo} · {s.role}
+                  #{s.sequenceNo} · {s.pointType}
                 </div>
                 <div className="font-medium">{s.locName}</div>
                 {s.actualArrival && (

@@ -19,12 +19,12 @@ import { generateErrorMessage } from "@/lib/error";
 import { useRatePointEditorModal } from "@/store/rate-point-editor-modal";
 import type {
   LocationEntity,
-  PointType,
+  RatePointType,
   TerminalEntity,
 } from "@/types";
 
 const SEARCH_SIZE = 50;
-const POINT_TYPES: PointType[] = ["TERMINAL", "YARD"];
+const POINT_TYPES: RatePointType[] = ["TERMINAL", "YARD"];
 
 type OpenModal = Extract<
   ReturnType<typeof useRatePointEditorModal>,
@@ -55,7 +55,7 @@ function Body({ modal }: { modal: OpenModal }) {
   const [code, setCode] = useState(
     modal.type === "CREATE" ? "" : (modal.ratePoint.code ?? ""),
   );
-  const [pointType, setPointType] = useState<PointType>(
+  const [pointType, setRatePointType] = useState<RatePointType>(
     modal.type === "CREATE" ? "TERMINAL" : modal.ratePoint.pointType,
   );
   const [address, setAddress] = useState(
@@ -156,7 +156,7 @@ function Body({ modal }: { modal: OpenModal }) {
           <Field label={t("ratePoint.field.pointType")} required>
             <select
               value={pointType}
-              onChange={(e) => setPointType(e.target.value as PointType)}
+              onChange={(e) => setRatePointType(e.target.value as RatePointType)}
               disabled={isPending}
               className="rounded-md border bg-background px-3 py-2 text-sm"
             >
