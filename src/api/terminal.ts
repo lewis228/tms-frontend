@@ -23,6 +23,7 @@ export async function createTerminal(payload: {
   address?: string | null;
   latitude?: number | null;
   longitude?: number | null;
+  zipId?: number | null;
   note?: string | null;
 }): Promise<TerminalEntity> {
   const { data } = await api.post<TerminalEntity>("/terminals", payload);
@@ -37,6 +38,7 @@ export async function updateTerminal(
     address: string | null;
     latitude: number | null;
     longitude: number | null;
+    zipId: number | null;
     isActive: boolean;
     note: string | null;
   }>,

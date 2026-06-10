@@ -126,7 +126,9 @@
     "active": "활성",
     "password": "비밀번호",
     "lastLogin": "마지막 로그인",
-    "joinedAt": "가입일"
+    "joinedAt": "가입일",
+    "zip": "우편번호",
+    "zipPlaceholder": "우편번호/도시 검색…"
   },
   "favorites": {
     "addToFavorites": "Favorites 에 추가",
@@ -1627,7 +1629,14 @@
       "title": "멤버 (우편번호)",
       "addRow": "행 추가",
       "save": "멤버 저장",
-      "zipCode": "우편번호"
+      "zipCode": "우편번호",
+      "byCity": {
+        "title": "도시로 추가",
+        "cityPlaceholder": "도시 (예: Fontana)",
+        "expand": "우편번호 추가",
+        "help": "그 도시(주)의 모든 우편번호를 이 존에 추가합니다.",
+        "added": "도시 우편번호 추가됨"
+      }
     }
   },
   "rateSheet": {

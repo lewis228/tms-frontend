@@ -26,6 +26,7 @@ export async function createLocation(payload: {
   latitude?: number | null;
   longitude?: number | null;
   customerId?: number | null;
+  zipId?: number | null;
   note?: string | null;
 }): Promise<LocationEntity> {
   const { data } = await api.post<LocationEntity>("/locations", payload);
@@ -41,6 +42,7 @@ export async function updateLocation(
     latitude: number | null;
     longitude: number | null;
     customerId: number | null;
+    zipId: number | null;
     isActive: boolean;
     note: string | null;
   }>,

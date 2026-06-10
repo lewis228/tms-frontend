@@ -344,6 +344,7 @@ export type CustomerEntity = {
   insuranceDocUrl: string | null;
   w9DocUrl: string | null;
   paymentTermsDays: number | null;
+  zipId: number | null;
   isActive: boolean;
   note: string | null;
   createdAt: string;
@@ -358,10 +359,27 @@ export type TerminalEntity = {
   address: string | null;
   latitude: string | null;
   longitude: string | null;
+  zipId: number | null;
   isActive: boolean;
   note: string | null;
   createdAt: string;
   updatedAt: string;
+};
+
+// 전역 zip 마스터 (검색/picker)
+export type ZipCodeEntity = {
+  id: number;
+  zip: string;
+  city: string;
+  state: string;
+  county: string | null;
+  latitude: number | null;
+  longitude: number | null;
+};
+
+export type CitySuggestion = {
+  city: string;
+  state: string;
 };
 
 export type VesselEntity = {
@@ -385,6 +403,7 @@ export type LocationEntity = {
   latitude: string | null;
   longitude: string | null;
   customerId: number | null;
+  zipId: number | null;
   isActive: boolean;
   note: string | null;
   createdAt: string;

@@ -6,6 +6,7 @@ import { toast } from "sonner";
 
 import { fetchCustomer, fetchCustomers } from "@/api/customer";
 import SearchableSelect from "@/components/searchable-select";
+import ZipPicker from "@/components/zip-picker";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -68,6 +69,9 @@ function Body({ modal }: { modal: OpenModal }) {
   const [customerId, setCustomerId] = useState<number | null>(
     modal.type === "CREATE" ? null : (modal.location.customerId ?? null),
   );
+  const [zipId, setZipId] = useState<number | null>(
+    modal.type === "CREATE" ? null : (modal.location.zipId ?? null),
+  );
   const [note, setNote] = useState(
     modal.type === "CREATE" ? "" : (modal.location.note ?? ""),
   );
@@ -122,6 +126,7 @@ function Body({ modal }: { modal: OpenModal }) {
       latitude: parseLatLng(latitude),
       longitude: parseLatLng(longitude),
       customerId: kind === "CUSTOMER" ? (customerId ?? null) : null,
+      zipId,
       note: note.trim() || null,
     };
     if (modal.type === "CREATE") {
@@ -182,6 +187,9 @@ function Body({ modal }: { modal: OpenModal }) {
             onChange={(e) => setAddress(e.target.value)}
             disabled={isPending}
           />
+        </Field>
+        <Field label={t("field.zip")}>
+          <ZipPicker value={zipId} onSelect={setZipId} disabled={isPending} />
         </Field>
         <div className="grid grid-cols-2 gap-3">
           <Field label={t("location.field.latitude")}>

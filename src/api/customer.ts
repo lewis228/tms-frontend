@@ -17,6 +17,7 @@ export type CustomerCreatePayload = {
   insuranceDocUrl?: string | null;
   w9DocUrl?: string | null;
   paymentTermsDays?: number | null;
+  zipId?: number | null;
   note?: string | null;
 };
 

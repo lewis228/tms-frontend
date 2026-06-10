@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
+import ZipPicker from "@/components/zip-picker";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -56,6 +57,9 @@ function Body({ modal }: { modal: OpenModal }) {
   const [longitude, setLongitude] = useState(
     modal.type === "CREATE" ? "" : (modal.terminal.longitude ?? ""),
   );
+  const [zipId, setZipId] = useState<number | null>(
+    modal.type === "CREATE" ? null : (modal.terminal.zipId ?? null),
+  );
   const [note, setNote] = useState(
     modal.type === "CREATE" ? "" : (modal.terminal.note ?? ""),
   );
@@ -97,6 +101,7 @@ function Body({ modal }: { modal: OpenModal }) {
       address: address.trim() || null,
       latitude: parseLatLng(latitude),
       longitude: parseLatLng(longitude),
+      zipId,
       note: note.trim() || null,
     };
     if (modal.type === "CREATE") {
@@ -158,6 +163,9 @@ function Body({ modal }: { modal: OpenModal }) {
             />
           </Field>
         </div>
+        <Field label={t("field.zip")}>
+          <ZipPicker value={zipId} onSelect={setZipId} disabled={isPending} />
+        </Field>
         <Field label={t("field.note")}>
           <Input
             value={note}

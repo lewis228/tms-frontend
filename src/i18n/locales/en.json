@@ -126,7 +126,9 @@
     "active": "Active",
     "password": "Password",
     "lastLogin": "Last login",
-    "joinedAt": "Joined"
+    "joinedAt": "Joined",
+    "zip": "Zip Code",
+    "zipPlaceholder": "Search zip / city…"
   },
   "favorites": {
     "addToFavorites": "Add to Favorites",
@@ -1627,7 +1629,14 @@
       "title": "Members (zip)",
       "addRow": "Add Row",
       "save": "Save Members",
-      "zipCode": "Zip Code"
+      "zipCode": "Zip Code",
+      "byCity": {
+        "title": "Add by city",
+        "cityPlaceholder": "City (e.g. Fontana)",
+        "expand": "Add zips",
+        "help": "Adds every zip code in that city/state to this zone.",
+        "added": "City zips added"
+      }
     }
   },
   "rateSheet": {

@@ -79,3 +79,16 @@ export async function replaceRateZoneMembers(
   });
   return data.members;
 }
+
+// 도시(city+state)의 모든 zip 을 zip 마스터에서 찾아 멤버에 합집합 추가.
+export async function addRateZoneMembersByCity(
+  id: number,
+  city: string,
+  state: string,
+): Promise<RateZoneMemberEntity[]> {
+  const { data } = await api.post<MembersResponse>(
+    `/rate-zones/${id}/members/by-city`,
+    { city, state },
+  );
+  return data.members;
+}
