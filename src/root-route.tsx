@@ -54,7 +54,7 @@ const MasterDriversPage = lazy(() => import("@/pages/master-drivers-page"));
 const MasterTrucksPage = lazy(() => import("@/pages/master-trucks-page"));
 const MasterChassisPage = lazy(() => import("@/pages/master-chassis-page"));
 const MasterEquipmentPoolsPage = lazy(() => import("@/pages/master-equipment-pools-page"));
-const MasterChargeCodesPage = lazy(() => import("@/pages/master-charge-codes-page"));
+const MasterAddonsPage = lazy(() => import("@/pages/master-addons-page"));
 const RateGroupsPage = lazy(() => import("@/pages/rate-groups-page"));
 const RatePointsPage = lazy(() => import("@/pages/rate-points-page"));
 const RateMultipliersPage = lazy(() => import("@/pages/rate-multipliers-page"));
@@ -179,7 +179,7 @@ export default function RootRoute() {
             <Route path="master/vessels" element={<MasterVesselsPage />} />
             <Route path="master/locations" element={<MasterLocationsPage />} />
             <Route element={<ProtectedRoute require="ADMIN" />}>
-              <Route path="master/charge-codes" element={<MasterChargeCodesPage />} />
+              <Route path="master/addons" element={<MasterAddonsPage />} />
             </Route>
 
             <Route path="rates/rate-groups" element={<RateGroupsPage />} />

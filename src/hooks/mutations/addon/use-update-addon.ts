@@ -1,15 +1,17 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { deleteChargeCode } from "@/api/charge-code";
+import { updateAddon, type AddonUpdatePayload } from "@/api/addon";
 import { QUERY_KEYS } from "@/lib/constants";
 import type { UseMutationCallback } from "@/types";
 
-export function useDeleteChargeCode(callbacks?: UseMutationCallback) {
+type Vars = { id: number; payload: AddonUpdatePayload };
+
+export function useUpdateAddon(callbacks?: UseMutationCallback) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: deleteChargeCode,
+    mutationFn: ({ id, payload }: Vars) => updateAddon(id, payload),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: QUERY_KEYS.chargeCode.all });
+      qc.invalidateQueries({ queryKey: QUERY_KEYS.addon.all });
       callbacks?.onSuccess?.();
     },
     onError: (err) => callbacks?.onError?.(err),

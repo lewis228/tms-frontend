@@ -3,10 +3,10 @@ import api from "@/lib/axios";
 import type { DeliveryOrderAddonEntity } from "@/types";
 
 export type DoAddonCreatePayload = {
-  code: string;
+  addonId: number;  // addon 마스터 타입
   quantity?: string;
   unitAmount?: string | null;
-  // amount 미지정(null)이면 백엔드가 accessorial 마스터 단가로 자동 채움.
+  // amount 미지정(null)이면 백엔드가 addon 마스터 단가로 자동 채움.
   amount?: string | null;
   note?: string | null;
 };

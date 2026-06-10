@@ -20,9 +20,9 @@ import { useDeliveryOrderAddonsData } from "@/hooks/queries/use-delivery-order-a
 import { useCreateDeliveryOrderAddon } from "@/hooks/mutations/delivery-order-addon/use-create-delivery-order-addon";
 import { useUpdateDeliveryOrderAddon } from "@/hooks/mutations/delivery-order-addon/use-update-delivery-order-addon";
 import { useDeleteDeliveryOrderAddon } from "@/hooks/mutations/delivery-order-addon/use-delete-delivery-order-addon";
+import { useAddonsData } from "@/hooks/queries/use-addons-data";
 import { formatAmount } from "@/lib/format";
 import { generateErrorMessage } from "@/lib/error";
-import { DO_ADDON_CODES } from "@/lib/constants";
 import type { DeliveryOrderAddonEntity } from "@/types";
 
 export default function DeliveryOrderAddonsSection({
@@ -38,6 +38,7 @@ export default function DeliveryOrderAddonsSection({
     isPending,
     error,
   } = useDeliveryOrderAddonsData(deliveryOrderId);
+  const { data: addonTypes } = useAddonsData(1, 200);
 
   const onError = (err: Error) =>
     toast.error(generateErrorMessage(err), { position: "top-center" });
@@ -46,7 +47,7 @@ export default function DeliveryOrderAddonsSection({
     useCreateDeliveryOrderAddon({
       onSuccess: () => {
         toast.success(t("toast.created"), { position: "top-center" });
-        setNewCode("");
+        setNewAddonId(null);
         setNewQuantity("1");
         setNewUnitAmount("");
         setNewAmount("");
@@ -73,7 +74,7 @@ export default function DeliveryOrderAddonsSection({
   const [editUnitAmount, setEditUnitAmount] = useState("");
   const [editAmount, setEditAmount] = useState("");
 
-  const [newCode, setNewCode] = useState("");
+  const [newAddonId, setNewAddonId] = useState<number | null>(null);
   const [newQuantity, setNewQuantity] = useState("1");
   const [newUnitAmount, setNewUnitAmount] = useState("");
   const [newAmount, setNewAmount] = useState("");
@@ -103,11 +104,11 @@ export default function DeliveryOrderAddonsSection({
   };
 
   const handleAdd = () => {
-    if (newCode === "") return;
+    if (newAddonId == null) return;
     createAddon({
       deliveryOrderId,
       payload: {
-        code: newCode,
+        addonId: newAddonId,
         quantity: newQuantity.trim() || "1",
         unitAmount: newUnitAmount.trim() === "" ? null : newUnitAmount.trim(),
         amount: newAmount.trim() === "" ? null : newAmount.trim(),
@@ -260,15 +261,17 @@ export default function DeliveryOrderAddonsSection({
               {t("deliveryOrderAddon.code")}
             </label>
             <select
-              value={newCode}
-              onChange={(e) => setNewCode(e.target.value)}
+              value={newAddonId ?? ""}
+              onChange={(e) =>
+                setNewAddonId(e.target.value ? Number(e.target.value) : null)
+              }
               disabled={mutating}
-              className="h-9 w-28 rounded-md border bg-background px-2 text-sm"
+              className="h-9 w-44 rounded-md border bg-background px-2 text-sm"
             >
               <option value="">—</option>
-              {DO_ADDON_CODES.map((c) => (
-                <option key={c} value={c}>
-                  {c}
+              {(addonTypes?.items ?? []).map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.code} · {a.name}
                 </option>
               ))}
             </select>
@@ -311,7 +314,7 @@ export default function DeliveryOrderAddonsSection({
               className="h-9 w-28"
             />
           </div>
-          <Button onClick={handleAdd} disabled={mutating || newCode === ""}>
+          <Button onClick={handleAdd} disabled={mutating || newAddonId == null}>
             {t("common.add")}
           </Button>
         </div>

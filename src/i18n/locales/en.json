@@ -685,25 +685,26 @@
       "createdToast": "Street turn request created."
     }
   },
-  "chargeCode": {
-    "newButton": "New charge code",
-    "createTitle": "New charge code",
-    "editTitle": "Edit charge code",
+  "addon": {
+    "newButton": "New add-on type",
+    "createTitle": "New add-on type",
+    "editTitle": "Edit add-on type",
     "totalCount": "{{count}} total",
-    "deletePromptTitle": "Delete charge code '{{code}}'?",
-    "deletePromptDesc": "Existing rate_card / leg_charge references may be affected.",
+    "seedDefaults": "Seed defaults",
+    "seedResult": "{{created}} created, {{skipped}} skipped",
+    "deletePromptTitle": "Delete add-on type '{{code}}'?",
+    "deletePromptDesc": "Existing add-on instances keep their snapshot.",
     "field": {
       "code": "Code",
       "name": "Name",
-      "kind": "Kind",
+      "category": "Category",
       "unit": "Unit",
-      "amount": "Default amount",
-      "defaultAmount": "Default amount",
-      "flags": "Flags",
+      "amount": "Amount",
+      "percent": "Percent",
+      "billPay": "Bill / Pay",
       "isBillableToCustomer": "Billable to customer",
       "isPayableToDriver": "Payable to driver",
-      "glAccount": "GL account",
-      "description": "Description"
+      "note": "Note"
     },
     "validation": {
       "required": "Enter code and name."
@@ -1084,7 +1085,7 @@
       "trucks": "Trucks",
       "chassis": "Chassis",
       "equipmentPools": "Equipment Pools",
-      "chargeCodes": "Charge Codes"
+      "addons": "Add-ons"
     },
     "system": {
       "teams": "Teams",
@@ -1138,7 +1139,7 @@
     "terminals": "Terminals",
     "vessels": "Vessels",
     "locations": "Locations",
-    "chargeCodes": "Charge Codes",
+    "addons": "Add-ons",
     "system": "System",
     "teams": "Teams",
     "systemUsers": "System Users",

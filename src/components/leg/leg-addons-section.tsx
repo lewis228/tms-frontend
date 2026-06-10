@@ -20,9 +20,9 @@ import { useLegAddonsData } from "@/hooks/queries/use-leg-addons-data";
 import { useCreateLegAddon } from "@/hooks/mutations/leg-addon/use-create-leg-addon";
 import { useUpdateLegAddon } from "@/hooks/mutations/leg-addon/use-update-leg-addon";
 import { useDeleteLegAddon } from "@/hooks/mutations/leg-addon/use-delete-leg-addon";
+import { useAddonsData } from "@/hooks/queries/use-addons-data";
 import { formatAmount } from "@/lib/format";
 import { generateErrorMessage } from "@/lib/error";
-import { LEG_ADDON_CODES } from "@/lib/constants";
 import PointPicker from "@/components/point-picker";
 import { EMPTY_POINT, type PointValue } from "@/lib/point";
 import type { LegAddonEntity } from "@/types";
@@ -30,6 +30,7 @@ import type { LegAddonEntity } from "@/types";
 export default function LegAddonsSection({ legId }: { legId: number }) {
   const { t } = useTranslation();
   const { data: addons, isPending, error } = useLegAddonsData(legId);
+  const { data: addonTypes } = useAddonsData(1, 200);
 
   const onError = (err: Error) =>
     toast.error(generateErrorMessage(err), { position: "top-center" });
@@ -37,10 +38,11 @@ export default function LegAddonsSection({ legId }: { legId: number }) {
   const { mutate: createAddon, isPending: isCreatePending } = useCreateLegAddon({
     onSuccess: () => {
       toast.success(t("toast.created"), { position: "top-center" });
-      setNewCode("");
+      setNewAddonId(null);
       setNewQuantity("1");
       setNewUnitAmount("");
       setNewAmount("");
+      setNewPoint(EMPTY_POINT);
     },
     onError,
   });
@@ -62,7 +64,7 @@ export default function LegAddonsSection({ legId }: { legId: number }) {
   const [editUnitAmount, setEditUnitAmount] = useState("");
   const [editAmount, setEditAmount] = useState("");
 
-  const [newCode, setNewCode] = useState("");
+  const [newAddonId, setNewAddonId] = useState<number | null>(null);
   const [newQuantity, setNewQuantity] = useState("1");
   const [newUnitAmount, setNewUnitAmount] = useState("");
   const [newAmount, setNewAmount] = useState("");
@@ -72,6 +74,8 @@ export default function LegAddonsSection({ legId }: { legId: number }) {
   if (isPending) return <Loader />;
 
   const mutating = isCreatePending || isUpdatePending || isDeletePending;
+  const selectedAddon = addonTypes?.items.find((a) => a.id === newAddonId);
+  const needsPoint = selectedAddon?.category === "EXTRA_STOP";
 
   const startEdit = (addon: LegAddonEntity) => {
     setEditingId(addon.id);
@@ -93,22 +97,21 @@ export default function LegAddonsSection({ legId }: { legId: number }) {
   };
 
   const handleAdd = () => {
-    if (newCode === "") return;
+    if (newAddonId == null) return;
     createAddon({
       legId,
       payload: {
         legId,
-        code: newCode as LegAddonEntity["code"],
+        addonId: newAddonId,
         quantity: newQuantity.trim() || "1",
         unitAmount: newUnitAmount.trim() === "" ? null : newUnitAmount.trim(),
         amount: newAmount.trim() === "" ? null : newAmount.trim(),
-        pointType: newPoint.pointType,
-        terminalId: newPoint.terminalId,
-        locationId: newPoint.locationId,
-        customerId: newPoint.customerId,
+        pointType: needsPoint ? newPoint.pointType : null,
+        terminalId: needsPoint ? newPoint.terminalId : null,
+        locationId: needsPoint ? newPoint.locationId : null,
+        customerId: needsPoint ? newPoint.customerId : null,
       },
     });
-    setNewPoint(EMPTY_POINT);
   };
 
   return (
@@ -246,15 +249,17 @@ export default function LegAddonsSection({ legId }: { legId: number }) {
             {t("legAddon.code")}
           </label>
           <select
-            value={newCode}
-            onChange={(e) => setNewCode(e.target.value)}
+            value={newAddonId ?? ""}
+            onChange={(e) =>
+              setNewAddonId(e.target.value ? Number(e.target.value) : null)
+            }
             disabled={mutating}
-            className="h-9 w-28 rounded-md border bg-background px-2 text-sm"
+            className="h-9 w-44 rounded-md border bg-background px-2 text-sm"
           >
             <option value="">—</option>
-            {LEG_ADDON_CODES.map((c) => (
-              <option key={c} value={c}>
-                {c}
+            {(addonTypes?.items ?? []).map((a) => (
+              <option key={a.id} value={a.id}>
+                {a.code} · {a.name}
               </option>
             ))}
           </select>
@@ -297,12 +302,12 @@ export default function LegAddonsSection({ legId }: { legId: number }) {
             className="h-9 w-28"
           />
         </div>
-        <Button onClick={handleAdd} disabled={mutating || newCode === ""}>
+        <Button onClick={handleAdd} disabled={mutating || newAddonId == null}>
           {t("common.add")}
         </Button>
       </div>
 
-      {newCode === "STP" && (
+      {needsPoint && (
         <div className="flex flex-col gap-1">
           <label className="text-[10px] uppercase text-muted-foreground">
             {t("point.label")}

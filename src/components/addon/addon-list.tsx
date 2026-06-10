@@ -1,4 +1,4 @@
-// Charge Code 마스터 — 표 + create/edit 인라인 모달.
+// Addon(부가요금 타입) 마스터 — 표 + create/edit 인라인 모달 + 기본값 시드.
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -21,42 +21,54 @@ import {
 } from "@/components/ui/table";
 import Loader from "@/components/loader";
 import Fallback from "@/components/fallback";
-import { useChargeCodesData } from "@/hooks/queries/use-charge-codes-data";
-import { useCreateChargeCode } from "@/hooks/mutations/charge-code/use-create-charge-code";
-import { useUpdateChargeCode } from "@/hooks/mutations/charge-code/use-update-charge-code";
-import { useDeleteChargeCode } from "@/hooks/mutations/charge-code/use-delete-charge-code";
+import { useAddonsData } from "@/hooks/queries/use-addons-data";
+import { useCreateAddon } from "@/hooks/mutations/addon/use-create-addon";
+import { useUpdateAddon } from "@/hooks/mutations/addon/use-update-addon";
+import { useDeleteAddon } from "@/hooks/mutations/addon/use-delete-addon";
+import { seedDefaultAddons } from "@/api/addon";
+import { useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/lib/constants";
 import { generateErrorMessage } from "@/lib/error";
 import { useOpenAlertModal } from "@/store/alert-modal";
-import type {
-  ChargeCodeEntity,
-  ChargeKind,
-  ChargeUnit,
-} from "@/types";
+import type { AddonCategory, AddonEntity, AddonUnit } from "@/types";
 
-const KINDS: ChargeKind[] = [
-  "BASE", "ACCESSORIAL", "PENALTY", "FUEL", "TAX", "DISCOUNT",
+const CATEGORIES: AddonCategory[] = [
+  "WAITING", "EXTRA_STOP", "DRY_RUN", "PENALTY", "SURCHARGE", "FUEL",
+  "CHASSIS_SPLIT", "PREPULL", "LIFT", "NIGHT_GATE", "PIER_PASS", "HAZMAT",
+  "REEFER", "OVERWEIGHT", "STORAGE", "ADJUSTMENT", "OTHER",
 ];
-const UNITS: ChargeUnit[] = [
-  "FLAT", "HOUR", "MINUTE", "DAY", "MILE", "PERCENT",
-];
+const UNITS: AddonUnit[] = ["FLAT", "HOUR", "MINUTE", "DAY", "MILE", "PERCENT"];
 
 type EditorState =
   | { mode: "CLOSED" }
   | { mode: "CREATE" }
-  | { mode: "EDIT"; row: ChargeCodeEntity };
+  | { mode: "EDIT"; row: AddonEntity };
 
-export default function ChargeCodeList() {
+export default function AddonList() {
   const { t } = useTranslation();
+  const qc = useQueryClient();
   const [page, setPage] = useState(1);
   const [editor, setEditor] = useState<EditorState>({ mode: "CLOSED" });
   const openAlert = useOpenAlertModal();
 
-  const { data, isPending, error } = useChargeCodesData(page, 50);
+  const { data, isPending, error } = useAddonsData(page, 50);
 
-  const { mutate: deleteCode } = useDeleteChargeCode({
+  const { mutate: deleteAddon } = useDeleteAddon({
     onSuccess: () => toast.success(t("toast.deleted"), { position: "top-center" }),
     onError: (e) => toast.error(generateErrorMessage(e), { position: "top-center" }),
   });
+
+  const handleSeed = async () => {
+    try {
+      const r = await seedDefaultAddons();
+      qc.invalidateQueries({ queryKey: QUERY_KEYS.addon.all });
+      toast.success(t("addon.seedResult", { created: r.created, skipped: r.skipped }), {
+        position: "top-center",
+      });
+    } catch (e) {
+      toast.error(generateErrorMessage(e as Error), { position: "top-center" });
+    }
+  };
 
   if (error) return <Fallback />;
   if (isPending) return <Loader />;
@@ -65,33 +77,35 @@ export default function ChargeCodeList() {
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between gap-2">
         <p className="text-sm text-muted-foreground">
-          {t("chargeCode.totalCount", { count: data.total ?? data.items.length })}
+          {t("addon.totalCount", { count: data.total ?? data.items.length })}
         </p>
-        <Button onClick={() => setEditor({ mode: "CREATE" })}>
-          + {t("chargeCode.newButton")}
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={handleSeed}>
+            {t("addon.seedDefaults")}
+          </Button>
+          <Button onClick={() => setEditor({ mode: "CREATE" })}>
+            + {t("addon.newButton")}
+          </Button>
+        </div>
       </div>
 
       <div className="rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>{t("chargeCode.field.code")}</TableHead>
-              <TableHead>{t("chargeCode.field.name")}</TableHead>
-              <TableHead>{t("chargeCode.field.kind")}</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>{t("chargeCode.field.unit")}</TableHead>
-              <TableHead>Unit Label</TableHead>
-              <TableHead>{t("chargeCode.field.amount")}</TableHead>
-              <TableHead>±</TableHead>
-              <TableHead>{t("chargeCode.field.flags")}</TableHead>
+              <TableHead>{t("addon.field.code")}</TableHead>
+              <TableHead>{t("addon.field.name")}</TableHead>
+              <TableHead>{t("addon.field.category")}</TableHead>
+              <TableHead>{t("addon.field.unit")}</TableHead>
+              <TableHead>{t("addon.field.amount")}</TableHead>
+              <TableHead>{t("addon.field.billPay")}</TableHead>
               <TableHead className="w-32 text-right" />
             </TableRow>
           </TableHeader>
           <TableBody>
             {data.items.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={10} className="text-center text-muted-foreground">
+                <TableCell colSpan={7} className="text-center text-muted-foreground">
                   {t("common.noData")}
                 </TableCell>
               </TableRow>
@@ -100,27 +114,14 @@ export default function ChargeCodeList() {
                 <TableRow key={c.id}>
                   <TableCell className="font-mono">{c.code}</TableCell>
                   <TableCell>{c.name}</TableCell>
-                  <TableCell>
-                    <span className="rounded bg-muted px-1.5 py-0.5 text-xs">
-                      {c.kind}
+                  <TableCell className="text-xs">
+                    <span className="rounded bg-blue-100 px-1.5 py-0.5 text-blue-800">
+                      {c.category}
                     </span>
                   </TableCell>
-                  <TableCell className="text-xs">
-                    {c.category ? (
-                      <span className="rounded bg-blue-100 px-1.5 py-0.5 text-blue-800">
-                        {c.category}
-                      </span>
-                    ) : (
-                      "—"
-                    )}
-                  </TableCell>
-                  <TableCell className="text-xs">{c.defaultUnit}</TableCell>
-                  <TableCell className="text-xs">{c.unitLabel ?? "—"}</TableCell>
+                  <TableCell className="text-xs">{c.unit}</TableCell>
                   <TableCell className="font-mono text-xs">
-                    {c.defaultAmount ?? "—"}
-                  </TableCell>
-                  <TableCell className="text-xs">
-                    {c.signed ? "✓" : ""}
+                    {c.unit === "PERCENT" ? (c.percent ?? "—") : (c.amount ?? "—")}
                   </TableCell>
                   <TableCell className="text-xs">
                     {c.isBillableToCustomer ? "💰" : ""}{" "}
@@ -137,11 +138,12 @@ export default function ChargeCodeList() {
                     <Button
                       variant="ghost"
                       size="sm"
+                      disabled={c.isSystem}
                       onClick={() =>
                         openAlert({
-                          title: t("chargeCode.deletePromptTitle", { code: c.code }),
-                          description: t("chargeCode.deletePromptDesc"),
-                          onPositive: () => deleteCode(c.id),
+                          title: t("addon.deletePromptTitle", { code: c.code }),
+                          description: t("addon.deletePromptDesc"),
+                          onPositive: () => deleteAddon(c.id),
                         })
                       }
                     >
@@ -155,46 +157,26 @@ export default function ChargeCodeList() {
         </Table>
       </div>
 
-      <Pagination
-        page={page}
-        pages={data.pages}
-        onChange={setPage}
-      />
+      {data.pages > 1 && (
+        <div className="flex justify-end gap-1">
+          <Button size="sm" variant="outline" disabled={page <= 1} onClick={() => setPage(page - 1)}>
+            ‹
+          </Button>
+          <span className="px-2 py-1 text-xs text-muted-foreground">
+            {page} / {data.pages}
+          </span>
+          <Button size="sm" variant="outline" disabled={page >= data.pages} onClick={() => setPage(page + 1)}>
+            ›
+          </Button>
+        </div>
+      )}
 
-      <ChargeCodeEditor
-        editor={editor}
-        onClose={() => setEditor({ mode: "CLOSED" })}
-      />
+      <AddonEditor editor={editor} onClose={() => setEditor({ mode: "CLOSED" })} />
     </div>
   );
 }
 
-function Pagination({
-  page,
-  pages,
-  onChange,
-}: {
-  page: number;
-  pages: number;
-  onChange: (p: number) => void;
-}) {
-  if (pages <= 1) return null;
-  return (
-    <div className="flex justify-end gap-1">
-      <Button size="sm" variant="outline" disabled={page <= 1} onClick={() => onChange(page - 1)}>
-        ‹
-      </Button>
-      <span className="px-2 py-1 text-xs text-muted-foreground">
-        {page} / {pages}
-      </span>
-      <Button size="sm" variant="outline" disabled={page >= pages} onClick={() => onChange(page + 1)}>
-        ›
-      </Button>
-    </div>
-  );
-}
-
-function ChargeCodeEditor({
+function AddonEditor({
   editor,
   onClose,
 }: {
@@ -208,22 +190,22 @@ function ChargeCodeEditor({
 
   const [code, setCode] = useState(initial?.code ?? "");
   const [name, setName] = useState(initial?.name ?? "");
-  const [kind, setKind] = useState<ChargeKind>(initial?.kind ?? "BASE");
-  const [unit, setUnit] = useState<ChargeUnit>(initial?.defaultUnit ?? "FLAT");
-  const [amount, setAmount] = useState(initial?.defaultAmount ?? "");
+  const [category, setCategory] = useState<AddonCategory>(initial?.category ?? "SURCHARGE");
+  const [unit, setUnit] = useState<AddonUnit>(initial?.unit ?? "FLAT");
+  const [amount, setAmount] = useState(initial?.amount ?? "");
+  const [percent, setPercent] = useState(initial?.percent ?? "");
   const [isBillable, setIsBillable] = useState(initial?.isBillableToCustomer ?? true);
-  const [isPayable, setIsPayable] = useState(initial?.isPayableToDriver ?? false);
-  const [glAccount, setGlAccount] = useState(initial?.glAccount ?? "");
-  const [description, setDescription] = useState(initial?.description ?? "");
+  const [isPayable, setIsPayable] = useState(initial?.isPayableToDriver ?? true);
+  const [note, setNote] = useState(initial?.note ?? "");
 
-  const { mutate: createCode, isPending: isCreatePending } = useCreateChargeCode({
+  const { mutate: createAddon, isPending: isCreatePending } = useCreateAddon({
     onSuccess: () => {
       toast.success(t("toast.created"), { position: "top-center" });
       onClose();
     },
     onError: (e) => toast.error(generateErrorMessage(e), { position: "top-center" }),
   });
-  const { mutate: updateCode, isPending: isUpdatePending } = useUpdateChargeCode({
+  const { mutate: updateAddon, isPending: isUpdatePending } = useUpdateAddon({
     onSuccess: () => {
       toast.success(t("toast.updated"), { position: "top-center" });
       onClose();
@@ -234,24 +216,23 @@ function ChargeCodeEditor({
 
   const handleSubmit = () => {
     if (code.trim() === "" || name.trim() === "") {
-      toast.error(t("chargeCode.validation.required"), { position: "top-center" });
+      toast.error(t("addon.validation.required"), { position: "top-center" });
       return;
     }
-    const payload = {
-      code: code.trim(),
+    const common = {
       name: name.trim(),
-      kind,
-      defaultUnit: unit,
-      defaultAmount: amount === "" ? null : amount,
+      category,
+      unit,
+      amount: unit === "PERCENT" ? null : amount === "" ? null : amount,
+      percent: unit === "PERCENT" ? (percent === "" ? null : percent) : null,
       isBillableToCustomer: isBillable,
       isPayableToDriver: isPayable,
-      glAccount: glAccount.trim() || null,
-      description: description.trim() || null,
+      note: note.trim() || null,
     };
     if (isEdit) {
-      updateCode({ id: editor.row.id, payload });
+      updateAddon({ id: editor.row.id, payload: common });
     } else {
-      createCode(payload);
+      createAddon({ code: code.trim(), ...common });
     }
   };
 
@@ -260,43 +241,39 @@ function ChargeCodeEditor({
       <DialogContent className="!max-w-xl">
         <DialogHeader>
           <DialogTitle className="font-sans">
-            {isEdit ? t("chargeCode.editTitle") : t("chargeCode.createTitle")}
+            {isEdit ? t("addon.editTitle") : t("addon.createTitle")}
           </DialogTitle>
         </DialogHeader>
         {isOpen && (
           <div className="flex flex-col gap-3">
             <div className="grid grid-cols-2 gap-3">
-              <Field label={t("chargeCode.field.code")} required>
+              <Field label={t("addon.field.code")} required>
                 <Input
                   value={code}
                   onChange={(e) => setCode(e.target.value.toUpperCase())}
-                  disabled={isPending}
-                  placeholder="BASE_LINEHAUL"
+                  disabled={isPending || isEdit}
+                  placeholder="NGT"
                 />
               </Field>
-              <Field label={t("chargeCode.field.name")} required>
-                <Input
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  disabled={isPending}
-                />
+              <Field label={t("addon.field.name")} required>
+                <Input value={name} onChange={(e) => setName(e.target.value)} disabled={isPending} />
               </Field>
-              <Field label={t("chargeCode.field.kind")}>
+              <Field label={t("addon.field.category")}>
                 <select
-                  value={kind}
-                  onChange={(e) => setKind(e.target.value as ChargeKind)}
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value as AddonCategory)}
                   disabled={isPending}
                   className="h-9 rounded-md border bg-background px-3 text-sm"
                 >
-                  {KINDS.map((k) => (
+                  {CATEGORIES.map((k) => (
                     <option key={k} value={k}>{k}</option>
                   ))}
                 </select>
               </Field>
-              <Field label={t("chargeCode.field.unit")}>
+              <Field label={t("addon.field.unit")}>
                 <select
                   value={unit}
-                  onChange={(e) => setUnit(e.target.value as ChargeUnit)}
+                  onChange={(e) => setUnit(e.target.value as AddonUnit)}
                   disabled={isPending}
                   className="h-9 rounded-md border bg-background px-3 text-sm"
                 >
@@ -305,22 +282,28 @@ function ChargeCodeEditor({
                   ))}
                 </select>
               </Field>
-              <Field label={t("chargeCode.field.defaultAmount")}>
-                <Input
-                  type="number"
-                  step="0.01"
-                  value={amount ?? ""}
-                  onChange={(e) => setAmount(e.target.value)}
-                  disabled={isPending}
-                />
-              </Field>
-              <Field label={t("chargeCode.field.glAccount")}>
-                <Input
-                  value={glAccount ?? ""}
-                  onChange={(e) => setGlAccount(e.target.value)}
-                  disabled={isPending}
-                />
-              </Field>
+              {unit === "PERCENT" ? (
+                <Field label={t("addon.field.percent")}>
+                  <Input
+                    type="number"
+                    step="0.0001"
+                    value={percent ?? ""}
+                    onChange={(e) => setPercent(e.target.value)}
+                    disabled={isPending}
+                    placeholder="0.20"
+                  />
+                </Field>
+              ) : (
+                <Field label={t("addon.field.amount")}>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    value={amount ?? ""}
+                    onChange={(e) => setAmount(e.target.value)}
+                    disabled={isPending}
+                  />
+                </Field>
+              )}
             </div>
             <div className="flex gap-4">
               <label className="flex items-center gap-2 text-sm">
@@ -330,7 +313,7 @@ function ChargeCodeEditor({
                   onChange={(e) => setIsBillable(e.target.checked)}
                   disabled={isPending}
                 />
-                {t("chargeCode.field.isBillableToCustomer")}
+                {t("addon.field.isBillableToCustomer")}
               </label>
               <label className="flex items-center gap-2 text-sm">
                 <input
@@ -339,16 +322,11 @@ function ChargeCodeEditor({
                   onChange={(e) => setIsPayable(e.target.checked)}
                   disabled={isPending}
                 />
-                {t("chargeCode.field.isPayableToDriver")}
+                {t("addon.field.isPayableToDriver")}
               </label>
             </div>
-            <Field label={t("chargeCode.field.description")}>
-              <textarea
-                value={description ?? ""}
-                onChange={(e) => setDescription(e.target.value)}
-                disabled={isPending}
-                className="min-h-[60px] w-full rounded-md border bg-background p-2 text-sm"
-              />
+            <Field label={t("addon.field.note")}>
+              <Input value={note ?? ""} onChange={(e) => setNote(e.target.value)} disabled={isPending} />
             </Field>
             <div className="flex justify-end gap-2 pt-2">
               <Button variant="outline" onClick={onClose} disabled={isPending}>

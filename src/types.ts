@@ -107,15 +107,27 @@ export type ContainerSize =
   | "20RF"
   | "40RF";
 
-export type ChargeKind =
-  | "BASE"
-  | "ACCESSORIAL"
+// Addon(부가요금 타입 마스터) — 사용자 CRUD. accessorial→addon 통합.
+export type AddonCategory =
+  | "WAITING"
+  | "EXTRA_STOP"
+  | "DRY_RUN"
   | "PENALTY"
+  | "SURCHARGE"
   | "FUEL"
-  | "TAX"
-  | "DISCOUNT";
+  | "CHASSIS_SPLIT"
+  | "PREPULL"
+  | "LIFT"
+  | "NIGHT_GATE"
+  | "PIER_PASS"
+  | "HAZMAT"
+  | "REEFER"
+  | "OVERWEIGHT"
+  | "STORAGE"
+  | "ADJUSTMENT"
+  | "OTHER";
 
-export type ChargeUnit =
+export type AddonUnit =
   | "FLAT"
   | "HOUR"
   | "MINUTE"
@@ -526,35 +538,17 @@ export type LegEntity = {
 // 백엔드 LegAddonResponseSchema 와 1:1 (Decimal → string).
 // ─────────────────────────────────────────────────────────────────
 
-export type LegAddonCode =
-  | "CHS"
-  | "HZM"
-  | "OOG"
-  | "RFR"
-  | "CXM"
-  | "LYO"
-  | "RSP"
-  | "FLT"
-  | "TNK"
-  | "NGT"
-  | "WKD"
-  | "EGT"
-  | "LFT"
-  | "PPS"
-  | "STP"
-  | "DET"
-  | "DMR"
-  | "YRD";
-
+// 레그에 붙인 add-on 인스턴스 — addonId=타입(마스터), code=스냅샷.
 export type LegAddonEntity = {
   id: number;
   legId: number;
-  code: LegAddonCode;
+  addonId: number | null;
+  code: string;
   quantity: string;
   unitAmount: string | null;
   amount: string;
   amountOverride: string | null;
-  // STP 등 위치형 add-on (그 레그에서 추가로 들른 곳)
+  // EXTRA_STOP 등 위치형 add-on (그 레그에서 추가로 들른 곳)
   pointType: PointType | null;
   terminalId: number | null;
   locationId: number | null;
@@ -564,10 +558,11 @@ export type LegAddonEntity = {
   isActive: boolean;
 };
 
-// D/O 단위 Add-on (고객 청구용) — 백엔드 DoAddonResponseSchema 와 1:1. code 는 자유문자.
+// D/O 단위 Add-on (고객 청구용) — 백엔드 DoAddonResponseSchema 와 1:1.
 export type DeliveryOrderAddonEntity = {
   id: number;
   deliveryOrderId: number;
+  addonId: number | null;
   code: string;
   quantity: string;
   unitAmount: string | null;
@@ -928,27 +923,24 @@ export type ApiKeyCreated = ApiKeyEntity & { key: string };
 
 // H-2 ─────────────────────────────────────────────────────────
 
-export type ChargeCodeEntity = {
+// 부가요금 타입 마스터 — 백엔드 AddonResponseSchema 와 1:1 (Decimal → string).
+export type AddonEntity = {
   id: number;
-  teamId: number;
   code: string;
   name: string;
-  kind: ChargeKind;
-  defaultUnit: ChargeUnit;
-  defaultAmount: string | null;
+  category: AddonCategory;
+  unit: AddonUnit;
+  amount: string | null;
+  percent: string | null;
+  freeMinutes: number | null;
+  freeDays: number | null;
+  autoApply: boolean;
+  isSystem: boolean;
   isBillableToCustomer: boolean;
   isPayableToDriver: boolean;
-  glAccount: string | null;
-  description: string | null;
-  // ── v3 보강 ───────────────────────────────────
-  unitLabel?: string | null;
-  category?: ChargeCategory | null;
-  signed?: boolean;
-  payeeDefault?: string | null;
-  payerDefault?: string | null;
+  driverId: number | null;
+  note: string | null;
   isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
 };
 
 // H-8 ─────────────────────────────────────────────────────────

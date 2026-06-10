@@ -61,11 +61,11 @@ export const QUERY_KEYS = {
     events: (containerId: number) =>
       ["container", "events", containerId] as const,
   },
-  chargeCode: {
-    all: ["charge-code"] as const,
+  addon: {
+    all: ["addon"] as const,
     list: (params: Record<string, unknown> = {}) =>
-      ["charge-code", "list", params] as const,
-    byId: (id: number) => ["charge-code", "byId", id] as const,
+      ["addon", "list", params] as const,
+    byId: (id: number) => ["addon", "byId", id] as const,
   },
   truck: {
     all: ["truck"] as const,
@@ -227,35 +227,3 @@ export const QUERY_KEYS = {
 };
 
 export const PAGE_SIZE = 20;
-
-// Leg Add-on 코드 (드롭다운용) — 백엔드 LegAddonCode enum 과 동일.
-export const LEG_ADDON_CODES = [
-  "CHS",
-  "HZM",
-  "OOG",
-  "RFR",
-  "CXM",
-  "LYO",
-  "RSP",
-  "FLT",
-  "TNK",
-  "NGT",
-  "WKD",
-  "EGT",
-  "LFT",
-  "PPS",
-  "STP",
-  "DET",
-  "DMR",
-  "YRD",
-] as const;
-
-// D/O Add-on 코드 (드롭다운용) — 고객 청구용 부가요금. 백엔드는 자유문자(String)지만 UI 는 큐레이트.
-export const DO_ADDON_CODES = [
-  "DMR",
-  "DET",
-  "HZM",
-  "OOG",
-  "CXM",
-  "PPS",
-] as const;

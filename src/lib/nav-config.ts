@@ -161,9 +161,9 @@ export const NAV_CONFIG: NavNode[] = [
       },
       {
         type: "leaf",
-        label: "nav.chargeCodes",
+        label: "nav.addons",
         iconName: "Tag",
-        path: "master/charge-codes",
+        path: "master/addons",
         requiredRole: "ADMIN",
       },
     ],
