@@ -44,7 +44,7 @@ export default function RateEntryEditorModal() {
       open={modal.isOpen}
       onOpenChange={(o) => !o && modal.actions.close()}
     >
-      <DialogContent className="max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         {modal.isOpen && <Body key={`g-${modal.groupId}`} modal={modal} />}
       </DialogContent>
     </Dialog>
@@ -219,7 +219,7 @@ function Body({ modal }: { modal: OpenModal }) {
                   state={fromState}
                   onChange={setFromCity}
                   placeholder={t("rateEntry.cityPlaceholder")}
-                  className="h-9 flex-1"
+                  className="h-9 w-full min-w-[8rem] flex-1"
                 />
                 <StateSelect value={fromState} onChange={setFromState} />
               </div>
@@ -231,7 +231,7 @@ function Body({ modal }: { modal: OpenModal }) {
                   state={toState}
                   onChange={setToCity}
                   placeholder={t("rateEntry.cityPlaceholder")}
-                  className="h-9 flex-1"
+                  className="h-9 w-full min-w-[8rem] flex-1"
                 />
                 <StateSelect value={toState} onChange={setToState} />
               </div>
