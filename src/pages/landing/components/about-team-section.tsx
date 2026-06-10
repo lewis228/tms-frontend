@@ -20,6 +20,11 @@ const TEAM = [
     avatar: "",
   },
   {
+    name: "Terry Kim",
+    role: "Developer",
+    avatar: "/images/team-terry.png",
+  },
+  {
     name: "Lewis Jo",
     role: "Developer",
     avatar: "/images/team-ceo.png",
