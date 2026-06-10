@@ -1624,12 +1624,10 @@
       "color": "Color"
     },
     "members": {
-      "title": "Members (zip / city)",
+      "title": "Members (zip)",
       "addRow": "Add Row",
       "save": "Save Members",
-      "zipCode": "Zip Code",
-      "city": "City",
-      "state": "State"
+      "zipCode": "Zip Code"
     }
   },
   "rateSheet": {

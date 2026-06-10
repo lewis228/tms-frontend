@@ -1624,12 +1624,10 @@
       "color": "색상"
     },
     "members": {
-      "title": "멤버 (우편번호 / 도시)",
+      "title": "멤버 (우편번호)",
       "addRow": "행 추가",
       "save": "멤버 저장",
-      "zipCode": "우편번호",
-      "city": "도시",
-      "state": "주(State)"
+      "zipCode": "우편번호"
     }
   },
   "rateSheet": {

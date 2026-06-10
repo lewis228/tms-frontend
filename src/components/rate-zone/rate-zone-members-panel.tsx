@@ -11,7 +11,7 @@ import { useReplaceRateZoneMembers } from "@/hooks/mutations/rate-zone/use-repla
 import { generateErrorMessage } from "@/lib/error";
 import type { RateZoneMemberEntity } from "@/types";
 
-type Row = { zipCode: string; city: string; state: string };
+type Row = { zipCode: string };
 
 export default function RateZoneMembersPanel({ zoneId }: { zoneId: number }) {
   const { t } = useTranslation();
@@ -42,11 +42,7 @@ function Editor({
 }) {
   const { t } = useTranslation();
   const [rows, setRows] = useState<Row[]>(
-    initial.map((m) => ({
-      zipCode: m.zipCode ?? "",
-      city: m.city ?? "",
-      state: m.state ?? "",
-    })),
+    initial.map((m) => ({ zipCode: m.zipCode })),
   );
 
   const { mutate: replaceMembers, isPending: isReplacePending } =
@@ -63,20 +59,15 @@ function Editor({
     );
   };
 
-  const addRow = () =>
-    setRows((prev) => [...prev, { zipCode: "", city: "", state: "" }]);
+  const addRow = () => setRows((prev) => [...prev, { zipCode: "" }]);
 
   const removeRow = (index: number) =>
     setRows((prev) => prev.filter((_, i) => i !== index));
 
   const handleSave = () => {
     const members = rows
-      .map((r) => ({
-        zipCode: r.zipCode.trim() || null,
-        city: r.city.trim() || null,
-        state: r.state.trim() || null,
-      }))
-      .filter((m) => m.zipCode || m.city);
+      .map((r) => ({ zipCode: r.zipCode.trim() }))
+      .filter((m) => m.zipCode);
     replaceMembers({ id: zoneId, members });
   };
 
@@ -93,10 +84,8 @@ function Editor({
         </Button>
       </div>
 
-      <div className="grid grid-cols-[1fr_1fr_auto_auto] items-center gap-2 text-xs text-muted-foreground">
+      <div className="grid grid-cols-[1fr_auto] items-center gap-2 text-xs text-muted-foreground">
         <span>{t("rateZone.members.zipCode")}</span>
-        <span>{t("rateZone.members.city")}</span>
-        <span>{t("rateZone.members.state")}</span>
         <span />
       </div>
       {rows.length === 0 ? (
@@ -107,7 +96,7 @@ function Editor({
         rows.map((row, index) => (
           <div
             key={index}
-            className="grid grid-cols-[1fr_1fr_auto_auto] items-center gap-2"
+            className="grid grid-cols-[1fr_auto] items-center gap-2"
           >
             <Input
               value={row.zipCode}
@@ -115,21 +104,6 @@ function Editor({
               disabled={isReplacePending}
               maxLength={16}
               placeholder={t("rateZone.members.zipCode")}
-            />
-            <Input
-              value={row.city}
-              onChange={(e) => updateRow(index, { city: e.target.value })}
-              disabled={isReplacePending}
-              maxLength={120}
-              placeholder={t("rateZone.members.city")}
-            />
-            <Input
-              value={row.state}
-              onChange={(e) => updateRow(index, { state: e.target.value })}
-              disabled={isReplacePending}
-              maxLength={8}
-              placeholder={t("rateZone.members.state")}
-              className="w-20"
             />
             <Button
               variant="ghost"

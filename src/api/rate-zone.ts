@@ -10,9 +10,7 @@ import type {
 import { adaptCursorToPaged, type CursorResponse } from "@/lib/pagination";
 
 export type RateZoneMemberInput = {
-  zipCode?: string | null;
-  city?: string | null;
-  state?: string | null;
+  zipCode: string;
 };
 
 export async function fetchRateZones(

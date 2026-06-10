@@ -631,15 +631,13 @@ export type DriverRateAssignment = DriverRateAssignmentEntity & {
 };
 
 // ─────────────────────────────────────────────────────────────────
-// Rate Zone — zip/city 묶음 (요율 매트릭스의 column 차원 후보)
+// Rate Zone — zip 묶음 (요율 매트릭스의 column 차원 후보)
 // 백엔드 응답은 alias_generator=to_camel 로 camelCase.
 // ─────────────────────────────────────────────────────────────────
 
 export type RateZoneMemberEntity = {
   id: number;
-  zipCode: string | null;
-  city: string | null;
-  state: string | null;
+  zipCode: string;
 };
 
 export type RateZoneEntity = {
