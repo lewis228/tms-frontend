@@ -465,6 +465,7 @@
       "basicInfo": "기본 정보",
       "gatesCondition": "게이트 조건",
       "legTimeline": "Leg Timeline",
+      "addons": "추가요금 (Add-on)",
       "note": "메모",
       "activity": "활동 내역"
     },
@@ -1758,6 +1759,24 @@
       "addDriver": "기사 추가",
       "result": "{{built}}건 생성됨, {{skipped}}명 건너뜀"
     }
+  },
+  "legAddon": {
+    "title": "추가요금 (Add-on)",
+    "code": "코드",
+    "quantity": "수량",
+    "unitAmount": "단가",
+    "amount": "금액",
+    "empty": "추가요금 없음.",
+    "autoHint": "자동"
+  },
+  "deliveryOrderAddon": {
+    "title": "D/O 추가요금",
+    "code": "코드",
+    "quantity": "수량",
+    "unitAmount": "단가",
+    "amount": "금액",
+    "empty": "추가요금 없음.",
+    "autoHint": "자동"
   },
   "invoice": {
     "title": "고객 청구",

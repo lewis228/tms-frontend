@@ -465,6 +465,7 @@
       "basicInfo": "Basic info",
       "gatesCondition": "Gate conditions",
       "legTimeline": "Leg Timeline",
+      "addons": "Add-ons",
       "note": "Note",
       "activity": "Activity"
     },
@@ -1758,6 +1759,24 @@
       "addDriver": "Add driver",
       "result": "{{built}} built, {{skipped}} skipped"
     }
+  },
+  "legAddon": {
+    "title": "Add-ons",
+    "code": "Code",
+    "quantity": "Qty",
+    "unitAmount": "Unit",
+    "amount": "Amount",
+    "empty": "No add-ons.",
+    "autoHint": "auto"
+  },
+  "deliveryOrderAddon": {
+    "title": "D/O Add-ons",
+    "code": "Code",
+    "quantity": "Qty",
+    "unitAmount": "Unit",
+    "amount": "Amount",
+    "empty": "No add-ons.",
+    "autoHint": "auto"
   },
   "invoice": {
     "title": "Invoices",

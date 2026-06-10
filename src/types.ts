@@ -532,6 +532,56 @@ export type LegEntity = {
 };
 
 // ─────────────────────────────────────────────────────────────────
+// Leg Add-on (추가요금 한 줄, 중복 가능 — 컨플루언스 재정의로 옛 Layer2/3 통합)
+// 백엔드 LegAddonResponseSchema 와 1:1 (Decimal → string).
+// ─────────────────────────────────────────────────────────────────
+
+export type LegAddonCode =
+  | "CHS"
+  | "HZM"
+  | "OOG"
+  | "RFR"
+  | "CXM"
+  | "LYO"
+  | "RSP"
+  | "FLT"
+  | "TNK"
+  | "NGT"
+  | "WKD"
+  | "EGT"
+  | "LFT"
+  | "PPS"
+  | "STP"
+  | "DET"
+  | "DMR"
+  | "YRD";
+
+export type LegAddonEntity = {
+  id: number;
+  legId: number;
+  code: LegAddonCode;
+  quantity: string;
+  unitAmount: string | null;
+  amount: string;
+  amountOverride: string | null;
+  extra: Record<string, unknown> | null;
+  note: string | null;
+  isActive: boolean;
+};
+
+// D/O 단위 Add-on (고객 청구용) — 백엔드 DoAddonResponseSchema 와 1:1. code 는 자유문자.
+export type DeliveryOrderAddonEntity = {
+  id: number;
+  deliveryOrderId: number;
+  code: string;
+  quantity: string;
+  unitAmount: string | null;
+  amount: string;
+  note: string | null;
+  isActive: boolean;
+};
+
+// ─────────────────────────────────────────────────────────────────
 // Rate management (rate-group / rate-point / rate-multiplier / driver-rate-assignment)
 // 백엔드 응답은 alias_generator=to_camel 로 camelCase. Entity 필드도 camelCase 1:1.
 // ─────────────────────────────────────────────────────────────────

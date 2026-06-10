@@ -5,6 +5,7 @@ import { formatDateTime } from "@/lib/format";
 import type { LegFullEntity } from "@/types";
 import AddSegmentButton from "@/components/container-detail/add-segment-button";
 import ReissueLegButton from "@/components/container-detail/reissue-leg-button";
+import LegAddonsSection from "@/components/leg/leg-addons-section";
 
 export default function LegCard({
   leg,
@@ -86,6 +87,14 @@ export default function LegCard({
             ))}
           </ul>
         )}
+      </div>
+
+      {/* Leg Add-ons */}
+      <div className="border-t px-3 py-2">
+        <div className="mb-1 text-[10px] uppercase text-muted-foreground">
+          {t("legAddon.title")}
+        </div>
+        <LegAddonsSection legId={leg.id} />
       </div>
     </div>
   );

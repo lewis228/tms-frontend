@@ -55,6 +55,12 @@ export default function RateSheetDetailPage() {
               {data.moveType ? t(`rateSheet.moveType.${data.moveType}`) : "—"}
             </span>
             <span>
+              {t("rateSheet.field.serviceType")}:{" "}
+              {data.serviceType
+                ? t(`rateSheet.serviceType.${data.serviceType}`)
+                : "—"}
+            </span>
+            <span>
               {t("rateSheet.field.rowPoint")}:{" "}
               {data.rowPointId != null ? `#${data.rowPointId}` : "—"}
             </span>

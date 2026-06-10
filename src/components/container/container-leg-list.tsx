@@ -129,7 +129,7 @@ export default function ContainerLegList({
               <div>{t("leg.field.delivery")}: {deliveryName}</div>
               <div>
                 {t("leg.field.pickupDate")}:{" "}
-                {leg.pickupDate ? formatDateTime(leg.pickupDate, leg.pickupDate) : "—"}
+                {leg.pickupDate ? formatDateTime(leg.pickupDate) : "—"}
               </div>
             </div>
             {leg.remarks && (

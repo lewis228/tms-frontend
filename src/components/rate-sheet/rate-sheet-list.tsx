@@ -90,6 +90,7 @@ export default function RateSheetList() {
               <TableHead>{t("rateSheet.field.rateGroup")}</TableHead>
               <TableHead>{t("rateSheet.field.kind")}</TableHead>
               <TableHead>{t("rateSheet.field.moveType")}</TableHead>
+              <TableHead>{t("rateSheet.field.serviceType")}</TableHead>
               <TableHead>{t("rateSheet.field.rowPoint")}</TableHead>
               <TableHead>{t("rateSheet.field.openEntryCount")}</TableHead>
               <TableHead className="text-right">{t("common.actions")}</TableHead>
@@ -99,7 +100,7 @@ export default function RateSheetList() {
             {data.items.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={6}
+                  colSpan={7}
                   className="text-center text-muted-foreground"
                 >
                   {t("common.noData")}
@@ -119,6 +120,11 @@ export default function RateSheetList() {
                   <TableCell>{t(`rateSheet.kind.${v.kind}`)}</TableCell>
                   <TableCell>
                     {v.moveType ? t(`rateSheet.moveType.${v.moveType}`) : "—"}
+                  </TableCell>
+                  <TableCell>
+                    {v.serviceType
+                      ? t(`rateSheet.serviceType.${v.serviceType}`)
+                      : "—"}
                   </TableCell>
                   <TableCell>
                     {v.rowPointId != null ? `#${v.rowPointId}` : "—"}

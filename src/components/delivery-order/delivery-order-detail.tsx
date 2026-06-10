@@ -12,6 +12,7 @@ import ActivityTimeline from "@/components/delivery-order/activity-timeline";
 import DeliveryOrderActions from "@/components/delivery-order/delivery-order-actions";
 import DeliveryOrderBanners from "@/components/delivery-order/delivery-order-banners";
 import ContainerSubTable from "@/components/container/container-sub-table";
+import DeliveryOrderAddonsSection from "@/components/delivery-order/delivery-order-addons-section";
 import { useCustomersData } from "@/hooks/queries/use-customers-data";
 import { useTerminalsData } from "@/hooks/queries/use-terminals-data";
 import { useVesselsData } from "@/hooks/queries/use-vessels-data";
@@ -97,6 +98,13 @@ export default function DeliveryOrderDetail({
 
       <Section title={t("deliveryOrder.section.legTimeline")}>
         <LegTimeline deliveryOrderId={deliveryOrder.id} />
+      </Section>
+
+      <Section title={t("deliveryOrder.section.addons")}>
+        <DeliveryOrderAddonsSection
+          deliveryOrderId={deliveryOrder.id}
+          editable={!isCancelled}
+        />
       </Section>
 
       <Section title={t("deliveryOrder.section.activity")}>
