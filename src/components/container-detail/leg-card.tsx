@@ -41,7 +41,7 @@ export default function LegCard({
         <span className="text-xs text-muted-foreground">
           {leg.fromStopId !== null && leg.toStopId !== null
             ? `#${leg.fromStopId} → #${leg.toStopId}`
-            : "stop 미연결"}
+            : t("container.leg.stopUnlinked")}
         </span>
         {leg.reissuedFromLegId !== null && (
           <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] text-amber-800">
@@ -64,7 +64,7 @@ export default function LegCard({
           <AddSegmentButton legId={leg.id} containerId={containerId} />
         </div>
         {leg.segments.length === 0 ? (
-          <div className="text-xs text-muted-foreground">기사 미배정</div>
+          <div className="text-xs text-muted-foreground">{t("container.leg.noDriver")}</div>
         ) : (
           <ul className="space-y-1 text-xs">
             {leg.segments.map((s) => (
@@ -75,7 +75,7 @@ export default function LegCard({
                 <span className="font-medium">{s.driverName ?? `Driver#${s.driverId}`}</span>
                 <span className="text-muted-foreground">
                   {s.startedAt ? formatDateTime(s.startedAt) : "—"} →{" "}
-                  {s.endedAt ? formatDateTime(s.endedAt) : "진행 중"}
+                  {s.endedAt ? formatDateTime(s.endedAt) : t("container.leg.inProgress")}
                 </span>
                 {s.handoverReason && (
                   <span className="rounded bg-orange-100 px-1.5 py-0.5 text-[10px] text-orange-800">

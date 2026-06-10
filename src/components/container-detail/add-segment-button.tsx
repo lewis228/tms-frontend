@@ -1,6 +1,7 @@
 // 한 leg 안에서 새 driver segment 추가 — 핸드오버.
 // TERMINAL_CLOSED / ACCIDENT / SHIFT_CHANGE / OTHER 사유 선택.
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,7 @@ export default function AddSegmentButton({
   legId: number;
   containerId: number;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [driverId, setDriverId] = useState<string>("");
   const [reason, setReason] = useState<HandoverReason | "">("");
@@ -40,7 +42,7 @@ export default function AddSegmentButton({
 
   const { mutate: createSegment, isPending } = useCreateLegSegment({
     onSuccess: () => {
-      toast.success("Segment 추가됨", { position: "top-center" });
+      toast.success(t("container.segments.added"), { position: "top-center" });
       setOpen(false);
       setDriverId("");
       setReason("");

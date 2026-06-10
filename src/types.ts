@@ -187,7 +187,7 @@ export type TeamEntity = {
   productInfoTemplate: string | null;
   excelProductIdentification: string | null;
   gs1GtinEnabled: boolean;
-  // ── v3 표시 라벨 / distance provider ─────────
+  // ── 표시 라벨 / distance provider ─────────
   distanceUnitLabel?: string | null;
   currencyLabel?: string | null;
   currencySymbol?: string | null;

@@ -1,5 +1,6 @@
 // 컨테이너 상세 지도 — Stop 핀 + Leg 경로선 + 활성 driver 위치 핀.
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import {
   MapContainer,
   Marker,
@@ -59,6 +60,7 @@ export default function ContainerMap({
   full: ContainerFullEntity;
   driverPosition?: { lat: number; lng: number; driverName?: string | null } | null;
 }) {
+  const { t } = useTranslation();
   const { data: locationsData } = useLocationsData(1);
   const locById = useMemo(() => {
     const m = new Map<number, { lat: number; lng: number; name: string }>();
@@ -187,7 +189,7 @@ export default function ContainerMap({
                 <div className="font-medium">
                   {driverPosition.driverName ?? "Driver"}
                 </div>
-                <div className="text-muted-foreground">현재 위치</div>
+                <div className="text-muted-foreground">{t("container.map.currentLocation")}</div>
               </div>
             </Popup>
           </Marker>

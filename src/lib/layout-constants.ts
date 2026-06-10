@@ -3,12 +3,9 @@
 //
 // Architecture:
 // - `defaultMinWidth` is applied automatically by TeamScopedLayout's main
-//   column wrapper, so every page gets a floor without opting in.
-// - Per-page overrides happen via `<PageShell minWidth={...} maxWidth={...}>`
-//   (see components/layout/page-shell.tsx). The shell defines the outer
-//   floor; PageShell can only widen the floor further (narrower minWidth
-//   values lose to the outer `min-w-[defaultMinWidth]` because CSS takes
-//   the max of stacked min-widths).
+//   column wrapper, so every page gets a floor without opting in. Pages
+//   too narrow for it scroll horizontally inside the main column rather
+//   than squishing against the sidebars.
 export const LAYOUT = {
   /** Applied to every page by the layout shell. Pages too narrow for this
    * trigger a horizontal scrollbar inside the main column instead of

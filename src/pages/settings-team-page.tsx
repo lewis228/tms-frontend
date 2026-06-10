@@ -68,17 +68,18 @@ export default function SettingsTeamPage() {
 
       <TeamInfoSection team={team} />
       <DisplaySettingsSection />
-      <DisplayLabelsV3Section team={team} />
+      <DisplayLabelsSection team={team} />
       <DangerZoneSection team={team} />
     </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// v3 Display Labels — distance unit / currency labels / distance provider
+// Display Labels — distance unit / currency labels / distance provider
 // (단위 무관 정책: 숫자 환산 X, 표시 라벨/심볼만 회사 설정)
 // ---------------------------------------------------------------------------
-function DisplayLabelsV3Section({ team }: { team: TeamEntity }) {
+function DisplayLabelsSection({ team }: { team: TeamEntity }) {
+  const { t } = useTranslation();
   const qc = useQueryClient();
   const [distanceUnitLabel, setDistanceUnitLabel] = useState(
     team.distanceUnitLabel ?? "km",
@@ -102,7 +103,7 @@ function DisplayLabelsV3Section({ team }: { team: TeamEntity }) {
       updateTeam(team.id, payload),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: QUERY_KEYS.team.byId(team.id) });
-      toast.success("저장됨", { position: "top-center" });
+      toast.success(t("toast.saved"), { position: "top-center" });
     },
     onError: (err) =>
       toast.error(generateErrorMessage(err), { position: "top-center" }),
@@ -110,8 +111,8 @@ function DisplayLabelsV3Section({ team }: { team: TeamEntity }) {
 
   return (
     <Section
-      title="v3 표시 라벨 / Distance Provider"
-      description="DB 는 단위 무관 Decimal. 라벨/심볼만 회사 설정으로 표시 시점에 붙음 (환산 X)."
+      title={t("settings.team.labels.title")}
+      description={t("settings.team.labels.description")}
       footer={
         <>
           <CancelButton
@@ -138,28 +139,28 @@ function DisplayLabelsV3Section({ team }: { team: TeamEntity }) {
       }
     >
       <FieldGrid>
-        <Field label="Distance Unit Label">
+        <Field label={t("settings.team.labels.distanceUnit")}>
           <Input
             value={distanceUnitLabel}
             onChange={(e) => setDistanceUnitLabel(e.target.value)}
             placeholder="km / mi / 마일"
           />
         </Field>
-        <Field label="Currency Label">
+        <Field label={t("settings.team.labels.currencyLabel")}>
           <Input
             value={currencyLabel}
             onChange={(e) => setCurrencyLabel(e.target.value)}
             placeholder="KRW / USD"
           />
         </Field>
-        <Field label="Currency Symbol">
+        <Field label={t("settings.team.labels.currencySymbol")}>
           <Input
             value={currencySymbol}
             onChange={(e) => setCurrencySymbol(e.target.value)}
             placeholder="₩ / $"
           />
         </Field>
-        <Field label="Distance Provider">
+        <Field label={t("settings.team.labels.distanceProvider")}>
           <select
             value={distanceProvider}
             onChange={(e) => setDistanceProvider(e.target.value)}
@@ -291,7 +292,7 @@ function TeamInfoSectionInner({ team }: { team: TeamEntity }) {
   const [timezone, setTimezone] = useState(team.timezone ?? "Asia/Seoul");
 
   const { mutate: update, isPending: isUpdatePending } = useMutation({
-    mutationFn: (payload: Partial<TeamWritePayload & { isActive: boolean }>) =>
+    mutationFn: (payload: Partial<TeamWritePayload>) =>
       updateTeam(team.id, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.team.all });

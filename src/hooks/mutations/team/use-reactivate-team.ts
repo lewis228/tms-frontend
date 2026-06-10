@@ -1,18 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { updateTeam, type TeamWritePayload } from "@/api/team";
+import { reactivateTeam } from "@/api/team";
 import { QUERY_KEYS } from "@/lib/constants";
 import type { UseMutationCallback } from "@/types";
 
-type Vars = {
-  id: number;
-  payload: Partial<TeamWritePayload>;
-};
-
-export function useUpdateTeam(callbacks?: UseMutationCallback) {
+export function useReactivateTeam(callbacks?: UseMutationCallback) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, payload }: Vars) => updateTeam(id, payload),
+    mutationFn: reactivateTeam,
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: QUERY_KEYS.team.all });
       callbacks?.onSuccess?.();

@@ -16,14 +16,6 @@ export async function fetchMe(): Promise<UserEntity> {
   return data;
 }
 
-export async function changeMyPassword(payload: {
-  currentPassword?: string;
-  newPassword: string;
-}): Promise<UserEntity> {
-  const { data } = await api.patch<UserEntity>("/users/me/password", payload);
-  return data;
-}
-
 export async function listUsers(
   params: { page?: number; size?: number } = {},
   teamId?: number,

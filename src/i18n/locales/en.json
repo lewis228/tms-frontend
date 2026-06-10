@@ -567,7 +567,8 @@
     "unassignedWarning": "unassigned",
     "stops": {
       "empty": "No stops yet.",
-      "dragHint": "Drag to reorder"
+      "dragHint": "Drag to reorder",
+      "added": "Stop added"
     },
     "drawer": {
       "title": "Container"
@@ -619,30 +620,16 @@
       "locationOptional": "Location (opt.)",
       "notePlaceholder": "Note (opt.)"
     },
-    "settlement": {
-      "totalLabel": "Total",
-      "totalHint": "{{count}} lines across {{legs}} legs",
-      "noLegs": "No legs registered.",
-      "noCharges": "No charge lines on this leg.",
-      "addLine": "Add charge line",
-      "addedToast": "Charge line added.",
-      "deletedToast": "Charge line deleted.",
-      "deleteConfirm": "Delete this charge line?",
-      "selectCode": "Select charge code",
-      "amountPlaceholder": "Amount",
-      "notePlaceholder": "Note (opt.)",
-      "autoMatch": "Auto match",
-      "autoMatchedToast": "Auto matched.",
-      "pnl": {
-        "customerRevenue": "Customer revenue",
-        "driverPayout": "Driver payout",
-        "carrierPayout": "Carrier payout",
-        "poolPayout": "Pool fees",
-        "margin": "Margin"
-      },
-      "validation": {
-        "required": "Select charge code and enter amount."
-      }
+    "leg": {
+      "stopUnlinked": "Stop not linked",
+      "noDriver": "No driver assigned",
+      "inProgress": "In progress"
+    },
+    "map": {
+      "currentLocation": "Current location"
+    },
+    "segments": {
+      "added": "Segment added"
     }
   },
   "streetTurn": {
@@ -828,103 +815,6 @@
     "toast": {
       "applied": "Legs generated from template.",
       "reissued": "Leg reissued. A new pending leg was created."
-    }
-  },
-  "settlement": {
-    "domain": "Settlement",
-    "drawer": {
-      "title": "Settlement"
-    },
-    "table": {
-      "leg": "Leg",
-      "status": "Status",
-      "systemTotal": "System",
-      "driverReported": "Reported",
-      "discrepancy": "Diff",
-      "finalAmount": "Final",
-      "flag": "Flag"
-    },
-    "filter": {
-      "all": "All",
-      "search": "Leg ID / note"
-    },
-    "calculate": {
-      "title": "Calculate settlement",
-      "submit": "Calculate",
-      "submitting": "Calculating...",
-      "success": "Settlement calculated."
-    },
-    "adjust": {
-      "title": "Adjust settlement",
-      "submit": "Adjust",
-      "submitting": "Adjusting...",
-      "noteRequired": "Note is required.",
-      "success": "Settlement adjusted.",
-      "systemTotalRef": "System Total (ref)",
-      "discrepancyAuto": "Discrepancy (auto)",
-      "flagRecommended": "(discrepancy ≠ 0 — auto-suggested)",
-      "notePlaceholder": "Adjustment reason"
-    },
-    "approve": {
-      "title": "Approve settlement",
-      "submit": "Approve",
-      "submitting": "Approving...",
-      "success": "Settlement approved.",
-      "warning": "⚠ All amount fields are locked after approval (no adjust). Unapprove requires ADMIN+ and a reason."
-    },
-    "unapprove": {
-      "title": "Unapprove",
-      "reasonRequired": "Reason is required.",
-      "submit": "Unapprove",
-      "submitting": "Processing...",
-      "success": "Settlement unapproved.",
-      "warning": "⚠ Unapprove requires ADMIN+ and is logged in the AuditLog.",
-      "reasonPlaceholder": "Unapprove reason"
-    },
-    "field": {
-      "systemTotal": "System total",
-      "driverReported": "Driver reported amount",
-      "finalAmount": "Final amount",
-      "hasFlag": "Flag as exception",
-      "note": "Note",
-      "reason": "Reason"
-    },
-    "extras": {
-      "title": "Extra charges",
-      "titleWithSum": "Extra Charges ({{count}}) · Sum {{total}}",
-      "addRow": "Add",
-      "type": "Type",
-      "amount": "Amount",
-      "description": "Description",
-      "empty": "No extra charges.",
-      "typePlaceholder": "Type (e.g. chassis)",
-      "amountPlaceholder": "Amount",
-      "descriptionPlaceholder": "Description"
-    },
-    "detail": {
-      "status": "Status",
-      "settled": "(settled)",
-      "flagged": "Flagged",
-      "approvedAdminOnly": "Approved — Unapprove requires ADMIN+",
-      "amounts": "Amounts",
-      "extraCharges": "Extra Charges ({{count}})",
-      "none": "None",
-      "auditLog": "Audit Log ({{count}})",
-      "noLogs": "No log entries",
-      "reasonLabel": "Reason: {{reason}}",
-      "previousUnapprove": "Previous Unapprove",
-      "reasonField": "Reason",
-      "atField": "At",
-      "noteField": "Note",
-      "calculate": "Calculate",
-      "adjust": "Adjust",
-      "approve": "Approve",
-      "unapprove": "Unapprove (ADMIN+)",
-      "systemTotalLabel": "System Total",
-      "driverReportedLabel": "Driver Reported",
-      "discrepancyLabel": "Discrepancy",
-      "finalAmountLabel": "Final Amount",
-      "loading": "Loading..."
     }
   },
   "dispatch": {
@@ -1177,13 +1067,6 @@
       "heading": "D/O"
     },
     "streetTurns": "Street Turns",
-    "accounting": {
-      "title": "Settlements"
-    },
-    "accountingRates": {
-      "title": "Rate Settings",
-      "hint": "ADMIN+ only. Use a single amount field per type (FLAT_RATE / PERCENTAGE / PER_MILE)."
-    },
     "master": {
       "customers": "Customers",
       "terminals": "Terminals",
@@ -1193,8 +1076,7 @@
       "trucks": "Trucks",
       "chassis": "Chassis",
       "equipmentPools": "Equipment Pools",
-      "chargeCodes": "Charge Codes",
-      "rateCards": "Rate Cards"
+      "chargeCodes": "Charge Codes"
     },
     "system": {
       "teams": "Teams",
@@ -1238,9 +1120,7 @@
     "driverSchedule": "Driver Schedule",
     "deliveryOrders": "Delivery Orders",
     "streetTurns": "Street Turns",
-    "accounting": "Accounting",
     "settlements": "Settlements",
-    "rateSettings": "Rate Settings",
     "masterData": "Master Data",
     "customers": "Customers",
     "drivers": "Drivers",
@@ -1251,10 +1131,6 @@
     "vessels": "Vessels",
     "locations": "Locations",
     "chargeCodes": "Charge Codes",
-    "rateCards": "Rate Cards",
-    "rateTariffs": "Rate Tariffs",
-    "rateQuotes": "Rate Quotes",
-    "distanceMatrix": "Distance Matrix",
     "system": "System",
     "teams": "Teams",
     "systemUsers": "System Users",
@@ -1428,6 +1304,14 @@
         "deleteConfirmTitle": "Delete '{{name}}'?",
         "deleteConfirmDescription": "This action is irreversible.",
         "deleteSuccess": "Team deleted."
+      },
+      "labels": {
+        "title": "Display Labels / Distance Provider",
+        "description": "Values are unit-agnostic decimals in the DB. Only labels/symbols are applied at display time per company settings (no conversion).",
+        "distanceUnit": "Distance Unit Label",
+        "currencyLabel": "Currency Label",
+        "currencySymbol": "Currency Symbol",
+        "distanceProvider": "Distance Provider"
       }
     },
     "members": {

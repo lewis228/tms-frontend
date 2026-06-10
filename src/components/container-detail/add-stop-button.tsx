@@ -1,5 +1,6 @@
 // 컨테이너 상세에서 Stop 추가. 가장 빈번하게 쓸 인라인 액션.
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,7 @@ import type { StopRole } from "@/types";
 const ROLES: StopRole[] = ["ORIGIN", "DELIVERY", "TRANSIT", "TERMINUS"];
 
 export default function AddStopButton({ containerId }: { containerId: number }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [role, setRole] = useState<StopRole>("DELIVERY");
   const [locationId, setLocationId] = useState<string>("");
@@ -27,7 +29,7 @@ export default function AddStopButton({ containerId }: { containerId: number }) 
 
   const { mutate: createStop, isPending } = useCreateContainerStop({
     onSuccess: () => {
-      toast.success("Stop 추가됨", { position: "top-center" });
+      toast.success(t("container.stops.added"), { position: "top-center" });
       setOpen(false);
       setLocationId("");
       setPlannedArrival("");

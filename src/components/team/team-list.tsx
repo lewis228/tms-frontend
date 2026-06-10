@@ -15,7 +15,7 @@ import {
 import Loader from "@/components/loader";
 import Fallback from "@/components/fallback";
 import { useDeleteTeam } from "@/hooks/mutations/team/use-delete-team";
-import { useUpdateTeam } from "@/hooks/mutations/team/use-update-team";
+import { useReactivateTeam } from "@/hooks/mutations/team/use-reactivate-team";
 import { useTeamsData } from "@/hooks/queries/use-teams-data";
 import { generateErrorMessage } from "@/lib/error";
 import { useOpenAlertModal } from "@/store/alert-modal";
@@ -47,12 +47,16 @@ export default function TeamList() {
       toast.error(generateErrorMessage(err), { position: "top-center" }),
   });
 
-  const { mutate: updateT } = useUpdateTeam({
+  const { mutate: reactivateT } = useReactivateTeam({
     onSuccess: () =>
       toast.success(tt("toast.updated"), { position: "top-center" }),
     onError: (err) =>
       toast.error(generateErrorMessage(err), { position: "top-center" }),
   });
+
+  // 활성 토글: 활성 → soft-delete(비활성), 비활성 → reactivate.
+  const toggleActive = (team: TeamEntity) =>
+    team.isActive ? deleteT(team.id) : reactivateT(team.id);
 
   const filtered = useMemo<TeamEntity[]>(() => {
     if (!data) return [];
@@ -123,12 +127,7 @@ export default function TeamList() {
                   <TableCell>
                     <button
                       type="button"
-                      onClick={() =>
-                        updateT({
-                          id: t.id,
-                          payload: { isActive: !t.isActive },
-                        })
-                      }
+                      onClick={() => toggleActive(t)}
                       className={
                         "rounded px-2 py-0.5 text-xs " +
                         (t.isActive

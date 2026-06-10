@@ -26,7 +26,7 @@ export type TeamWritePayload = {
   memo?: string | null;
   timezone?: string | null;
   currency?: string | null;
-  // ── v3 표시 라벨 / distance provider ─────────
+  // ── 표시 라벨 / distance provider ─────────
   distanceUnitLabel?: string | null;
   currencyLabel?: string | null;
   currencySymbol?: string | null;
@@ -39,16 +39,24 @@ export async function createTeam(payload: TeamWritePayload): Promise<TeamEntity>
   return data;
 }
 
+// 팀 정보/설정 업데이트 — 백엔드는 PATCH /teams/{id}/settings (name·회사정보·표시설정 전부 수용).
+// 활성/비활성 토글은 settings 가 아니라 delete(비활성) / reactivate(활성) 전용 엔드포인트로 처리한다.
 export async function updateTeam(
   id: number,
-  payload: Partial<TeamWritePayload & { isActive: boolean }>,
+  payload: Partial<TeamWritePayload>,
 ): Promise<TeamEntity> {
-  const { data } = await api.patch<TeamEntity>(`/teams/${id}`, payload);
+  const { data } = await api.patch<TeamEntity>(`/teams/${id}/settings`, payload);
   return data;
 }
 
 export async function deleteTeam(id: number): Promise<void> {
   await api.delete(`/teams/${id}`);
+}
+
+// 비활성(soft-delete) 된 팀 되살리기 — POST /teams/{id}/reactivate.
+export async function reactivateTeam(id: number): Promise<TeamEntity> {
+  const { data } = await api.post<TeamEntity>(`/teams/${id}/reactivate`);
+  return data;
 }
 
 // ── 온보딩 ─────────────────────────────────────────────────
