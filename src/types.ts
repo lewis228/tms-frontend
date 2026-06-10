@@ -591,13 +591,12 @@ export type DeliveryOrderAddonEntity = {
 };
 
 // ─────────────────────────────────────────────────────────────────
-// Rate management (rate-group / rate-point / rate-multiplier / driver-rate-assignment)
+// Rate management (rate-group / rate-multiplier / driver-rate-assignment)
+// 재설계(Zone×Zone): rate_point 폐기, 요율 셀은 그룹 단위 플랫 행(FlatRateEntry).
 // 백엔드 응답은 alias_generator=to_camel 로 camelCase. Entity 필드도 camelCase 1:1.
 // ─────────────────────────────────────────────────────────────────
 
 export type RateMethod = "ZONE" | "CITY" | "MILE" | "HOURLY";
-// 요율표 행 포인트 종류(rate_point) — Point 모델의 PointType 과 별개.
-export type RatePointType = "TERMINAL" | "YARD";
 export type RateContainerSize = "SIZE_20" | "SIZE_40" | "SIZE_45";
 
 export type RateGroupEntity = {
@@ -607,20 +606,6 @@ export type RateGroupEntity = {
   isDefault: boolean;
   isTemplate: boolean;
   description: string | null;
-  isActive: boolean;
-};
-
-export type RatePointEntity = {
-  id: number;
-  name: string;
-  code: string | null;
-  pointType: RatePointType;
-  address: string | null;
-  latitude: string | null;
-  longitude: string | null;
-  terminalId: number | null;
-  locationId: number | null;
-  note: string | null;
   isActive: boolean;
 };
 
@@ -678,76 +663,57 @@ export type RateZone = RateZoneEntity & {
 // Rate Sheet — 요율 매트릭스 슬롯 + 셀(entry) + 변경 이력
 // ─────────────────────────────────────────────────────────────────
 
-export type SheetKind =
-  | "POINT_ZONE"
-  | "POINT_CITY"
-  | "POINT_POINT"
-  | "MILE"
-  | "HOURLY";
+// 재설계(Zone×Zone): kind = group.method 와 동일.
+export type SheetKind = "ZONE" | "CITY" | "MILE" | "HOURLY";
 
 export type RateMoveType = "LOAD" | "EMPTY" | "NONE";
 
-// 컨플루언스 'Leg 전체 유형': 같은 From→To·Move 라도 Service Type 별 요율 분리.
+// 같은 From→To·Move 라도 Service Type 별 요율 분리.
 export type RateServiceType = "LIVE" | "DROP" | "NONE";
 
-export type SheetStatus = "EMPTY" | "PARTIAL" | "ACTIVE" | "INACTIVE";
-
-export type RateSheetEntity = {
-  id: number;
-  rateGroupId: number;
+// ─────────────────────────────────────────────────────────────────
+// 그룹 단위 플랫 행(이미지3) — from→to 좌표. 리스트 뷰 + 매트릭스 피벗 공용.
+// ─────────────────────────────────────────────────────────────────
+export type FlatRateEntry = {
+  rateEntryId: number;
+  rateSheetId: number;
   kind: SheetKind;
   moveType: RateMoveType | null;
   serviceType: RateServiceType | null;
-  rowPointId: number | null;
-  note: string | null;
-  isActive: boolean;
-  status: SheetStatus;
-  openEntryCount: number;
-};
-
-export type RateEntryEntity = {
-  id: number;
-  rateSheetId: number;
-  colZoneId: number | null;
-  colPointId: number | null;
-  colCity: string | null;
-  colState: string | null;
+  fromZoneId: number | null;
+  toZoneId: number | null;
+  fromCity: string | null;
+  fromState: string | null;
+  toCity: string | null;
+  toState: string | null;
   containerSize: RateContainerSize | null;
   amount: string | null;
   perUnit: string | null;
   effectiveFrom: string;
   effectiveTo: string | null;
-  source: string;
-  changeReason: string | null;
-  isActive: boolean;
 };
 
-export type RateEntryHistoryEntity = {
-  id: number;
-  rateSheetId: number;
-  rateEntryId: number | null;
-  colZoneId: number | null;
-  colPointId: number | null;
-  colCity: string | null;
-  colState: string | null;
-  containerSize: RateContainerSize | null;
-  oldAmount: string | null;
-  newAmount: string | null;
-  oldPerUnit: string | null;
-  newPerUnit: string | null;
-  effectiveFrom: string | null;
-  action: string;
-  reason: string | null;
-  createdAt: string | null;
+export type RateGroupEntries = {
+  rateGroupId: number;
+  method: RateMethod;
+  rows: FlatRateEntry[];
 };
 
-export type RateLookupResult = {
-  found: boolean;
-  amount: string | null;
-  perUnit: string | null;
-  rateEntryId: number | null;
-  effectiveFrom: string | null;
-  message: string | null;
+// 플랫 행 입력(개별/매트릭스 셀 저장).
+export type FlatRateEntryInput = {
+  moveType?: RateMoveType | null;
+  serviceType?: RateServiceType | null;
+  fromZoneId?: number | null;
+  toZoneId?: number | null;
+  fromCity?: string | null;
+  fromState?: string | null;
+  toCity?: string | null;
+  toState?: string | null;
+  containerSize?: RateContainerSize | null;
+  amount?: string | null;
+  perUnit?: string | null;
+  effectiveFrom: string;
+  reason?: string | null;
 };
 
 export type PagedResponse<T> = {

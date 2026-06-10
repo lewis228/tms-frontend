@@ -56,16 +56,8 @@ const MasterChassisPage = lazy(() => import("@/pages/master-chassis-page"));
 const MasterEquipmentPoolsPage = lazy(() => import("@/pages/master-equipment-pools-page"));
 const MasterAddonsPage = lazy(() => import("@/pages/master-addons-page"));
 const RateGroupsPage = lazy(() => import("@/pages/rate-groups-page"));
-const RatePointsPage = lazy(() => import("@/pages/rate-points-page"));
 const RateMultipliersPage = lazy(() => import("@/pages/rate-multipliers-page"));
 const RateZonesPage = lazy(() => import("@/pages/rate-zones-page"));
-const RateSheetsPage = lazy(() => import("@/pages/rate-sheets-page"));
-const RateSheetDetailPage = lazy(
-  () => import("@/pages/rate-sheet-detail-page"),
-);
-const DriverRateAssignmentsPage = lazy(
-  () => import("@/pages/driver-rate-assignments-page"),
-);
 const SettlementsPage = lazy(() => import("@/pages/settlements-page"));
 const SettlementDetailPage = lazy(
   () => import("@/pages/settlement-detail-page"),
@@ -183,20 +175,10 @@ export default function RootRoute() {
             </Route>
 
             <Route path="rates/rate-groups" element={<RateGroupsPage />} />
-            <Route path="rates/rate-points" element={<RatePointsPage />} />
             <Route path="rates/rate-zones" element={<RateZonesPage />} />
-            <Route path="rates/rate-sheets" element={<RateSheetsPage />} />
-            <Route
-              path="rates/rate-sheets/:sheetId"
-              element={<RateSheetDetailPage />}
-            />
             <Route
               path="rates/rate-multipliers"
               element={<RateMultipliersPage />}
-            />
-            <Route
-              path="rates/driver-rate-assignments"
-              element={<DriverRateAssignmentsPage />}
             />
 
             <Route path="billing/settlements" element={<SettlementsPage />} />

@@ -181,33 +181,15 @@ export const NAV_CONFIG: NavNode[] = [
       },
       {
         type: "leaf",
-        label: "nav.ratePoints",
-        iconName: "MapPin",
-        path: "rates/rate-points",
-      },
-      {
-        type: "leaf",
         label: "nav.rateZones",
         iconName: "Map",
         path: "rates/rate-zones",
       },
       {
         type: "leaf",
-        label: "nav.rateSheets",
-        iconName: "Calculator",
-        path: "rates/rate-sheets",
-      },
-      {
-        type: "leaf",
         label: "nav.rateMultipliers",
         iconName: "Calculator",
         path: "rates/rate-multipliers",
-      },
-      {
-        type: "leaf",
-        label: "nav.driverRateAssignments",
-        iconName: "User",
-        path: "rates/driver-rate-assignments",
       },
     ],
   },

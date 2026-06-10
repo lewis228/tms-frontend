@@ -1111,11 +1111,8 @@
     },
     "rates": {
       "rateGroups": "Rate Groups",
-      "ratePoints": "Rate Points",
       "rateMultipliers": "Rate Multipliers",
-      "driverRateAssignments": "Driver Rate Assignments",
-      "rateZones": "Rate Zones",
-      "rateSheets": "Rate Sheets"
+      "rateZones": "Rate Zones"
     },
     "dualTransactions": "Dual Transactions"
   },
@@ -1157,11 +1154,8 @@
     "settingsApiKeys": "API Keys",
     "rates": "Rates",
     "rateGroups": "Rate Groups",
-    "ratePoints": "Rate Points",
     "rateMultipliers": "Rate Multipliers",
-    "driverRateAssignments": "Driver Rate Assignments",
     "rateZones": "Rate Zones",
-    "rateSheets": "Rate Sheets",
     "billing": "Billing",
     "invoices": "Invoices",
     "dualTransactions": "Dual Transactions"
@@ -1560,27 +1554,59 @@
       "CITY": "City / Zip",
       "MILE": "Mile",
       "HOURLY": "Hourly"
+    },
+    "hub": {
+      "title": "Rates",
+      "subtitle": "Zone/City are from→to matrices, Mile/Hourly use per-unit rates, assign groups to drivers in the Driver tab."
+    },
+    "tabs": {
+      "zone": "Zone (Zone×Zone)",
+      "city": "City (City×City)",
+      "mile": "Mile",
+      "hourly": "Hourly",
+      "driver": "Driver Assignment"
     }
   },
-  "ratePoint": {
-    "newButton": "New rate point",
-    "createTitle": "New rate point",
-    "editTitle": "Edit rate point",
-    "deletePromptTitle": "Delete rate point '{{name}}'?",
-    "deletePromptDesc": "This cannot be undone.",
-    "searchPlaceholder": "Name / code / address",
-    "terminalPlaceholder": "Select terminal",
-    "locationPlaceholder": "Select location",
-    "field": {
-      "pointType": "Point type",
-      "latitude": "Latitude",
-      "longitude": "Longitude",
-      "terminal": "Terminal",
-      "location": "Location"
+  "rateEntry": {
+    "noGroup": "No rate group for this method. Create one first.",
+    "newGroup": "New group",
+    "noRows": "No rates yet.",
+    "matrixHint": "No rows/columns to display. Add rates first.",
+    "perUnitHint": "Mile/Hourly method — enter the per-unit rate only.",
+    "cityPlaceholder": "City (e.g. Fontana)",
+    "addRow": "Add",
+    "importCsv": "Import CSV",
+    "exportCsv": "Export CSV",
+    "importDone": "Import complete",
+    "csvHeader": "CSV header",
+    "view": {
+      "list": "List",
+      "matrix": "Matrix"
     },
-    "pointTypeOption": {
-      "TERMINAL": "Terminal",
-      "YARD": "Yard"
+    "field": {
+      "from": "From",
+      "to": "To",
+      "move": "Move",
+      "service": "Service",
+      "size": "Size",
+      "amount": "Amount",
+      "perUnit": "Per unit",
+      "effectiveFrom": "Effective from"
+    },
+    "move": {
+      "LOAD": "Load",
+      "EMPTY": "Empty",
+      "NONE": "None (Bobtail)"
+    },
+    "service": {
+      "LIVE": "Live",
+      "DROP": "Drop",
+      "NONE": "None"
+    },
+    "size": {
+      "SIZE_20": "20ft",
+      "SIZE_40": "40ft",
+      "SIZE_45": "45ft"
     }
   },
   "rateMultiplier": {
@@ -1637,80 +1663,6 @@
         "help": "Adds every zip code in that city/state to this zone.",
         "added": "City zips added"
       }
-    }
-  },
-  "rateSheet": {
-    "newButton": "New Rate Sheet",
-    "createTitle": "Create Rate Sheet",
-    "deletePromptTitle": "Delete this rate sheet?",
-    "deletePromptDesc": "This cannot be undone.",
-    "allGroups": "All Groups",
-    "rateGroupPlaceholder": "Select rate group",
-    "rowPointPlaceholder": "Select rate point",
-    "field": {
-      "rateGroup": "Rate Group",
-      "kind": "Kind",
-      "moveType": "Move Type",
-      "rowPoint": "Row Point",
-      "openEntryCount": "Open Cells",
-      "serviceType": "Service Type"
-    },
-    "kind": {
-      "POINT_ZONE": "Point × Zone",
-      "POINT_CITY": "Point × City",
-      "POINT_POINT": "Point × Point",
-      "MILE": "Mile",
-      "HOURLY": "Hourly"
-    },
-    "moveType": {
-      "LOAD": "Load",
-      "EMPTY": "Empty",
-      "NONE": "None (Bobtail)"
-    },
-    "containerSize": {
-      "SIZE_20": "20ft",
-      "SIZE_40": "40ft",
-      "SIZE_45": "45ft"
-    },
-    "tabs": {
-      "entries": "Entries",
-      "history": "History",
-      "lookup": "Lookup"
-    },
-    "detail": {
-      "subtitle": "Rate Group {{group}}"
-    },
-    "grid": {
-      "column": "Column",
-      "containerSize": "Container Size",
-      "amount": "Amount",
-      "perUnit": "Per Unit",
-      "effectiveFrom": "Effective From",
-      "effectiveTo": "Effective To",
-      "reason": "Reason",
-      "colZoneId": "Zone ID",
-      "colPointId": "Point ID",
-      "colCity": "City",
-      "colState": "State",
-      "setTitle": "Set / Update Rate",
-      "setButton": "Set Rate"
-    },
-    "history": {
-      "action": "Action",
-      "oldAmount": "Old Value",
-      "newAmount": "New Value",
-      "createdAt": "Changed At"
-    },
-    "lookup": {
-      "workDate": "Work Date",
-      "button": "Look Up",
-      "found": "Rate Found",
-      "notFound": "No rate registered."
-    },
-    "serviceType": {
-      "LIVE": "Live (wait)",
-      "DROP": "Drop",
-      "NONE": "None"
     }
   },
   "payroll": {

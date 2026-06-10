@@ -1111,11 +1111,8 @@
     },
     "rates": {
       "rateGroups": "요율 그룹 (Rate Groups)",
-      "ratePoints": "요율 포인트 (Rate Points)",
       "rateMultipliers": "요율 배율 (Rate Multipliers)",
-      "driverRateAssignments": "기사 요율 배정 (Driver Rate Assignments)",
-      "rateZones": "요율 존 (Rate Zones)",
-      "rateSheets": "요율표 (Rate Sheets)"
+      "rateZones": "요율 존 (Rate Zones)"
     },
     "dualTransactions": "듀얼 트랜잭션 (Dual Transactions)"
   },
@@ -1157,11 +1154,8 @@
     "settingsApiKeys": "API 키",
     "rates": "요율 (Rates)",
     "rateGroups": "요율 그룹",
-    "ratePoints": "요율 포인트",
     "rateMultipliers": "요율 배율",
-    "driverRateAssignments": "기사 요율 배정",
     "rateZones": "요율 존",
-    "rateSheets": "요율표 (매트릭스)",
     "billing": "정산·청구",
     "invoices": "고객 청구",
     "dualTransactions": "듀얼 트랜잭션"
@@ -1560,27 +1554,59 @@
       "CITY": "도시/우편 (CITY)",
       "MILE": "거리 (MILE)",
       "HOURLY": "시간 (HOURLY)"
+    },
+    "hub": {
+      "title": "요율 (Rates)",
+      "subtitle": "존/도시는 출발→도착 매트릭스, 거리/시간은 단가, 드라이버 탭에서 그룹을 배정합니다."
+    },
+    "tabs": {
+      "zone": "존 (Zone×Zone)",
+      "city": "도시 (City×City)",
+      "mile": "거리 (Mile)",
+      "hourly": "시간 (Hourly)",
+      "driver": "드라이버 배정"
     }
   },
-  "ratePoint": {
-    "newButton": "새 요율 포인트",
-    "createTitle": "요율 포인트 생성",
-    "editTitle": "요율 포인트 수정",
-    "deletePromptTitle": "'{{name}}' 요율 포인트를 삭제하시겠습니까?",
-    "deletePromptDesc": "복구할 수 없습니다.",
-    "searchPlaceholder": "이름 / 코드 / 주소 검색",
-    "terminalPlaceholder": "터미널 선택",
-    "locationPlaceholder": "장소 선택",
-    "field": {
-      "pointType": "포인트 종류",
-      "latitude": "위도",
-      "longitude": "경도",
-      "terminal": "터미널",
-      "location": "장소"
+  "rateEntry": {
+    "noGroup": "이 방식의 요율 그룹이 없습니다. 새 그룹을 만들어 주세요.",
+    "newGroup": "새 그룹",
+    "noRows": "등록된 요율이 없습니다.",
+    "matrixHint": "표시할 행/열이 없습니다. 먼저 요율을 등록하세요.",
+    "perUnitHint": "거리/시간 방식 — 단가(per unit)만 입력합니다.",
+    "cityPlaceholder": "도시 (예: Fontana)",
+    "addRow": "추가",
+    "importCsv": "CSV 가져오기",
+    "exportCsv": "CSV 내보내기",
+    "importDone": "가져오기 완료",
+    "csvHeader": "CSV 헤더",
+    "view": {
+      "list": "리스트",
+      "matrix": "매트릭스"
     },
-    "pointTypeOption": {
-      "TERMINAL": "터미널",
-      "YARD": "야드"
+    "field": {
+      "from": "출발",
+      "to": "도착",
+      "move": "이동",
+      "service": "서비스",
+      "size": "사이즈",
+      "amount": "금액",
+      "perUnit": "단가",
+      "effectiveFrom": "유효 시작일"
+    },
+    "move": {
+      "LOAD": "적재 (LOAD)",
+      "EMPTY": "공컨 (EMPTY)",
+      "NONE": "없음 (Bobtail)"
+    },
+    "service": {
+      "LIVE": "라이브 (LIVE)",
+      "DROP": "드롭 (DROP)",
+      "NONE": "없음"
+    },
+    "size": {
+      "SIZE_20": "20ft",
+      "SIZE_40": "40ft",
+      "SIZE_45": "45ft"
     }
   },
   "rateMultiplier": {
@@ -1637,80 +1663,6 @@
         "help": "그 도시(주)의 모든 우편번호를 이 존에 추가합니다.",
         "added": "도시 우편번호 추가됨"
       }
-    }
-  },
-  "rateSheet": {
-    "newButton": "새 요율표",
-    "createTitle": "요율표 생성",
-    "deletePromptTitle": "이 요율표를 삭제하시겠습니까?",
-    "deletePromptDesc": "복구할 수 없습니다.",
-    "allGroups": "전체 그룹",
-    "rateGroupPlaceholder": "요율 그룹 선택",
-    "rowPointPlaceholder": "요율 포인트 선택",
-    "field": {
-      "rateGroup": "요율 그룹",
-      "kind": "종류",
-      "moveType": "이동 타입",
-      "rowPoint": "행 포인트",
-      "openEntryCount": "열린 셀 수",
-      "serviceType": "서비스 타입"
-    },
-    "kind": {
-      "POINT_ZONE": "포인트 × 존",
-      "POINT_CITY": "포인트 × 도시",
-      "POINT_POINT": "포인트 × 포인트",
-      "MILE": "거리 (MILE)",
-      "HOURLY": "시간 (HOURLY)"
-    },
-    "moveType": {
-      "LOAD": "적재 (LOAD)",
-      "EMPTY": "공컨 (EMPTY)",
-      "NONE": "없음 (Bobtail)"
-    },
-    "containerSize": {
-      "SIZE_20": "20ft",
-      "SIZE_40": "40ft",
-      "SIZE_45": "45ft"
-    },
-    "tabs": {
-      "entries": "셀 (Entries)",
-      "history": "이력",
-      "lookup": "조회"
-    },
-    "detail": {
-      "subtitle": "요율 그룹 {{group}}"
-    },
-    "grid": {
-      "column": "열 (Column)",
-      "containerSize": "컨테이너 사이즈",
-      "amount": "금액",
-      "perUnit": "단가",
-      "effectiveFrom": "유효 시작일",
-      "effectiveTo": "유효 종료일",
-      "reason": "사유",
-      "colZoneId": "존 ID",
-      "colPointId": "포인트 ID",
-      "colCity": "도시",
-      "colState": "주(State)",
-      "setTitle": "요율 등록 / 변경",
-      "setButton": "요율 등록"
-    },
-    "history": {
-      "action": "액션",
-      "oldAmount": "이전 값",
-      "newAmount": "새 값",
-      "createdAt": "변경 시각"
-    },
-    "lookup": {
-      "workDate": "기준일",
-      "button": "조회",
-      "found": "요율 발견",
-      "notFound": "등록된 요율이 없습니다."
-    },
-    "serviceType": {
-      "LIVE": "라이브 (LIVE 대기)",
-      "DROP": "드롭 (DROP)",
-      "NONE": "없음 (NONE)"
     }
   },
   "payroll": {

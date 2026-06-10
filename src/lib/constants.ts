@@ -174,12 +174,7 @@ export const QUERY_KEYS = {
     list: (params: Record<string, unknown> = {}) =>
       ["rate-group", "list", params] as const,
     byId: (id: number) => ["rate-group", "byId", id] as const,
-  },
-  ratePoint: {
-    all: ["rate-point"] as const,
-    list: (params: Record<string, unknown> = {}) =>
-      ["rate-point", "list", params] as const,
-    byId: (id: number) => ["rate-point", "byId", id] as const,
+    entries: (id: number) => ["rate-group", "entries", id] as const,
   },
   rateMultiplier: {
     all: ["rate-multiplier"] as const,
@@ -200,13 +195,10 @@ export const QUERY_KEYS = {
     byId: (id: number) => ["rate-zone", "byId", id] as const,
     members: (id: number) => ["rate-zone", "members", id] as const,
   },
-  rateSheet: {
-    all: ["rate-sheet"] as const,
-    list: (params: Record<string, unknown> = {}) =>
-      ["rate-sheet", "list", params] as const,
-    byId: (id: number) => ["rate-sheet", "byId", id] as const,
-    entries: (id: number) => ["rate-sheet", "entries", id] as const,
-    history: (id: number) => ["rate-sheet", "history", id] as const,
+  zipCode: {
+    all: ["zip-code"] as const,
+    cities: (q: string, state?: string) =>
+      ["zip-code", "cities", q, state ?? ""] as const,
   },
 
   // ── Billing — Payroll(정산) / Invoice(청구) ──────────────────

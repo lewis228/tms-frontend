@@ -21,9 +21,7 @@ import TeamEditorModal from "@/components/team/team-editor-modal";
 import TerminalEditorModal from "@/components/terminal/terminal-editor-modal";
 import VesselEditorModal from "@/components/vessel/vessel-editor-modal";
 import RateGroupEditorModal from "@/components/rate-group/rate-group-editor-modal";
-import RatePointEditorModal from "@/components/rate-point/rate-point-editor-modal";
 import RateZoneEditorModal from "@/components/rate-zone/rate-zone-editor-modal";
-import RateSheetCreateModal from "@/components/rate-sheet/rate-sheet-create-modal";
 import DriverRateAssignmentEditorModal from "@/components/driver-rate-assignment/driver-rate-assignment-editor-modal";
 import InvoiceCreateModal from "@/components/invoice/invoice-create-modal";
 
@@ -47,9 +45,7 @@ export default function ModalProvider({ children }: { children: ReactNode }) {
           <DriverTempPasswordModal />
           {/* Rate management */}
           <RateGroupEditorModal />
-          <RatePointEditorModal />
           <RateZoneEditorModal />
-          <RateSheetCreateModal />
           <DriverRateAssignmentEditorModal />
           {/* Billing */}
           <InvoiceCreateModal />
