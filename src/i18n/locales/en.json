@@ -807,6 +807,8 @@
   "loadType": {
     "applyButton": "Apply Load Type",
     "dialogTitle": "Apply Load Type",
+    "prefillHint": "Legs are prefilled from the template. Assign from/to points, then save.",
+    "saveLegs": "Save {{count}} legs",
     "reissueButton": "Reissue (Dry Run)",
     "reissueDialogTitle": "Reissue Leg (Dry Run)",
     "reissuedFrom": "reissued from #{{id}}",

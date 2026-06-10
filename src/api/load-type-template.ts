@@ -3,9 +3,20 @@ import api from "@/lib/axios";
 import { adaptCursorToPaged, type CursorResponse } from "@/lib/pagination";
 import type {
   LoadDirection,
+  LoadTypeTemplateDetailEntity,
   LoadTypeTemplateEntity,
   PagedResponse,
 } from "@/types";
+
+// 상세(steps 포함) — 템플릿 프리필용.
+export async function fetchLoadTypeTemplate(
+  id: number,
+): Promise<LoadTypeTemplateDetailEntity> {
+  const { data } = await api.get<LoadTypeTemplateDetailEntity>(
+    `/load-type-templates/${id}`,
+  );
+  return data;
+}
 
 export async function fetchLoadTypeTemplates(
   params: {

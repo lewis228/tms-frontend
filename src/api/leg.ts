@@ -3,6 +3,7 @@ import api from "@/lib/axios";
 import type {
   DeliveryStatus,
   LegEntity,
+  LegMoveCode,
   LegStatus,
   MoveType,
   PagedResponse,
@@ -19,6 +20,7 @@ export type LegCreatePayload = {
   // 포인트 모델: from/to 포인트(container_stop) 선택 → 백엔드가 타입 스냅샷
   fromPointId?: number | null;
   toPointId?: number | null;
+  moveCode?: LegMoveCode | null;
   driverId?: number | null;
   truckId?: number | null;
   chassisId?: number | null;
@@ -68,6 +70,20 @@ export async function createLeg(
   return data;
 }
 
+// 벌크 생성 — 템플릿 프리필 후 여러 leg 한 번에 저장. POST /legs/bulk/create.
+export type LegBulkCreateResult = {
+  summary: { total: number; succeeded: number; failed: number };
+};
+
+export async function createLegsBulk(
+  items: LegCreatePayload[],
+): Promise<LegBulkCreateResult> {
+  const { data } = await api.post<LegBulkCreateResult>("/legs/bulk/create", {
+    items,
+  });
+  return data;
+}
+
 export async function updateLeg(
   id: number,
   payload: LegUpdatePayload,
@@ -111,24 +127,6 @@ export async function transitionLeg(
 
 export async function deleteLeg(id: number): Promise<void> {
   await api.delete(`/legs/${id}`);
-}
-
-// Load Type 템플릿 → container 에 leg N개 자동 생성. 생성된 leg 배열 반환.
-export async function applyLoadType({
-  containerId,
-  templateId,
-  replaceExisting,
-}: {
-  containerId: number;
-  templateId: number;
-  replaceExisting?: boolean;
-}): Promise<LegEntity[]> {
-  const { data } = await api.post<LegEntity[]>("/legs/apply-load-type", {
-    containerId,
-    templateId,
-    replaceExisting: replaceExisting ?? false,
-  });
-  return data;
 }
 
 // Dry Run 재발급 — 원본 leg 는 DRY_RUN 으로 종료, 동일 구간 새 PENDING leg 발급.

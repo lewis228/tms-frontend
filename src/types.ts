@@ -55,6 +55,25 @@ export type LoadTypeTemplateEntity = {
   isActive: boolean;
 };
 
+export type TemplateMoveType = "LOAD" | "EMPTY" | "NONE";
+export type TemplateServiceType = "LIVE" | "DROP" | "NONE";
+
+export type TemplateStepEntity = {
+  id: number;
+  seq: number;
+  fromLocationType: PointType | null;
+  toLocationType: PointType | null;
+  moveType: TemplateMoveType;
+  serviceType: TemplateServiceType;
+  moveCode: LegMoveCode | null;
+  flags: Record<string, unknown> | null;
+  note: string | null;
+};
+
+export type LoadTypeTemplateDetailEntity = LoadTypeTemplateEntity & {
+  steps: TemplateStepEntity[];
+};
+
 export type ShipmentDirection = "IMPORT" | "EXPORT";
 export type MoveType = "LOADED" | "EMPTY" | "BOBTAIL";
 export type ServiceType = "LIVE" | "DROP";

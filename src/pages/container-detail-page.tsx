@@ -78,7 +78,11 @@ export default function ContainerDetailPage() {
             <h2 className="text-muted-foreground text-sm font-semibold">
               {t("shipmentDetail.legsHeading")}
             </h2>
-            <ApplyLoadTypeButton containerId={containerId} />
+            <ApplyLoadTypeButton
+              containerId={containerId}
+              deliveryOrderId={Number(d.id)}
+              stops={data.stops}
+            />
           </div>
           {data.legs.length === 0 ? (
             <div className="text-muted-foreground rounded-md border p-4 text-sm">

@@ -807,6 +807,8 @@
   "loadType": {
     "applyButton": "Load Type 적용",
     "dialogTitle": "Load Type 적용",
+    "prefillHint": "템플릿에서 레그가 미리 채워졌습니다. 출발/도착 포인트를 지정한 뒤 저장하세요.",
+    "saveLegs": "레그 {{count}}건 저장",
     "reissueButton": "재발급 (Dry Run)",
     "reissueDialogTitle": "Leg 재발급 (Dry Run)",
     "reissuedFrom": "#{{id}} 에서 재발급됨",
