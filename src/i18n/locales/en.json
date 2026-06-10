@@ -1607,6 +1607,14 @@
       "SIZE_20": "20ft",
       "SIZE_40": "40ft",
       "SIZE_45": "45ft"
+    },
+    "newButton": "New rate",
+    "createTitle": "Add rate",
+    "filter": {
+      "title": "Filter",
+      "clear": "Clear",
+      "min": "Min",
+      "max": "Max"
     }
   },
   "rateMultiplier": {

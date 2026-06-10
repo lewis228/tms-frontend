@@ -1607,6 +1607,14 @@
       "SIZE_20": "20ft",
       "SIZE_40": "40ft",
       "SIZE_45": "45ft"
+    },
+    "newButton": "새 요율",
+    "createTitle": "요율 추가",
+    "filter": {
+      "title": "필터",
+      "clear": "초기화",
+      "min": "이상",
+      "max": "이하"
     }
   },
   "rateMultiplier": {
