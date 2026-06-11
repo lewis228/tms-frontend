@@ -127,13 +127,7 @@ export type AddonCategory =
   | "ADJUSTMENT"
   | "OTHER";
 
-export type AddonUnit =
-  | "FLAT"
-  | "HOUR"
-  | "MINUTE"
-  | "DAY"
-  | "MILE"
-  | "PERCENT";
+export type AddonUnit = "FLAT" | "HOUR" | "MINUTE" | "DAY" | "MILE" | "PERCENT";
 
 export type LocationKind = "YARD" | "CUSTOMER" | "PORT" | "OTHER";
 
@@ -471,8 +465,8 @@ export type ContainerEntity = {
   sealNo: string | null;
   size: ContainerSize | null;
   type: string | null;
-  weightKg: string | null;       // Decimal → string (JSON 직렬화 관례)
-  chassisId: number | null;      // H-4: chassis 마스터 FK
+  weightKg: string | null; // Decimal → string (JSON 직렬화 관례)
+  chassisId: number | null; // H-4: chassis 마스터 FK
   pickupAppointment: string | null;
   deliveryAppointment: string | null;
   returnAppointment: string | null;
@@ -592,17 +586,19 @@ export type DeliveryOrderAddonEntity = {
 
 // ─────────────────────────────────────────────────────────────────
 // Rate management (rate-group / driver-rate-assignment)
-// 재설계(Zone×Zone): rate_point 폐기, 요율 셀은 그룹 단위 플랫 행(FlatRateEntry).
+// 원자+존 레이어 모델: 방식 = ZIP/CITY/MILE/HOURLY, 존은 방식이 아니라 묶음 도구.
+// 셀은 양방향(↔) 구간 — from/to 순서는 의미 없음(서버가 정규화).
 // 백엔드 응답은 alias_generator=to_camel 로 camelCase. Entity 필드도 camelCase 1:1.
 // ─────────────────────────────────────────────────────────────────
 
-export type RateMethod = "ZONE" | "CITY" | "MILE" | "HOURLY";
+export type RateMethod = "ZIP" | "CITY" | "MILE" | "HOURLY";
 
 export type RateGroupEntity = {
   id: number;
   name: string;
   method: RateMethod;
   isDefault: boolean;
+  inheritsDefault: boolean; // 커스텀 그룹: 미등록 구간을 디폴트 그룹으로 폴백(상속)
   isTemplate: boolean;
   description: string | null;
   isActive: boolean;
@@ -625,13 +621,16 @@ export type DriverRateAssignment = DriverRateAssignmentEntity & {
 };
 
 // ─────────────────────────────────────────────────────────────────
-// Rate Zone — zip 묶음 (요율 매트릭스의 column 차원 후보)
+// Rate Zone — 원자(zip/도시) 묶음 레이어. 멤버 = zip 1개 XOR (city,state) 1쌍.
+// rateGroupId: null=팀 공용(글로벌) 존, 값=그 그룹 전용 존(해석 시 우선).
 // 백엔드 응답은 alias_generator=to_camel 로 camelCase.
 // ─────────────────────────────────────────────────────────────────
 
 export type RateZoneMemberEntity = {
   id: number;
-  zipCode: string;
+  zipCode: string | null;
+  city: string | null;
+  state: string | null;
 };
 
 export type RateZoneEntity = {
@@ -639,6 +638,7 @@ export type RateZoneEntity = {
   name: string;
   code: string | null;
   color: string | null;
+  rateGroupId: number | null;
   geojson: Record<string, unknown> | null;
   description: string | null;
   isActive: boolean;
@@ -653,8 +653,8 @@ export type RateZone = RateZoneEntity & {
 // Rate Sheet — 요율 매트릭스 슬롯 + 셀(entry) + 변경 이력
 // ─────────────────────────────────────────────────────────────────
 
-// 재설계(Zone×Zone): kind = group.method 와 동일.
-export type SheetKind = "ZONE" | "CITY" | "MILE" | "HOURLY";
+// kind = group.method 와 동일.
+export type SheetKind = "ZIP" | "CITY" | "MILE" | "HOURLY";
 
 export type RateMoveType = "LOAD" | "EMPTY" | "NONE";
 
@@ -662,7 +662,8 @@ export type RateMoveType = "LOAD" | "EMPTY" | "NONE";
 export type RateServiceType = "LIVE" | "DROP" | "NONE";
 
 // ─────────────────────────────────────────────────────────────────
-// 그룹 단위 플랫 행(이미지3) — from→to 좌표. 리스트 뷰 + 매트릭스 피벗 공용.
+// 그룹 단위 플랫 행 — 양방향(↔) 구간 좌표(양측 각각 zip|zone|city, 혼합 허용).
+// 리스트 뷰 + 매트릭스 피벗 공용.
 // ─────────────────────────────────────────────────────────────────
 export type FlatRateEntry = {
   rateEntryId: number;
@@ -670,6 +671,8 @@ export type FlatRateEntry = {
   kind: SheetKind;
   moveType: RateMoveType | null;
   serviceType: RateServiceType | null;
+  fromZip: string | null;
+  toZip: string | null;
   fromZoneId: number | null;
   toZoneId: number | null;
   fromCity: string | null;
@@ -692,6 +695,8 @@ export type RateGroupEntries = {
 export type FlatRateEntryInput = {
   moveType?: RateMoveType | null;
   serviceType?: RateServiceType | null;
+  fromZip?: string | null;
+  toZip?: string | null;
   fromZoneId?: number | null;
   toZoneId?: number | null;
   fromCity?: string | null;
@@ -926,7 +931,11 @@ export type AddonDriverRate = {
 // H-8 ─────────────────────────────────────────────────────────
 
 export type StreetTurnLinkType = "AUTO" | "MANUAL";
-export type StreetTurnStatus = "REQUESTED" | "APPROVED" | "REJECTED" | "CANCELLED";
+export type StreetTurnStatus =
+  | "REQUESTED"
+  | "APPROVED"
+  | "REJECTED"
+  | "CANCELLED";
 
 export type StreetTurnEntity = {
   id: number;
@@ -973,7 +982,13 @@ export type ExpiringItem = {
   entityType: "truck" | "chassis" | "driver";
   entityId: number;
   label: string;
-  field: "registration" | "insurance" | "inspection" | "license" | "medical" | "twic";
+  field:
+    | "registration"
+    | "insurance"
+    | "inspection"
+    | "license"
+    | "medical"
+    | "twic";
   expiresAt: string;
   daysLeft: number;
 };

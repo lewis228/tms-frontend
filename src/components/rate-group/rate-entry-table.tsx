@@ -40,21 +40,34 @@ export default function RateEntryTable({
   zoneName: Map<number, string>;
 }) {
   const { t } = useTranslation();
-  const isMatrix = method === "ZONE" || method === "CITY";
+  const isMatrix = method === "ZIP" || method === "CITY";
 
+  // 각 변은 zip | zone | city 중 하나 — 셋 다 처리.
+  const sideLabel = (
+    zip: string | null,
+    zoneId: number | null,
+    city: string | null,
+    state: string | null
+  ) => {
+    if (zip) return zip;
+    if (zoneId != null) return zoneName.get(zoneId) ?? `#${zoneId}`;
+    if (city) return `${city}${state ? `, ${state}` : ""}`;
+    return "—";
+  };
   const fromLabel = (r: FlatRateEntry) =>
-    method === "ZONE"
-      ? (zoneName.get(r.fromZoneId ?? -1) ?? `#${r.fromZoneId ?? "—"}`)
-      : `${r.fromCity ?? "—"}${r.fromState ? `, ${r.fromState}` : ""}`;
+    sideLabel(r.fromZip, r.fromZoneId, r.fromCity, r.fromState);
   const toLabel = (r: FlatRateEntry) =>
-    method === "ZONE"
-      ? (zoneName.get(r.toZoneId ?? -1) ?? `#${r.toZoneId ?? "—"}`)
-      : `${r.toCity ?? "—"}${r.toState ? `, ${r.toState}` : ""}`;
+    sideLabel(r.toZip, r.toZoneId, r.toCity, r.toState);
 
   const cols = useMemo<Col[]>(() => {
     if (isMatrix) {
       return [
-        { id: "from", label: t("rateEntry.field.from"), kind: "set", raw: fromLabel },
+        {
+          id: "from",
+          label: t("rateEntry.field.from"),
+          kind: "set",
+          raw: fromLabel,
+        },
         { id: "to", label: t("rateEntry.field.to"), kind: "set", raw: toLabel },
         {
           id: "move",
@@ -116,7 +129,8 @@ export default function RateEntryTable({
       for (const c of cols) {
         if (c.kind === "set") {
           const sel = setFilters[c.id];
-          if (sel && sel.length && !sel.includes(String(c.raw(r)))) return false;
+          if (sel && sel.length && !sel.includes(String(c.raw(r))))
+            return false;
         } else if (c.kind === "number") {
           const f = numFilters[c.id];
           const v = c.raw(r) as number | null;
@@ -157,7 +171,7 @@ export default function RateEntryTable({
         ? { id, dir: "asc" }
         : prev.dir === "asc"
           ? { id, dir: "desc" }
-          : null,
+          : null
     );
 
   const isActive = (c: Col) =>
@@ -282,7 +296,7 @@ function ColumnFilter({
       col.kind === "set"
         ? Array.from(new Set(rows.map((r) => String(col.raw(r))))).sort()
         : [],
-    [col, rows],
+    [col, rows]
   );
 
   const clear = () => {
@@ -321,10 +335,7 @@ function ColumnFilter({
                 const sel = setFilters[col.id] ?? [];
                 const checked = sel.includes(opt);
                 return (
-                  <label
-                    key={opt}
-                    className="flex items-center gap-2 text-sm"
-                  >
+                  <label key={opt} className="flex items-center gap-2 text-sm">
                     <input
                       type="checkbox"
                       checked={checked}

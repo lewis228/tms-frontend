@@ -1,11 +1,7 @@
 import { create } from "zustand";
 import { combine, devtools } from "zustand/middleware";
 
-import type {
-  RateMethod,
-  RateMoveType,
-  RateServiceType,
-} from "@/types";
+import type { RateMethod, RateMoveType, RateServiceType } from "@/types";
 
 // 요율 셀(플랫 행) 추가 모달 — 그룹 단위. 매트릭스 셀 클릭/New 버튼에서 프리셋 전달.
 type OpenCreate = {
@@ -15,6 +11,8 @@ type OpenCreate = {
   method: RateMethod;
   presetMove?: RateMoveType;
   presetService?: RateServiceType;
+  presetFromZip?: string | null;
+  presetToZip?: string | null;
   presetFromZoneId?: number;
   presetToZoneId?: number;
   presetFromCity?: string;
@@ -36,8 +34,8 @@ const useRateEntryEditorModalStore = create(
         close: () => set({ isOpen: false }),
       },
     })),
-    { name: "RateEntryEditorModalStore" },
-  ),
+    { name: "RateEntryEditorModalStore" }
+  )
 );
 
 export const useOpenCreateRateEntryModal = () =>

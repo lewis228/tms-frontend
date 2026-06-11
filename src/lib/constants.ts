@@ -89,7 +89,8 @@ export const QUERY_KEYS = {
   },
   chassisEvent: {
     all: ["chassis-event"] as const,
-    byChassis: (chassisId: number) => ["chassis-event", "byChassis", chassisId] as const,
+    byChassis: (chassisId: number) =>
+      ["chassis-event", "byChassis", chassisId] as const,
   },
   leg: {
     all: ["leg"] as const,
@@ -167,7 +168,8 @@ export const QUERY_KEYS = {
   },
   locationPing: {
     all: ["location-ping"] as const,
-    latest: (driverId: number) => ["location-ping", "latest", driverId] as const,
+    latest: (driverId: number) =>
+      ["location-ping", "latest", driverId] as const,
   },
 
   // ── Rate management ──────────────────────────────────────────
@@ -195,6 +197,7 @@ export const QUERY_KEYS = {
     all: ["zip-code"] as const,
     cities: (q: string, state?: string) =>
       ["zip-code", "cities", q, state ?? ""] as const,
+    search: (q: string) => ["zip-code", "search", "string", q] as const,
   },
 
   // ── Billing — Payroll(정산) / Invoice(청구) ──────────────────

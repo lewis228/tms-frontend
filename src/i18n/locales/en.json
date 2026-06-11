@@ -67,6 +67,7 @@
     "ROLE_HIERARCHY": "Cannot create a user with a higher role than yours.",
     "NOT_FOUND": "Not found.",
     "CONFLICT": "Already exists.",
+    "ZONE_MEMBER_CONFLICT": "Some members already belong to another zone in the same scope",
     "VALIDATION": "Invalid input.",
     "INVALID_STATE_TRANSITION": "This action is not allowed in the current state.",
     "INVALID_LEG_TRANSITION": "Cannot change Leg state.",
@@ -1554,20 +1555,22 @@
     "field": {
       "method": "Method",
       "isDefault": "Default",
-      "isTemplate": "Template"
+      "isTemplate": "Template",
+      "inheritsDefault": "Inherit default group",
+      "inheritsDefaultHelp": "Unset lanes fall back to the default group's rates. Off = empty group (no fallback)."
     },
     "method": {
-      "ZONE": "Zone",
-      "CITY": "City / Zip",
+      "ZIP": "ZIP code",
+      "CITY": "City",
       "MILE": "Mile",
       "HOURLY": "Hourly"
     },
     "hub": {
       "title": "Rates",
-      "subtitle": "Zone/City are from→to matrices, Mile/Hourly use per-unit rates, assign groups to drivers in the Driver tab."
+      "subtitle": "ZIP/City are bidirectional (↔) lane matrices, Mile/Hourly use per-unit rates. Zones bundle ZIPs/cities, and groups are assigned to drivers in the Driver tab."
     },
     "tabs": {
-      "zone": "Zone (Zone×Zone)",
+      "zip": "ZIP",
       "city": "City (City×City)",
       "mile": "Mile",
       "hourly": "Hourly",
@@ -1581,6 +1584,13 @@
     "matrixHint": "No rows/columns to display. Add rates first.",
     "perUnitHint": "Mile/Hourly method — enter the per-unit rate only.",
     "cityPlaceholder": "City (e.g. Fontana)",
+    "zipPlaceholder": "Search ZIP (e.g. 90731 or San Pedro)",
+    "bidirectionalHint": "Lanes are bidirectional (↔) — direction differences are expressed by Move/Service",
+    "coordType": {
+      "zone": "Zone",
+      "zip": "ZIP",
+      "city": "City"
+    },
     "addRow": "Add",
     "importCsv": "Import CSV",
     "exportCsv": "Export CSV",
@@ -1591,8 +1601,8 @@
       "matrix": "Matrix"
     },
     "field": {
-      "from": "From",
-      "to": "To",
+      "from": "Lane A",
+      "to": "Lane B",
       "move": "Move",
       "service": "Service",
       "amount": "Amount",
@@ -1641,12 +1651,17 @@
     "deletePromptDesc": "This cannot be undone.",
     "searchPlaceholder": "Search name / code / description",
     "field": {
-      "color": "Color"
+      "color": "Color",
+      "scope": "Scope"
+    },
+    "scope": {
+      "global": "Global (team-wide)"
     },
     "members": {
-      "title": "Members (zip)",
+      "title": "Members (ZIP / city)",
       "addRow": "Add Row",
       "save": "Save Members",
+      "type": "Type",
       "zipCode": "Zip Code",
       "byCity": {
         "title": "Add by city",

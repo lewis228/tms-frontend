@@ -16,7 +16,11 @@ const PLANS = [
     name: "Business",
     price: 2250,
     desc: "For growing businesses with good moderate shipment needs.",
-    features: ["Full Tracking", "Priority Support", "Multiple Shipment Options"],
+    features: [
+      "Full Tracking",
+      "Priority Support",
+      "Multiple Shipment Options",
+    ],
     highlighted: true,
   },
   {
@@ -40,8 +44,8 @@ function CountUp({ target }: { target: number }) {
   useEffect(() => {
     if (!inView) return;
     if (prefersReducedMotion) {
-      setCount(target);
-      return;
+      const raf = requestAnimationFrame(() => setCount(target));
+      return () => cancelAnimationFrame(raf);
     }
     let start = 0;
     const duration = 1500;
@@ -70,7 +74,7 @@ export default function HomepagePricingSection() {
         <FadeIn>
           <div className="flex items-center justify-center gap-2">
             <span className="h-2.5 w-2.5 rounded-full bg-landing-red" />
-            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/50">
+            <span className="text-xs font-semibold tracking-[0.2em] text-white/50 uppercase">
               PRICING PLAN
             </span>
           </div>

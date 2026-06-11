@@ -11,11 +11,11 @@ import type {
 import { adaptCursorToPaged, type CursorResponse } from "@/lib/pagination";
 
 export async function fetchRateGroups(
-  params: { page?: number; size?: number; q?: string } = {},
+  params: { page?: number; size?: number; q?: string } = {}
 ): Promise<PagedResponse<RateGroupEntity>> {
   const { data } = await api.get<CursorResponse<RateGroupEntity>>(
     "/rate-groups",
-    { params },
+    { params }
   );
   return adaptCursorToPaged(data, params.page, params.size);
 }
@@ -29,6 +29,7 @@ export async function createRateGroup(payload: {
   name: string;
   method: RateMethod;
   isDefault?: boolean;
+  inheritsDefault?: boolean;
   isTemplate?: boolean;
   description?: string | null;
 }): Promise<RateGroupEntity> {
@@ -42,11 +43,15 @@ export async function updateRateGroup(
     name: string;
     method: RateMethod;
     isDefault: boolean;
+    inheritsDefault: boolean;
     isTemplate: boolean;
     description: string | null;
-  }>,
+  }>
 ): Promise<RateGroupEntity> {
-  const { data } = await api.put<RateGroupEntity>(`/rate-groups/${id}`, payload);
+  const { data } = await api.put<RateGroupEntity>(
+    `/rate-groups/${id}`,
+    payload
+  );
   return data;
 }
 
@@ -56,32 +61,32 @@ export async function deleteRateGroup(id: number): Promise<void> {
 
 // ── 그룹 단위 플랫 행(리스트 뷰 + 매트릭스 피벗 공용) ──────────────
 export async function fetchRateGroupEntries(
-  id: number,
+  id: number
 ): Promise<RateGroupEntries> {
   const { data } = await api.get<RateGroupEntries>(
-    `/rate-groups/${id}/entries`,
+    `/rate-groups/${id}/entries`
   );
   return data;
 }
 
 export async function setRateGroupEntry(
   id: number,
-  payload: FlatRateEntryInput,
+  payload: FlatRateEntryInput
 ): Promise<FlatRateEntry> {
   const { data } = await api.post<FlatRateEntry>(
     `/rate-groups/${id}/entries`,
-    payload,
+    payload
   );
   return data;
 }
 
 export async function setRateGroupEntriesBulk(
   id: number,
-  items: FlatRateEntryInput[],
+  items: FlatRateEntryInput[]
 ): Promise<FlatRateEntry[]> {
   const { data } = await api.post<FlatRateEntry[]>(
     `/rate-groups/${id}/entries/bulk`,
-    { items },
+    { items }
   );
   return data;
 }
@@ -90,7 +95,7 @@ export async function setRateGroupEntriesBulk(
 export async function exportRateGroupEntriesCsv(id: number): Promise<string> {
   const { data } = await api.get<string>(
     `/rate-import/groups/${id}/entries.csv`,
-    { responseType: "text" },
+    { responseType: "text" }
   );
   return data;
 }
@@ -99,7 +104,7 @@ export async function exportRateGroupEntriesCsv(id: number): Promise<string> {
 export async function importRateGroupEntriesCsv(
   id: number,
   csv: string,
-  dryRun = false,
+  dryRun = false
 ): Promise<{ ok: boolean; total: number; applied: number; dryRun: boolean }> {
   const { data } = await api.post<{
     ok: boolean;

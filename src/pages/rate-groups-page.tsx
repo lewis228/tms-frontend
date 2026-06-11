@@ -9,9 +9,9 @@ import DriverRateAssignmentList from "@/components/driver-rate-assignment/driver
 // 래퍼의 data-[selected]: 기본 선택 스타일이 안 먹는다 → 제어형으로 직접 표시.
 const TAB_SELECTED = "bg-primary text-primary-foreground font-medium shadow-sm";
 
-const TABS = ["ZONE", "CITY", "MILE", "HOURLY", "DRIVER"] as const;
+const TABS = ["ZIP", "CITY", "MILE", "HOURLY", "DRIVER"] as const;
 const TAB_LABEL: Record<(typeof TABS)[number], string> = {
-  ZONE: "rateGroup.tabs.zone",
+  ZIP: "rateGroup.tabs.zip",
   CITY: "rateGroup.tabs.city",
   MILE: "rateGroup.tabs.mile",
   HOURLY: "rateGroup.tabs.hourly",
@@ -20,7 +20,7 @@ const TAB_LABEL: Record<(typeof TABS)[number], string> = {
 
 export default function RateGroupsPage() {
   const { t } = useTranslation();
-  const [tab, setTab] = useState<string>("ZONE");
+  const [tab, setTab] = useState<string>("ZIP");
 
   return (
     <div className="flex flex-col gap-4 p-6">
@@ -42,8 +42,8 @@ export default function RateGroupsPage() {
           ))}
         </TabsList>
 
-        <TabsPanel value="ZONE">
-          <RateMatrixTab method="ZONE" />
+        <TabsPanel value="ZIP">
+          <RateMatrixTab method="ZIP" />
         </TabsPanel>
         <TabsPanel value="CITY">
           <RateMatrixTab method="CITY" />

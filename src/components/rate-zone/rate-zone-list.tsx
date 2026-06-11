@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/table";
 import Loader from "@/components/loader";
 import Fallback from "@/components/fallback";
+import { useRateGroupsData } from "@/hooks/queries/use-rate-groups-data";
 import { useRateZonesData } from "@/hooks/queries/use-rate-zones-data";
 import { useDeleteRateZone } from "@/hooks/mutations/rate-zone/use-delete-rate-zone";
 import { generateErrorMessage } from "@/lib/error";
@@ -33,12 +34,13 @@ export default function RateZoneList() {
   useEffect(() => {
     const timeoutId = setTimeout(
       () => setSearch(searchInput.trim().toLowerCase()),
-      300,
+      300
     );
     return () => clearTimeout(timeoutId);
   }, [searchInput]);
 
   const { data, isPending, error } = useRateZonesData(page);
+  const { data: groupsData } = useRateGroupsData();
   const openCreate = useOpenCreateRateZoneModal();
   const openEdit = useOpenEditRateZoneModal();
   const openAlert = useOpenAlertModal();
@@ -50,6 +52,12 @@ export default function RateZoneList() {
       toast.error(generateErrorMessage(err), { position: "top-center" }),
   });
 
+  const groupName = useMemo(() => {
+    const m = new Map<number, string>();
+    groupsData?.items.forEach((g) => m.set(g.id, g.name));
+    return m;
+  }, [groupsData]);
+
   const filtered = useMemo<RateZoneEntity[]>(() => {
     if (!data) return [];
     if (!search) return data.items;
@@ -57,7 +65,7 @@ export default function RateZoneList() {
       (v) =>
         v.name.toLowerCase().includes(search) ||
         (v.code ?? "").toLowerCase().includes(search) ||
-        (v.description ?? "").toLowerCase().includes(search),
+        (v.description ?? "").toLowerCase().includes(search)
     );
   }, [data, search]);
 
@@ -90,17 +98,20 @@ export default function RateZoneList() {
             <TableRow>
               <TableHead>{t("rateZone.field.color")}</TableHead>
               <TableHead>{t("field.name")}</TableHead>
+              <TableHead>{t("rateZone.field.scope")}</TableHead>
               <TableHead>{t("field.code")}</TableHead>
               <TableHead>{t("field.note")}</TableHead>
               <TableHead>{t("common.active")}</TableHead>
-              <TableHead className="text-right">{t("common.actions")}</TableHead>
+              <TableHead className="text-right">
+                {t("common.actions")}
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filtered.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={6}
+                  colSpan={7}
                   className="text-center text-muted-foreground"
                 >
                   {t("common.noData")}
@@ -117,6 +128,19 @@ export default function RateZoneList() {
                     />
                   </TableCell>
                   <TableCell className="font-medium">{v.name}</TableCell>
+                  <TableCell>
+                    <span
+                      className={`inline-block rounded-full border px-2 py-0.5 text-xs ${
+                        v.rateGroupId == null
+                          ? "bg-muted text-muted-foreground"
+                          : "bg-primary/10"
+                      }`}
+                    >
+                      {v.rateGroupId == null
+                        ? t("rateZone.scope.global")
+                        : (groupName.get(v.rateGroupId) ?? `#${v.rateGroupId}`)}
+                    </span>
+                  </TableCell>
                   <TableCell>{v.code ?? "—"}</TableCell>
                   <TableCell className="max-w-xs truncate">
                     {v.description ?? "—"}

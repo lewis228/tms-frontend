@@ -10,6 +10,7 @@ type Vars = {
     name: string;
     method: RateMethod;
     isDefault: boolean;
+    inheritsDefault: boolean;
     isTemplate: boolean;
     description: string | null;
   }>;

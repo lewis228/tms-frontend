@@ -16,7 +16,7 @@ import { generateErrorMessage } from "@/lib/error";
 import { useRateGroupEditorModal } from "@/store/rate-group-editor-modal";
 import type { RateMethod } from "@/types";
 
-const METHODS: RateMethod[] = ["ZONE", "CITY", "MILE", "HOURLY"];
+const METHODS: RateMethod[] = ["ZIP", "CITY", "MILE", "HOURLY"];
 
 type OpenModal = Extract<
   ReturnType<typeof useRateGroupEditorModal>,
@@ -26,7 +26,10 @@ type OpenModal = Extract<
 export default function RateGroupEditorModal() {
   const modal = useRateGroupEditorModal();
   return (
-    <Dialog open={modal.isOpen} onOpenChange={(o) => !o && modal.actions.close()}>
+    <Dialog
+      open={modal.isOpen}
+      onOpenChange={(o) => !o && modal.actions.close()}
+    >
       <DialogContent>
         {modal.isOpen && (
           <Body
@@ -42,19 +45,22 @@ export default function RateGroupEditorModal() {
 function Body({ modal }: { modal: OpenModal }) {
   const { t } = useTranslation();
   const [name, setName] = useState(
-    modal.type === "CREATE" ? "" : modal.rateGroup.name,
+    modal.type === "CREATE" ? "" : modal.rateGroup.name
   );
   const [method, setMethod] = useState<RateMethod>(
-    modal.type === "CREATE" ? "ZONE" : modal.rateGroup.method,
+    modal.type === "CREATE" ? "ZIP" : modal.rateGroup.method
   );
   const [isDefault, setIsDefault] = useState(
-    modal.type === "CREATE" ? false : modal.rateGroup.isDefault,
+    modal.type === "CREATE" ? false : modal.rateGroup.isDefault
+  );
+  const [inheritsDefault, setInheritsDefault] = useState(
+    modal.type === "CREATE" ? true : modal.rateGroup.inheritsDefault
   );
   const [isTemplate, setIsTemplate] = useState(
-    modal.type === "CREATE" ? false : modal.rateGroup.isTemplate,
+    modal.type === "CREATE" ? false : modal.rateGroup.isTemplate
   );
   const [description, setDescription] = useState(
-    modal.type === "CREATE" ? "" : (modal.rateGroup.description ?? ""),
+    modal.type === "CREATE" ? "" : (modal.rateGroup.description ?? "")
   );
 
   const { mutate: createRateGroup, isPending: isCreatePending } =
@@ -85,6 +91,7 @@ function Body({ modal }: { modal: OpenModal }) {
       name: name.trim(),
       method,
       isDefault,
+      inheritsDefault,
       isTemplate,
       description: description.trim() || null,
     };
@@ -102,7 +109,7 @@ function Body({ modal }: { modal: OpenModal }) {
           {t(
             modal.type === "CREATE"
               ? "rateGroup.createTitle"
-              : "rateGroup.editTitle",
+              : "rateGroup.editTitle"
           )}
         </DialogTitle>
       </DialogHeader>
@@ -149,6 +156,22 @@ function Body({ modal }: { modal: OpenModal }) {
             {t("rateGroup.field.isTemplate")}
           </label>
         </div>
+        {!isDefault && (
+          <div className="flex flex-col gap-1">
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={inheritsDefault}
+                onChange={(e) => setInheritsDefault(e.target.checked)}
+                disabled={isPending}
+              />
+              {t("rateGroup.field.inheritsDefault")}
+            </label>
+            <span className="text-xs text-muted-foreground">
+              {t("rateGroup.field.inheritsDefaultHelp")}
+            </span>
+          </div>
+        )}
         <Field label={t("field.note")}>
           <Input
             value={description}

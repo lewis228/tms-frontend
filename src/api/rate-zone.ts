@@ -9,16 +9,22 @@ import type {
 } from "@/types";
 import { adaptCursorToPaged, type CursorResponse } from "@/lib/pagination";
 
+// 멤버 = zip 1개 XOR (city,state) 1쌍.
 export type RateZoneMemberInput = {
-  zipCode: string;
+  zipCode?: string | null;
+  city?: string | null;
+  state?: string | null;
 };
 
 export async function fetchRateZones(
-  params: { page?: number; size?: number; q?: string } = {},
+  params: { page?: number; size?: number; q?: string } = {}
 ): Promise<PagedResponse<RateZoneEntity>> {
-  const { data } = await api.get<CursorResponse<RateZoneEntity>>("/rate-zones", {
-    params,
-  });
+  const { data } = await api.get<CursorResponse<RateZoneEntity>>(
+    "/rate-zones",
+    {
+      params,
+    }
+  );
   return adaptCursorToPaged(data, params.page, params.size);
 }
 
@@ -31,6 +37,7 @@ export async function createRateZone(payload: {
   name: string;
   code?: string | null;
   color?: string | null;
+  rateGroupId?: number | null;
   geojson?: Record<string, unknown> | null;
   description?: string | null;
   members?: RateZoneMemberInput[];
@@ -45,9 +52,10 @@ export async function updateRateZone(
     name: string;
     code: string | null;
     color: string | null;
+    rateGroupId: number | null;
     geojson: Record<string, unknown> | null;
     description: string | null;
-  }>,
+  }>
 ): Promise<RateZone> {
   const { data } = await api.put<RateZone>(`/rate-zones/${id}`, payload);
   return data;
@@ -64,7 +72,7 @@ type MembersResponse = {
 };
 
 export async function fetchRateZoneMembers(
-  id: number,
+  id: number
 ): Promise<RateZoneMemberEntity[]> {
   const { data } = await api.get<MembersResponse>(`/rate-zones/${id}/members`);
   return data.members;
@@ -72,7 +80,7 @@ export async function fetchRateZoneMembers(
 
 export async function replaceRateZoneMembers(
   id: number,
-  members: RateZoneMemberInput[],
+  members: RateZoneMemberInput[]
 ): Promise<RateZoneMemberEntity[]> {
   const { data } = await api.put<MembersResponse>(`/rate-zones/${id}/members`, {
     members,
@@ -84,11 +92,11 @@ export async function replaceRateZoneMembers(
 export async function addRateZoneMembersByCity(
   id: number,
   city: string,
-  state: string,
+  state: string
 ): Promise<RateZoneMemberEntity[]> {
   const { data } = await api.post<MembersResponse>(
     `/rate-zones/${id}/members/by-city`,
-    { city, state },
+    { city, state }
   );
   return data.members;
 }

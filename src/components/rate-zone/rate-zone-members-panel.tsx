@@ -9,11 +9,20 @@ import Fallback from "@/components/fallback";
 import { useRateZoneMembersData } from "@/hooks/queries/use-rate-zone-members-data";
 import { useReplaceRateZoneMembers } from "@/hooks/mutations/rate-zone/use-replace-rate-zone-members";
 import { useAddRateZoneMembersByCity } from "@/hooks/mutations/rate-zone/use-add-rate-zone-members-by-city";
+import { type RateZoneMemberInput } from "@/api/rate-zone";
 import { generateErrorMessage } from "@/lib/error";
 import { US_STATES } from "@/lib/us-states";
 import type { RateZoneMemberEntity } from "@/types";
 
-type Row = { zipCode: string };
+// 멤버 행 = zip 1개 XOR (city,state) 1쌍.
+type Row =
+  | { kind: "zip"; zipCode: string }
+  | { kind: "city"; city: string; state: string };
+
+function toRow(m: RateZoneMemberEntity): Row {
+  if (m.zipCode != null) return { kind: "zip", zipCode: m.zipCode };
+  return { kind: "city", city: m.city ?? "", state: m.state ?? "CA" };
+}
 
 export default function RateZoneMembersPanel({ zoneId }: { zoneId: number }) {
   const { t } = useTranslation();
@@ -21,7 +30,7 @@ export default function RateZoneMembersPanel({ zoneId }: { zoneId: number }) {
 
   return (
     <div className="mt-2 flex flex-col gap-3 border-t pt-3">
-      <span className="text-xs font-medium uppercase text-muted-foreground">
+      <span className="text-xs font-medium text-muted-foreground uppercase">
         {t("rateZone.members.title")}
       </span>
       <ByCityForm zoneId={zoneId} />
@@ -45,7 +54,9 @@ function ByCityForm({ zoneId }: { zoneId: number }) {
 
   const { mutate: addByCity, isPending } = useAddRateZoneMembersByCity({
     onSuccess: () => {
-      toast.success(t("rateZone.members.byCity.added"), { position: "top-center" });
+      toast.success(t("rateZone.members.byCity.added"), {
+        position: "top-center",
+      });
       setCity("");
     },
     onError: (err) =>
@@ -54,7 +65,7 @@ function ByCityForm({ zoneId }: { zoneId: number }) {
 
   return (
     <div className="flex flex-col gap-1 rounded-md bg-muted/40 p-2">
-      <span className="text-[10px] uppercase text-muted-foreground">
+      <span className="text-[10px] text-muted-foreground uppercase">
         {t("rateZone.members.byCity.title")}
       </span>
       <div className="flex items-center gap-2">
@@ -79,7 +90,9 @@ function ByCityForm({ zoneId }: { zoneId: number }) {
         </select>
         <Button
           size="sm"
-          onClick={() => city.trim() && addByCity({ id: zoneId, city: city.trim(), state })}
+          onClick={() =>
+            city.trim() && addByCity({ id: zoneId, city: city.trim(), state })
+          }
           disabled={isPending || !city.trim()}
         >
           {t("rateZone.members.byCity.expand")}
@@ -100,9 +113,7 @@ function Editor({
   initial: RateZoneMemberEntity[];
 }) {
   const { t } = useTranslation();
-  const [rows, setRows] = useState<Row[]>(
-    initial.map((m) => ({ zipCode: m.zipCode })),
-  );
+  const [rows, setRows] = useState<Row[]>(initial.map(toRow));
 
   const { mutate: replaceMembers, isPending: isReplacePending } =
     useReplaceRateZoneMembers({
@@ -112,21 +123,35 @@ function Editor({
         toast.error(generateErrorMessage(err), { position: "top-center" }),
     });
 
-  const updateRow = (index: number, patch: Partial<Row>) => {
-    setRows((prev) =>
-      prev.map((r, i) => (i === index ? { ...r, ...patch } : r)),
+  const setRow = (index: number, row: Row) => {
+    setRows((prev) => prev.map((r, i) => (i === index ? row : r)));
+  };
+
+  const setRowKind = (index: number, kind: Row["kind"]) => {
+    setRow(
+      index,
+      kind === "zip"
+        ? { kind: "zip", zipCode: "" }
+        : { kind: "city", city: "", state: "CA" }
     );
   };
 
-  const addRow = () => setRows((prev) => [...prev, { zipCode: "" }]);
+  const addRow = () =>
+    setRows((prev) => [...prev, { kind: "zip", zipCode: "" }]);
 
   const removeRow = (index: number) =>
     setRows((prev) => prev.filter((_, i) => i !== index));
 
   const handleSave = () => {
-    const members = rows
-      .map((r) => ({ zipCode: r.zipCode.trim() }))
-      .filter((m) => m.zipCode);
+    const members = rows.flatMap((r): RateZoneMemberInput[] =>
+      r.kind === "zip"
+        ? r.zipCode.trim()
+          ? [{ zipCode: r.zipCode.trim() }]
+          : []
+        : r.city.trim()
+          ? [{ city: r.city.trim(), state: r.state }]
+          : []
+    );
     replaceMembers({ id: zoneId, members });
   };
 
@@ -143,7 +168,8 @@ function Editor({
         </Button>
       </div>
 
-      <div className="grid grid-cols-[1fr_auto] items-center gap-2 text-xs text-muted-foreground">
+      <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2 text-xs text-muted-foreground">
+        <span>{t("rateZone.members.type")}</span>
         <span>{t("rateZone.members.zipCode")}</span>
         <span />
       </div>
@@ -155,15 +181,56 @@ function Editor({
         rows.map((row, index) => (
           <div
             key={index}
-            className="grid grid-cols-[1fr_auto] items-center gap-2"
+            className="grid grid-cols-[auto_1fr_auto] items-center gap-2"
           >
-            <Input
-              value={row.zipCode}
-              onChange={(e) => updateRow(index, { zipCode: e.target.value })}
+            <select
+              value={row.kind}
+              onChange={(e) => setRowKind(index, e.target.value as Row["kind"])}
               disabled={isReplacePending}
-              maxLength={16}
-              placeholder={t("rateZone.members.zipCode")}
-            />
+              className="h-9 w-20 rounded-md border bg-background px-2 text-sm"
+              aria-label={t("rateZone.members.type")}
+            >
+              <option value="zip">{t("rateEntry.coordType.zip")}</option>
+              <option value="city">{t("rateEntry.coordType.city")}</option>
+            </select>
+            {row.kind === "zip" ? (
+              <Input
+                value={row.zipCode}
+                onChange={(e) =>
+                  setRow(index, { kind: "zip", zipCode: e.target.value })
+                }
+                disabled={isReplacePending}
+                maxLength={16}
+                placeholder={t("rateZone.members.zipCode")}
+              />
+            ) : (
+              <div className="flex items-center gap-2">
+                <Input
+                  value={row.city}
+                  onChange={(e) =>
+                    setRow(index, { ...row, city: e.target.value })
+                  }
+                  disabled={isReplacePending}
+                  maxLength={120}
+                  placeholder={t("rateZone.members.byCity.cityPlaceholder")}
+                  className="flex-1"
+                />
+                <select
+                  value={row.state}
+                  onChange={(e) =>
+                    setRow(index, { ...row, state: e.target.value })
+                  }
+                  disabled={isReplacePending}
+                  className="h-9 w-20 rounded-md border bg-background px-2 text-sm"
+                >
+                  {US_STATES.map((s) => (
+                    <option key={s.code} value={s.code}>
+                      {s.code}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
             <Button
               variant="ghost"
               size="sm"

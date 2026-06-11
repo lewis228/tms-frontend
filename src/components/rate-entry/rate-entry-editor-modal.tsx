@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import CityAutocomplete from "@/components/city-autocomplete";
+import ZipStringPicker from "@/components/zip-string-picker";
 import { useRateZonesData } from "@/hooks/queries/use-rate-zones-data";
 import { useSetRateGroupEntry } from "@/hooks/mutations/rate-group/use-set-rate-group-entry";
 import { generateErrorMessage } from "@/lib/error";
@@ -18,6 +19,7 @@ import { US_STATES } from "@/lib/us-states";
 import { useRateEntryEditorModal } from "@/store/rate-entry-editor-modal";
 import type {
   FlatRateEntryInput,
+  RateMethod,
   RateMoveType,
   RateServiceType,
 } from "@/types";
@@ -25,6 +27,9 @@ import type {
 const MOVE_TYPES: RateMoveType[] = ["LOAD", "EMPTY", "NONE"];
 const SERVICE_TYPES: RateServiceType[] = ["LIVE", "DROP", "NONE"];
 const SELECT_CLASS = "h-9 w-full rounded-md border bg-background px-2 text-sm";
+
+// 매트릭스 방식의 각 변 좌표 타입. ZIP 방식 = [존|ZIP], CITY 방식 = [존|도시].
+type CoordType = "ZONE" | "ZIP" | "CITY";
 
 type OpenModal = Extract<
   ReturnType<typeof useRateEntryEditorModal>,
@@ -51,21 +56,41 @@ export default function RateEntryEditorModal() {
 
 function Body({ modal }: { modal: OpenModal }) {
   const { t } = useTranslation();
-  const isMatrix = modal.method === "ZONE" || modal.method === "CITY";
+  const isMatrix = modal.method === "ZIP" || modal.method === "CITY";
+
+  // 프리셋 좌표가 있으면 그 타입으로, 없으면 ZIP=존 / CITY=도시 가 기본.
+  const initCoordType = (
+    zoneId: number | undefined,
+    zip: string | null | undefined
+  ): CoordType => {
+    if (zoneId != null) return "ZONE";
+    if (modal.method === "ZIP") return zip ? "ZIP" : "ZONE";
+    return "CITY";
+  };
 
   const { data: zonesData } = useRateZonesData();
   const zones = zonesData?.items ?? [];
 
   const [move, setMove] = useState<RateMoveType>(modal.presetMove ?? "LOAD");
   const [service, setService] = useState<RateServiceType>(
-    modal.presetService ?? "LIVE",
+    modal.presetService ?? "LIVE"
+  );
+  const [fromType, setFromType] = useState<CoordType>(
+    initCoordType(modal.presetFromZoneId, modal.presetFromZip)
+  );
+  const [toType, setToType] = useState<CoordType>(
+    initCoordType(modal.presetToZoneId, modal.presetToZip)
   );
   const [fromZoneId, setFromZoneId] = useState<number | "">(
-    modal.presetFromZoneId ?? "",
+    modal.presetFromZoneId ?? ""
   );
   const [toZoneId, setToZoneId] = useState<number | "">(
-    modal.presetToZoneId ?? "",
+    modal.presetToZoneId ?? ""
   );
+  const [fromZip, setFromZip] = useState<string | null>(
+    modal.presetFromZip ?? null
+  );
+  const [toZip, setToZip] = useState<string | null>(modal.presetToZip ?? null);
   const [fromCity, setFromCity] = useState(modal.presetFromCity ?? "");
   const [fromState, setFromState] = useState(modal.presetFromState ?? "CA");
   const [toCity, setToCity] = useState(modal.presetToCity ?? "");
@@ -92,14 +117,34 @@ function Body({ modal }: { modal: OpenModal }) {
     if (isMatrix) {
       payload.moveType = move;
       payload.serviceType = service;
-      if (modal.method === "ZONE") {
-        if (fromZoneId === "" || toZoneId === "") return;
+      // 변마다 zip | zone | city 중 정확히 하나만 보낸다 (나머지는 null).
+      payload.fromZoneId = null;
+      payload.fromZip = null;
+      payload.fromCity = null;
+      payload.fromState = null;
+      payload.toZoneId = null;
+      payload.toZip = null;
+      payload.toCity = null;
+      payload.toState = null;
+      if (fromType === "ZONE") {
+        if (fromZoneId === "") return;
         payload.fromZoneId = fromZoneId;
-        payload.toZoneId = toZoneId;
+      } else if (fromType === "ZIP") {
+        if (!fromZip) return;
+        payload.fromZip = fromZip;
       } else {
-        if (!fromCity.trim() || !toCity.trim()) return;
+        if (!fromCity.trim()) return;
         payload.fromCity = fromCity.trim();
         payload.fromState = fromState;
+      }
+      if (toType === "ZONE") {
+        if (toZoneId === "") return;
+        payload.toZoneId = toZoneId;
+      } else if (toType === "ZIP") {
+        if (!toZip) return;
+        payload.toZip = toZip;
+      } else {
+        if (!toCity.trim()) return;
         payload.toCity = toCity.trim();
         payload.toState = toState;
       }
@@ -136,9 +181,7 @@ function Body({ modal }: { modal: OpenModal }) {
               <select
                 className={SELECT_CLASS}
                 value={service}
-                onChange={(e) =>
-                  setService(e.target.value as RateServiceType)
-                }
+                onChange={(e) => setService(e.target.value as RateServiceType)}
                 disabled={isPending}
               >
                 {SERVICE_TYPES.map((s) => (
@@ -151,71 +194,89 @@ function Body({ modal }: { modal: OpenModal }) {
           </div>
         )}
 
-        {modal.method === "ZONE" && (
-          <div className="grid grid-cols-2 gap-2">
-            <Field label={t("rateEntry.field.from")}>
-              <select
-                className={SELECT_CLASS}
-                value={fromZoneId}
-                onChange={(e) =>
-                  setFromZoneId(e.target.value ? Number(e.target.value) : "")
-                }
-                disabled={isPending}
-              >
-                <option value="">—</option>
-                {zones.map((z) => (
-                  <option key={z.id} value={z.id}>
-                    {z.code ?? z.name}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <Field label={t("rateEntry.field.to")}>
-              <select
-                className={SELECT_CLASS}
-                value={toZoneId}
-                onChange={(e) =>
-                  setToZoneId(e.target.value ? Number(e.target.value) : "")
-                }
-                disabled={isPending}
-              >
-                <option value="">—</option>
-                {zones.map((z) => (
-                  <option key={z.id} value={z.id}>
-                    {z.code ?? z.name}
-                  </option>
-                ))}
-              </select>
-            </Field>
-          </div>
-        )}
-
-        {modal.method === "CITY" && (
-          <div className="grid grid-cols-2 gap-2">
-            <Field label={t("rateEntry.field.from")}>
-              <div className="flex gap-1">
-                <CityAutocomplete
-                  value={fromCity}
-                  state={fromState}
-                  onChange={setFromCity}
-                  placeholder={t("rateEntry.cityPlaceholder")}
-                  className="h-9 w-full min-w-[8rem] flex-1"
-                />
-                <StateSelect value={fromState} onChange={setFromState} />
-              </div>
-            </Field>
-            <Field label={t("rateEntry.field.to")}>
-              <div className="flex gap-1">
-                <CityAutocomplete
-                  value={toCity}
-                  state={toState}
-                  onChange={setToCity}
-                  placeholder={t("rateEntry.cityPlaceholder")}
-                  className="h-9 w-full min-w-[8rem] flex-1"
-                />
-                <StateSelect value={toState} onChange={setToState} />
-              </div>
-            </Field>
+        {isMatrix && (
+          <div className="flex flex-col gap-1">
+            <div className="grid grid-cols-2 gap-2">
+              <Field label={t("rateEntry.field.from")}>
+                <div className="flex flex-col gap-1">
+                  <CoordTypeToggle
+                    method={modal.method}
+                    value={fromType}
+                    onChange={setFromType}
+                    disabled={isPending}
+                  />
+                  {fromType === "ZONE" && (
+                    <ZoneSelect
+                      zones={zones}
+                      value={fromZoneId}
+                      onChange={setFromZoneId}
+                      disabled={isPending}
+                    />
+                  )}
+                  {fromType === "ZIP" && (
+                    <ZipStringPicker
+                      value={fromZip}
+                      onSelect={setFromZip}
+                      placeholder={t("rateEntry.zipPlaceholder")}
+                      disabled={isPending}
+                    />
+                  )}
+                  {fromType === "CITY" && (
+                    <div className="flex gap-1">
+                      <CityAutocomplete
+                        value={fromCity}
+                        state={fromState}
+                        onChange={setFromCity}
+                        placeholder={t("rateEntry.cityPlaceholder")}
+                        className="h-9 w-full min-w-[8rem] flex-1"
+                      />
+                      <StateSelect value={fromState} onChange={setFromState} />
+                    </div>
+                  )}
+                </div>
+              </Field>
+              <Field label={t("rateEntry.field.to")}>
+                <div className="flex flex-col gap-1">
+                  <CoordTypeToggle
+                    method={modal.method}
+                    value={toType}
+                    onChange={setToType}
+                    disabled={isPending}
+                  />
+                  {toType === "ZONE" && (
+                    <ZoneSelect
+                      zones={zones}
+                      value={toZoneId}
+                      onChange={setToZoneId}
+                      disabled={isPending}
+                    />
+                  )}
+                  {toType === "ZIP" && (
+                    <ZipStringPicker
+                      value={toZip}
+                      onSelect={setToZip}
+                      placeholder={t("rateEntry.zipPlaceholder")}
+                      disabled={isPending}
+                    />
+                  )}
+                  {toType === "CITY" && (
+                    <div className="flex gap-1">
+                      <CityAutocomplete
+                        value={toCity}
+                        state={toState}
+                        onChange={setToCity}
+                        placeholder={t("rateEntry.cityPlaceholder")}
+                        className="h-9 w-full min-w-[8rem] flex-1"
+                      />
+                      <StateSelect value={toState} onChange={setToState} />
+                    </div>
+                  )}
+                </div>
+              </Field>
+            </div>
+            <span className="text-[11px] text-muted-foreground">
+              {t("rateEntry.bidirectionalHint")}
+            </span>
           </div>
         )}
 
@@ -271,11 +332,71 @@ function Field({
 }) {
   return (
     <div className="flex flex-col gap-1">
-      <span className="text-[10px] uppercase text-muted-foreground">
+      <span className="text-[10px] text-muted-foreground uppercase">
         {label}
       </span>
       {children}
     </div>
+  );
+}
+
+// 변 좌표 타입 토글 — ZIP 방식: [존|ZIP], CITY 방식: [존|도시].
+function CoordTypeToggle({
+  method,
+  value,
+  onChange,
+  disabled,
+}: {
+  method: RateMethod;
+  value: CoordType;
+  onChange: (v: CoordType) => void;
+  disabled?: boolean;
+}) {
+  const { t } = useTranslation();
+  const options: CoordType[] =
+    method === "ZIP" ? ["ZONE", "ZIP"] : ["ZONE", "CITY"];
+  return (
+    <div className="flex w-fit items-center gap-1 rounded-md bg-muted p-0.5">
+      {options.map((o) => (
+        <button
+          key={o}
+          type="button"
+          disabled={disabled}
+          onClick={() => onChange(o)}
+          className={`rounded px-2 py-0.5 text-xs ${value === o ? "bg-background shadow-sm" : ""}`}
+        >
+          {t(`rateEntry.coordType.${o.toLowerCase()}`)}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function ZoneSelect({
+  zones,
+  value,
+  onChange,
+  disabled,
+}: {
+  zones: { id: number; name: string; code: string | null }[];
+  value: number | "";
+  onChange: (v: number | "") => void;
+  disabled?: boolean;
+}) {
+  return (
+    <select
+      className={SELECT_CLASS}
+      value={value}
+      onChange={(e) => onChange(e.target.value ? Number(e.target.value) : "")}
+      disabled={disabled}
+    >
+      <option value="">—</option>
+      {zones.map((z) => (
+        <option key={z.id} value={z.id}>
+          {z.code ?? z.name}
+        </option>
+      ))}
+    </select>
   );
 }
 

@@ -10,6 +10,7 @@ type Vars = {
     name: string;
     code: string | null;
     color: string | null;
+    rateGroupId: number | null;
     geojson: Record<string, unknown> | null;
     description: string | null;
   }>;

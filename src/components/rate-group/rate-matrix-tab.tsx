@@ -29,6 +29,39 @@ const SERVICE_TYPES: RateServiceType[] = ["LIVE", "DROP", "NONE"];
 
 const SELECT_CLASS = "h-9 rounded-md border bg-background px-2 text-sm";
 
+// ── 매트릭스 축 합성 키 ───────────────────────────────────────────
+// 각 변(from/to)은 zone | zip | city 중 정확히 하나 — 합성 문자열 키로 통일.
+//   zone:{id} · zip:{code} · city:{city}|{state}
+function sideKey(
+  zoneId: number | null,
+  zip: string | null,
+  city: string | null,
+  state: string | null
+): string {
+  if (zoneId != null) return `zone:${zoneId}`;
+  if (zip) return `zip:${zip}`;
+  return `city:${city ?? ""}|${state ?? ""}`;
+}
+
+// 셀 값은 무방향(↔) — 두 합성 키를 사전순 정렬해 합친 키로 인덱싱.
+function pairKey(a: string, b: string): string {
+  return a <= b ? `${a}|${b}` : `${b}|${a}`;
+}
+
+type ParsedSide = {
+  zoneId?: number;
+  zip?: string;
+  city?: string;
+  state?: string;
+};
+
+function parseSideKey(key: string): ParsedSide {
+  if (key.startsWith("zone:")) return { zoneId: Number(key.slice(5)) };
+  if (key.startsWith("zip:")) return { zip: key.slice(4) };
+  const [city, state] = key.slice(5).split("|");
+  return { city, state };
+}
+
 export default function RateMatrixTab({ method }: { method: RateMethod }) {
   const { t } = useTranslation();
   const { data: groupsData, isPending, error } = useRateGroupsData();
@@ -37,7 +70,7 @@ export default function RateMatrixTab({ method }: { method: RateMethod }) {
 
   const groups = useMemo<RateGroupEntity[]>(
     () => (groupsData?.items ?? []).filter((g) => g.method === method),
-    [groupsData, method],
+    [groupsData, method]
   );
 
   // 선택 그룹: 사용자가 고른 게 현재 목록에 있으면 그것, 없으면 첫 번째(렌더 시 파생).
@@ -98,7 +131,7 @@ function GroupEntries({
   method: RateMethod;
 }) {
   const { t } = useTranslation();
-  const isMatrix = method === "ZONE" || method === "CITY";
+  const isMatrix = method === "ZIP" || method === "CITY";
   const [view, setView] = useState<"list" | "matrix">("list");
   const [move, setMove] = useState<RateMoveType>("LOAD");
   const [service, setService] = useState<RateServiceType>("LIVE");
@@ -126,30 +159,24 @@ function GroupEntries({
       presetService: isMatrix ? service : undefined,
     });
 
+  // 셀 클릭 — 합성 키를 좌표 타입별 프리셋으로 풀어 모달에 전달.
   const openCell = (fromKey: string, toKey: string) => {
-    if (method === "ZONE") {
-      openCreate({
-        groupId,
-        method,
-        presetMove: move,
-        presetService: service,
-        presetFromZoneId: Number(fromKey),
-        presetToZoneId: Number(toKey),
-      });
-    } else {
-      const [fc, fs] = fromKey.split("|");
-      const [tc, ts] = toKey.split("|");
-      openCreate({
-        groupId,
-        method,
-        presetMove: move,
-        presetService: service,
-        presetFromCity: fc,
-        presetFromState: fs,
-        presetToCity: tc,
-        presetToState: ts,
-      });
-    }
+    const f = parseSideKey(fromKey);
+    const to = parseSideKey(toKey);
+    openCreate({
+      groupId,
+      method,
+      presetMove: move,
+      presetService: service,
+      presetFromZoneId: f.zoneId,
+      presetToZoneId: to.zoneId,
+      presetFromZip: f.zip ?? null,
+      presetToZip: to.zip ?? null,
+      presetFromCity: f.city,
+      presetFromState: f.state,
+      presetToCity: to.city,
+      presetToState: to.state,
+    });
   };
 
   return (
@@ -252,45 +279,43 @@ function MatrixView({
   const { t } = useTranslation();
 
   const fromKey = (r: FlatRateEntry) =>
-    method === "ZONE"
-      ? String(r.fromZoneId ?? "")
-      : `${r.fromCity ?? ""}|${r.fromState ?? ""}`;
+    sideKey(r.fromZoneId, r.fromZip, r.fromCity, r.fromState);
   const toKey = (r: FlatRateEntry) =>
-    method === "ZONE"
-      ? String(r.toZoneId ?? "")
-      : `${r.toCity ?? ""}|${r.toState ?? ""}`;
+    sideKey(r.toZoneId, r.toZip, r.toCity, r.toState);
   const keyLabel = (key: string) => {
-    if (method === "ZONE") {
-      const id = Number(key);
-      return zoneName.get(id) ?? `#${key}`;
-    }
-    const [city, state] = key.split("|");
-    return `${city}${state ? `, ${state}` : ""}`;
+    const p = parseSideKey(key);
+    if (p.zoneId != null) return zoneName.get(p.zoneId) ?? `#${p.zoneId}`;
+    if (p.zip != null) return p.zip;
+    return `${p.city ?? ""}${p.state ? `, ${p.state}` : ""}`;
   };
 
-  // ZONE: 모든 존을 행·열 양축에(정사각). CITY: 등록된 from/to 도시 합집합.
+  // ZIP: 모든 존 + 행에 등장한 예외 zip 을 양축에(혼합 축, 정사각).
+  // CITY: 등록된 행의 from/to 좌표 합집합(도시 + 존 좌표 행 포함).
   const allZoneKeys = allZones
-    .map((z) => String(z.id))
-    .sort((a, b) =>
-      (zoneName.get(Number(a)) ?? a).localeCompare(zoneName.get(Number(b)) ?? b),
-    );
-  const fromKeys =
-    method === "ZONE"
-      ? allZoneKeys
-      : Array.from(new Set(rows.map(fromKey))).filter(Boolean).sort();
-  const toKeys =
-    method === "ZONE"
-      ? allZoneKeys
-      : Array.from(new Set(rows.map(toKey))).filter(Boolean).sort();
+    .map((z) => `zone:${z.id}`)
+    .sort((a, b) => keyLabel(a).localeCompare(keyLabel(b)));
+  const rowKeys = Array.from(
+    new Set(rows.flatMap((r) => [fromKey(r), toKey(r)]))
+  );
+  const axisKeys =
+    method === "ZIP"
+      ? [
+          ...allZoneKeys,
+          ...rowKeys
+            .filter((k) => k.startsWith("zip:"))
+            .sort((a, b) => keyLabel(a).localeCompare(keyLabel(b))),
+        ]
+      : rowKeys
+          .filter((k) => !k.startsWith("city:|"))
+          .sort((a, b) => keyLabel(a).localeCompare(keyLabel(b)));
+  const fromKeys = axisKeys;
+  const toKeys = axisKeys;
 
+  // 셀은 무방향(↔) — 정규화된 pair 키로 저장해 [a][b]·[b][a] 양쪽에 렌더.
   const cell = new Map<string, string>();
   rows
-    .filter(
-      (r) =>
-        r.moveType === move &&
-        r.serviceType === service,
-    )
-    .forEach((r) => cell.set(`${fromKey(r)}»${toKey(r)}`, r.amount ?? ""));
+    .filter((r) => r.moveType === move && r.serviceType === service)
+    .forEach((r) => cell.set(pairKey(fromKey(r), toKey(r)), r.amount ?? ""));
 
   if (fromKeys.length === 0 || toKeys.length === 0) {
     return (
@@ -305,7 +330,7 @@ function MatrixView({
       <table className="w-full border-collapse text-sm">
         <thead>
           <tr>
-            <th className="sticky left-0 z-10 bg-muted/60 px-3 py-2 text-left text-xs uppercase text-muted-foreground">
+            <th className="sticky left-0 z-10 bg-muted/60 px-3 py-2 text-left text-xs text-muted-foreground uppercase">
               {t("rateEntry.field.from")} \ {t("rateEntry.field.to")}
             </th>
             {toKeys.map((tk) => (
@@ -325,28 +350,17 @@ function MatrixView({
                 {keyLabel(fk)}
               </th>
               {toKeys.map((tk) => {
-                const v = cell.get(`${fk}»${tk}`);
-                const same = fk === tk;
+                const v = cell.get(pairKey(fk, tk));
                 return (
                   <td key={tk} className="p-0 text-center tabular-nums">
-                    {same ? (
-                      <span className="block px-3 py-2 text-muted-foreground/40">
-                        ·
-                      </span>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => onCellClick(fk, tk)}
-                        className="block w-full px-3 py-2 hover:bg-primary/5"
-                        title={t("rateEntry.newButton")}
-                      >
-                        {v ? (
-                          v
-                        ) : (
-                          <span className="text-muted-foreground">—</span>
-                        )}
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      onClick={() => onCellClick(fk, tk)}
+                      className="block w-full px-3 py-2 hover:bg-primary/5"
+                      title={t("rateEntry.newButton")}
+                    >
+                      {v ? v : <span className="text-muted-foreground">—</span>}
+                    </button>
                   </td>
                 );
               })}
@@ -379,7 +393,7 @@ function ImportBar({
     mutationFn: () => exportRateGroupEntriesCsv(groupId),
     onSuccess: (csv) => {
       const url = URL.createObjectURL(
-        new Blob([csv], { type: "text/csv;charset=utf-8" }),
+        new Blob([csv], { type: "text/csv;charset=utf-8" })
       );
       const a = document.createElement("a");
       a.href = url;
@@ -392,8 +406,8 @@ function ImportBar({
   });
 
   const header =
-    method === "ZONE"
-      ? "move_type,service_type,from_zone_id,to_zone_id,amount,effective_from"
+    method === "ZIP"
+      ? "move_type,service_type,from_zip,to_zip,from_zone_id,to_zone_id,from_city,from_state,to_city,to_state,amount,effective_from"
       : method === "CITY"
         ? "move_type,service_type,from_city,from_state,to_city,to_state,amount,effective_from"
         : "per_unit,effective_from";

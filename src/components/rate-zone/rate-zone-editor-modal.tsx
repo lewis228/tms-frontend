@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import RateZoneMembersPanel from "@/components/rate-zone/rate-zone-members-panel";
+import { useRateGroupsData } from "@/hooks/queries/use-rate-groups-data";
 import { useCreateRateZone } from "@/hooks/mutations/rate-zone/use-create-rate-zone";
 import { useUpdateRateZone } from "@/hooks/mutations/rate-zone/use-update-rate-zone";
 import { generateErrorMessage } from "@/lib/error";
@@ -24,7 +25,10 @@ type OpenModal = Extract<
 export default function RateZoneEditorModal() {
   const modal = useRateZoneEditorModal();
   return (
-    <Dialog open={modal.isOpen} onOpenChange={(o) => !o && modal.actions.close()}>
+    <Dialog
+      open={modal.isOpen}
+      onOpenChange={(o) => !o && modal.actions.close()}
+    >
       <DialogContent className="max-h-[90vh] overflow-y-auto">
         {modal.isOpen && (
           <Body
@@ -39,17 +43,23 @@ export default function RateZoneEditorModal() {
 
 function Body({ modal }: { modal: OpenModal }) {
   const { t } = useTranslation();
+  const { data: groupsData } = useRateGroupsData();
+  const rateGroups = groupsData?.items ?? [];
   const [name, setName] = useState(
-    modal.type === "CREATE" ? "" : modal.rateZone.name,
+    modal.type === "CREATE" ? "" : modal.rateZone.name
   );
   const [code, setCode] = useState(
-    modal.type === "CREATE" ? "" : (modal.rateZone.code ?? ""),
+    modal.type === "CREATE" ? "" : (modal.rateZone.code ?? "")
   );
   const [color, setColor] = useState(
-    modal.type === "CREATE" ? "#2563eb" : (modal.rateZone.color ?? "#2563eb"),
+    modal.type === "CREATE" ? "#2563eb" : (modal.rateZone.color ?? "#2563eb")
   );
   const [description, setDescription] = useState(
-    modal.type === "CREATE" ? "" : (modal.rateZone.description ?? ""),
+    modal.type === "CREATE" ? "" : (modal.rateZone.description ?? "")
+  );
+  // null = 팀 공용(글로벌) 존, 값 = 그 요율 그룹 전용(해석 시 우선).
+  const [rateGroupId, setRateGroupId] = useState<number | null>(
+    modal.type === "CREATE" ? null : modal.rateZone.rateGroupId
   );
 
   const { mutate: createRateZone, isPending: isCreatePending } =
@@ -85,6 +95,7 @@ function Body({ modal }: { modal: OpenModal }) {
       name: name.trim(),
       code: trimOrNull(code),
       color: trimOrNull(color),
+      rateGroupId,
       description: trimOrNull(description),
     };
     if (modal.type === "CREATE") {
@@ -101,7 +112,7 @@ function Body({ modal }: { modal: OpenModal }) {
           {t(
             modal.type === "CREATE"
               ? "rateZone.createTitle"
-              : "rateZone.editTitle",
+              : "rateZone.editTitle"
           )}
         </DialogTitle>
       </DialogHeader>
@@ -143,6 +154,23 @@ function Body({ modal }: { modal: OpenModal }) {
             </div>
           </Field>
         </div>
+        <Field label={t("rateZone.field.scope")}>
+          <select
+            value={rateGroupId ?? ""}
+            onChange={(e) =>
+              setRateGroupId(e.target.value ? Number(e.target.value) : null)
+            }
+            disabled={isPending}
+            className="h-9 rounded-md border bg-background px-2 text-sm"
+          >
+            <option value="">{t("rateZone.scope.global")}</option>
+            {rateGroups.map((g) => (
+              <option key={g.id} value={g.id}>
+                {g.name}
+              </option>
+            ))}
+          </select>
+        </Field>
         <Field label={t("field.note")}>
           <Input
             value={description}

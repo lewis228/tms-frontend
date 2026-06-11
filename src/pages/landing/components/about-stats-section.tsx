@@ -10,13 +10,7 @@ const STATS = [
   { value: 300, suffix: "+", label: "Employees for Your Success" },
 ];
 
-function CountUp({
-  target,
-  suffix,
-}: {
-  target: number;
-  suffix: string;
-}) {
+function CountUp({ target, suffix }: { target: number; suffix: string }) {
   const [count, setCount] = useState(0);
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.3 });
   const prefersReducedMotion = useReducedMotion();
@@ -24,8 +18,8 @@ function CountUp({
   useEffect(() => {
     if (!inView) return;
     if (prefersReducedMotion) {
-      setCount(target);
-      return;
+      const raf = requestAnimationFrame(() => setCount(target));
+      return () => cancelAnimationFrame(raf);
     }
     let start = 0;
     const step = target / (1200 / 16);
