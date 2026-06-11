@@ -5,7 +5,6 @@ import type {
   RateMethod,
   RateMoveType,
   RateServiceType,
-  RateContainerSize,
 } from "@/types";
 
 // 요율 셀(플랫 행) 추가 모달 — 그룹 단위. 매트릭스 셀 클릭/New 버튼에서 프리셋 전달.
@@ -16,7 +15,6 @@ type OpenCreate = {
   method: RateMethod;
   presetMove?: RateMoveType;
   presetService?: RateServiceType;
-  presetSize?: RateContainerSize;
   presetFromZoneId?: number;
   presetToZoneId?: number;
   presetFromCity?: string;

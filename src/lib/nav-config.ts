@@ -185,12 +185,6 @@ export const NAV_CONFIG: NavNode[] = [
         iconName: "Map",
         path: "rates/rate-zones",
       },
-      {
-        type: "leaf",
-        label: "nav.rateMultipliers",
-        iconName: "Calculator",
-        path: "rates/rate-multipliers",
-      },
     ],
   },
   {

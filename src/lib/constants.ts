@@ -66,6 +66,8 @@ export const QUERY_KEYS = {
     list: (params: Record<string, unknown> = {}) =>
       ["addon", "list", params] as const,
     byId: (id: number) => ["addon", "byId", id] as const,
+    driverRates: (addonId: number) =>
+      ["addon", "driver-rates", addonId] as const,
   },
   truck: {
     all: ["truck"] as const,
@@ -175,12 +177,6 @@ export const QUERY_KEYS = {
       ["rate-group", "list", params] as const,
     byId: (id: number) => ["rate-group", "byId", id] as const,
     entries: (id: number) => ["rate-group", "entries", id] as const,
-  },
-  rateMultiplier: {
-    all: ["rate-multiplier"] as const,
-    list: (params: Record<string, unknown> = {}) =>
-      ["rate-multiplier", "list", params] as const,
-    byId: (id: number) => ["rate-multiplier", "byId", id] as const,
   },
   driverRateAssignment: {
     all: ["driver-rate-assignment"] as const,

@@ -70,13 +70,6 @@ export default function RateEntryTable({
             r.serviceType ? t(`rateEntry.service.${r.serviceType}`) : "—",
         },
         {
-          id: "size",
-          label: t("rateEntry.field.size"),
-          kind: "set",
-          raw: (r) =>
-            r.containerSize ? t(`rateEntry.size.${r.containerSize}`) : "—",
-        },
-        {
           id: "amount",
           label: t("rateEntry.field.amount"),
           kind: "number",

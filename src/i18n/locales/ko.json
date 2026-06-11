@@ -710,6 +710,15 @@
     },
     "validation": {
       "required": "코드와 이름을 입력하세요."
+    },
+    "driverRates": {
+      "title": "기사별 요율",
+      "defaultValue": "팀 기본",
+      "driverPlaceholder": "기사 선택",
+      "add": "추가/수정",
+      "empty": "기사별 override 없음 — 모든 기사가 팀 기본값 적용",
+      "percentHint": "비율 (예: 0.18 = 18%)",
+      "amountHint": "금액 ($)"
     }
   },
   "legStop": {
@@ -1111,7 +1120,6 @@
     },
     "rates": {
       "rateGroups": "요율 그룹 (Rate Groups)",
-      "rateMultipliers": "요율 배율 (Rate Multipliers)",
       "rateZones": "요율 존 (Rate Zones)"
     },
     "dualTransactions": "듀얼 트랜잭션 (Dual Transactions)"
@@ -1154,7 +1162,6 @@
     "settingsApiKeys": "API 키",
     "rates": "요율 (Rates)",
     "rateGroups": "요율 그룹",
-    "rateMultipliers": "요율 배율",
     "rateZones": "요율 존",
     "billing": "정산·청구",
     "invoices": "고객 청구",
@@ -1588,7 +1595,6 @@
       "to": "도착",
       "move": "이동",
       "service": "서비스",
-      "size": "사이즈",
       "amount": "금액",
       "perUnit": "단가",
       "effectiveFrom": "유효 시작일"
@@ -1603,11 +1609,6 @@
       "DROP": "드롭 (DROP)",
       "NONE": "없음"
     },
-    "size": {
-      "SIZE_20": "20ft",
-      "SIZE_40": "40ft",
-      "SIZE_45": "45ft"
-    },
     "newButton": "새 요율",
     "createTitle": "요율 추가",
     "filter": {
@@ -1615,23 +1616,6 @@
       "clear": "초기화",
       "min": "이상",
       "max": "이하"
-    }
-  },
-  "rateMultiplier": {
-    "description": "컨테이너 사이즈별 요율 배율을 관리합니다. 요율 그룹을 선택하면 해당 그룹 전용 배율을, 선택하지 않으면 팀 전역 기본 배율을 설정합니다.",
-    "scopeLabel": "적용 범위 (요율 그룹)",
-    "globalScope": "— 팀 전역 (기본) —",
-    "invalidFactor": "배율은 0보다 큰 숫자여야 합니다.",
-    "deletePromptTitle": "이 배율을 삭제하시겠습니까?",
-    "deletePromptDesc": "삭제 시 기본값으로 폴백됩니다.",
-    "field": {
-      "containerSize": "컨테이너 사이즈",
-      "factor": "배율"
-    },
-    "sizeOption": {
-      "SIZE_20": "20ft",
-      "SIZE_40": "40ft",
-      "SIZE_45": "45ft"
     }
   },
   "driverRateAssignment": {

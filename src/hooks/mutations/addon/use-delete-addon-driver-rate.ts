@@ -1,15 +1,18 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { upsertRateMultiplier } from "@/api/rate-multiplier";
+import { deleteAddonDriverRate } from "@/api/addon";
 import { QUERY_KEYS } from "@/lib/constants";
 import type { UseMutationCallback } from "@/types";
 
-export function useUpsertRateMultiplier(callbacks?: UseMutationCallback) {
+export function useDeleteAddonDriverRate(
+  addonId: number,
+  callbacks?: UseMutationCallback,
+) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: upsertRateMultiplier,
+    mutationFn: (driverId: number) => deleteAddonDriverRate(addonId, driverId),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: QUERY_KEYS.rateMultiplier.all });
+      qc.invalidateQueries({ queryKey: QUERY_KEYS.addon.driverRates(addonId) });
       callbacks?.onSuccess?.();
     },
     onError: (err) => callbacks?.onError?.(err),

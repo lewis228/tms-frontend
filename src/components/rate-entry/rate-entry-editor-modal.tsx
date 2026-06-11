@@ -18,14 +18,12 @@ import { US_STATES } from "@/lib/us-states";
 import { useRateEntryEditorModal } from "@/store/rate-entry-editor-modal";
 import type {
   FlatRateEntryInput,
-  RateContainerSize,
   RateMoveType,
   RateServiceType,
 } from "@/types";
 
 const MOVE_TYPES: RateMoveType[] = ["LOAD", "EMPTY", "NONE"];
 const SERVICE_TYPES: RateServiceType[] = ["LIVE", "DROP", "NONE"];
-const SIZES: RateContainerSize[] = ["SIZE_20", "SIZE_40", "SIZE_45"];
 const SELECT_CLASS = "h-9 w-full rounded-md border bg-background px-2 text-sm";
 
 type OpenModal = Extract<
@@ -62,9 +60,6 @@ function Body({ modal }: { modal: OpenModal }) {
   const [service, setService] = useState<RateServiceType>(
     modal.presetService ?? "LIVE",
   );
-  const [size, setSize] = useState<RateContainerSize>(
-    modal.presetSize ?? "SIZE_40",
-  );
   const [fromZoneId, setFromZoneId] = useState<number | "">(
     modal.presetFromZoneId ?? "",
   );
@@ -91,7 +86,6 @@ function Body({ modal }: { modal: OpenModal }) {
     if (!amount.trim()) return;
     const payload: FlatRateEntryInput = {
       effectiveFrom,
-      containerSize: isMatrix ? size : null,
       amount: isMatrix ? amount : null,
       perUnit: isMatrix ? null : amount,
     };
@@ -123,7 +117,7 @@ function Body({ modal }: { modal: OpenModal }) {
 
       <div className="flex flex-col gap-3">
         {isMatrix && (
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             <Field label={t("rateEntry.field.move")}>
               <select
                 className={SELECT_CLASS}
@@ -150,20 +144,6 @@ function Body({ modal }: { modal: OpenModal }) {
                 {SERVICE_TYPES.map((s) => (
                   <option key={s} value={s}>
                     {t(`rateEntry.service.${s}`)}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <Field label={t("rateEntry.field.size")}>
-              <select
-                className={SELECT_CLASS}
-                value={size}
-                onChange={(e) => setSize(e.target.value as RateContainerSize)}
-                disabled={isPending}
-              >
-                {SIZES.map((s) => (
-                  <option key={s} value={s}>
-                    {t(`rateEntry.size.${s}`)}
                   </option>
                 ))}
               </select>

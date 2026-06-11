@@ -56,7 +56,6 @@ const MasterChassisPage = lazy(() => import("@/pages/master-chassis-page"));
 const MasterEquipmentPoolsPage = lazy(() => import("@/pages/master-equipment-pools-page"));
 const MasterAddonsPage = lazy(() => import("@/pages/master-addons-page"));
 const RateGroupsPage = lazy(() => import("@/pages/rate-groups-page"));
-const RateMultipliersPage = lazy(() => import("@/pages/rate-multipliers-page"));
 const RateZonesPage = lazy(() => import("@/pages/rate-zones-page"));
 const SettlementsPage = lazy(() => import("@/pages/settlements-page"));
 const SettlementDetailPage = lazy(
@@ -176,10 +175,6 @@ export default function RootRoute() {
 
             <Route path="rates/rate-groups" element={<RateGroupsPage />} />
             <Route path="rates/rate-zones" element={<RateZonesPage />} />
-            <Route
-              path="rates/rate-multipliers"
-              element={<RateMultipliersPage />}
-            />
 
             <Route path="billing/settlements" element={<SettlementsPage />} />
             <Route

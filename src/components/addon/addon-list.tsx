@@ -1,5 +1,5 @@
-// Addon(부가요금 타입) 마스터 — 표 + create/edit 인라인 모달 + 기본값 시드.
-import { useState } from "react";
+// Addon(부가요금 타입) 마스터 — 표 + create/edit 인라인 모달 + 기본값 시드 + 기사별 금액 패널.
+import { Fragment, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
@@ -30,6 +30,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/lib/constants";
 import { generateErrorMessage } from "@/lib/error";
 import { useOpenAlertModal } from "@/store/alert-modal";
+import AddonDriverRatesPanel from "@/components/addon/addon-driver-rates-panel";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import type { AddonCategory, AddonEntity, AddonUnit } from "@/types";
 
 const CATEGORIES: AddonCategory[] = [
@@ -49,6 +51,7 @@ export default function AddonList() {
   const qc = useQueryClient();
   const [page, setPage] = useState(1);
   const [editor, setEditor] = useState<EditorState>({ mode: "CLOSED" });
+  const [expandedId, setExpandedId] = useState<number | null>(null);
   const openAlert = useOpenAlertModal();
 
   const { data, isPending, error } = useAddonsData(page, 50);
@@ -93,6 +96,7 @@ export default function AddonList() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-8" />
               <TableHead>{t("addon.field.code")}</TableHead>
               <TableHead>{t("addon.field.name")}</TableHead>
               <TableHead>{t("addon.field.category")}</TableHead>
@@ -105,13 +109,30 @@ export default function AddonList() {
           <TableBody>
             {data.items.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center text-muted-foreground">
+                <TableCell colSpan={8} className="text-center text-muted-foreground">
                   {t("common.noData")}
                 </TableCell>
               </TableRow>
             ) : (
               data.items.map((c) => (
-                <TableRow key={c.id}>
+                <Fragment key={c.id}>
+                <TableRow>
+                  <TableCell className="w-8 p-0 text-center">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setExpandedId(expandedId === c.id ? null : c.id)
+                      }
+                      className="p-1 text-muted-foreground hover:text-foreground"
+                      title={t("addon.driverRates.title")}
+                    >
+                      {expandedId === c.id ? (
+                        <ChevronDown className="size-4" />
+                      ) : (
+                        <ChevronRight className="size-4" />
+                      )}
+                    </button>
+                  </TableCell>
                   <TableCell className="font-mono">{c.code}</TableCell>
                   <TableCell>{c.name}</TableCell>
                   <TableCell className="text-xs">
@@ -151,6 +172,14 @@ export default function AddonList() {
                     </Button>
                   </TableCell>
                 </TableRow>
+                {expandedId === c.id && (
+                  <TableRow>
+                    <TableCell colSpan={8} className="bg-muted/20 p-2">
+                      <AddonDriverRatesPanel addon={c} />
+                    </TableCell>
+                  </TableRow>
+                )}
+                </Fragment>
               ))
             )}
           </TableBody>

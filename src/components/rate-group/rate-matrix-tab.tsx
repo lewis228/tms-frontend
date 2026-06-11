@@ -18,7 +18,6 @@ import { useOpenCreateRateEntryModal } from "@/store/rate-entry-editor-modal";
 import { generateErrorMessage } from "@/lib/error";
 import type {
   FlatRateEntry,
-  RateContainerSize,
   RateGroupEntity,
   RateMethod,
   RateMoveType,
@@ -27,7 +26,6 @@ import type {
 
 const MOVE_TYPES: RateMoveType[] = ["LOAD", "EMPTY", "NONE"];
 const SERVICE_TYPES: RateServiceType[] = ["LIVE", "DROP", "NONE"];
-const SIZES: RateContainerSize[] = ["SIZE_20", "SIZE_40", "SIZE_45"];
 
 const SELECT_CLASS = "h-9 rounded-md border bg-background px-2 text-sm";
 
@@ -104,7 +102,6 @@ function GroupEntries({
   const [view, setView] = useState<"list" | "matrix">("list");
   const [move, setMove] = useState<RateMoveType>("LOAD");
   const [service, setService] = useState<RateServiceType>("LIVE");
-  const [size, setSize] = useState<RateContainerSize>("SIZE_40");
 
   const openCreate = useOpenCreateRateEntryModal();
   const { data, isPending, error } = useRateGroupEntriesData(groupId);
@@ -127,7 +124,6 @@ function GroupEntries({
       method,
       presetMove: isMatrix ? move : undefined,
       presetService: isMatrix ? service : undefined,
-      presetSize: isMatrix ? size : undefined,
     });
 
   const openCell = (fromKey: string, toKey: string) => {
@@ -137,7 +133,6 @@ function GroupEntries({
         method,
         presetMove: move,
         presetService: service,
-        presetSize: size,
         presetFromZoneId: Number(fromKey),
         presetToZoneId: Number(toKey),
       });
@@ -149,7 +144,6 @@ function GroupEntries({
         method,
         presetMove: move,
         presetService: service,
-        presetSize: size,
         presetFromCity: fc,
         presetFromState: fs,
         presetToCity: tc,
@@ -182,17 +176,6 @@ function GroupEntries({
               {SERVICE_TYPES.map((s) => (
                 <option key={s} value={s}>
                   {t(`rateEntry.service.${s}`)}
-                </option>
-              ))}
-            </select>
-            <select
-              className={SELECT_CLASS}
-              value={size}
-              onChange={(e) => setSize(e.target.value as RateContainerSize)}
-            >
-              {SIZES.map((s) => (
-                <option key={s} value={s}>
-                  {t(`rateEntry.size.${s}`)}
                 </option>
               ))}
             </select>
@@ -237,7 +220,6 @@ function GroupEntries({
           rows={rows}
           move={move}
           service={service}
-          size={size}
           zoneName={zoneName}
           allZones={zonesData?.items ?? []}
           onCellClick={openCell}
@@ -255,7 +237,6 @@ function MatrixView({
   rows,
   move,
   service,
-  size,
   zoneName,
   allZones,
   onCellClick,
@@ -264,7 +245,6 @@ function MatrixView({
   rows: FlatRateEntry[];
   move: RateMoveType;
   service: RateServiceType;
-  size: RateContainerSize;
   zoneName: Map<number, string>;
   allZones: { id: number; name: string; code: string | null }[];
   onCellClick: (fromKey: string, toKey: string) => void;
@@ -308,8 +288,7 @@ function MatrixView({
     .filter(
       (r) =>
         r.moveType === move &&
-        r.serviceType === service &&
-        r.containerSize === size,
+        r.serviceType === service,
     )
     .forEach((r) => cell.set(`${fromKey(r)}»${toKey(r)}`, r.amount ?? ""));
 
@@ -414,9 +393,9 @@ function ImportBar({
 
   const header =
     method === "ZONE"
-      ? "move_type,service_type,from_zone_id,to_zone_id,container_size,amount,effective_from"
+      ? "move_type,service_type,from_zone_id,to_zone_id,amount,effective_from"
       : method === "CITY"
-        ? "move_type,service_type,from_city,from_state,to_city,to_state,container_size,amount,effective_from"
+        ? "move_type,service_type,from_city,from_state,to_city,to_state,amount,effective_from"
         : "per_unit,effective_from";
 
   const handleFile = (file: File) => {

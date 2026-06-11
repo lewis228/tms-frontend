@@ -3,6 +3,7 @@ import api from "@/lib/axios";
 import { adaptCursorToPaged, type CursorResponse } from "@/lib/pagination";
 import type {
   AddonCategory,
+  AddonDriverRate,
   AddonEntity,
   AddonUnit,
   PagedResponse,
@@ -20,11 +21,10 @@ export type AddonCreatePayload = {
   autoApply?: boolean;
   isBillableToCustomer?: boolean;
   isPayableToDriver?: boolean;
-  driverId?: number | null;
   note?: string | null;
 };
 
-export type AddonUpdatePayload = Partial<Omit<AddonCreatePayload, "code" | "driverId">>;
+export type AddonUpdatePayload = Partial<Omit<AddonCreatePayload, "code">>;
 
 export async function fetchAddons(
   params: { page?: number; size?: number; category?: AddonCategory; code?: string } = {},
@@ -32,8 +32,6 @@ export async function fetchAddons(
   const queryParams: Record<string, string | number | boolean | undefined> = {
     page: params.page,
     size: params.size,
-    // 콤보/관리: 팀 전역 타입만(드라이버 override 행 제외)
-    where__driver_id__equal: undefined,
   };
   if (params.code) queryParams["where__code__i_like"] = params.code;
   if (params.category) queryParams["where__category__equal"] = params.category;
@@ -67,4 +65,33 @@ export async function seedDefaultAddons(): Promise<{ created: number; skipped: n
     {},
   );
   return data;
+}
+
+// ── 기사별 금액 override (addon_driver_rate) ─────────────────────
+export async function fetchAddonDriverRates(
+  addonId: number,
+): Promise<AddonDriverRate[]> {
+  const { data } = await api.get<AddonDriverRate[]>(
+    `/addons/${addonId}/driver-rates`,
+  );
+  return data;
+}
+
+export async function upsertAddonDriverRate(
+  addonId: number,
+  driverId: number,
+  payload: { amount?: string | null; percent?: string | null; note?: string | null },
+): Promise<AddonDriverRate> {
+  const { data } = await api.put<AddonDriverRate>(
+    `/addons/${addonId}/driver-rates/${driverId}`,
+    payload,
+  );
+  return data;
+}
+
+export async function deleteAddonDriverRate(
+  addonId: number,
+  driverId: number,
+): Promise<void> {
+  await api.delete(`/addons/${addonId}/driver-rates/${driverId}`);
 }

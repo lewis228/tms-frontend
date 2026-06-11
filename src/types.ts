@@ -591,13 +591,12 @@ export type DeliveryOrderAddonEntity = {
 };
 
 // ─────────────────────────────────────────────────────────────────
-// Rate management (rate-group / rate-multiplier / driver-rate-assignment)
+// Rate management (rate-group / driver-rate-assignment)
 // 재설계(Zone×Zone): rate_point 폐기, 요율 셀은 그룹 단위 플랫 행(FlatRateEntry).
 // 백엔드 응답은 alias_generator=to_camel 로 camelCase. Entity 필드도 camelCase 1:1.
 // ─────────────────────────────────────────────────────────────────
 
 export type RateMethod = "ZONE" | "CITY" | "MILE" | "HOURLY";
-export type RateContainerSize = "SIZE_20" | "SIZE_40" | "SIZE_45";
 
 export type RateGroupEntity = {
   id: number;
@@ -606,15 +605,6 @@ export type RateGroupEntity = {
   isDefault: boolean;
   isTemplate: boolean;
   description: string | null;
-  isActive: boolean;
-};
-
-export type RateMultiplierEntity = {
-  id: number;
-  rateGroupId: number | null;
-  containerSize: RateContainerSize;
-  factor: string;
-  note: string | null;
   isActive: boolean;
 };
 
@@ -686,7 +676,6 @@ export type FlatRateEntry = {
   fromState: string | null;
   toCity: string | null;
   toState: string | null;
-  containerSize: RateContainerSize | null;
   amount: string | null;
   perUnit: string | null;
   effectiveFrom: string;
@@ -709,7 +698,6 @@ export type FlatRateEntryInput = {
   fromState?: string | null;
   toCity?: string | null;
   toState?: string | null;
-  containerSize?: RateContainerSize | null;
   amount?: string | null;
   perUnit?: string | null;
   effectiveFrom: string;
@@ -921,9 +909,18 @@ export type AddonEntity = {
   isSystem: boolean;
   isBillableToCustomer: boolean;
   isPayableToDriver: boolean;
-  driverId: number | null;
   note: string | null;
   isActive: boolean;
+};
+
+// 기사별 add-on 금액 override (분리 테이블 addon_driver_rate) — 금액만 override.
+export type AddonDriverRate = {
+  id: number;
+  addonId: number;
+  driverId: number;
+  amount: string | null;
+  percent: string | null;
+  note: string | null;
 };
 
 // H-8 ─────────────────────────────────────────────────────────

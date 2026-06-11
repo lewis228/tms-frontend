@@ -710,6 +710,15 @@
     },
     "validation": {
       "required": "Enter code and name."
+    },
+    "driverRates": {
+      "title": "Driver rates",
+      "defaultValue": "Team default",
+      "driverPlaceholder": "Select driver",
+      "add": "Add / Update",
+      "empty": "No driver overrides — all drivers use the team default",
+      "percentHint": "Ratio (e.g. 0.18 = 18%)",
+      "amountHint": "Amount ($)"
     }
   },
   "legStop": {
@@ -1111,7 +1120,6 @@
     },
     "rates": {
       "rateGroups": "Rate Groups",
-      "rateMultipliers": "Rate Multipliers",
       "rateZones": "Rate Zones"
     },
     "dualTransactions": "Dual Transactions"
@@ -1154,7 +1162,6 @@
     "settingsApiKeys": "API Keys",
     "rates": "Rates",
     "rateGroups": "Rate Groups",
-    "rateMultipliers": "Rate Multipliers",
     "rateZones": "Rate Zones",
     "billing": "Billing",
     "invoices": "Invoices",
@@ -1588,7 +1595,6 @@
       "to": "To",
       "move": "Move",
       "service": "Service",
-      "size": "Size",
       "amount": "Amount",
       "perUnit": "Per unit",
       "effectiveFrom": "Effective from"
@@ -1603,11 +1609,6 @@
       "DROP": "Drop",
       "NONE": "None"
     },
-    "size": {
-      "SIZE_20": "20ft",
-      "SIZE_40": "40ft",
-      "SIZE_45": "45ft"
-    },
     "newButton": "New rate",
     "createTitle": "Add rate",
     "filter": {
@@ -1615,23 +1616,6 @@
       "clear": "Clear",
       "min": "Min",
       "max": "Max"
-    }
-  },
-  "rateMultiplier": {
-    "description": "Manage rate multipliers per container size. Pick a rate group to scope multipliers to that group, or leave it empty to set team-wide defaults.",
-    "scopeLabel": "Scope (rate group)",
-    "globalScope": "— Team-wide (default) —",
-    "invalidFactor": "Factor must be a number greater than 0.",
-    "deletePromptTitle": "Delete this multiplier?",
-    "deletePromptDesc": "It will fall back to the default value.",
-    "field": {
-      "containerSize": "Container size",
-      "factor": "Factor"
-    },
-    "sizeOption": {
-      "SIZE_20": "20ft",
-      "SIZE_40": "40ft",
-      "SIZE_45": "45ft"
     }
   },
   "driverRateAssignment": {
