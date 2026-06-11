@@ -26,13 +26,13 @@ export type CustomerUpdatePayload = Partial<CustomerCreatePayload> & {
 };
 
 export async function fetchCustomers(
-  params: { page?: number; size?: number; q?: string; kind?: PartnerKind } = {},
+  params: { page?: number; size?: number; q?: string; kind?: PartnerKind } = {}
 ): Promise<PagedResponse<CustomerEntity>> {
+  // 백엔드 cursor pagination 은 take 만 인식 (page/size 는 무시됨). q → where__name__i_like.
   const queryParams: Record<string, string | number | undefined> = {
-    page: params.page,
-    size: params.size,
-    q: params.q,
+    take: params.size ?? 20,
   };
+  if (params.q) queryParams["where__name__i_like"] = params.q;
   if (params.kind) queryParams["where__kind__equal"] = params.kind;
   const { data } = await api.get<CursorResponse<CustomerEntity>>("/customers", {
     params: queryParams,
@@ -46,7 +46,7 @@ export async function fetchCustomer(id: number): Promise<CustomerEntity> {
 }
 
 export async function createCustomer(
-  payload: CustomerCreatePayload,
+  payload: CustomerCreatePayload
 ): Promise<CustomerEntity> {
   const { data } = await api.post<CustomerEntity>("/customers", payload);
   return data;
@@ -54,7 +54,7 @@ export async function createCustomer(
 
 export async function updateCustomer(
   id: number,
-  payload: CustomerUpdatePayload,
+  payload: CustomerUpdatePayload
 ): Promise<CustomerEntity> {
   const { data } = await api.put<CustomerEntity>(`/customers/${id}`, payload);
   return data;

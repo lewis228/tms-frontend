@@ -19,13 +19,18 @@ export type RateZoneMemberInput = {
 export async function fetchRateZones(
   params: { page?: number; size?: number; q?: string } = {}
 ): Promise<PagedResponse<RateZoneEntity>> {
+  // 백엔드 cursor pagination 은 take 만 인식 (page/size 는 무시됨).
+  // q 는 where__name__i_like 로 매핑.
   const { data } = await api.get<CursorResponse<RateZoneEntity>>(
     "/rate-zones",
     {
-      params,
+      params: {
+        take: params.size ?? 100,
+        ...(params.q ? { where__name__i_like: params.q } : {}),
+      },
     }
   );
-  return adaptCursorToPaged(data, params.page, params.size);
+  return adaptCursorToPaged(data, params.page, params.size ?? 100);
 }
 
 export async function fetchRateZone(id: number): Promise<RateZone> {

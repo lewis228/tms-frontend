@@ -10,19 +10,24 @@ export default function ZipPicker({
   value,
   onSelect,
   disabled,
+  scope = false,
 }: {
   value: number | null;
   onSelect: (id: number | null) => void;
   disabled?: boolean;
+  /** true 면 팀 영업권역 내 zip 으로 제한 (요율 컨텍스트 전용). */
+  scope?: boolean;
 }) {
   const { t } = useTranslation();
   return (
     <SearchableSelect<ZipCodeEntity>
       value={value}
       onSelect={(id) => onSelect(id)}
-      fetchList={(q) => (q ? searchZipCodes(q) : Promise.resolve([]))}
+      fetchList={(q) =>
+        q ? searchZipCodes(q, undefined, scope) : Promise.resolve([])
+      }
       fetchById={(id) => fetchZipCode(id)}
-      queryKeyBase={["zip-code", "search"]}
+      queryKeyBase={["zip-code", "search", scope]}
       getLabel={(z) => `${z.zip} · ${z.city}, ${z.state}`}
       placeholder={t("field.zipPlaceholder")}
       emptyLabel={t("common.none")}

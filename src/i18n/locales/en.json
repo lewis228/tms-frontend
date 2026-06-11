@@ -68,6 +68,7 @@
     "NOT_FOUND": "Not found.",
     "CONFLICT": "Already exists.",
     "ZONE_MEMBER_CONFLICT": "Some members already belong to another zone in the same scope",
+    "SERVICE_AREA_DUPLICATE": "This area is already declared.",
     "VALIDATION": "Invalid input.",
     "INVALID_STATE_TRANSITION": "This action is not allowed in the current state.",
     "INVALID_LEG_TRANSITION": "Cannot change Leg state.",
@@ -1164,6 +1165,8 @@
     "rates": "Rates",
     "rateGroups": "Rate Groups",
     "rateZones": "Rate Zones",
+    "rateLookup": "Rate Lookup",
+    "serviceArea": "Service Area",
     "billing": "Billing",
     "invoices": "Invoices",
     "dualTransactions": "Dual Transactions"
@@ -1857,5 +1860,71 @@
       "cancelled": "Marked as cancelled.",
       "deleted": "Deleted."
     }
+  },
+  "rateLookup": {
+    "title": "Rate Lookup",
+    "description": "Select origin and destination to preview the resolved rate and match path.",
+    "form": {
+      "origin": "Origin",
+      "dest": "Destination",
+      "pointType": {
+        "terminal": "Terminal",
+        "yard": "Yard",
+        "customer": "Customer"
+      },
+      "driver": "Driver (optional)",
+      "driverNone": "Unassigned",
+      "workDate": "Work date",
+      "submit": "Lookup"
+    },
+    "noZipWarning": "The selected place has no ZIP — set one in master data.",
+    "zipLoadError": "Failed to load ZIP info.",
+    "result": {
+      "title": "Estimated rate",
+      "matchPath": "Match path",
+      "zone": "Zone",
+      "effective": "Effective period",
+      "untilNow": "present",
+      "stale": "Inputs changed — run the lookup again."
+    },
+    "perUnit": {
+      "MILE": "/mi",
+      "HOUR": "/hr",
+      "MINUTE": "/min",
+      "DAY": "/day"
+    },
+    "step": {
+      "ATOM_ATOM": "① Atom↔Atom (exact ZIP)",
+      "ATOM_ZONE": "② Atom↔Zone",
+      "ZONE_ZONE": "③ Zone↔Zone",
+      "UNIT": "Per-unit (MILE/HOURLY)"
+    },
+    "badge": {
+      "viaDefault": "Default group fallback",
+      "assignmentFallback": "No assignment → ZIP default"
+    },
+    "addonTitle": "Driver add-on estimate",
+    "addonHint": "Estimate including driver-specific rate overrides.",
+    "notFound": "No rate resolved"
+  },
+  "serviceArea": {
+    "title": "Service Area",
+    "description": "Narrows ZIP/city search on rate screens to your service area. With no declarations, everything is searchable.",
+    "kind": {
+      "STATE": "Whole state",
+      "COUNTY": "County",
+      "CITY": "City",
+      "ZIP3": "3-digit ZIP prefix"
+    },
+    "field": {
+      "kind": "Kind",
+      "state": "State",
+      "valueCounty": "County name",
+      "valueCity": "City",
+      "valueZip3": "First 3 ZIP digits"
+    },
+    "zip3Placeholder": "e.g. 902",
+    "addButton": "Add area",
+    "empty": "No areas declared — all ZIPs appear in search."
   }
 }

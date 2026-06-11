@@ -195,9 +195,20 @@ export const QUERY_KEYS = {
   },
   zipCode: {
     all: ["zip-code"] as const,
-    cities: (q: string, state?: string) =>
-      ["zip-code", "cities", q, state ?? ""] as const,
-    search: (q: string) => ["zip-code", "search", "string", q] as const,
+    byId: (id: number) => ["zip-code", "byId", id] as const,
+    cities: (q: string, state?: string, scope?: boolean) =>
+      ["zip-code", "cities", q, state ?? "", scope ?? false] as const,
+    search: (q: string, scope?: boolean) =>
+      ["zip-code", "search", "string", q, scope ?? false] as const,
+  },
+  serviceArea: {
+    all: ["service-area"] as const,
+    list: ["service-area", "list"] as const,
+  },
+  rateLookup: {
+    all: ["rate-lookup"] as const,
+    addonEstimate: (driverId: number) =>
+      ["rate-lookup", "addon-estimate", driverId] as const,
   },
 
   // ── Billing — Payroll(정산) / Invoice(청구) ──────────────────

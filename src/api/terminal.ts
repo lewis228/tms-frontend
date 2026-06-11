@@ -4,10 +4,15 @@ import type { PagedResponse, TerminalEntity } from "@/types";
 import { adaptCursorToPaged, type CursorResponse } from "@/lib/pagination";
 
 export async function fetchTerminals(
-  params: { page?: number; size?: number; q?: string } = {},
+  params: { page?: number; size?: number; q?: string } = {}
 ): Promise<PagedResponse<TerminalEntity>> {
+  // 백엔드 cursor pagination 은 take 만 인식 (page/size 는 무시됨). q → where__name__i_like.
+  const queryParams: Record<string, string | number | undefined> = {
+    take: params.size ?? 20,
+  };
+  if (params.q) queryParams["where__name__i_like"] = params.q;
   const { data } = await api.get<CursorResponse<TerminalEntity>>("/terminals", {
-    params,
+    params: queryParams,
   });
   return adaptCursorToPaged(data, params?.page, params?.size);
 }
@@ -41,7 +46,7 @@ export async function updateTerminal(
     zipId: number | null;
     isActive: boolean;
     note: string | null;
-  }>,
+  }>
 ): Promise<TerminalEntity> {
   const { data } = await api.put<TerminalEntity>(`/terminals/${id}`, payload);
   return data;

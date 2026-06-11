@@ -27,11 +27,16 @@ export type AddonCreatePayload = {
 export type AddonUpdatePayload = Partial<Omit<AddonCreatePayload, "code">>;
 
 export async function fetchAddons(
-  params: { page?: number; size?: number; category?: AddonCategory; code?: string } = {},
+  params: {
+    page?: number;
+    size?: number;
+    category?: AddonCategory;
+    code?: string;
+  } = {}
 ): Promise<PagedResponse<AddonEntity>> {
+  // 백엔드 cursor pagination 은 take 만 인식 (page/size 는 무시됨).
   const queryParams: Record<string, string | number | boolean | undefined> = {
-    page: params.page,
-    size: params.size,
+    take: params.size ?? 20,
   };
   if (params.code) queryParams["where__code__i_like"] = params.code;
   if (params.category) queryParams["where__category__equal"] = params.category;
@@ -41,14 +46,16 @@ export async function fetchAddons(
   return adaptCursorToPaged(data, params.page, params.size);
 }
 
-export async function createAddon(payload: AddonCreatePayload): Promise<AddonEntity> {
+export async function createAddon(
+  payload: AddonCreatePayload
+): Promise<AddonEntity> {
   const { data } = await api.post<AddonEntity>("/addons", payload);
   return data;
 }
 
 export async function updateAddon(
   id: number,
-  payload: AddonUpdatePayload,
+  payload: AddonUpdatePayload
 ): Promise<AddonEntity> {
   // 백엔드 addon 라우터는 PUT /{id}
   const { data } = await api.put<AddonEntity>(`/addons/${id}`, payload);
@@ -59,20 +66,23 @@ export async function deleteAddon(id: number): Promise<void> {
   await api.delete(`/addons/${id}`);
 }
 
-export async function seedDefaultAddons(): Promise<{ created: number; skipped: number }> {
+export async function seedDefaultAddons(): Promise<{
+  created: number;
+  skipped: number;
+}> {
   const { data } = await api.post<{ created: number; skipped: number }>(
     "/addons/seed-defaults",
-    {},
+    {}
   );
   return data;
 }
 
 // ── 기사별 금액 override (addon_driver_rate) ─────────────────────
 export async function fetchAddonDriverRates(
-  addonId: number,
+  addonId: number
 ): Promise<AddonDriverRate[]> {
   const { data } = await api.get<AddonDriverRate[]>(
-    `/addons/${addonId}/driver-rates`,
+    `/addons/${addonId}/driver-rates`
   );
   return data;
 }
@@ -80,18 +90,22 @@ export async function fetchAddonDriverRates(
 export async function upsertAddonDriverRate(
   addonId: number,
   driverId: number,
-  payload: { amount?: string | null; percent?: string | null; note?: string | null },
+  payload: {
+    amount?: string | null;
+    percent?: string | null;
+    note?: string | null;
+  }
 ): Promise<AddonDriverRate> {
   const { data } = await api.put<AddonDriverRate>(
     `/addons/${addonId}/driver-rates/${driverId}`,
-    payload,
+    payload
   );
   return data;
 }
 
 export async function deleteAddonDriverRate(
   addonId: number,
-  driverId: number,
+  driverId: number
 ): Promise<void> {
   await api.delete(`/addons/${addonId}/driver-rates/${driverId}`);
 }

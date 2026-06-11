@@ -709,6 +709,46 @@ export type FlatRateEntryInput = {
   reason?: string | null;
 };
 
+// ─────────────────────────────────────────────────────────────────
+// Rate Resolve — 요율 종합 해석 미리보기 (POST /rate-sheets/resolve/preview)
+// ─────────────────────────────────────────────────────────────────
+
+// 해석 사다리 단계: ① 원자↔원자 ② 원자↔존 ③ 존↔존, UNIT = MILE/HOURLY 단가.
+export type RateMatchStep = "ATOM_ATOM" | "ATOM_ZONE" | "ZONE_ZONE" | "UNIT";
+
+export type RateResolveResult = {
+  found: boolean;
+  method: string | null;
+  rateGroupId: number | null;
+  rateSheetId: number | null;
+  rateEntryId: number | null;
+  zoneId: number | null;
+  amount: string | null;
+  perUnit: string | null;
+  quantity: string | null;
+  baseAmount: string | null;
+  matchStep: RateMatchStep | null;
+  viaDefaultGroup: boolean;
+  assignmentFallback: boolean;
+  effectiveFrom: string | null;
+  effectiveTo: string | null;
+  message: string | null;
+};
+
+// ─────────────────────────────────────────────────────────────────
+// Service Area — 팀 영업권역 선언 (zip/도시 검색 scope 제한의 원천)
+// ─────────────────────────────────────────────────────────────────
+
+export type ServiceAreaKind = "STATE" | "COUNTY" | "CITY" | "ZIP3";
+
+export type ServiceAreaEntity = {
+  id: number;
+  kind: ServiceAreaKind;
+  state: string;
+  value: string;
+  isActive: boolean;
+};
+
 export type PagedResponse<T> = {
   items: T[];
   total: number;

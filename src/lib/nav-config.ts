@@ -34,7 +34,8 @@ export type NavIconName =
   | "CreditCard"
   | "Key"
   | "Calculator"
-  | "Route";
+  | "Route"
+  | "Search";
 
 export type NavLeaf = {
   type: "leaf";
@@ -184,6 +185,18 @@ export const NAV_CONFIG: NavNode[] = [
         label: "nav.rateZones",
         iconName: "Map",
         path: "rates/rate-zones",
+      },
+      {
+        type: "leaf",
+        label: "nav.rateLookup",
+        iconName: "Search",
+        path: "rates/lookup",
+      },
+      {
+        type: "leaf",
+        label: "nav.serviceArea",
+        iconName: "MapPin",
+        path: "rates/service-area",
       },
     ],
   },

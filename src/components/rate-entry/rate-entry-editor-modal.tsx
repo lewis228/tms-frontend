@@ -37,7 +37,9 @@ type OpenModal = Extract<
 >;
 
 function todayISO(): string {
-  return new Date().toISOString().slice(0, 10);
+  // 로컬 날짜 기준 — UTC toISOString() 은 시차로 하루가 어긋날 수 있다.
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
 export default function RateEntryEditorModal() {
@@ -219,6 +221,7 @@ function Body({ modal }: { modal: OpenModal }) {
                       onSelect={setFromZip}
                       placeholder={t("rateEntry.zipPlaceholder")}
                       disabled={isPending}
+                      scope={true}
                     />
                   )}
                   {fromType === "CITY" && (
@@ -229,6 +232,7 @@ function Body({ modal }: { modal: OpenModal }) {
                         onChange={setFromCity}
                         placeholder={t("rateEntry.cityPlaceholder")}
                         className="h-9 w-full min-w-[8rem] flex-1"
+                        scope={true}
                       />
                       <StateSelect value={fromState} onChange={setFromState} />
                     </div>
@@ -257,6 +261,7 @@ function Body({ modal }: { modal: OpenModal }) {
                       onSelect={setToZip}
                       placeholder={t("rateEntry.zipPlaceholder")}
                       disabled={isPending}
+                      scope={true}
                     />
                   )}
                   {toType === "CITY" && (
@@ -267,6 +272,7 @@ function Body({ modal }: { modal: OpenModal }) {
                         onChange={setToCity}
                         placeholder={t("rateEntry.cityPlaceholder")}
                         className="h-9 w-full min-w-[8rem] flex-1"
+                        scope={true}
                       />
                       <StateSelect value={toState} onChange={setToState} />
                     </div>

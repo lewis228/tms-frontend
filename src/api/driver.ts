@@ -16,10 +16,19 @@ export async function fetchDrivers(
     size?: number;
     activeOnly?: boolean;
     q?: string;
-  } = {},
+  } = {}
 ): Promise<PagedResponse<DriverEntity>> {
+  // 백엔드 cursor pagination 은 take 만 인식 (page/size 는 무시됨).
+  // q → where__name__i_like. activeOnly 는 백엔드 include_inactive 와 반대 의미:
+  // 기본(include_inactive=false)이 이미 활성만이라 activeOnly=true 는 생략,
+  // activeOnly=false 일 때만 include_inactive=true 전송.
+  const queryParams: Record<string, string | number | boolean | undefined> = {
+    take: params.size ?? 20,
+  };
+  if (params.q) queryParams["where__name__i_like"] = params.q;
+  if (params.activeOnly === false) queryParams["include_inactive"] = true;
   const { data } = await api.get<CursorResponse<DriverEntity>>("/drivers", {
-    params,
+    params: queryParams,
   });
   return adaptCursorToPaged(data, params.page, params.size);
 }
@@ -58,7 +67,7 @@ export type DriverUpdatePayload = Partial<DriverCreatePayload> & {
 };
 
 export async function createDriver(
-  payload: DriverCreatePayload,
+  payload: DriverCreatePayload
 ): Promise<DriverCreatedResponse> {
   const { data } = await api.post<DriverCreatedResponse>("/drivers", payload);
   return data;
@@ -66,7 +75,7 @@ export async function createDriver(
 
 export async function updateDriver(
   id: number,
-  payload: DriverUpdatePayload,
+  payload: DriverUpdatePayload
 ): Promise<DriverEntity> {
   const { data } = await api.put<DriverEntity>(`/drivers/${id}`, payload);
   return data;

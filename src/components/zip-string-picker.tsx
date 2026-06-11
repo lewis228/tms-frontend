@@ -23,11 +23,14 @@ export default function ZipStringPicker({
   onSelect,
   placeholder,
   disabled,
+  scope = false,
 }: {
   value: string | null;
   onSelect: (zip: string | null) => void;
   placeholder?: string;
   disabled?: boolean;
+  /** true 면 팀 영업권역 내 zip 으로 제한 (요율 컨텍스트 전용). */
+  scope?: boolean;
 }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -40,9 +43,11 @@ export default function ZipStringPicker({
   }, [input]);
 
   const { data: items = [], isPending } = useQuery({
-    queryKey: QUERY_KEYS.zipCode.search(debounced),
+    queryKey: QUERY_KEYS.zipCode.search(debounced, scope),
     queryFn: () =>
-      debounced ? searchZipCodes(debounced) : Promise.resolve([]),
+      debounced
+        ? searchZipCodes(debounced, undefined, scope)
+        : Promise.resolve([]),
     enabled: open,
   });
 

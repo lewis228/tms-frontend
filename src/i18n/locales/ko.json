@@ -68,6 +68,7 @@
     "NOT_FOUND": "데이터를 찾을 수 없습니다.",
     "CONFLICT": "이미 존재하는 데이터입니다.",
     "ZONE_MEMBER_CONFLICT": "이미 같은 범위의 다른 존에 속한 멤버가 있습니다",
+    "SERVICE_AREA_DUPLICATE": "이미 선언된 권역입니다.",
     "VALIDATION": "입력값이 올바르지 않습니다.",
     "INVALID_STATE_TRANSITION": "현재 상태에서는 이 동작을 수행할 수 없습니다.",
     "INVALID_LEG_TRANSITION": "Leg 상태를 변경할 수 없습니다.",
@@ -1164,6 +1165,8 @@
     "rates": "요율 (Rates)",
     "rateGroups": "요율 그룹",
     "rateZones": "요율 존",
+    "rateLookup": "요율 조회",
+    "serviceArea": "영업 권역",
     "billing": "정산·청구",
     "invoices": "고객 청구",
     "dualTransactions": "듀얼 트랜잭션"
@@ -1857,5 +1860,71 @@
       "cancelled": "취소 처리되었습니다.",
       "deleted": "삭제되었습니다."
     }
+  },
+  "rateLookup": {
+    "title": "요율 조회",
+    "description": "출발/도착 장소를 선택하면 예상 요율과 해석 경로를 보여줍니다.",
+    "form": {
+      "origin": "출발",
+      "dest": "도착",
+      "pointType": {
+        "terminal": "터미널",
+        "yard": "야드",
+        "customer": "거래처"
+      },
+      "driver": "기사 (선택)",
+      "driverNone": "미지정",
+      "workDate": "기준일",
+      "submit": "조회"
+    },
+    "noZipWarning": "선택한 장소에 ZIP이 없습니다 — 마스터에서 ZIP을 지정하세요.",
+    "zipLoadError": "ZIP 정보를 불러오지 못했습니다.",
+    "result": {
+      "title": "예상 요율",
+      "matchPath": "해석 경로",
+      "zone": "존",
+      "effective": "유효기간",
+      "untilNow": "현재",
+      "stale": "입력이 변경되었습니다 — 다시 조회하세요."
+    },
+    "perUnit": {
+      "MILE": "/마일",
+      "HOUR": "/시간",
+      "MINUTE": "/분",
+      "DAY": "/일"
+    },
+    "step": {
+      "ATOM_ATOM": "① 원자↔원자 (ZIP 정확)",
+      "ATOM_ZONE": "② 원자↔존",
+      "ZONE_ZONE": "③ 존↔존",
+      "UNIT": "단가(MILE/HOURLY)"
+    },
+    "badge": {
+      "viaDefault": "디폴트 그룹 폴백",
+      "assignmentFallback": "기사 미배정 → ZIP 디폴트"
+    },
+    "addonTitle": "기사 Add-on 예상",
+    "addonHint": "기사별 개인 요율 반영 예상치입니다.",
+    "notFound": "해석 실패"
+  },
+  "serviceArea": {
+    "title": "영업 권역 (Service Area)",
+    "description": "요율 화면의 ZIP/도시 검색을 영업 권역으로 좁힙니다. 선언이 없으면 전체가 보입니다.",
+    "kind": {
+      "STATE": "주 전체",
+      "COUNTY": "카운티",
+      "CITY": "도시",
+      "ZIP3": "ZIP 3자리 권역"
+    },
+    "field": {
+      "kind": "구분",
+      "state": "주",
+      "valueCounty": "카운티명",
+      "valueCity": "도시",
+      "valueZip3": "ZIP 앞 3자리"
+    },
+    "zip3Placeholder": "예: 902",
+    "addButton": "권역 추가",
+    "empty": "선언된 권역이 없습니다 — 전체 ZIP이 검색에 노출됩니다."
   }
 }

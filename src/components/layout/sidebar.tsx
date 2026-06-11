@@ -20,6 +20,7 @@ import {
   Plug,
   Receipt,
   Route,
+  Search,
   Server,
   Settings,
   ShieldCheck,
@@ -86,6 +87,7 @@ const ICON_MAP: Record<NavIconName, LucideIcon> = {
   Key,
   Calculator,
   Route,
+  Search,
 };
 
 // Build an absolute `/app/:teamId/...` URL from a nav leaf's relative path.
