@@ -99,7 +99,7 @@ export default function RateEntryTable({
         raw: (r) => r.effectiveFrom,
       },
     ];
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- fromLabel/toLabel은 method+zoneName 만 캡처하며 둘 다 deps에 포함됨(매 렌더 재생성 함수라 lint가 과탐지)
   }, [method, zoneName, t]);
 
   const [sort, setSort] = useState<SortState>(null);
