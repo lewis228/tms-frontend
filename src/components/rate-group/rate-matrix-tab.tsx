@@ -346,17 +346,18 @@ function MatrixView({
   }
 
   return (
-    <div className="overflow-x-auto rounded-md border">
+    <div className="max-h-[70vh] min-h-32 overflow-auto rounded-md border">
       <table className="w-full border-collapse text-sm">
         <thead>
           <tr>
-            <th className="sticky left-0 z-10 bg-muted/60 px-3 py-2 text-left text-xs text-muted-foreground uppercase">
+            {/* 코너 셀 — 가로·세로 스크롤 모두에서 고정 (z 최상위) */}
+            <th className="sticky top-0 left-0 z-30 bg-muted px-3 py-2 text-left text-xs text-muted-foreground uppercase">
               {t("rateEntry.field.from")} \ {t("rateEntry.field.to")}
             </th>
             {toKeys.map((tk) => (
               <th
                 key={tk}
-                className="bg-muted/60 px-3 py-2 text-center text-xs font-medium"
+                className="sticky top-0 z-20 bg-muted px-3 py-2 text-center text-xs font-medium"
               >
                 {keyHeader(tk)}
               </th>
