@@ -16,6 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useZipLabelsData } from "@/hooks/queries/use-zip-labels-data";
 import type { FlatRateEntry, RateMethod } from "@/types";
 
 type Kind = "set" | "number" | "date";
@@ -42,6 +43,14 @@ export default function RateEntryTable({
   const { t } = useTranslation();
   const isMatrix = method === "ZIP" || method === "CITY";
 
+  // 행에 등장한 zip 의 동네 이름 병기 ("90731 · San Pedro").
+  const zips = useMemo(
+    () =>
+      rows.flatMap((r) => [r.fromZip, r.toZip]).filter((z): z is string => !!z),
+    [rows]
+  );
+  const { data: zipLabels } = useZipLabelsData(zips);
+
   // 각 변은 zip | zone | city 중 하나 — 셋 다 처리.
   const sideLabel = (
     zip: string | null,
@@ -49,7 +58,7 @@ export default function RateEntryTable({
     city: string | null,
     state: string | null
   ) => {
-    if (zip) return zip;
+    if (zip) return zipLabels?.get(zip) ?? zip;
     if (zoneId != null) return zoneName.get(zoneId) ?? `#${zoneId}`;
     if (city) return `${city}${state ? `, ${state}` : ""}`;
     return "—";
@@ -112,8 +121,8 @@ export default function RateEntryTable({
         raw: (r) => r.effectiveFrom,
       },
     ];
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- fromLabel/toLabel은 method+zoneName 만 캡처하며 둘 다 deps에 포함됨(매 렌더 재생성 함수라 lint가 과탐지)
-  }, [method, zoneName, t]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- fromLabel/toLabel은 method+zoneName+zipLabels 만 캡처하며 셋 다 deps에 포함됨(매 렌더 재생성 함수라 lint가 과탐지)
+  }, [method, zoneName, zipLabels, t]);
 
   const [sort, setSort] = useState<SortState>(null);
   const [setFilters, setSetFilters] = useState<Record<string, string[]>>({});

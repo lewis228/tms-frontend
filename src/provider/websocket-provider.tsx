@@ -4,6 +4,8 @@
 // - do.created / do.status_changed
 // - leg.created / leg.status_changed
 // - file.uploaded
+// - rate_group.* / rate_sheet.updated / rate_zone.* /
+//   driver_rate_assignment.* / addon.* / service_area.updated (캐시 무효화만)
 //
 // 백엔드 fan_out_event 가 inbox row 를 자동 생성하므로 프론트는 알림 list/count
 // 캐시 무효화만 처리. 다음 fetch 에서 새 알림이 보임.
@@ -87,6 +89,37 @@ export default function WebSocketProvider({
           });
         }
         qc.invalidateQueries({ queryKey: QUERY_KEYS.containerV3.all });
+      }
+
+      // ── Rate family 이벤트 invalidation (inbox 알림 아님 — 캐시만) ──
+      // rate_group.created|updated|deleted / rate_sheet.updated → 그룹 + 엔트리.
+      if (
+        evt.type.startsWith("rate_group.") ||
+        evt.type.startsWith("rate_sheet.")
+      ) {
+        const rateGroupId = idFrom("rateGroupId");
+        qc.invalidateQueries({ queryKey: QUERY_KEYS.rateGroup.all });
+        if (rateGroupId) {
+          qc.invalidateQueries({
+            queryKey: QUERY_KEYS.rateGroup.entries(rateGroupId),
+          });
+        }
+      }
+      if (evt.type.startsWith("rate_zone.")) {
+        qc.invalidateQueries({ queryKey: QUERY_KEYS.rateZone.all });
+      }
+      if (evt.type.startsWith("driver_rate_assignment.")) {
+        qc.invalidateQueries({
+          queryKey: QUERY_KEYS.driverRateAssignment.all,
+        });
+      }
+      if (evt.type.startsWith("addon.")) {
+        qc.invalidateQueries({ queryKey: QUERY_KEYS.addon.all });
+      }
+      if (evt.type.startsWith("service_area.")) {
+        qc.invalidateQueries({ queryKey: QUERY_KEYS.serviceArea.all });
+        // 영업권역이 바뀌면 scope=true zip/도시 검색 결과도 달라진다.
+        qc.invalidateQueries({ queryKey: QUERY_KEYS.zipCode.all });
       }
 
       switch (evt.type) {

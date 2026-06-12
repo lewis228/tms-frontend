@@ -11,6 +11,7 @@ import RateEntryTable from "@/components/rate-group/rate-entry-table";
 import { useRateGroupsData } from "@/hooks/queries/use-rate-groups-data";
 import { useRateZonesData } from "@/hooks/queries/use-rate-zones-data";
 import { useRateGroupEntriesData } from "@/hooks/queries/use-rate-group-entries-data";
+import { useZipLabelsData } from "@/hooks/queries/use-zip-labels-data";
 import { useImportRateGroupEntries } from "@/hooks/mutations/rate-group/use-import-rate-group-entries";
 import { exportRateGroupEntriesCsv } from "@/api/rate-group";
 import { useOpenCreateRateGroupModal } from "@/store/rate-group-editor-modal";
@@ -138,10 +139,14 @@ function GroupEntries({
 
   const openCreate = useOpenCreateRateEntryModal();
   const { data, isPending, error } = useRateGroupEntriesData(groupId);
+  // 존 목록은 라벨링(존 이름 맵) 전용 — 축 합성에는 쓰지 않는다 (다른 그룹
+  // 스코프 존이 빈 행으로 노출되는 버그 방지).
   const { data: zonesData } = useRateZonesData();
   const zoneName = useMemo(() => {
     const m = new Map<number, string>();
-    zonesData?.items.forEach((z) => m.set(z.id, z.code ?? z.name));
+    zonesData?.items.forEach((z) =>
+      m.set(z.id, z.name || z.code || `#${z.id}`)
+    );
     return m;
   }, [zonesData]);
 
@@ -243,12 +248,10 @@ function GroupEntries({
 
       {showMatrix ? (
         <MatrixView
-          method={method}
           rows={rows}
           move={move}
           service={service}
           zoneName={zoneName}
-          allZones={zonesData?.items ?? []}
           onCellClick={openCell}
         />
       ) : (
@@ -260,23 +263,27 @@ function GroupEntries({
 
 // ── 매트릭스 뷰 (from×to 피벗) ───────────────────────────────────
 function MatrixView({
-  method,
   rows,
   move,
   service,
   zoneName,
-  allZones,
   onCellClick,
 }: {
-  method: RateMethod;
   rows: FlatRateEntry[];
   move: RateMoveType;
   service: RateServiceType;
   zoneName: Map<number, string>;
-  allZones: { id: number; name: string; code: string | null }[];
   onCellClick: (fromKey: string, toKey: string) => void;
 }) {
   const { t } = useTranslation();
+
+  // 행에 등장한 zip 의 동네 이름 병기 ("90731 · San Pedro").
+  const zips = useMemo(
+    () =>
+      rows.flatMap((r) => [r.fromZip, r.toZip]).filter((z): z is string => !!z),
+    [rows]
+  );
+  const { data: zipLabels } = useZipLabelsData(zips);
 
   const fromKey = (r: FlatRateEntry) =>
     sideKey(r.fromZoneId, r.fromZip, r.fromCity, r.fromState);
@@ -285,29 +292,17 @@ function MatrixView({
   const keyLabel = (key: string) => {
     const p = parseSideKey(key);
     if (p.zoneId != null) return zoneName.get(p.zoneId) ?? `#${p.zoneId}`;
-    if (p.zip != null) return p.zip;
+    if (p.zip != null) return zipLabels?.get(p.zip) ?? p.zip;
     return `${p.city ?? ""}${p.state ? `, ${p.state}` : ""}`;
   };
 
-  // ZIP: 모든 존 + 행에 등장한 예외 zip 을 양축에(혼합 축, 정사각).
-  // CITY: 등록된 행의 from/to 좌표 합집합(도시 + 존 좌표 행 포함).
-  const allZoneKeys = allZones
-    .map((z) => `zone:${z.id}`)
-    .sort((a, b) => keyLabel(a).localeCompare(keyLabel(b)));
-  const rowKeys = Array.from(
+  // 축 = 이 그룹의 행에 실제로 등장한 좌표(존/ZIP/도시)만 — 전체 존 목록을
+  // 합집합하면 다른 그룹 스코프 존이 빈 행으로 노출된다. 라벨 사전순 정렬.
+  const axisKeys = Array.from(
     new Set(rows.flatMap((r) => [fromKey(r), toKey(r)]))
-  );
-  const axisKeys =
-    method === "ZIP"
-      ? [
-          ...allZoneKeys,
-          ...rowKeys
-            .filter((k) => k.startsWith("zip:"))
-            .sort((a, b) => keyLabel(a).localeCompare(keyLabel(b))),
-        ]
-      : rowKeys
-          .filter((k) => !k.startsWith("city:|"))
-          .sort((a, b) => keyLabel(a).localeCompare(keyLabel(b)));
+  )
+    .filter((k) => !k.startsWith("city:|"))
+    .sort((a, b) => keyLabel(a).localeCompare(keyLabel(b)));
   const fromKeys = axisKeys;
   const toKeys = axisKeys;
 

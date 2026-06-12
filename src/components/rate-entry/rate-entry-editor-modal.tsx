@@ -71,7 +71,10 @@ function Body({ modal }: { modal: OpenModal }) {
   };
 
   const { data: zonesData } = useRateZonesData();
-  const zones = zonesData?.items ?? [];
+  // 현재 그룹이 쓸 수 있는 존만 — 전역 존(rateGroupId 없음) + 이 그룹 전용 존.
+  const zones = (zonesData?.items ?? []).filter(
+    (z) => z.rateGroupId == null || z.rateGroupId === modal.groupId
+  );
 
   const [move, setMove] = useState<RateMoveType>(modal.presetMove ?? "LOAD");
   const [service, setService] = useState<RateServiceType>(
@@ -384,11 +387,17 @@ function ZoneSelect({
   onChange,
   disabled,
 }: {
-  zones: { id: number; name: string; code: string | null }[];
+  zones: {
+    id: number;
+    name: string;
+    code: string | null;
+    rateGroupId: number | null;
+  }[];
   value: number | "";
   onChange: (v: number | "") => void;
   disabled?: boolean;
 }) {
+  const { t } = useTranslation();
   return (
     <select
       className={SELECT_CLASS}
@@ -400,6 +409,7 @@ function ZoneSelect({
       {zones.map((z) => (
         <option key={z.id} value={z.id}>
           {z.code ?? z.name}
+          {z.rateGroupId != null ? ` ${t("rateEntry.zoneScopedSuffix")}` : ""}
         </option>
       ))}
     </select>

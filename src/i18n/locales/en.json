@@ -98,6 +98,7 @@
     "TEAM_NOT_FOUND": "Team not found.",
     "TEAM_SCOPE_REQUIRED": "Please choose a team first.",
     "ALREADY_EXISTS": "This item already exists in the current team.",
+    "DUPLICATE_ENTRY": "Duplicate entry — the record already exists.",
     "FK_IN_USE": "Cannot delete — another record still references this item.",
     "FK_REFERENCE_NOT_FOUND": "The referenced item no longer exists.",
     "RATE_LIMIT_EXCEEDED": "Daily API quota reached. Please try again tomorrow.",
@@ -1589,6 +1590,7 @@
     "cityPlaceholder": "City (e.g. Fontana)",
     "zipPlaceholder": "Search ZIP (e.g. 90731 or San Pedro)",
     "bidirectionalHint": "Lanes are bidirectional (↔) — direction differences are expressed by Move/Service",
+    "zoneScopedSuffix": "(group-scoped)",
     "coordType": {
       "zone": "Zone",
       "zip": "ZIP",
