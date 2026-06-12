@@ -24,7 +24,11 @@ import {
   useOpenCreateDriverRateAssignmentModal,
   useOpenEditDriverRateAssignmentModal,
 } from "@/store/driver-rate-assignment-editor-modal";
-import type { DriverRateAssignment, DriverRateAssignmentEntity } from "@/types";
+import type {
+  DriverRateAssignment,
+  DriverRateAssignmentEntity,
+  RateMethod,
+} from "@/types";
 
 export default function DriverRateAssignmentList() {
   const { t } = useTranslation();
@@ -53,6 +57,13 @@ export default function DriverRateAssignmentList() {
   const groupNameById = useMemo(() => {
     const map = new Map<number, string>();
     groupsData?.items.forEach((g) => map.set(g.id, g.name));
+    return map;
+  }, [groupsData]);
+
+  // 배정된 그룹의 정산 방식 — 목록에서 방식이 바로 보이게.
+  const groupMethodById = useMemo(() => {
+    const map = new Map<number, RateMethod>();
+    groupsData?.items.forEach((g) => map.set(g.id, g.method));
     return map;
   }, [groupsData]);
 
@@ -89,6 +100,7 @@ export default function DriverRateAssignmentList() {
           <TableHeader>
             <TableRow>
               <TableHead>{t("driverRateAssignment.field.driver")}</TableHead>
+              <TableHead>{t("rateGroup.field.method")}</TableHead>
               <TableHead>{t("driverRateAssignment.field.rateGroup")}</TableHead>
               <TableHead>
                 {t("driverRateAssignment.field.effectiveFrom")}
@@ -105,7 +117,7 @@ export default function DriverRateAssignmentList() {
             {rows.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={7}
+                  colSpan={8}
                   className="text-center text-muted-foreground"
                 >
                   {t("common.noData")}
@@ -116,6 +128,18 @@ export default function DriverRateAssignmentList() {
                 <TableRow key={v.id}>
                   <TableCell className="font-medium">
                     {v.driverName ?? `#${v.driverId}`}
+                  </TableCell>
+                  <TableCell>
+                    {(() => {
+                      const m = groupMethodById.get(v.rateGroupId);
+                      return m ? (
+                        <span className="rounded bg-muted px-1.5 py-0.5 text-[11px] font-medium uppercase">
+                          {t(`rateGroup.method.${m}`)}
+                        </span>
+                      ) : (
+                        "—"
+                      );
+                    })()}
                   </TableCell>
                   <TableCell>{v.groupName ?? `#${v.rateGroupId}`}</TableCell>
                   <TableCell>{formatDate(v.effectiveFrom)}</TableCell>

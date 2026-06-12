@@ -13,9 +13,12 @@ import { adaptCursorToPaged, type CursorResponse } from "@/lib/pagination";
 export async function fetchRateGroups(
   params: { page?: number; size?: number; q?: string } = {}
 ): Promise<PagedResponse<RateGroupEntity>> {
+  // 백엔드 cursor pagination 은 take 만 인식 (page/size 무시), q → where__name__i_like.
+  const queryParams: Record<string, unknown> = { take: params.size ?? 100 };
+  if (params.q) queryParams["where__name__i_like"] = params.q;
   const { data } = await api.get<CursorResponse<RateGroupEntity>>(
     "/rate-groups",
-    { params }
+    { params: queryParams }
   );
   return adaptCursorToPaged(data, params.page, params.size);
 }
