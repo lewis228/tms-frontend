@@ -1167,6 +1167,7 @@
     "settingsApiKeys": "API Keys",
     "rates": "Rates",
     "rateGroups": "Rate Groups",
+    "driverRateAssignment": "Driver Assignment",
     "rateZones": "Rate Zones",
     "rateLookup": "Rate Lookup",
     "serviceArea": "Service Area",
@@ -1573,14 +1574,13 @@
     },
     "hub": {
       "title": "Rates",
-      "subtitle": "ZIP/City are bidirectional (↔) lane matrices, Mile/Hourly use per-unit rates. Zones bundle ZIPs/cities, and groups are assigned to drivers in the Driver tab."
+      "subtitle": "ZIP/City are bidirectional (↔) lane matrices, Mile/Hourly use per-unit rates. Zones bundle ZIPs/cities, and groups are assigned to drivers on the Driver Assignment page."
     },
     "tabs": {
       "zip": "ZIP",
       "city": "City (City×City)",
       "mile": "Mile",
-      "hourly": "Hourly",
-      "driver": "Driver Assignment"
+      "hourly": "Hourly"
     }
   },
   "rateEntry": {
@@ -1636,6 +1636,8 @@
     }
   },
   "driverRateAssignment": {
+    "pageTitle": "Driver Assignment",
+    "pageSubtitle": "Assign rate groups to drivers. Drivers without an assignment fall back to the default ZIP group.",
     "newButton": "New assignment",
     "createTitle": "New driver rate assignment",
     "editTitle": "Edit driver rate assignment",

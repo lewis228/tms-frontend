@@ -1167,6 +1167,7 @@
     "settingsApiKeys": "API 키",
     "rates": "요율 (Rates)",
     "rateGroups": "요율 그룹",
+    "driverRateAssignment": "드라이버 배정",
     "rateZones": "요율 존",
     "rateLookup": "요율 조회",
     "serviceArea": "영업 권역",
@@ -1573,14 +1574,13 @@
     },
     "hub": {
       "title": "요율 (Rates)",
-      "subtitle": "ZIP/도시는 양방향(↔) 구간 매트릭스, 거리/시간은 단가입니다. 존은 ZIP/도시를 묶는 도구이며, 드라이버 탭에서 그룹을 배정합니다."
+      "subtitle": "ZIP/도시는 양방향(↔) 구간 매트릭스, 거리/시간은 단가입니다. 존은 ZIP/도시를 묶는 도구이며, 그룹 배정은 드라이버 배정 페이지에서 합니다."
     },
     "tabs": {
       "zip": "우편 (ZIP)",
       "city": "도시 (City×City)",
       "mile": "거리 (Mile)",
-      "hourly": "시간 (Hourly)",
-      "driver": "드라이버 배정"
+      "hourly": "시간 (Hourly)"
     }
   },
   "rateEntry": {
@@ -1636,6 +1636,8 @@
     }
   },
   "driverRateAssignment": {
+    "pageTitle": "드라이버 배정",
+    "pageSubtitle": "기사에게 요율 그룹을 배정합니다. 배정이 없는 기사는 디폴트 ZIP 그룹이 적용됩니다.",
     "newButton": "새 요율 배정",
     "createTitle": "기사 요율 배정 생성",
     "editTitle": "기사 요율 배정 수정",

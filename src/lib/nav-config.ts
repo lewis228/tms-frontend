@@ -35,7 +35,8 @@ export type NavIconName =
   | "Key"
   | "Calculator"
   | "Route"
-  | "Search";
+  | "Search"
+  | "UserCog";
 
 export type NavLeaf = {
   type: "leaf";
@@ -182,6 +183,12 @@ export const NAV_CONFIG: NavNode[] = [
       },
       {
         type: "leaf",
+        label: "nav.driverRateAssignment",
+        iconName: "UserCog",
+        path: "rates/driver-assignment",
+      },
+      {
+        type: "leaf",
         label: "nav.rateZones",
         iconName: "Map",
         path: "rates/rate-zones",
@@ -322,7 +329,7 @@ export function visibleNavFor(role: UserRole | null): NavNode[] {
     }
     if (!hasAccess(role, node.requiredRole)) continue;
     const children = node.children.filter((c) =>
-      hasAccess(role, c.requiredRole),
+      hasAccess(role, c.requiredRole)
     );
     if (children.length === 0) continue;
     out.push({ ...node, children });
@@ -341,7 +348,8 @@ export function resolveNavMatch(relativePath: string): NavMatch | null {
       if (matches(relativePath, node.path)) return { leaf: node };
     } else {
       for (const child of node.children) {
-        if (matches(relativePath, child.path)) return { section: node, leaf: child };
+        if (matches(relativePath, child.path))
+          return { section: node, leaf: child };
       }
     }
   }
@@ -360,7 +368,7 @@ export function relativizeAppPath(pathname: string): string | null {
 }
 
 export function resolveFavoriteMeta(
-  path: string,
+  path: string
 ): { label: string; iconName: NavIconName } | null {
   const m = resolveNavMatch(path);
   if (!m) return null;

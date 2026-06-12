@@ -30,6 +30,7 @@ import {
   Tag,
   Truck,
   User,
+  UserCog,
   Users,
   Wallet,
 } from "lucide-react";
@@ -88,13 +89,14 @@ const ICON_MAP: Record<NavIconName, LucideIcon> = {
   Calculator,
   Route,
   Search,
+  UserCog,
 };
 
 // Build an absolute `/app/:teamId/...` URL from a nav leaf's relative path.
 // Falls back to `/app` when the component is rendered outside a team scope.
 function absolutePath(
   relativePath: string,
-  teamId: string | undefined,
+  teamId: string | undefined
 ): string {
   if (!teamId) return "/app";
   if (relativePath === "") return `/app/${teamId}`;
@@ -134,16 +136,15 @@ export default function Sidebar() {
   // auto-expand to reveal the active leaf.
   const visibleNodes = useMemo(() => visibleNavFor(role), [role]);
   const teamPrefix = teamId ? `/app/${teamId}` : "";
-  const relativePath =
-    location.pathname.startsWith(teamPrefix + "/")
-      ? location.pathname.slice(teamPrefix.length + 1)
-      : location.pathname === teamPrefix
-        ? ""
-        : location.pathname;
+  const relativePath = location.pathname.startsWith(teamPrefix + "/")
+    ? location.pathname.slice(teamPrefix.length + 1)
+    : location.pathname === teamPrefix
+      ? ""
+      : location.pathname;
 
   const activeMatch = useMemo(
     () => resolveNavMatch(relativePath),
-    [relativePath],
+    [relativePath]
   );
 
   return (
@@ -151,10 +152,10 @@ export default function Sidebar() {
       <aside
         className={cn(
           "flex h-full shrink-0 flex-col overflow-y-auto border-r border-black/10 bg-white transition-all duration-300",
-          isCollapsed ? "w-[60px] px-1.5" : "w-[232px] px-3",
+          isCollapsed ? "w-[60px] px-1.5" : "w-[232px] px-3"
         )}
       >
-        <div className="pb-2 pt-4">
+        <div className="pt-4 pb-2">
           <UserProfileHeader isCollapsed={isCollapsed} user={user} />
         </div>
 
@@ -190,7 +191,7 @@ export default function Sidebar() {
                 onClick={handleSignOutClick}
                 className={cn(
                   "flex items-center rounded-xl py-1.5 text-sm text-black/55 transition-colors hover:text-black",
-                  isCollapsed ? "justify-center px-2" : "gap-2 px-3",
+                  isCollapsed ? "justify-center px-2" : "gap-2 px-3"
                 )}
               >
                 <LogOut className="h-4 w-4" />
@@ -313,7 +314,7 @@ function SectionRow({
         <ChevronDown
           className={cn(
             "h-3 w-3 shrink-0 text-black/50 transition-transform",
-            !expanded && "-rotate-90",
+            !expanded && "-rotate-90"
           )}
         />
         <Icon className="h-4 w-4 text-black/70" />
@@ -367,13 +368,13 @@ function LeafRow({
             to={href}
             className={cn(
               "flex items-center justify-center rounded-xl p-2 transition-colors",
-              isActive ? "bg-black/[0.06]" : "hover:bg-black/[0.04]",
+              isActive ? "bg-black/[0.06]" : "hover:bg-black/[0.04]"
             )}
           >
             <Icon
               className={cn(
                 "h-4 w-4",
-                isActive ? "text-black" : "text-black/70",
+                isActive ? "text-black" : "text-black/70"
               )}
             />
           </Link>
@@ -394,13 +395,13 @@ function LeafRow({
         isActive
           ? "bg-black/[0.06] font-medium text-black"
           : "text-black/60 hover:bg-black/[0.04] hover:text-black",
-        nested && !isActive && "text-black/70",
+        nested && !isActive && "text-black/70"
       )}
     >
       <Icon
         className={cn(
           "h-4 w-4 shrink-0",
-          isActive ? "text-black" : "text-black/50",
+          isActive ? "text-black" : "text-black/50"
         )}
       />
       <span className="flex-1 truncate">{t(leaf.label)}</span>
@@ -472,7 +473,7 @@ function pickDisplayName(user: UserEntity): string {
 
 function pickInitial(user: UserEntity): string {
   const source =
-    user.name && user.name.trim() !== "" ? user.name : user.email ?? "";
+    user.name && user.name.trim() !== "" ? user.name : (user.email ?? "");
   return (source.charAt(0) || "?").toUpperCase();
 }
 
@@ -524,13 +525,13 @@ function FavoritesSection({
                   to={absolute}
                   className={cn(
                     "flex items-center justify-center rounded-xl p-2 transition-colors",
-                    isActive ? "bg-black/[0.06]" : "hover:bg-black/[0.04]",
+                    isActive ? "bg-black/[0.06]" : "hover:bg-black/[0.04]"
                   )}
                 >
                   <Icon
                     className={cn(
                       "h-4 w-4",
-                      isActive ? "text-black" : "text-black/50",
+                      isActive ? "text-black" : "text-black/50"
                     )}
                   />
                 </Link>
@@ -547,7 +548,7 @@ function FavoritesSection({
 
   return (
     <div className="flex flex-col gap-0.5 pb-3">
-      <div className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-medium uppercase tracking-wider text-black/55">
+      <div className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-medium tracking-wider text-black/55 uppercase">
         <Star className="h-3 w-3 fill-current text-yellow-500" />
         <span>{t("favorites.title")}</span>
       </div>
@@ -573,13 +574,13 @@ function FavoritesSection({
                 "flex flex-1 items-center gap-2 rounded-xl px-3 py-1.5 text-sm transition-colors",
                 isActive
                   ? "bg-black/[0.06] font-medium text-black"
-                  : "text-black/60 hover:bg-black/[0.04] hover:text-black",
+                  : "text-black/60 hover:bg-black/[0.04] hover:text-black"
               )}
             >
               <Icon
                 className={cn(
                   "h-4 w-4 shrink-0",
-                  isActive ? "text-black" : "text-black/50",
+                  isActive ? "text-black" : "text-black/50"
                 )}
               />
               <span className="flex-1 truncate">{t(fav.title)}</span>
@@ -589,7 +590,7 @@ function FavoritesSection({
               variant="ghost"
               size="icon"
               onClick={() => removeFavorite(fav.path)}
-              className="h-6 w-6 shrink-0 opacity-0 transition-opacity hover:bg-black/[0.04] group-hover:opacity-100"
+              className="h-6 w-6 shrink-0 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-black/[0.04]"
               aria-label={t("favorites.removeFromFavorites")}
             >
               <Star className="h-3 w-3 fill-current text-yellow-500" />

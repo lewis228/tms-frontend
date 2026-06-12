@@ -22,10 +22,10 @@ const SignUpPage = lazy(() => import("@/pages/sign-up-page"));
 const ForgetPasswordPage = lazy(() => import("@/pages/forget-password-page"));
 const ResetPasswordPage = lazy(() => import("@/pages/reset-password-page"));
 const TwoStepVerificationPage = lazy(
-  () => import("@/pages/two-step-verification-page"),
+  () => import("@/pages/two-step-verification-page")
 );
 const ChooseAccountTypePage = lazy(
-  () => import("@/pages/choose-account-type-page"),
+  () => import("@/pages/choose-account-type-page")
 );
 const AccountInfoPage = lazy(() => import("@/pages/account-info-page"));
 const BillingDetailsPage = lazy(() => import("@/pages/billing-details-page"));
@@ -40,11 +40,13 @@ const LandingLayout = lazy(() => import("@/pages/landing/landing-layout"));
 const LandingPage = lazy(() => import("@/pages/landing/landing-page"));
 const AboutPage = lazy(() => import("@/pages/landing/about-page"));
 const ServicesPage = lazy(() => import("@/pages/landing/services-page"));
-const ServiceDetailPage = lazy(() => import("@/pages/landing/service-detail-page"));
+const ServiceDetailPage = lazy(
+  () => import("@/pages/landing/service-detail-page")
+);
 const ContactPage = lazy(() => import("@/pages/landing/contact-page"));
 const ComingSoonPage = lazy(() => import("@/pages/coming-soon-page"));
 const MobileComingSoonPage = lazy(
-  () => import("@/pages/mobile-coming-soon-page"),
+  () => import("@/pages/mobile-coming-soon-page")
 );
 const MasterVesselsPage = lazy(() => import("@/pages/master-vessels-page"));
 const MasterTerminalsPage = lazy(() => import("@/pages/master-terminals-page"));
@@ -53,23 +55,30 @@ const MasterCustomersPage = lazy(() => import("@/pages/master-customers-page"));
 const MasterDriversPage = lazy(() => import("@/pages/master-drivers-page"));
 const MasterTrucksPage = lazy(() => import("@/pages/master-trucks-page"));
 const MasterChassisPage = lazy(() => import("@/pages/master-chassis-page"));
-const MasterEquipmentPoolsPage = lazy(() => import("@/pages/master-equipment-pools-page"));
+const MasterEquipmentPoolsPage = lazy(
+  () => import("@/pages/master-equipment-pools-page")
+);
 const MasterAddonsPage = lazy(() => import("@/pages/master-addons-page"));
 const RateGroupsPage = lazy(() => import("@/pages/rate-groups-page"));
+const DriverRateAssignmentPage = lazy(
+  () => import("@/pages/driver-rate-assignment-page")
+);
 const RateZonesPage = lazy(() => import("@/pages/rate-zones-page"));
 const RateLookupPage = lazy(() => import("@/pages/rate-lookup-page"));
 const ServiceAreaPage = lazy(() => import("@/pages/service-area-page"));
 const SettlementsPage = lazy(() => import("@/pages/settlements-page"));
 const SettlementDetailPage = lazy(
-  () => import("@/pages/settlement-detail-page"),
+  () => import("@/pages/settlement-detail-page")
 );
 const InvoicesPage = lazy(() => import("@/pages/invoices-page"));
 const InvoiceDetailPage = lazy(() => import("@/pages/invoice-detail-page"));
 const DeliveryOrdersPage = lazy(() => import("@/pages/delivery-orders-page"));
-const DeliveryOrderDetailPage = lazy(() => import("@/pages/delivery-order-detail-page"));
+const DeliveryOrderDetailPage = lazy(
+  () => import("@/pages/delivery-order-detail-page")
+);
 const StreetTurnsPage = lazy(() => import("@/pages/street-turns-page"));
 const DualTransactionsPage = lazy(
-  () => import("@/pages/dual-transactions-page"),
+  () => import("@/pages/dual-transactions-page")
 );
 const OnboardingPage = lazy(() => import("@/pages/onboarding-page"));
 const DispatchPage = lazy(() => import("@/pages/dispatch-page"));
@@ -82,7 +91,7 @@ const SettingsTeamPage = lazy(() => import("@/pages/settings-team-page"));
 const SettingsMembersPage = lazy(() => import("@/pages/settings-members-page"));
 const SettingsThemePage = lazy(() => import("@/pages/settings-theme-page"));
 const SettingsNotificationsPage = lazy(
-  () => import("@/pages/settings-notifications-page"),
+  () => import("@/pages/settings-notifications-page")
 );
 const SettingsPrivacyPage = lazy(() => import("@/pages/settings-privacy-page"));
 const SettingsTagsPage = lazy(() => import("@/pages/settings-tags-page"));
@@ -99,10 +108,7 @@ export default function RootRoute() {
         <Route path="/maintenance" element={<MaintenancePage />} />
         <Route path="/oauth/callback" element={<OAuthCallbackPage />} />
         <Route path="/coming-soon" element={<ComingSoonPage />} />
-        <Route
-          path="/mobile-coming-soon"
-          element={<MobileComingSoonPage />}
-        />
+        <Route path="/mobile-coming-soon" element={<MobileComingSoonPage />} />
 
         {/* Marketing — 랜딩. */}
         <Route element={<LandingLayout />}>
@@ -152,10 +158,7 @@ export default function RootRoute() {
                 path="delivery-orders/:id"
                 element={<DeliveryOrderDetailPage />}
               />
-              <Route
-                path="containers/:id"
-                element={<ContainerDetailPage />}
-              />
+              <Route path="containers/:id" element={<ContainerDetailPage />} />
               <Route path="street-turns" element={<StreetTurnsPage />} />
               <Route
                 path="dual-transactions"
@@ -167,7 +170,10 @@ export default function RootRoute() {
             <Route path="master/drivers" element={<MasterDriversPage />} />
             <Route path="master/trucks" element={<MasterTrucksPage />} />
             <Route path="master/chassis" element={<MasterChassisPage />} />
-            <Route path="master/equipment-pools" element={<MasterEquipmentPoolsPage />} />
+            <Route
+              path="master/equipment-pools"
+              element={<MasterEquipmentPoolsPage />}
+            />
             <Route path="master/terminals" element={<MasterTerminalsPage />} />
             <Route path="master/vessels" element={<MasterVesselsPage />} />
             <Route path="master/locations" element={<MasterLocationsPage />} />
@@ -176,6 +182,10 @@ export default function RootRoute() {
             </Route>
 
             <Route path="rates/rate-groups" element={<RateGroupsPage />} />
+            <Route
+              path="rates/driver-assignment"
+              element={<DriverRateAssignmentPage />}
+            />
             <Route path="rates/rate-zones" element={<RateZonesPage />} />
             <Route path="rates/lookup" element={<RateLookupPage />} />
             <Route path="rates/service-area" element={<ServiceAreaPage />} />
@@ -209,10 +219,7 @@ export default function RootRoute() {
               path="settings/notifications"
               element={<SettingsNotificationsPage />}
             />
-            <Route
-              path="settings/privacy"
-              element={<SettingsPrivacyPage />}
-            />
+            <Route path="settings/privacy" element={<SettingsPrivacyPage />} />
             <Route path="settings/tags" element={<SettingsTagsPage />} />
             <Route path="settings/plugins" element={<SettingsPluginsPage />} />
             <Route path="settings/payment" element={<SettingsPaymentPage />} />
