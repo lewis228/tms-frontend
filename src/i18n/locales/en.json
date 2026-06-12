@@ -1883,7 +1883,7 @@
   "rateLookup": {
     "multi": {
       "title": "All combinations",
-      "failed": "Lookup failed"
+      "skipped": "{{count}} combinations with no rate are hidden"
     },
     "title": "Rate Lookup",
     "description": "Select origin and destination to preview the resolved rate and match path.",

@@ -91,8 +91,8 @@ export default function RateLookupPage() {
     id: null,
     zipId: null,
   });
-  const [move, setMove] = useState<MoveChoice>("LOAD");
-  const [service, setService] = useState<ServiceChoice>("LIVE");
+  const [move, setMove] = useState<MoveChoice>("ALL");
+  const [service, setService] = useState<ServiceChoice>("ALL");
   const [workDate, setWorkDate] = useState(todayISO());
   const [driverId, setDriverId] = useState<number | null>(null);
   // 조회 시점 스냅샷 — 결과 카드는 라이브 입력이 아니라 제출 당시 값을 쓴다.
@@ -288,8 +288,24 @@ export default function RateLookupPage() {
 }
 
 // ── 전체 조합 결과 표 (무브×서비스 일괄 조회) ──
+// 요율이 해석된 조합만 보여준다 — 미해석 조합 나열은 노이즈라 건수로만 요약.
 function MultiResultTable({ items }: { items: RateResolveMultiItem[] }) {
   const { t } = useTranslation();
+
+  const found = items.filter(
+    (it): it is RateResolveMultiItem & { result: RateResolveResult } =>
+      it.result != null && it.result.found,
+  );
+  const skipped = items.length - found.length;
+
+  if (found.length === 0) {
+    return (
+      <section className="rounded-md border bg-muted/30 p-4">
+        <h2 className="text-sm font-semibold">{t("rateLookup.notFound")}</h2>
+        <p className="text-sm text-muted-foreground">{t("common.noData")}</p>
+      </section>
+    );
+  }
 
   return (
     <section className="flex flex-col gap-2">
@@ -308,29 +324,8 @@ function MultiResultTable({ items }: { items: RateResolveMultiItem[] }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {items.map(({ body, result }) => {
+            {found.map(({ body, result }) => {
               const key = `${body.moveType}-${body.serviceType}`;
-              if (result == null) {
-                return (
-                  <ResultRow key={key} body={body}>
-                    <TableCell colSpan={3} className="text-xs text-destructive">
-                      {t("rateLookup.multi.failed")}
-                    </TableCell>
-                  </ResultRow>
-                );
-              }
-              if (!result.found) {
-                return (
-                  <ResultRow key={key} body={body}>
-                    <TableCell
-                      colSpan={3}
-                      className="text-xs text-muted-foreground"
-                    >
-                      {t("rateLookup.notFound")}
-                    </TableCell>
-                  </ResultRow>
-                );
-              }
               return (
                 <ResultRow key={key} body={body}>
                   <TableCell className="text-right font-medium tabular-nums">
@@ -378,6 +373,11 @@ function MultiResultTable({ items }: { items: RateResolveMultiItem[] }) {
           </TableBody>
         </Table>
       </div>
+      {skipped > 0 && (
+        <p className="text-xs text-muted-foreground">
+          {t("rateLookup.multi.skipped", { count: skipped })}
+        </p>
+      )}
     </section>
   );
 }
