@@ -13,7 +13,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useRateGroupsData } from "@/hooks/queries/use-rate-groups-data";
+import { useRateGroupByIdData } from "@/hooks/queries/use-rate-group-by-id-data";
 import { useCreateDriverRateAssignment } from "@/hooks/mutations/driver-rate-assignment/use-create-driver-rate-assignment";
 import { useUpdateDriverRateAssignment } from "@/hooks/mutations/driver-rate-assignment/use-update-driver-rate-assignment";
 import { generateErrorMessage } from "@/lib/error";
@@ -31,7 +31,10 @@ type OpenModal = Extract<
 export default function DriverRateAssignmentEditorModal() {
   const modal = useDriverRateAssignmentEditorModal();
   return (
-    <Dialog open={modal.isOpen} onOpenChange={(o) => !o && modal.actions.close()}>
+    <Dialog
+      open={modal.isOpen}
+      onOpenChange={(o) => !o && modal.actions.close()}
+    >
       <DialogContent className="max-h-[90vh] overflow-y-auto">
         {modal.isOpen && (
           <Body
@@ -46,37 +49,42 @@ export default function DriverRateAssignmentEditorModal() {
 
 function Body({ modal }: { modal: OpenModal }) {
   const { t } = useTranslation();
-  // 그룹 목록 — EDIT 시 현재 그룹의 방식 파생 + 방식별 필터에 사용 (소량 데이터, 캐시 공유)
-  const { data: groupsData } = useRateGroupsData();
+  // EDIT 시 배정된 그룹을 단건 조회해 방식을 파생 (페이지 목록 의존 금지 —
+  // 첫 20개 밖 그룹이면 영구 미해석되는 버그가 있었음). 셀렉트 fetchById 와 캐시 공유.
+  const { data: editGroup } = useRateGroupByIdData(
+    modal.type === "EDIT" ? modal.assignment.rateGroupId : null
+  );
   const [driverId, setDriverId] = useState<number | null>(
-    modal.type === "CREATE" ? null : modal.assignment.driverId,
+    modal.type === "CREATE" ? null : modal.assignment.driverId
   );
   const [rateGroupId, setRateGroupId] = useState<number | null>(
-    modal.type === "CREATE" ? null : modal.assignment.rateGroupId,
+    modal.type === "CREATE" ? null : modal.assignment.rateGroupId
   );
   // 방식 먼저 선택 → 그룹 목록이 그 방식으로 좁혀짐. EDIT 은 현재 그룹의 방식으로 시작.
   const [pickedMethod, setPickedMethod] = useState<RateMethod | null>(
-    modal.type === "CREATE" ? "ZIP" : null,
+    modal.type === "CREATE" ? "ZIP" : null
   );
-  const editGroupMethod =
-    modal.type === "EDIT"
-      ? groupsData?.items.find((g) => g.id === modal.assignment.rateGroupId)
-          ?.method
-      : undefined;
-  const method: RateMethod = pickedMethod ?? editGroupMethod ?? "ZIP";
+  // 확정 방식 — CREATE 는 항상 pickedMethod, EDIT 은 단건 조회가 끝나야 확정.
+  // 확정 전에는 방식 버튼/그룹 셀렉트를 disabled 해 폴백 'ZIP' 과의 비교 레이스를 차단.
+  const confirmedMethod: RateMethod | null =
+    pickedMethod ??
+    (modal.type === "EDIT" ? (editGroup?.method ?? null) : null);
+  const isMethodResolved = confirmedMethod !== null;
+  const method: RateMethod = confirmedMethod ?? "ZIP"; // 표시용 폴백 (확정 전 버튼은 disabled)
 
   const handleMethodChange = (m: RateMethod) => {
+    if (!isMethodResolved) return;
     setPickedMethod(m);
-    if (m !== method) setRateGroupId(null); // 방식이 바뀌면 기존 그룹 선택 해제
+    if (m !== confirmedMethod) setRateGroupId(null); // 방식이 바뀌면 기존 그룹 선택 해제
   };
   const [effectiveFrom, setEffectiveFrom] = useState(
-    modal.type === "CREATE" ? "" : modal.assignment.effectiveFrom,
+    modal.type === "CREATE" ? "" : modal.assignment.effectiveFrom
   );
   const [effectiveTo, setEffectiveTo] = useState(
-    modal.type === "CREATE" ? "" : (modal.assignment.effectiveTo ?? ""),
+    modal.type === "CREATE" ? "" : (modal.assignment.effectiveTo ?? "")
   );
   const [note, setNote] = useState(
-    modal.type === "CREATE" ? "" : (modal.assignment.note ?? ""),
+    modal.type === "CREATE" ? "" : (modal.assignment.note ?? "")
   );
 
   const { mutate: createAssignment, isPending: isCreatePending } =
@@ -134,7 +142,7 @@ function Body({ modal }: { modal: OpenModal }) {
           {t(
             modal.type === "CREATE"
               ? "driverRateAssignment.createTitle"
-              : "driverRateAssignment.editTitle",
+              : "driverRateAssignment.editTitle"
           )}
         </DialogTitle>
       </DialogHeader>
@@ -145,7 +153,7 @@ function Body({ modal }: { modal: OpenModal }) {
             onSelect={(id) => setDriverId(id)}
             fetchList={(q) =>
               fetchDrivers({ q, size: SEARCH_SIZE, activeOnly: true }).then(
-                (r) => r.items,
+                (r) => r.items
               )
             }
             fetchById={(id) => fetchDriver(id)}
@@ -162,7 +170,7 @@ function Body({ modal }: { modal: OpenModal }) {
                 key={m}
                 type="button"
                 onClick={() => handleMethodChange(m)}
-                disabled={isPending}
+                disabled={isPending || !isMethodResolved}
                 className={`rounded-md border px-2.5 py-1.5 text-xs transition-colors ${
                   method === m
                     ? "border-primary bg-primary/10 font-medium"
@@ -180,15 +188,17 @@ function Body({ modal }: { modal: OpenModal }) {
             value={rateGroupId}
             onSelect={(id) => setRateGroupId(id)}
             fetchList={(q) =>
-              fetchRateGroups({ q, size: SEARCH_SIZE }).then((r) =>
-                r.items.filter((g) => g.method === method),
+              // method 는 서버 필터(where__method__equal) — 클라이언트 filter 로
+              // take budget 을 다른 방식 그룹이 소모하지 않게.
+              fetchRateGroups({ q, size: SEARCH_SIZE, method }).then(
+                (r) => r.items
               )
             }
             fetchById={(id) => fetchRateGroup(id)}
             queryKeyBase={["rate-group", "search", method]}
             getLabel={(g) => `${g.name}${g.isDefault ? " ★" : ""}`}
             placeholder={t("driverRateAssignment.rateGroupPlaceholder")}
-            disabled={isPending}
+            disabled={isPending || !isMethodResolved}
           />
         </Field>
         <div className="grid grid-cols-2 gap-3">

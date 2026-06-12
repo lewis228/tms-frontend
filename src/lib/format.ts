@@ -5,8 +5,10 @@
 // datetime 을 UTC + Z 로 직렬화하므로 그대로 받으면 됨.
 // 출력: 사용자 timezone 으로 shift 된 한국어 표시.
 //
-// 현재는 Asia/Seoul + ko-KR 고정. 추후 team-preferences store 도입 시
-// getTeamPreferences() 로 timezone/locale 동적 결정.
+// 날짜/시간은 현재 Asia/Seoul + ko-KR 고정. 추후 getTeamPreferences() 로
+// timezone/locale 동적 결정. 통화(formatAmount)는 팀 프리퍼런스를 이미 읽는다.
+import { getTeamPreferences } from "@/store/team-preferences";
+
 const DEFAULT_TIMEZONE = "Asia/Seoul";
 const DEFAULT_LOCALE = "ko-KR";
 
@@ -42,7 +44,10 @@ export function formatTime(input: DateInput, fallback: string = "—"): string {
 }
 
 /** UTC ISO → 날짜+시간 (예: "26. 4. 26. 오후 3:42"). */
-export function formatDateTime(input: DateInput, fallback: string = "—"): string {
+export function formatDateTime(
+  input: DateInput,
+  fallback: string = "—"
+): string {
   const d = _toDate(input);
   if (!d) return fallback;
   return new Intl.DateTimeFormat(DEFAULT_LOCALE, {
@@ -53,7 +58,10 @@ export function formatDateTime(input: DateInput, fallback: string = "—"): stri
 }
 
 /** 짧은 날짜 (월/일) — 캘린더 / Gantt 등. */
-export function formatShortDate(input: DateInput, fallback: string = "—"): string {
+export function formatShortDate(
+  input: DateInput,
+  fallback: string = "—"
+): string {
   const d = _toDate(input);
   if (!d) return fallback;
   return new Intl.DateTimeFormat(DEFAULT_LOCALE, {
@@ -63,11 +71,15 @@ export function formatShortDate(input: DateInput, fallback: string = "—"): str
   }).format(d);
 }
 
-/** 금액 표시 — currency 미지정 시 원화 표기 (₩) */
-export function formatAmount(value: number | string | null | undefined, currency: string = "KRW"): string {
+/** 금액 표시 — 통화는 팀 프리퍼런스(currency)에서 일원 결정 (CLAUDE.md §6.8).
+ *  호출부 통화 하드코딩 금지 — rate/payroll/invoice 전 화면이 같은 통화로 표시돼야 한다. */
+export function formatAmount(
+  value: number | string | null | undefined
+): string {
   if (value == null || value === "") return "—";
   const n = typeof value === "number" ? value : Number(value);
   if (!Number.isFinite(n)) return "—";
+  const { currency } = getTeamPreferences();
   return new Intl.NumberFormat(DEFAULT_LOCALE, {
     style: "currency",
     currency,

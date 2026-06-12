@@ -17,6 +17,7 @@ import { useDriverRateAssignmentsData } from "@/hooks/queries/use-driver-rate-as
 import { useDriversData } from "@/hooks/queries/use-drivers-data";
 import { useRateGroupsData } from "@/hooks/queries/use-rate-groups-data";
 import { useDeleteDriverRateAssignment } from "@/hooks/mutations/driver-rate-assignment/use-delete-driver-rate-assignment";
+import { PAGE_SIZE } from "@/lib/constants";
 import { generateErrorMessage } from "@/lib/error";
 import { formatDate } from "@/lib/format";
 import { useOpenAlertModal } from "@/store/alert-modal";
@@ -30,13 +31,20 @@ import type {
   RateMethod,
 } from "@/types";
 
+// 백엔드 cursor pagination 은 page 이동을 지원하지 않으므로 크게 가져와
+// 클라이언트에서 PAGE_SIZE 단위로 슬라이스한다. 드라이버/그룹 이름·방식 enrich
+// 맵도 같은 size 로 가져와 첫 20건 밖 참조가 '#id'/'—' 로 깨지지 않게 한다.
+const LIST_TAKE = 200;
+
 export default function DriverRateAssignmentList() {
   const { t } = useTranslation();
   const [page, setPage] = useState(1);
 
-  const { data, isPending, error } = useDriverRateAssignmentsData(page);
-  const { data: driversData } = useDriversData();
-  const { data: groupsData } = useRateGroupsData();
+  const { data, isPending, error } = useDriverRateAssignmentsData({
+    size: LIST_TAKE,
+  });
+  const { data: driversData } = useDriversData(1, LIST_TAKE);
+  const { data: groupsData } = useRateGroupsData(1, LIST_TAKE);
   const openCreate = useOpenCreateDriverRateAssignmentModal();
   const openEdit = useOpenEditDriverRateAssignmentModal();
   const openAlert = useOpenAlertModal();
@@ -79,6 +87,10 @@ export default function DriverRateAssignmentList() {
   if (error) return <Fallback />;
   if (isPending) return <Loader />;
 
+  // 클라이언트 페이지 슬라이스 — 가져온 범위(LIST_TAKE) 안에서만 페이지 이동.
+  const pages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+  const pagedRows = rows.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
   const handleDelete = (v: DriverRateAssignmentEntity) => {
     openAlert({
       title: t("driverRateAssignment.deletePromptTitle"),
@@ -110,11 +122,13 @@ export default function DriverRateAssignmentList() {
               </TableHead>
               <TableHead>{t("field.note")}</TableHead>
               <TableHead>{t("common.active")}</TableHead>
-              <TableHead className="text-right">{t("common.actions")}</TableHead>
+              <TableHead className="text-right">
+                {t("common.actions")}
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {rows.length === 0 ? (
+            {pagedRows.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={8}
@@ -124,7 +138,7 @@ export default function DriverRateAssignmentList() {
                 </TableCell>
               </TableRow>
             ) : (
-              rows.map((v) => (
+              pagedRows.map((v) => (
                 <TableRow key={v.id}>
                   <TableCell className="font-medium">
                     {v.driverName ?? `#${v.driverId}`}
@@ -177,10 +191,7 @@ export default function DriverRateAssignmentList() {
       <div className="flex items-center justify-between text-sm">
         <span className="text-muted-foreground">
           {t("common.totalCount", { count: data.total })} ·{" "}
-          {t("common.pageOf", {
-            page: data.page,
-            pages: Math.max(1, data.pages),
-          })}
+          {t("common.pageOf", { page, pages })}
         </span>
         <div className="flex gap-2">
           <Button
@@ -194,7 +205,7 @@ export default function DriverRateAssignmentList() {
           <Button
             variant="outline"
             size="sm"
-            disabled={page >= data.pages}
+            disabled={page >= pages}
             onClick={() => setPage((p) => p + 1)}
           >
             {t("common.next")}

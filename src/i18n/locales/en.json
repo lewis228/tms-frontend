@@ -428,7 +428,15 @@
     "untitled": "Team #{{id}}",
     "createSuccess": "Team created.",
     "newNamePlaceholder": "New team name",
-    "createTeam": "Create team"
+    "createTeam": "Create team",
+    "createTitle": "Create Team",
+    "editTitle": "Edit Team",
+    "field": {
+      "name": "Team Name",
+      "companyName": "Company Name",
+      "timezone": "Timezone",
+      "phone": "Phone"
+    }
   },
   "systemUser": {
     "domain": "User",
@@ -1883,7 +1891,8 @@
   "rateLookup": {
     "multi": {
       "title": "All combinations",
-      "skipped": "{{count}} combinations with no rate are hidden"
+      "skipped": "{{count}} combinations with no rate are hidden",
+      "failed": "{{count}} lookups failed due to a network or server error"
     },
     "title": "Rate Lookup",
     "description": "Select origin and destination to preview the resolved rate and match path.",

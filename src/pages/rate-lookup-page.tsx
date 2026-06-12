@@ -289,20 +289,28 @@ export default function RateLookupPage() {
 
 // ── 전체 조합 결과 표 (무브×서비스 일괄 조회) ──
 // 요율이 해석된 조합만 보여준다 — 미해석 조합 나열은 노이즈라 건수로만 요약.
+// result=null(호출 실패) 은 found:false(미해석) 와 구분해 별도 경고로 노출.
+// 전 건 실패는 mutation 이 throw 해 onError 토스트로 처리되므로 여기 안 온다.
 function MultiResultTable({ items }: { items: RateResolveMultiItem[] }) {
   const { t } = useTranslation();
 
   const found = items.filter(
     (it): it is RateResolveMultiItem & { result: RateResolveResult } =>
-      it.result != null && it.result.found,
+      it.result != null && it.result.found
   );
-  const skipped = items.length - found.length;
+  const failed = items.filter((it) => it.result == null);
+  const skipped = items.length - found.length - failed.length;
 
   if (found.length === 0) {
     return (
       <section className="rounded-md border bg-muted/30 p-4">
         <h2 className="text-sm font-semibold">{t("rateLookup.notFound")}</h2>
         <p className="text-sm text-muted-foreground">{t("common.noData")}</p>
+        {failed.length > 0 && (
+          <p className="mt-1 text-xs text-destructive">
+            {t("rateLookup.multi.failed", { count: failed.length })}
+          </p>
+        )}
       </section>
     );
   }
@@ -329,11 +337,10 @@ function MultiResultTable({ items }: { items: RateResolveMultiItem[] }) {
               return (
                 <ResultRow key={key} body={body}>
                   <TableCell className="text-right font-medium tabular-nums">
-                    {formatAmount(result.baseAmount, "USD")}
+                    {formatAmount(result.baseAmount)}
                     {result.perUnit != null && result.quantity != null && (
                       <span className="ml-1 text-xs text-muted-foreground">
-                        ({formatAmount(result.perUnit, "USD")} ×{" "}
-                        {result.quantity})
+                        ({formatAmount(result.perUnit)} × {result.quantity})
                       </span>
                     )}
                   </TableCell>
@@ -376,6 +383,11 @@ function MultiResultTable({ items }: { items: RateResolveMultiItem[] }) {
       {skipped > 0 && (
         <p className="text-xs text-muted-foreground">
           {t("rateLookup.multi.skipped", { count: skipped })}
+        </p>
+      )}
+      {failed.length > 0 && (
+        <p className="text-xs text-destructive">
+          {t("rateLookup.multi.failed", { count: failed.length })}
         </p>
       )}
     </section>
@@ -539,12 +551,10 @@ function ResultCard({
         <h2 className="text-sm font-semibold">
           {t("rateLookup.result.title")}
         </h2>
-        <p className="text-3xl font-bold">
-          {formatAmount(result.baseAmount, "USD")}
-        </p>
+        <p className="text-3xl font-bold">{formatAmount(result.baseAmount)}</p>
         {result.perUnit != null && result.quantity != null && (
           <p className="text-xs text-muted-foreground">
-            {formatAmount(result.perUnit, "USD")} × {result.quantity}
+            {formatAmount(result.perUnit)} × {result.quantity}
           </p>
         )}
       </div>
@@ -620,19 +630,19 @@ function AddonEstimate({
       const percent = override?.percent ?? addon.percent;
       if (percent == null) return [];
       const label = `${(Number(percent) * 100).toFixed(0)}% → ${
-        base != null ? formatAmount(base * Number(percent), "USD") : "—"
+        base != null ? formatAmount(base * Number(percent)) : "—"
       }`;
       return [{ addon, display: label }];
     }
     const amount = override?.amount ?? addon.amount;
     if (amount == null) return [];
     if (addon.unit === "FLAT") {
-      return [{ addon, display: formatAmount(amount, "USD") }];
+      return [{ addon, display: formatAmount(amount) }];
     }
     return [
       {
         addon,
-        display: `${formatAmount(amount, "USD")}${t(`rateLookup.perUnit.${addon.unit}`)}`,
+        display: `${formatAmount(amount)}${t(`rateLookup.perUnit.${addon.unit}`)}`,
       },
     ];
   });

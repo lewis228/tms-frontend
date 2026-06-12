@@ -11,11 +11,18 @@ import type {
 import { adaptCursorToPaged, type CursorResponse } from "@/lib/pagination";
 
 export async function fetchRateGroups(
-  params: { page?: number; size?: number; q?: string } = {}
+  params: {
+    page?: number;
+    size?: number;
+    q?: string;
+    method?: RateMethod;
+  } = {}
 ): Promise<PagedResponse<RateGroupEntity>> {
-  // 백엔드 cursor pagination 은 take 만 인식 (page/size 무시), q → where__name__i_like.
+  // 백엔드 cursor pagination 은 take 만 인식 (page/size 무시), q → where__name__i_like,
+  // method → where__method__equal (서버 필터 — 클라이언트 filter 로 take budget 낭비 금지).
   const queryParams: Record<string, unknown> = { take: params.size ?? 100 };
   if (params.q) queryParams["where__name__i_like"] = params.q;
+  if (params.method) queryParams["where__method__equal"] = params.method;
   const { data } = await api.get<CursorResponse<RateGroupEntity>>(
     "/rate-groups",
     { params: queryParams }

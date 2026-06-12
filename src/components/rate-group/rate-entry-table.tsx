@@ -26,8 +26,10 @@ type Col = {
   label: string;
   kind: Kind;
   align?: "right";
-  // 정렬/필터용 원시값 (set=표시라벨, number=숫자|null, date=iso)
+  // 정렬/필터용 원시값 (set=안정 키 문자열, number=숫자|null, date=iso)
   raw: (r: FlatRateEntry) => string | number | null;
+  // set 필터 옵션 표시용 — raw(안정 키) → 사람용 라벨. 없으면 raw 그대로.
+  display?: (raw: string) => string;
 };
 
 type SortState = { id: string; dir: "asc" | "desc" } | null;
@@ -71,6 +73,41 @@ export default function RateEntryTable({
   const toLabel = (r: FlatRateEntry) =>
     sideLabel(r.toZip, r.toZoneId, r.toCity, r.toState);
 
+  // 정렬/필터용 안정 키 — 라벨(비동기 zip enrich/존 목록)이 아니라 zip 코드·
+  // 존 id·도시 원천값으로 합성한다. 라벨 도착 전후로 키가 변하지 않으므로
+  // 라벨 로드 전에 체크한 set 필터 선택이 무효화되지 않는다.
+  const sideRaw = (
+    zip: string | null,
+    zoneId: number | null,
+    city: string | null,
+    state: string | null
+  ) => {
+    if (zip) return `zip:${zip}`;
+    if (zoneId != null) return `zone:${zoneId}`;
+    if (city) return `city:${city}|${state ?? ""}`;
+    return "—";
+  };
+  const fromRaw = (r: FlatRateEntry) =>
+    sideRaw(r.fromZip, r.fromZoneId, r.fromCity, r.fromState);
+  const toRaw = (r: FlatRateEntry) =>
+    sideRaw(r.toZip, r.toZoneId, r.toCity, r.toState);
+  // 안정 키 → 표시 라벨 (set 필터 옵션 표기용 — 매칭은 항상 키로 한다).
+  const sideDisplay = (key: string) => {
+    if (key.startsWith("zip:")) {
+      const zip = key.slice(4);
+      return zipLabels?.get(zip) ?? zip;
+    }
+    if (key.startsWith("zone:")) {
+      const zoneId = Number(key.slice(5));
+      return zoneName.get(zoneId) ?? `#${zoneId}`;
+    }
+    if (key.startsWith("city:")) {
+      const [city, state] = key.slice(5).split("|");
+      return `${city}${state ? `, ${state}` : ""}`;
+    }
+    return key;
+  };
+
   // 셀 렌더 — 존이면 칩(뱃지+멤버 팝오버), 그 외는 정렬/필터와 같은 텍스트 라벨.
   const sideCell = (r: FlatRateEntry, side: "from" | "to") => {
     const zoneId = side === "from" ? r.fromZoneId : r.toZoneId;
@@ -88,9 +125,16 @@ export default function RateEntryTable({
           id: "from",
           label: t("rateEntry.field.from"),
           kind: "set",
-          raw: fromLabel,
+          raw: fromRaw,
+          display: sideDisplay,
         },
-        { id: "to", label: t("rateEntry.field.to"), kind: "set", raw: toLabel },
+        {
+          id: "to",
+          label: t("rateEntry.field.to"),
+          kind: "set",
+          raw: toRaw,
+          display: sideDisplay,
+        },
         {
           id: "move",
           label: t("rateEntry.field.move"),
@@ -134,7 +178,7 @@ export default function RateEntryTable({
         raw: (r) => r.effectiveFrom,
       },
     ];
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- fromLabel/toLabel은 method+zoneName+zipLabels 만 캡처하며 셋 다 deps에 포함됨(매 렌더 재생성 함수라 lint가 과탐지)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- fromRaw/toRaw/sideDisplay는 method+zoneName+zipLabels 만 캡처하며 셋 다 deps에 포함됨(매 렌더 재생성 함수라 lint가 과탐지)
   }, [method, zoneName, zipLabels, t]);
 
   const [sort, setSort] = useState<SortState>(null);
@@ -379,7 +423,7 @@ function ColumnFilter({
                         })
                       }
                     />
-                    {opt}
+                    {col.display ? col.display(opt) : opt}
                   </label>
                 );
               })}

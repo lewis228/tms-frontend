@@ -151,7 +151,7 @@ function GroupEntries({
     );
     return m;
   }, [zonesData]);
-  // 존 칩(뱃지+멤버 팝오버) 렌더용 — 정렬/필터 raw 값은 zoneName 문자열 그대로 유지.
+  // 존 칩(뱃지+멤버 팝오버) 렌더용 — 정렬/필터는 안정 키(zone:{id} 등) 기반.
   const zoneById = useMemo(() => {
     const m = new Map<number, RateZoneEntity>();
     zonesData?.items.forEach((z) => m.set(z.id, z));
@@ -346,18 +346,22 @@ function MatrixView({
   }
 
   return (
+    /* border-separate + 셀 단위 border — collapse 모드의 collapsed border 는
+       테이블 그리드 위치에 페인트돼 sticky 셀(코너/컬럼/행 헤더)을 따라가지
+       않는다 (index.css 의 thead box-shadow 처리와 같은 문제). separate 모드는
+       border 가 셀 자신에 페인트되므로 행 구분선이 스크롤 중에도 헤더를 따라간다. */
     <div className="max-h-[70vh] min-h-32 overflow-auto rounded-md border">
-      <table className="w-full border-collapse text-sm">
+      <table className="w-full border-separate border-spacing-0 text-sm">
         <thead>
           <tr>
             {/* 코너 셀 — 가로·세로 스크롤 모두에서 고정 (z 최상위) */}
-            <th className="sticky top-0 left-0 z-30 bg-muted px-3 py-2 text-left text-xs text-muted-foreground uppercase">
+            <th className="sticky top-0 left-0 z-30 border-b bg-muted px-3 py-2 text-left text-xs text-muted-foreground uppercase">
               {t("rateEntry.field.from")} \ {t("rateEntry.field.to")}
             </th>
             {toKeys.map((tk) => (
               <th
                 key={tk}
-                className="sticky top-0 z-20 bg-muted px-3 py-2 text-center text-xs font-medium"
+                className="sticky top-0 z-20 border-b bg-muted px-3 py-2 text-center text-xs font-medium"
               >
                 {keyHeader(tk)}
               </th>
@@ -366,14 +370,17 @@ function MatrixView({
         </thead>
         <tbody>
           {fromKeys.map((fk) => (
-            <tr key={fk} className="border-t">
-              <th className="sticky left-0 z-10 bg-background px-3 py-2 text-left text-xs font-medium">
+            <tr key={fk}>
+              <th className="sticky left-0 z-10 border-b bg-background px-3 py-2 text-left text-xs font-medium">
                 {keyHeader(fk)}
               </th>
               {toKeys.map((tk) => {
                 const v = cell.get(pairKey(fk, tk));
                 return (
-                  <td key={tk} className="p-0 text-center tabular-nums">
+                  <td
+                    key={tk}
+                    className="border-b p-0 text-center tabular-nums"
+                  >
                     <button
                       type="button"
                       onClick={() => onCellClick(fk, tk)}
