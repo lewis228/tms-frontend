@@ -1881,6 +1881,10 @@
     }
   },
   "rateLookup": {
+    "multi": {
+      "title": "All combinations",
+      "failed": "Lookup failed"
+    },
     "title": "Rate Lookup",
     "description": "Select origin and destination to preview the resolved rate and match path.",
     "form": {

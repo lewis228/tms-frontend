@@ -7,6 +7,14 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import Loader from "@/components/loader";
 import Fallback from "@/components/fallback";
 import SearchableSelect from "@/components/searchable-select";
@@ -18,6 +26,10 @@ import { fetchZipCode } from "@/api/zip-code";
 import { useRateLookupAddonEstimateData } from "@/hooks/queries/use-rate-lookup-addon-estimate-data";
 import { useRateZonesData } from "@/hooks/queries/use-rate-zones-data";
 import { useResolveRatePreview } from "@/hooks/mutations/rate-resolve/use-resolve-rate-preview";
+import {
+  useResolveRatePreviewMulti,
+  type RateResolveMultiItem,
+} from "@/hooks/mutations/rate-resolve/use-resolve-rate-preview-multi";
 import { QUERY_KEYS } from "@/lib/constants";
 import { generateErrorMessage } from "@/lib/error";
 import { formatAmount, formatDate } from "@/lib/format";
@@ -34,6 +46,9 @@ import type {
 
 const MOVE_TYPES: RateMoveType[] = ["LOAD", "EMPTY", "NONE"];
 const SERVICE_TYPES: RateServiceType[] = ["LIVE", "DROP", "NONE"];
+// "ALL" = 전체 조합 일괄 조회 (무브×서비스를 병렬 해석해 표로 보여준다)
+type MoveChoice = RateMoveType | "ALL";
+type ServiceChoice = RateServiceType | "ALL";
 const SELECT_CLASS = "h-9 w-full rounded-md border bg-background px-2 text-sm";
 
 // 포인트 = 타입 토글 + 마스터 선택. 선택 즉시 entity 의 zipId 를 들고 있는다.
@@ -57,6 +72,14 @@ export default function RateLookupPage() {
     onError: (error) =>
       toast.error(generateErrorMessage(error), { position: "top-center" }),
   });
+  const {
+    mutate: resolvePreviewMulti,
+    isPending: isResolvePreviewMultiPending,
+    data: multiResult,
+  } = useResolveRatePreviewMulti({
+    onError: (error) =>
+      toast.error(generateErrorMessage(error), { position: "top-center" }),
+  });
 
   const [from, setFrom] = useState<PointState>({
     type: "TERMINAL",
@@ -68,8 +91,8 @@ export default function RateLookupPage() {
     id: null,
     zipId: null,
   });
-  const [move, setMove] = useState<RateMoveType>("LOAD");
-  const [service, setService] = useState<RateServiceType>("LIVE");
+  const [move, setMove] = useState<MoveChoice>("LOAD");
+  const [service, setService] = useState<ServiceChoice>("LIVE");
   const [workDate, setWorkDate] = useState(todayISO());
   const [driverId, setDriverId] = useState<number | null>(null);
   // 조회 시점 스냅샷 — 결과 카드는 라이브 입력이 아니라 제출 당시 값을 쓴다.
@@ -77,6 +100,10 @@ export default function RateLookupPage() {
     null
   );
   const [submittedKey, setSubmittedKey] = useState<string | null>(null);
+  // 마지막 제출이 단건(카드)인지 전체 조합(표)인지 — 결과 영역 분기.
+  const [submittedMode, setSubmittedMode] = useState<"single" | "multi">(
+    "single"
+  );
 
   // 선택된 포인트의 zipId → zip/city/state 해석 (resolve body 의 원천).
   // §4 훅 순서 예외: 이 쿼리들은 from/dest state 에 의존해 useState 뒤에 둔다.
@@ -94,6 +121,7 @@ export default function RateLookupPage() {
   const fromZipData = from.zipId != null ? fromZip : undefined;
   const destZipData = dest.zipId != null ? destZip : undefined;
   const canSubmit = !!fromZipData && !!destZipData && !!workDate;
+  const isPending = isResolvePreviewPending || isResolvePreviewMultiPending;
   // 제출 입력 직렬화 키 — 결과가 현재 입력과 어긋나면 stale 힌트 표시.
   const currentKey = JSON.stringify({
     from,
@@ -103,25 +131,51 @@ export default function RateLookupPage() {
     workDate,
     driverId,
   });
+  const hasResult =
+    submittedMode === "single" ? result != null : multiResult != null;
   const isStale =
-    result != null && submittedKey != null && currentKey !== submittedKey;
+    hasResult && submittedKey != null && currentKey !== submittedKey;
 
   const handleSubmit = () => {
     if (!fromZipData || !destZipData || !workDate) return;
     setSubmittedDriverId(driverId);
     setSubmittedKey(currentKey);
-    resolvePreview({
-      driverId,
-      workDate,
-      moveType: move,
-      serviceType: service,
+
+    const place = {
       fromZip: fromZipData.zip,
       fromCity: fromZipData.city,
       fromState: fromZipData.state,
       destZip: destZipData.zip,
       destCity: destZipData.city,
       destState: destZipData.state,
-    });
+    };
+    const moves = move === "ALL" ? MOVE_TYPES : [move];
+    const services = service === "ALL" ? SERVICE_TYPES : [service];
+
+    if (moves.length === 1 && services.length === 1) {
+      setSubmittedMode("single");
+      resolvePreview({
+        driverId,
+        workDate,
+        moveType: moves[0],
+        serviceType: services[0],
+        ...place,
+      });
+      return;
+    }
+
+    setSubmittedMode("multi");
+    resolvePreviewMulti(
+      moves.flatMap((m) =>
+        services.map((s) => ({
+          driverId,
+          workDate,
+          moveType: m,
+          serviceType: s,
+          ...place,
+        }))
+      )
+    );
   };
 
   return (
@@ -141,7 +195,7 @@ export default function RateLookupPage() {
             onChange={setFrom}
             zip={fromZipData ?? null}
             zipError={from.zipId != null && fromZipError != null}
-            disabled={isResolvePreviewPending}
+            disabled={isPending}
           />
           <PointField
             label={t("rateLookup.form.dest")}
@@ -149,7 +203,7 @@ export default function RateLookupPage() {
             onChange={setDest}
             zip={destZipData ?? null}
             zipError={dest.zipId != null && destZipError != null}
-            disabled={isResolvePreviewPending}
+            disabled={isPending}
           />
         </div>
 
@@ -158,9 +212,10 @@ export default function RateLookupPage() {
             <select
               className={SELECT_CLASS}
               value={move}
-              onChange={(e) => setMove(e.target.value as RateMoveType)}
-              disabled={isResolvePreviewPending}
+              onChange={(e) => setMove(e.target.value as MoveChoice)}
+              disabled={isPending}
             >
+              <option value="ALL">{t("common.all")}</option>
               {MOVE_TYPES.map((m) => (
                 <option key={m} value={m}>
                   {t(`rateEntry.move.${m}`)}
@@ -172,9 +227,10 @@ export default function RateLookupPage() {
             <select
               className={SELECT_CLASS}
               value={service}
-              onChange={(e) => setService(e.target.value as RateServiceType)}
-              disabled={isResolvePreviewPending}
+              onChange={(e) => setService(e.target.value as ServiceChoice)}
+              disabled={isPending}
             >
+              <option value="ALL">{t("common.all")}</option>
               {SERVICE_TYPES.map((s) => (
                 <option key={s} value={s}>
                   {t(`rateEntry.service.${s}`)}
@@ -187,7 +243,7 @@ export default function RateLookupPage() {
               type="date"
               value={workDate}
               onChange={(e) => setWorkDate(e.target.value)}
-              disabled={isResolvePreviewPending}
+              disabled={isPending}
               className="h-9"
             />
           </Field>
@@ -204,28 +260,147 @@ export default function RateLookupPage() {
               queryKeyBase={["driver", "search"]}
               getLabel={(d) => d.name}
               emptyLabel={t("rateLookup.form.driverNone")}
-              disabled={isResolvePreviewPending}
+              disabled={isPending}
             />
           </Field>
         </div>
 
         <div className="flex justify-end">
-          <Button
-            onClick={handleSubmit}
-            disabled={isResolvePreviewPending || !canSubmit}
-          >
+          <Button onClick={handleSubmit} disabled={isPending || !canSubmit}>
             {t("rateLookup.form.submit")}
           </Button>
         </div>
       </section>
 
-      {result && isStale && (
+      {isStale && (
         <p className="text-xs text-muted-foreground">
           {t("rateLookup.result.stale")}
         </p>
       )}
-      {result && <ResultCard result={result} driverId={submittedDriverId} />}
+      {submittedMode === "single" && result && (
+        <ResultCard result={result} driverId={submittedDriverId} />
+      )}
+      {submittedMode === "multi" && multiResult && (
+        <MultiResultTable items={multiResult} />
+      )}
     </div>
+  );
+}
+
+// ── 전체 조합 결과 표 (무브×서비스 일괄 조회) ──
+function MultiResultTable({ items }: { items: RateResolveMultiItem[] }) {
+  const { t } = useTranslation();
+
+  return (
+    <section className="flex flex-col gap-2">
+      <h2 className="text-sm font-semibold">{t("rateLookup.multi.title")}</h2>
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>{t("rateEntry.field.move")}</TableHead>
+              <TableHead>{t("rateEntry.field.service")}</TableHead>
+              <TableHead className="text-right">
+                {t("rateEntry.field.amount")}
+              </TableHead>
+              <TableHead>{t("rateLookup.result.matchPath")}</TableHead>
+              <TableHead>{t("rateLookup.result.effective")}</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {items.map(({ body, result }) => {
+              const key = `${body.moveType}-${body.serviceType}`;
+              if (result == null) {
+                return (
+                  <ResultRow key={key} body={body}>
+                    <TableCell colSpan={3} className="text-xs text-destructive">
+                      {t("rateLookup.multi.failed")}
+                    </TableCell>
+                  </ResultRow>
+                );
+              }
+              if (!result.found) {
+                return (
+                  <ResultRow key={key} body={body}>
+                    <TableCell
+                      colSpan={3}
+                      className="text-xs text-muted-foreground"
+                    >
+                      {t("rateLookup.notFound")}
+                    </TableCell>
+                  </ResultRow>
+                );
+              }
+              return (
+                <ResultRow key={key} body={body}>
+                  <TableCell className="text-right font-medium tabular-nums">
+                    {formatAmount(result.baseAmount, "USD")}
+                    {result.perUnit != null && result.quantity != null && (
+                      <span className="ml-1 text-xs text-muted-foreground">
+                        ({formatAmount(result.perUnit, "USD")} ×{" "}
+                        {result.quantity})
+                      </span>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      {result.method && (
+                        <span className="rounded bg-muted px-1.5 py-0.5 text-xs font-medium">
+                          {result.method}
+                        </span>
+                      )}
+                      {result.matchStep && (
+                        <span className="text-xs">
+                          {t(`rateLookup.step.${result.matchStep}`)}
+                        </span>
+                      )}
+                      {result.viaDefaultGroup && (
+                        <span className="rounded bg-amber-100 px-1.5 py-0.5 text-xs font-medium text-amber-800">
+                          {t("rateLookup.badge.viaDefault")}
+                        </span>
+                      )}
+                      {result.assignmentFallback && (
+                        <span className="rounded bg-blue-100 px-1.5 py-0.5 text-xs font-medium text-blue-700">
+                          {t("rateLookup.badge.assignmentFallback")}
+                        </span>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-xs text-muted-foreground">
+                    {formatDate(result.effectiveFrom)} ~{" "}
+                    {result.effectiveTo
+                      ? formatDate(result.effectiveTo)
+                      : t("rateLookup.result.untilNow")}
+                  </TableCell>
+                </ResultRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
+    </section>
+  );
+}
+
+// 공통 행 prefix — 무브/서비스 라벨 두 칸 + 나머지(children).
+function ResultRow({
+  body,
+  children,
+}: {
+  body: RateResolveMultiItem["body"];
+  children: React.ReactNode;
+}) {
+  const { t } = useTranslation();
+  return (
+    <TableRow>
+      <TableCell className="text-sm">
+        {t(`rateEntry.move.${body.moveType}`)}
+      </TableCell>
+      <TableCell className="text-sm">
+        {body.serviceType ? t(`rateEntry.service.${body.serviceType}`) : "—"}
+      </TableCell>
+      {children}
+    </TableRow>
   );
 }
 

@@ -1881,6 +1881,10 @@
     }
   },
   "rateLookup": {
+    "multi": {
+      "title": "전체 조합 결과",
+      "failed": "조회 실패"
+    },
     "title": "요율 조회",
     "description": "출발/도착 장소를 선택하면 예상 요율과 해석 경로를 보여줍니다.",
     "form": {
