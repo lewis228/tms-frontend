@@ -1685,6 +1685,11 @@
       },
       "byCityHintZip": "도시를 선택하면 그 도시의 모든 ZIP 이 멤버로 추가됩니다 (확장 단축키)",
       "cityZips": "{{city}} 의 ZIP {{count}}개"
+    },
+    "chip": {
+      "title": "존 — 클릭하면 멤버 보기",
+      "memberCount": "멤버 {{count}}개",
+      "loadError": "멤버를 불러오지 못했습니다"
     }
   },
   "payroll": {

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import Loader from "@/components/loader";
 import Fallback from "@/components/fallback";
 import RateEntryTable from "@/components/rate-group/rate-entry-table";
+import ZoneChip from "@/components/rate-zone/zone-chip";
 import { useRateGroupsData } from "@/hooks/queries/use-rate-groups-data";
 import { useRateZonesData } from "@/hooks/queries/use-rate-zones-data";
 import { useRateGroupEntriesData } from "@/hooks/queries/use-rate-group-entries-data";
@@ -23,6 +24,7 @@ import type {
   RateMethod,
   RateMoveType,
   RateServiceType,
+  RateZoneEntity,
 } from "@/types";
 
 const MOVE_TYPES: RateMoveType[] = ["LOAD", "EMPTY", "NONE"];
@@ -149,6 +151,12 @@ function GroupEntries({
     );
     return m;
   }, [zonesData]);
+  // 존 칩(뱃지+멤버 팝오버) 렌더용 — 정렬/필터 raw 값은 zoneName 문자열 그대로 유지.
+  const zoneById = useMemo(() => {
+    const m = new Map<number, RateZoneEntity>();
+    zonesData?.items.forEach((z) => m.set(z.id, z));
+    return m;
+  }, [zonesData]);
 
   if (error) return <Fallback />;
   if (isPending) return <Loader />;
@@ -252,10 +260,16 @@ function GroupEntries({
           move={move}
           service={service}
           zoneName={zoneName}
+          zoneById={zoneById}
           onCellClick={openCell}
         />
       ) : (
-        <RateEntryTable method={method} rows={rows} zoneName={zoneName} />
+        <RateEntryTable
+          method={method}
+          rows={rows}
+          zoneName={zoneName}
+          zoneById={zoneById}
+        />
       )}
     </div>
   );
@@ -267,12 +281,14 @@ function MatrixView({
   move,
   service,
   zoneName,
+  zoneById,
   onCellClick,
 }: {
   rows: FlatRateEntry[];
   move: RateMoveType;
   service: RateServiceType;
   zoneName: Map<number, string>;
+  zoneById: Map<number, RateZoneEntity>;
   onCellClick: (fromKey: string, toKey: string) => void;
 }) {
   const { t } = useTranslation();
@@ -294,6 +310,15 @@ function MatrixView({
     if (p.zoneId != null) return zoneName.get(p.zoneId) ?? `#${p.zoneId}`;
     if (p.zip != null) return zipLabels?.get(p.zip) ?? p.zip;
     return `${p.city ?? ""}${p.state ? `, ${p.state}` : ""}`;
+  };
+  // 축 헤더 렌더 — 존이면 칩(뱃지+멤버 팝오버), 그 외는 텍스트 라벨.
+  const keyHeader = (key: string) => {
+    const p = parseSideKey(key);
+    if (p.zoneId != null) {
+      const zone = zoneById.get(p.zoneId);
+      if (zone) return <ZoneChip zone={zone} compact />;
+    }
+    return keyLabel(key);
   };
 
   // 축 = 이 그룹의 행에 실제로 등장한 좌표(존/ZIP/도시)만 — 전체 존 목록을
@@ -333,7 +358,7 @@ function MatrixView({
                 key={tk}
                 className="bg-muted/60 px-3 py-2 text-center text-xs font-medium"
               >
-                {keyLabel(tk)}
+                {keyHeader(tk)}
               </th>
             ))}
           </tr>
@@ -342,7 +367,7 @@ function MatrixView({
           {fromKeys.map((fk) => (
             <tr key={fk} className="border-t">
               <th className="sticky left-0 z-10 bg-background px-3 py-2 text-left text-xs font-medium">
-                {keyLabel(fk)}
+                {keyHeader(fk)}
               </th>
               {toKeys.map((tk) => {
                 const v = cell.get(pairKey(fk, tk));

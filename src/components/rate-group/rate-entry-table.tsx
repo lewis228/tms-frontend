@@ -16,8 +16,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import ZoneChip from "@/components/rate-zone/zone-chip";
 import { useZipLabelsData } from "@/hooks/queries/use-zip-labels-data";
-import type { FlatRateEntry, RateMethod } from "@/types";
+import type { FlatRateEntry, RateMethod, RateZoneEntity } from "@/types";
 
 type Kind = "set" | "number" | "date";
 type Col = {
@@ -35,10 +36,12 @@ export default function RateEntryTable({
   method,
   rows,
   zoneName,
+  zoneById,
 }: {
   method: RateMethod;
   rows: FlatRateEntry[];
   zoneName: Map<number, string>;
+  zoneById: Map<number, RateZoneEntity>;
 }) {
   const { t } = useTranslation();
   const isMatrix = method === "ZIP" || method === "CITY";
@@ -67,6 +70,16 @@ export default function RateEntryTable({
     sideLabel(r.fromZip, r.fromZoneId, r.fromCity, r.fromState);
   const toLabel = (r: FlatRateEntry) =>
     sideLabel(r.toZip, r.toZoneId, r.toCity, r.toState);
+
+  // 셀 렌더 — 존이면 칩(뱃지+멤버 팝오버), 그 외는 정렬/필터와 같은 텍스트 라벨.
+  const sideCell = (r: FlatRateEntry, side: "from" | "to") => {
+    const zoneId = side === "from" ? r.fromZoneId : r.toZoneId;
+    if (zoneId != null) {
+      const zone = zoneById.get(zoneId);
+      if (zone) return <ZoneChip zone={zone} />;
+    }
+    return side === "from" ? fromLabel(r) : toLabel(r);
+  };
 
   const cols = useMemo<Col[]>(() => {
     if (isMatrix) {
@@ -249,6 +262,12 @@ export default function RateEntryTable({
             view.map((r) => (
               <TableRow key={r.rateEntryId}>
                 {cols.map((c) => {
+                  // 구간 A/B 는 존이면 칩으로 렌더 (정렬/필터는 raw 텍스트 그대로).
+                  if (c.id === "from" || c.id === "to") {
+                    return (
+                      <TableCell key={c.id}>{sideCell(r, c.id)}</TableCell>
+                    );
+                  }
                   const v = c.raw(r);
                   return (
                     <TableCell

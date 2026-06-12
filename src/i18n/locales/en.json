@@ -1685,6 +1685,11 @@
       },
       "byCityHintZip": "Adding a city inserts every ZIP in that city (expansion shortcut)",
       "cityZips": "{{count}} ZIPs in {{city}}"
+    },
+    "chip": {
+      "title": "Zone — click to see members",
+      "memberCount": "{{count}} members",
+      "loadError": "Failed to load members"
     }
   },
   "payroll": {
