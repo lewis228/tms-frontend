@@ -67,6 +67,8 @@
     "ROLE_HIERARCHY": "Cannot create a user with a higher role than yours.",
     "NOT_FOUND": "Not found.",
     "CONFLICT": "Already exists.",
+    "ZONE_KIND_MISMATCH": "Member type doesn't match the zone kind (ZIP zones take ZIPs, city zones take cities).",
+    "ZONE_KIND_LOCKED": "Cannot change kind while the zone has members.",
     "ZONE_MEMBER_CONFLICT": "Some members already belong to another zone in the same scope",
     "SERVICE_AREA_DUPLICATE": "This area is already declared.",
     "VALIDATION": "Invalid input.",
@@ -1657,8 +1659,14 @@
     "searchPlaceholder": "Search name / code / description",
     "field": {
       "color": "Color",
-      "scope": "Scope"
+      "scope": "Scope",
+      "kind": "Zone kind"
     },
+    "kind": {
+      "ZIP": "ZIP zone",
+      "CITY": "City zone"
+    },
+    "kindLockedHint": "Kind can't change while the zone has members",
     "scope": {
       "global": "Global (team-wide)"
     },
@@ -1674,7 +1682,9 @@
         "expand": "Add zips",
         "help": "Adds every zip code in that city/state to this zone.",
         "added": "City zips added"
-      }
+      },
+      "byCityHintZip": "Adding a city inserts every ZIP in that city (expansion shortcut)",
+      "cityZips": "{{count}} ZIPs in {{city}}"
     }
   },
   "payroll": {

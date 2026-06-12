@@ -633,11 +633,16 @@ export type RateZoneMemberEntity = {
   state: string | null;
 };
 
+// 존 종류 — ZIP 존(멤버=zip 만) / CITY 존(멤버=도시만, CITY 방식 전용).
+// 혼합 멤버는 백엔드가 422 ZONE_KIND_MISMATCH 로 거부한다.
+export type ZoneKind = "ZIP" | "CITY";
+
 export type RateZoneEntity = {
   id: number;
   name: string;
   code: string | null;
   color: string | null;
+  kind: ZoneKind;
   rateGroupId: number | null;
   geojson: Record<string, unknown> | null;
   description: string | null;

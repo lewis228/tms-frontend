@@ -98,6 +98,7 @@ export default function RateZoneList() {
             <TableRow>
               <TableHead>{t("rateZone.field.color")}</TableHead>
               <TableHead>{t("field.name")}</TableHead>
+              <TableHead>{t("rateZone.field.kind")}</TableHead>
               <TableHead>{t("rateZone.field.scope")}</TableHead>
               <TableHead>{t("field.code")}</TableHead>
               <TableHead>{t("field.note")}</TableHead>
@@ -111,7 +112,7 @@ export default function RateZoneList() {
             {filtered.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={7}
+                  colSpan={8}
                   className="text-center text-muted-foreground"
                 >
                   {t("common.noData")}
@@ -128,6 +129,17 @@ export default function RateZoneList() {
                     />
                   </TableCell>
                   <TableCell className="font-medium">{v.name}</TableCell>
+                  <TableCell>
+                    <span
+                      className={`inline-block rounded-full border px-2 py-0.5 text-xs ${
+                        v.kind === "ZIP"
+                          ? "bg-sky-500/10 text-sky-700 dark:text-sky-300"
+                          : "bg-amber-500/10 text-amber-700 dark:text-amber-300"
+                      }`}
+                    >
+                      {t(`rateZone.kind.${v.kind}`)}
+                    </span>
+                  </TableCell>
                   <TableCell>
                     <span
                       className={`inline-block rounded-full border px-2 py-0.5 text-xs ${

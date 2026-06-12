@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { updateRateZone } from "@/api/rate-zone";
 import { QUERY_KEYS } from "@/lib/constants";
-import type { UseMutationCallback } from "@/types";
+import type { UseMutationCallback, ZoneKind } from "@/types";
 
 type Vars = {
   id: number;
@@ -10,6 +10,7 @@ type Vars = {
     name: string;
     code: string | null;
     color: string | null;
+    kind: ZoneKind;
     rateGroupId: number | null;
     geojson: Record<string, unknown> | null;
     description: string | null;

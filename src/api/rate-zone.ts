@@ -6,6 +6,7 @@ import type {
   RateZone,
   RateZoneEntity,
   RateZoneMemberEntity,
+  ZoneKind,
 } from "@/types";
 import { adaptCursorToPaged, type CursorResponse } from "@/lib/pagination";
 
@@ -42,6 +43,8 @@ export async function createRateZone(payload: {
   name: string;
   code?: string | null;
   color?: string | null;
+  // 미지정 시 백엔드 기본값 ZIP.
+  kind?: ZoneKind;
   rateGroupId?: number | null;
   geojson?: Record<string, unknown> | null;
   description?: string | null;
@@ -57,6 +60,8 @@ export async function updateRateZone(
     name: string;
     code: string | null;
     color: string | null;
+    // 멤버가 있으면 백엔드가 409 ZONE_KIND_LOCKED 로 거부.
+    kind: ZoneKind;
     rateGroupId: number | null;
     geojson: Record<string, unknown> | null;
     description: string | null;

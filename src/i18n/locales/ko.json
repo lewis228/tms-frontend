@@ -67,6 +67,8 @@
     "ROLE_HIERARCHY": "본인보다 상위 등급의 사용자를 만들 수 없습니다.",
     "NOT_FOUND": "데이터를 찾을 수 없습니다.",
     "CONFLICT": "이미 존재하는 데이터입니다.",
+    "ZONE_KIND_MISMATCH": "존 종류와 멤버 타입이 일치하지 않습니다 (ZIP존=ZIP만, 도시존=도시만).",
+    "ZONE_KIND_LOCKED": "멤버가 있는 존의 종류는 변경할 수 없습니다.",
     "ZONE_MEMBER_CONFLICT": "이미 같은 범위의 다른 존에 속한 멤버가 있습니다",
     "SERVICE_AREA_DUPLICATE": "이미 선언된 권역입니다.",
     "VALIDATION": "입력값이 올바르지 않습니다.",
@@ -1657,8 +1659,14 @@
     "searchPlaceholder": "이름 / 코드 / 설명 검색",
     "field": {
       "color": "색상",
-      "scope": "적용 범위"
+      "scope": "적용 범위",
+      "kind": "존 종류"
     },
+    "kind": {
+      "ZIP": "ZIP 존",
+      "CITY": "도시 존"
+    },
+    "kindLockedHint": "멤버가 있는 존의 종류는 변경할 수 없습니다",
     "scope": {
       "global": "글로벌 (팀 공용)"
     },
@@ -1674,7 +1682,9 @@
         "expand": "우편번호 추가",
         "help": "그 도시(주)의 모든 우편번호를 이 존에 추가합니다.",
         "added": "도시 우편번호 추가됨"
-      }
+      },
+      "byCityHintZip": "도시를 선택하면 그 도시의 모든 ZIP 이 멤버로 추가됩니다 (확장 단축키)",
+      "cityZips": "{{city}} 의 ZIP {{count}}개"
     }
   },
   "payroll": {

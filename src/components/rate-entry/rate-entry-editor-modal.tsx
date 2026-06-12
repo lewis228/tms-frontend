@@ -71,9 +71,13 @@ function Body({ modal }: { modal: OpenModal }) {
   };
 
   const { data: zonesData } = useRateZonesData();
-  // 현재 그룹이 쓸 수 있는 존만 — 전역 존(rateGroupId 없음) + 이 그룹 전용 존.
+  // 현재 그룹이 쓸 수 있는 존만 — 전역 존(rateGroupId 없음) + 이 그룹 전용 존,
+  // 그리고 그룹 방식과 존 종류가 일치하는 존만 (ZIP 방식=ZIP 존, CITY 방식=도시 존).
+  // 해석기(resolver)도 kind 일치 존만 매칭하므로 불일치 존은 선택지에서 제외.
   const zones = (zonesData?.items ?? []).filter(
-    (z) => z.rateGroupId == null || z.rateGroupId === modal.groupId
+    (z) =>
+      (z.rateGroupId == null || z.rateGroupId === modal.groupId) &&
+      (!isMatrix || z.kind === modal.method)
   );
 
   const [move, setMove] = useState<RateMoveType>(modal.presetMove ?? "LOAD");

@@ -16,6 +16,9 @@ import { useCreateRateZone } from "@/hooks/mutations/rate-zone/use-create-rate-z
 import { useUpdateRateZone } from "@/hooks/mutations/rate-zone/use-update-rate-zone";
 import { generateErrorMessage } from "@/lib/error";
 import { useRateZoneEditorModal } from "@/store/rate-zone-editor-modal";
+import type { ZoneKind } from "@/types";
+
+const ZONE_KINDS: ZoneKind[] = ["ZIP", "CITY"];
 
 type OpenModal = Extract<
   ReturnType<typeof useRateZoneEditorModal>,
@@ -61,6 +64,11 @@ function Body({ modal }: { modal: OpenModal }) {
   const [rateGroupId, setRateGroupId] = useState<number | null>(
     modal.type === "CREATE" ? null : modal.rateZone.rateGroupId
   );
+  // 존 종류 — CREATE 에서만 선택. EDIT 는 멤버 보유 가능성 때문에 항상 잠금
+  // (백엔드도 멤버가 있으면 409 ZONE_KIND_LOCKED 로 거부).
+  const [kind, setKind] = useState<ZoneKind>(
+    modal.type === "CREATE" ? "ZIP" : modal.rateZone.kind
+  );
 
   const { mutate: createRateZone, isPending: isCreatePending } =
     useCreateRateZone({
@@ -99,7 +107,7 @@ function Body({ modal }: { modal: OpenModal }) {
       description: trimOrNull(description),
     };
     if (modal.type === "CREATE") {
-      createRateZone(payload);
+      createRateZone({ ...payload, kind });
     } else {
       updateRateZone({ id: modal.rateZone.id, payload });
     }
@@ -154,6 +162,26 @@ function Body({ modal }: { modal: OpenModal }) {
             </div>
           </Field>
         </div>
+        <Field label={t("rateZone.field.kind")}>
+          <select
+            value={kind}
+            onChange={(e) => setKind(e.target.value as ZoneKind)}
+            disabled={isPending || modal.type === "EDIT"}
+            className="h-9 rounded-md border bg-background px-2 text-sm"
+            aria-label={t("rateZone.field.kind")}
+          >
+            {ZONE_KINDS.map((k) => (
+              <option key={k} value={k}>
+                {t(`rateZone.kind.${k}`)}
+              </option>
+            ))}
+          </select>
+          {modal.type === "EDIT" && (
+            <span className="text-[10px] text-muted-foreground">
+              {t("rateZone.kindLockedHint")}
+            </span>
+          )}
+        </Field>
         <Field label={t("rateZone.field.scope")}>
           <select
             value={rateGroupId ?? ""}
@@ -195,7 +223,10 @@ function Body({ modal }: { modal: OpenModal }) {
       </div>
 
       {modal.type === "EDIT" && (
-        <RateZoneMembersPanel zoneId={modal.rateZone.id} />
+        <RateZoneMembersPanel
+          zoneId={modal.rateZone.id}
+          kind={modal.rateZone.kind}
+        />
       )}
     </>
   );

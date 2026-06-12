@@ -200,6 +200,8 @@ export const QUERY_KEYS = {
       ["zip-code", "cities", q, state ?? "", scope ?? false] as const,
     search: (q: string, scope?: boolean) =>
       ["zip-code", "search", "string", q, scope ?? false] as const,
+    cityZips: (city: string, state: string) =>
+      ["zip-code", "city-zips", city, state] as const,
     labels: (zipsKey: string) => ["zip-code", "labels", zipsKey] as const,
   },
   serviceArea: {
