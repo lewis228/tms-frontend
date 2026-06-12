@@ -1644,6 +1644,20 @@
     }
   },
   "driverRateAssignment": {
+    "groupChip": {
+      "title": "이 그룹을 배정받은 기사 보기",
+      "count": "기사 {{count}}명",
+      "empty": "이 그룹을 배정받은 기사가 없습니다.",
+      "defaultNote": "미배정 기사는 ZIP 디폴트가 자동 적용됩니다.",
+      "manage": "배정 관리",
+      "addDriver": "기사 추가 — 다른 그룹 소속이면 이 그룹으로 이동합니다",
+      "addPlaceholder": "기사 검색…",
+      "alreadyInGroup": "이미 이 그룹에 배정된 기사입니다.",
+      "movedToast": "기사를 이 그룹으로 이동했습니다.",
+      "remove": "이 그룹에서 빼기",
+      "removePromptTitle": "{{name}} 기사를 이 그룹에서 빼시겠습니까?",
+      "removePromptDesc": "배정이 삭제되며, 이후 이 기사는 ZIP 디폴트 그룹으로 폴백됩니다."
+    },
     "pageTitle": "드라이버 배정",
     "pageSubtitle": "기사에게 요율 그룹을 배정합니다. 배정이 없는 기사는 디폴트 ZIP 그룹이 적용됩니다.",
     "newButton": "새 요율 배정",

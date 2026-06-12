@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import Loader from "@/components/loader";
 import Fallback from "@/components/fallback";
 import RateEntryTable from "@/components/rate-group/rate-entry-table";
+import GroupDriverChip from "@/components/driver-rate-assignment/group-driver-chip";
 import ZoneChip from "@/components/rate-zone/zone-chip";
 import { useRateGroupsData } from "@/hooks/queries/use-rate-groups-data";
 import { useRateZonesData } from "@/hooks/queries/use-rate-zones-data";
@@ -77,10 +78,11 @@ export default function RateMatrixTab({ method }: { method: RateMethod }) {
   );
 
   // 선택 그룹: 사용자가 고른 게 현재 목록에 있으면 그것, 없으면 첫 번째(렌더 시 파생).
-  const selectedGroupId =
-    picked && groups.some((g) => g.id === picked)
-      ? picked
-      : (groups[0]?.id ?? null);
+  const selectedGroup =
+    (picked != null ? groups.find((g) => g.id === picked) : undefined) ??
+    groups[0] ??
+    null;
+  const selectedGroupId = selectedGroup?.id ?? null;
 
   if (error) return <Fallback />;
   if (isPending) return <Loader />;
@@ -114,10 +116,10 @@ export default function RateMatrixTab({ method }: { method: RateMethod }) {
         </Button>
       </div>
 
-      {selectedGroupId ? (
+      {selectedGroup ? (
         <GroupEntries
-          key={selectedGroupId}
-          groupId={selectedGroupId}
+          key={selectedGroup.id}
+          group={selectedGroup}
           method={method}
         />
       ) : null}
@@ -127,13 +129,14 @@ export default function RateMatrixTab({ method }: { method: RateMethod }) {
 
 // ── 선택된 그룹의 셀 입력/조회 ────────────────────────────────────
 function GroupEntries({
-  groupId,
+  group,
   method,
 }: {
-  groupId: number;
+  group: RateGroupEntity;
   method: RateMethod;
 }) {
   const { t } = useTranslation();
+  const groupId = group.id;
   const isMatrix = method === "ZIP" || method === "CITY";
   const [view, setView] = useState<"list" | "matrix">("list");
   const [move, setMove] = useState<RateMoveType>("LOAD");
@@ -227,6 +230,12 @@ function GroupEntries({
         )}
 
         <div className="flex items-center gap-2">
+          <GroupDriverChip
+            groupId={groupId}
+            groupName={group.name}
+            isDefault={group.isDefault}
+            method={method}
+          />
           <Button size="sm" onClick={openNew}>
             <Plus className="size-4" />
             {t("rateEntry.newButton")}

@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -39,12 +40,22 @@ const LIST_TAKE = 200;
 export default function DriverRateAssignmentList() {
   const { t } = useTranslation();
   const [page, setPage] = useState(1);
+  // 그룹 필터 — Rates 칩의 "배정 관리" 링크(?groupId=)로 진입하면 자동 적용.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const groupIdParam = searchParams.get("groupId");
+  const filterGroupId = groupIdParam ? Number(groupIdParam) : undefined;
 
   const { data, isPending, error } = useDriverRateAssignmentsData({
     size: LIST_TAKE,
+    rateGroupId: filterGroupId,
   });
   const { data: driversData } = useDriversData(1, LIST_TAKE);
   const { data: groupsData } = useRateGroupsData(1, LIST_TAKE);
+
+  const handleFilterChange = (value: string) => {
+    setPage(1);
+    setSearchParams(value ? { groupId: value } : {}, { replace: true });
+  };
   const openCreate = useOpenCreateDriverRateAssignmentModal();
   const openEdit = useOpenEditDriverRateAssignmentModal();
   const openAlert = useOpenAlertModal();
@@ -101,7 +112,23 @@ export default function DriverRateAssignmentList() {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-center justify-end gap-2">
+      <div className="flex items-center justify-between gap-2">
+        <label className="flex items-center gap-2 text-xs text-muted-foreground">
+          {t("driverRateAssignment.field.rateGroup")}
+          <select
+            className="h-9 rounded-md border bg-background px-2 text-sm text-foreground"
+            value={filterGroupId ?? ""}
+            onChange={(e) => handleFilterChange(e.target.value)}
+          >
+            <option value="">{t("common.all")}</option>
+            {(groupsData?.items ?? []).map((g) => (
+              <option key={g.id} value={g.id}>
+                {g.name}
+                {g.isDefault ? " ★" : ""} · {t(`rateGroup.method.${g.method}`)}
+              </option>
+            ))}
+          </select>
+        </label>
         <Button onClick={() => openCreate()}>
           {t("driverRateAssignment.newButton")}
         </Button>

@@ -1644,6 +1644,20 @@
     }
   },
   "driverRateAssignment": {
+    "groupChip": {
+      "title": "View drivers assigned to this group",
+      "count": "{{count}} drivers",
+      "empty": "No drivers are assigned to this group.",
+      "defaultNote": "Drivers without an assignment automatically fall back to the ZIP default.",
+      "manage": "Manage assignments",
+      "addDriver": "Add driver — moves them here if assigned elsewhere",
+      "addPlaceholder": "Search drivers…",
+      "alreadyInGroup": "This driver is already assigned to this group.",
+      "movedToast": "Driver moved to this group.",
+      "remove": "Remove from this group",
+      "removePromptTitle": "Remove {{name}} from this group?",
+      "removePromptDesc": "The assignment is deleted and the driver falls back to the ZIP default group."
+    },
     "pageTitle": "Driver Assignment",
     "pageSubtitle": "Assign rate groups to drivers. Drivers without an assignment fall back to the default ZIP group.",
     "newButton": "New assignment",
