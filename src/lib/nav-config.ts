@@ -177,24 +177,6 @@ export const NAV_CONFIG: NavNode[] = [
     children: [
       {
         type: "leaf",
-        label: "nav.rateGroups",
-        iconName: "BadgeDollarSign",
-        path: "rates/rate-groups",
-      },
-      {
-        type: "leaf",
-        label: "nav.driverRateAssignment",
-        iconName: "UserCog",
-        path: "rates/driver-assignment",
-      },
-      {
-        type: "leaf",
-        label: "nav.rateZones",
-        iconName: "Map",
-        path: "rates/rate-zones",
-      },
-      {
-        type: "leaf",
         label: "nav.rateLookup",
         iconName: "Search",
         path: "rates/lookup",
@@ -204,6 +186,24 @@ export const NAV_CONFIG: NavNode[] = [
         label: "nav.serviceArea",
         iconName: "MapPin",
         path: "rates/service-area",
+      },
+      {
+        type: "leaf",
+        label: "nav.rateZones",
+        iconName: "Map",
+        path: "rates/rate-zones",
+      },
+      {
+        type: "leaf",
+        label: "nav.rateGroups",
+        iconName: "BadgeDollarSign",
+        path: "rates/rate-groups",
+      },
+      {
+        type: "leaf",
+        label: "nav.driverRateAssignment",
+        iconName: "UserCog",
+        path: "rates/driver-assignment",
       },
     ],
   },
