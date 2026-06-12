@@ -369,12 +369,25 @@ function MatrixView({
           </tr>
         </thead>
         <tbody>
-          {fromKeys.map((fk) => (
+          {fromKeys.map((fk, ri) => (
             <tr key={fk}>
               <th className="sticky left-0 z-10 border-b bg-background px-3 py-2 text-left text-xs font-medium">
                 {keyHeader(fk)}
               </th>
-              {toKeys.map((tk) => {
+              {toKeys.map((tk, ci) => {
+                // 셀은 양방향(↔) — 하삼각(ri > ci)은 상삼각의 미러일 뿐이라
+                // 값도 숨기고 클릭도 막는다. 대각선(같은 좌표끼리)은 실제
+                // 셀프 레인(같은 zip 내 운송)이므로 일반 셀과 동일하게 편집 가능.
+                if (ri > ci) {
+                  return (
+                    <td
+                      key={tk}
+                      className="border-b bg-muted/30 px-3 py-2 text-center text-muted-foreground/40"
+                    >
+                      —
+                    </td>
+                  );
+                }
                 const v = cell.get(pairKey(fk, tk));
                 return (
                   <td
